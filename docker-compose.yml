@@ -1,4 +1,6 @@
 
+name: E-platform
+
 x-common-env: &common-env
   TZ: ${TZ:-UTC}
   TIME_ZONE: ${TIME_ZONE:-UTC}
@@ -69,7 +71,7 @@ services:
       - postgres_data:/var/lib/postgresql/data
     logging: *default-logging
 
-  web:
+  django-web:
     build: .
     command: gunicorn backend.wsgi:application --bind 0.0.0.0:8000 --workers=3 --reload
     networks: [platform]
@@ -103,7 +105,7 @@ services:
       - .:/app
     depends_on:
       - redis
-      - web
+      - django-web
 
   celery_beat:
     build: .
@@ -116,7 +118,7 @@ services:
       - .:/app
     depends_on:
       - redis
-      - web
+      - django-web
 
   migrate:
     build: .
