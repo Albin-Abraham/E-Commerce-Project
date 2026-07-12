@@ -37,7 +37,7 @@ class ApprovalEngine:
             ct = ContentType.objects.get_for_model(domain_object)
             chains = chains.filter(
                 domain_type=ct,
-                object_id=str(domain_object.pk),
+                domain_id=str(domain_object.pk),
             ) | chains.filter(domain_type__isnull=True)
 
         return chains.first()
@@ -148,7 +148,6 @@ class ApprovalEngine:
         if not level:
             raise ValueError(f"Level {request.current_level} not found in chain")
 
-        # Create the action
         action = ApprovalAction.objects.create(
             request=request,
             approver=approver,
@@ -157,21 +156,18 @@ class ApprovalEngine:
             level=request.current_level,
         )
 
-        # Check if this is the last level
         max_level = request.chain.levels.order_by("-level").values_list("level", flat=True).first()
         if request.current_level >= max_level:
-            # Final approval
             request.status = ApprovalRequestStatus.APPROVED
             request.decision_comment = comment
             request.resolved_at = timezone.now()
             request.save()
             logger.info(f"Request {request.id} fully approved at level {request.current_level}")
         else:
-            # Move to next level
             request.current_level += 1
             request.status = ApprovalRequestStatus.PENDING
             request.save()
-            logger.info(f"Request {request.id} approved at level {action.level}, moved to level {request.current_level}")
+            logger.info(f"Request {request.id} approved at level {action.level}, moved to {request.current_level}")
 
         return action
 
@@ -221,10 +217,6 @@ class ApprovalEngine:
         )
 
         request.current_level += 1
-        request.status = ApprovalRequestStatus.ESCALATED
-        request.save()
-
-        # Reset to pending after recording escalation
         request.status = ApprovalRequestStatus.PENDING
         request.save()
 
@@ -253,26 +245,22 @@ class ApprovalEngine:
         Check all pending requests for timeout conditions.
         Called by Celery task every 5 minutes.
         """
+        from apps.users.models.users import UserModel
+
         pending_requests = ApprovalRequest.objects.filter(
             status=ApprovalRequestStatus.PENDING
-        ).select_related("chain")
+        ).select_related("chain").prefetch_related("chain__levels", "actions")
 
         for req in pending_requests:
             level = req.chain.levels.filter(level=req.current_level).first()
             if not level or not level.timeout_hours:
                 continue
 
-            # Find the last action at this level
             last_action = req.actions.filter(
                 level=req.current_level
             ).order_by("-created_at").first()
 
-            if not last_action:
-                # No action yet — check from request submission
-                reference_time = req.submitted_at
-            else:
-                reference_time = last_action.created_at
-
+            reference_time = last_action.created_at if last_action else req.submitted_at
             elapsed = timezone.now() - reference_time
             if elapsed > timedelta(hours=level.timeout_hours):
                 ApprovalEngine._handle_timeout(req, level)
@@ -280,31 +268,23 @@ class ApprovalEngine:
     @staticmethod
     def _handle_timeout(request: ApprovalRequest, level: ApprovalLevel):
         """Handle timeout action for a level."""
+        from apps.users.models.users import UserModel
+
         action = level.timeout_action
+        admin_user = UserModel.objects.filter(is_superuser=True).first()
+
+        if not admin_user:
+            logger.warning(f"Request {request.id}: No admin found for timeout handling")
+            return
 
         if action == "auto_approve":
-            # Find an admin or auto-approve
-            from apps.users.models.users import UserModel
-            admin_user = UserModel.objects.filter(is_superuser=True).first()
-            if admin_user:
-                ApprovalEngine.approve(request, admin_user, comment="Auto-approved due to timeout")
-            else:
-                logger.warning(f"Request {request.id}: No admin found for auto-approve on timeout")
-
+            ApprovalEngine.approve(request, admin_user, comment="Auto-approved due to timeout")
         elif action == "auto_reject":
-            from apps.users.models.users import UserModel
-            admin_user = UserModel.objects.filter(is_superuser=True).first()
-            if admin_user:
-                ApprovalEngine.reject(request, admin_user, comment="Auto-rejected due to timeout")
-
+            ApprovalEngine.reject(request, admin_user, comment="Auto-rejected due to timeout")
         elif action == "escalate":
-            from apps.users.models.users import UserModel
-            admin_user = UserModel.objects.filter(is_superuser=True).first()
-            if admin_user:
-                try:
-                    ApprovalEngine.escalate(request, admin_user, comment="Auto-escalated due to timeout")
-                except ValueError:
-                    # Already at highest level — auto-reject
-                    ApprovalEngine.reject(request, admin_user, comment="Auto-rejected: timeout at highest level")
+            try:
+                ApprovalEngine.escalate(request, admin_user, comment="Auto-escalated due to timeout")
+            except ValueError:
+                ApprovalEngine.reject(request, admin_user, comment="Auto-rejected: timeout at highest level")
 
         logger.info(f"Request {request.id}: Timeout handled with action '{action}' at level {level.level}")

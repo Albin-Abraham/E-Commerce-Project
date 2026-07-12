@@ -3,6 +3,7 @@ from apps.access_control.interface.views.approval_views import (
     ApprovalChainViewSet,
     ApprovalRequestViewSet,
     ApprovalSubmitView,
+    ApprovalActionView,
 )
 
 urlpatterns = [
@@ -38,26 +39,22 @@ urlpatterns = [
     ),
     path(
         "requests/<str:pk>/approve/",
-        ApprovalRequestViewSet.as_view(),
-        {"HTTP_METHOD": ["post"]},
+        ApprovalActionView.as_view(action_type="approve"),
         name="access-control-request-approve",
     ),
     path(
         "requests/<str:pk>/reject/",
-        ApprovalRequestViewSet.as_view(),
-        {"HTTP_METHOD": ["post"]},
+        ApprovalActionView.as_view(action_type="reject"),
         name="access-control-request-reject",
     ),
     path(
         "requests/<str:pk>/escalate/",
-        ApprovalRequestViewSet.as_view(),
-        {"HTTP_METHOD": ["post"]},
+        ApprovalActionView.as_view(action_type="escalate"),
         name="access-control-request-escalate",
     ),
     path(
         "requests/<str:pk>/cancel/",
-        ApprovalRequestViewSet.as_view(),
-        {"HTTP_METHOD": ["post"]},
+        ApprovalActionView.as_view(action_type="cancel"),
         name="access-control-request-cancel",
     ),
 ]

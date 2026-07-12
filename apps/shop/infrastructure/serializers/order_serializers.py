@@ -22,4 +22,4 @@ class OrderSerializer(BaseModelSerializer):
             "items", "company", "branch",
             "created_at", "updated_at",
         ]
-        read_only_fields = ["id", "order_number", "total_amount", "created_at", "updated_at"]
+        read_only_fields = ["id", "total_amount", "created_at", "updated_at"]
