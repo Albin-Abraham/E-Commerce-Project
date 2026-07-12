@@ -76,6 +76,16 @@ class ApprovalChain(BaseModel, BranchModelMixin):
     - priority (higher first)
     """
 
+    permission_prefix = "access:approval_chain"
+    permission_map = {
+        "list": "view",
+        "retrieve": "view",
+        "create": "create",
+        "update": "update",
+        "partial_update": "update",
+        "destroy": "delete",
+    }
+
     name = models.CharField(
         max_length=100,
         verbose_name=_("Name"),
@@ -150,6 +160,16 @@ class ApprovalLevel(BaseModel, BranchModelMixin):
     """
     Represents a single approval step within an ApprovalChain.
     """
+
+    permission_prefix = "access:approval_level"
+    permission_map = {
+        "list": "view",
+        "retrieve": "view",
+        "create": "create",
+        "update": "update",
+        "partial_update": "update",
+        "destroy": "delete",
+    }
 
     class ApprovalByChoices(models.TextChoices):
         SPECIFIC_USER = "specific_user", _("Specific User")
@@ -254,3 +274,162 @@ class ApprovalLevel(BaseModel, BranchModelMixin):
 
     def __str__(self):
         return f"{self.chain.name} - Level {self.level}"
+
+
+class ApprovalRequestStatus(models.TextChoices):
+    PENDING = "pending", _("Pending")
+    APPROVED = "approved", _("Approved")
+    REJECTED = "rejected", _("Rejected")
+    CANCELLED = "cancelled", _("Cancelled")
+    ESCALATED = "escalated", _("Escalated")
+
+
+class ApprovalRequest(BaseModel, BranchModelMixin):
+    """
+    A submitted request awaiting approval through an ApprovalChain.
+    Uses GenericForeignKey to bind to any model (purchase order, leave request, etc.).
+    """
+
+    permission_prefix = "access:approval_request"
+    permission_map = {
+        "list": "view",
+        "retrieve": "view",
+        "create": "submit",
+        "update": "update",
+        "partial_update": "update",
+        "destroy": "cancel",
+    }
+
+    chain = models.ForeignKey(
+        ApprovalChain,
+        on_delete=models.CASCADE,
+        related_name="requests",
+        verbose_name=_("Approval Chain"),
+    )
+
+    submitter = models.ForeignKey(
+        USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="submitted_approvals",
+        verbose_name=_("Submitter"),
+    )
+
+    # GenericFK — what's being approved
+    content_type = models.ForeignKey(
+        ContentType,
+        on_delete=models.CASCADE,
+        verbose_name=_("Request Type"),
+    )
+    object_id = models.CharField(
+        max_length=50,
+        verbose_name=_("Request ID"),
+    )
+    content_object = GenericForeignKey("content_type", "object_id")
+
+    status = models.CharField(
+        max_length=20,
+        choices=ApprovalRequestStatus.choices,
+        default=ApprovalRequestStatus.PENDING,
+        verbose_name=_("Status"),
+    )
+
+    current_level = models.PositiveIntegerField(
+        default=1,
+        verbose_name=_("Current Level"),
+        help_text=_("Which approval level this request is currently at."),
+    )
+
+    payload = models.JSONField(
+        default=dict,
+        blank=True,
+        verbose_name=_("Payload"),
+        help_text=_("Snapshot of the request data at submission time."),
+    )
+
+    decision_comment = models.TextField(
+        blank=True,
+        verbose_name=_("Decision Comment"),
+    )
+
+    submitted_at = models.DateTimeField(
+        auto_now_add=True,
+        verbose_name=_("Submitted At"),
+    )
+
+    resolved_at = models.DateTimeField(
+        null=True,
+        blank=True,
+        verbose_name=_("Resolved At"),
+    )
+
+    class Meta:  # type: ignore
+        db_table = "approval_requests"
+        verbose_name = _("Approval Request")
+        verbose_name_plural = _("Approval Requests")
+        ordering = ["-submitted_at"]
+        indexes = [
+            models.Index(fields=["status", "chain"]),
+            models.Index(fields=["submitter", "status"]),
+        ]
+
+    def __str__(self):
+        return f"Request {self.id} ({self.status}) via {self.chain.name}"
+
+
+class ApprovalActionType(models.TextChoices):
+    APPROVE = "approve", _("Approve")
+    REJECT = "reject", _("Reject")
+    ESCALATE = "escalate", _("Escalate")
+    COMMENT = "comment", _("Comment")
+
+
+class ApprovalAction(BaseModel):
+    """
+    An individual action taken on an ApprovalRequest (approve, reject, escalate, comment).
+    """
+
+    permission_prefix = "access:approval_action"
+    permission_map = {
+        "list": "view",
+        "retrieve": "view",
+        "create": "action",
+    }
+
+    request = models.ForeignKey(
+        ApprovalRequest,
+        on_delete=models.CASCADE,
+        related_name="actions",
+        verbose_name=_("Approval Request"),
+    )
+
+    approver = models.ForeignKey(
+        USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="approval_actions",
+        verbose_name=_("Approver"),
+    )
+
+    action_type = models.CharField(
+        max_length=20,
+        choices=ApprovalActionType.choices,
+        verbose_name=_("Action Type"),
+    )
+
+    comment = models.TextField(
+        blank=True,
+        verbose_name=_("Comment"),
+    )
+
+    level = models.PositiveIntegerField(
+        verbose_name=_("Level"),
+        help_text=_("Which approval level this action was taken at."),
+    )
+
+    class Meta:  # type: ignore
+        db_table = "approval_actions"
+        verbose_name = _("Approval Action")
+        verbose_name_plural = _("Approval Actions")
+        ordering = ["created_at"]
+
+    def __str__(self):
+        return f"{self.action_type} by {self.approver} on Request {self.request_id}"

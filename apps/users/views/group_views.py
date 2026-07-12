@@ -1,4 +1,5 @@
 from datetime import datetime
+from rest_framework.permissions import IsAdminUser
 from core.base_views.api_views import BaseAPIView
 from core.admin.helpers.query_helpers import FilterSchema, FilterField
 from apps.users.models.permissions import RoleGroupPermissions
@@ -13,6 +14,7 @@ class GroupViewSet(BaseAPIView):
     model = RoleGroupPermissions
     entity_name = "RoleGroup"
     view_id = "GROUP_MANAGEMENT"
+    permission_classes = [IsAdminUser]
 
     paginate = True
     supports_soft_delete = False

@@ -1,4 +1,5 @@
 from datetime import datetime
+from rest_framework.permissions import IsAdminUser
 from core.base_views.api_views import BaseAPIView
 from core.admin.helpers.query_helpers import FilterSchema, FilterField
 from apps.users.models.users import UserModel
@@ -39,6 +40,7 @@ class UserManagementViewSet(BaseAPIView):
 class UserDeactivateView(BaseAPIView):
     model = UserModel
     entity_name = "User"
+    permission_classes = [IsAdminUser]
     http_method_names = ["post"]
 
     def post(self, request, pk=None, *args, **kwargs):
@@ -55,6 +57,7 @@ class UserDeactivateView(BaseAPIView):
 class UserActivateView(BaseAPIView):
     model = UserModel
     entity_name = "User"
+    permission_classes = [IsAdminUser]
     http_method_names = ["post"]
 
     def post(self, request, pk=None, *args, **kwargs):
@@ -71,6 +74,7 @@ class UserActivateView(BaseAPIView):
 class UserResetPasswordView(BaseAPIView):
     model = UserModel
     entity_name = "User"
+    permission_classes = [IsAdminUser]
     http_method_names = ["post"]
 
     def post(self, request, pk=None, *args, **kwargs):
@@ -97,6 +101,7 @@ class UserResetPasswordView(BaseAPIView):
 class UserAssignRoleView(BaseAPIView):
     model = UserModel
     entity_name = "User"
+    permission_classes = [IsAdminUser]
     http_method_names = ["post"]
 
     def post(self, request, pk=None, *args, **kwargs):
@@ -130,6 +135,7 @@ class UserAssignRoleView(BaseAPIView):
 class UserRemoveRoleView(BaseAPIView):
     model = UserModel
     entity_name = "User"
+    permission_classes = [IsAdminUser]
     http_method_names = ["delete"]
 
     def delete(self, request, pk=None, role_id=None, *args, **kwargs):
@@ -158,6 +164,7 @@ class UserRemoveRoleView(BaseAPIView):
 class UserAssignGroupView(BaseAPIView):
     model = UserModel
     entity_name = "User"
+    permission_classes = [IsAdminUser]
     http_method_names = ["post"]
 
     def post(self, request, pk=None, *args, **kwargs):
@@ -191,6 +198,7 @@ class UserAssignGroupView(BaseAPIView):
 class UserRemoveGroupView(BaseAPIView):
     model = UserModel
     entity_name = "User"
+    permission_classes = [IsAdminUser]
     http_method_names = ["delete"]
 
     def delete(self, request, pk=None, group_id=None, *args, **kwargs):
@@ -219,6 +227,7 @@ class UserRemoveGroupView(BaseAPIView):
 class UserSetPermissionsView(BaseAPIView):
     model = UserModel
     entity_name = "User"
+    permission_classes = [IsAdminUser]
     http_method_names = ["post"]
 
     def post(self, request, pk=None, *args, **kwargs):

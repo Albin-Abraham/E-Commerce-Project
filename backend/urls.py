@@ -27,6 +27,8 @@ urlpatterns = [
     # Auth / User Management
     path('api/auth/', include("apps.users.urls")),
 
+    # Access Control (RBAC + Approval)
+    path('api/access/', include("apps.access_control.urls")),
 
     # Health Checks (Can also be accessed via api/admin/health/)
     path('health/live/', health_live, name='health_live'),

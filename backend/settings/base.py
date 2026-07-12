@@ -207,19 +207,19 @@ CELERY_TASK_RATE_LIMIT = env.str('CELERY_TASK_RATE_LIMIT', default='50/m')
 #         }
 #     },
 # }
-# AUTHENTICATION_BACKENDS = [
-#     'core.admin.authentication.MultiFieldAuthBackend',
-#     'django.contrib.auth.backends.ModelBackend',
-# ]
+AUTHENTICATION_BACKENDS = [
+    'core.admin.authentication.MultiFieldAuthBackend',
+    'django.contrib.auth.backends.ModelBackend',
+]
 
-# # --- SimpleJWT / Hybrid Auth Configuration ---
-# from datetime import timedelta
-# SIMPLE_JWT = {
-#     'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),
-#     'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
-#     'ROTATE_REFRESH_TOKENS': True,
-#     'BLACKLIST_AFTER_ROTATION': True,
-#     'AUTH_HEADER_TYPES': ('Bearer',),
-#     'AUTH_COOKIE': 'access_token',  # Standardized cookie name for hybrid auth
-# }
+# --- SimpleJWT / Hybrid Auth Configuration ---
+from datetime import timedelta
+SIMPLE_JWT = {
+    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
+    'ROTATE_REFRESH_TOKENS': True,
+    'BLACKLIST_AFTER_ROTATION': True,
+    'AUTH_HEADER_TYPES': ('Bearer',),
+    'AUTH_COOKIE': 'access_token',
+}
 

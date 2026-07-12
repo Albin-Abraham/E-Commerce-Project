@@ -262,7 +262,7 @@ class ChangePasswordView(BaseAPIView):
 # Forgot Password View
 # ----------------------------
 class ForgotPasswordView(BaseAPIView):
-    """Request password reset. Returns token in response (no email backend required)."""
+    """Request password reset. Token is stored in Redis (email delivery pending)."""
     permission_classes = [AllowAny]
     authentication_classes = []
     serializer_class = ForgotPasswordSerializer
@@ -277,9 +277,9 @@ class ForgotPasswordView(BaseAPIView):
         from apps.users.services.auth_service import AuthService
         result = AuthService.generate_password_reset_token(email)
 
+        # Never expose the token in the response — it should be emailed
         return ResponseFactory.success(
-            data=result,
-            message="Password reset token generated."
+            message=result.get("message", "If the email exists, a reset link has been sent."),
         )
 
 

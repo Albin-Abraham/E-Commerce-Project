@@ -1,10 +1,12 @@
 # core/base_serializers/base_serializers.py
 from rest_framework import serializers
 from core.base_serializers.dynamic_fields import DynamicFieldsMixin, ContextSerializerMixin
+from core.base_serializers.field_permissions import FieldPermissionMixin
 from core.base_serializers.validator_serializer import ValidatorSerializerMixin
 
 
 class BaseModelSerializer(
+    FieldPermissionMixin,
     DynamicFieldsMixin,
     ContextSerializerMixin,
     ValidatorSerializerMixin,
@@ -12,7 +14,7 @@ class BaseModelSerializer(
 ):
     """
     Base ModelSerializer that includes GoF Domain Validation patterns,
-    dynamic field tailoring, and recursive context propagation.
+    dynamic field tailoring, field-level permissions, and recursive context propagation.
     """
 
     def __init__(self, *args, **kwargs):

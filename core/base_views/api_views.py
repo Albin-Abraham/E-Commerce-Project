@@ -31,6 +31,7 @@ from core.admin.helpers.cache_helpers import (
 )
 from core.admin.throttling import TenantDynamicThrottle  # noqa: DAG — used as class attr throttle_classes = [...]
 from core.admin.decorators.openai_swagger import PlatformOpenAISchema  # noqa: DAG — used as class attr schema = PlatformOpenAISchema()
+from core.admin.permissions.drf_permissions import CustomPermissionClass  # noqa: DAG — used as class attr permission_classes = [...]
 from core.admin.utils.integrity.log_mixin import LogMixin as SystemLogMixin
 
 
@@ -274,6 +275,7 @@ class AuditLogMixin(ViewContractMixin):
 
 class BaseAPIView(QueryMixin, ObjectMixin, AuditLogMixin, SystemLogMixin, APIView):
     schema = PlatformOpenAISchema()
+    permission_classes = [CustomPermissionClass]
     throttle_classes = [TenantDynamicThrottle]
     entity_name: str | None = None
     entity_display_field: Any = None

@@ -171,43 +171,63 @@ class AuthService(IAuthenticationClassService, IUserSessionClassServices):
 
     # --- Password Reset Service ---
 
-    _reset_tokens: Dict[str, Dict[str, Any]] = {}
+    _RESET_TOKEN_TTL = 3600  # 1 hour
+    _RESET_RATE_LIMIT_TTL = 300  # 5 minutes between reset requests per user
+    _RESET_MAX_PER_DAY = 5  # Max reset requests per user per day
 
     @classmethod
     def generate_password_reset_token(cls, email: str) -> Dict[str, Any]:
-        """Generate a password reset token for the given email."""
+        """Generate a password reset token for the given email. Stored in Redis."""
+        from django.core.cache import cache
+
         try:
             user = User.objects.get(email=email, is_active=True)
         except User.DoesNotExist:
             return {"message": "If the email exists, a reset token has been generated.", "token": None}
 
+        # Rate limit: max 5 resets per day per user
+        rate_key = f"pwd_reset_count:{user.id}"
+        reset_count = cache.get(rate_key, 0)
+        if reset_count >= cls._RESET_MAX_PER_DAY:
+            return {"message": "Too many reset requests. Please try again later.", "token": None}
+
+        # Rate limit: max 1 request per 5 minutes per user
+        cooldown_key = f"pwd_reset_cooldown:{user.id}"
+        if cache.get(cooldown_key):
+            return {"message": "Please wait before requesting another reset.", "token": None}
+
         token = secrets.token_urlsafe(32)
         token_hash = hashlib.sha256(token.encode()).hexdigest()
 
-        cls._reset_tokens[token_hash] = {
+        # Store in Redis
+        token_key = f"pwd_reset_token:{token_hash}"
+        cache.set(token_key, {
             "user_id": str(user.id),
             "created_at": time.time(),
-            "expires_in": 3600,
-        }
+        }, cls._RESET_TOKEN_TTL)
+
+        # Increment daily counter
+        cache.set(rate_key, reset_count + 1, 86400)  # 24 hours
+
+        # Set cooldown
+        cache.set(cooldown_key, True, cls._RESET_RATE_LIMIT_TTL)
 
         return {
             "message": "Password reset token generated.",
             "token": token,
-            "expires_in": 3600,
+            "expires_in": cls._RESET_TOKEN_TTL,
         }
 
     @classmethod
     def reset_password_with_token(cls, token: str, new_password: str) -> bool:
-        """Reset password using a valid token."""
+        """Reset password using a valid token. Token is consumed from Redis."""
+        from django.core.cache import cache
+
         token_hash = hashlib.sha256(token.encode()).hexdigest()
+        token_key = f"pwd_reset_token:{token_hash}"
 
-        token_data = cls._reset_tokens.get(token_hash)
+        token_data = cache.get(token_key)
         if not token_data:
-            return False
-
-        elapsed = time.time() - token_data["created_at"]
-        if elapsed > token_data["expires_in"]:
-            del cls._reset_tokens[token_hash]
             return False
 
         try:
@@ -218,5 +238,6 @@ class AuthService(IAuthenticationClassService, IUserSessionClassServices):
         user.set_password(new_password)
         user.save()
 
-        del cls._reset_tokens[token_hash]
+        # Consume the token
+        cache.delete(token_key)
         return True

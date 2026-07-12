@@ -99,7 +99,7 @@ class EnterpriseAPITest(TestCase):
         DocumentDefinition.objects.create(key="B_FIELD", label="B")
         DocumentDefinition.objects.create(key="A_FIELD", label="A")
         
-        # Test Search & Sort
+        # Test Sort (ascending)
         request = self.factory.get('/api/doc-defs/', {'sort': 'key'})
         request.session = {}
         force_authenticate(request, user=self.user)
@@ -108,11 +108,16 @@ class EnterpriseAPITest(TestCase):
         drf_request = view_instance.initialize_request(request)
         view_instance.request = drf_request
         
-        qs = view_instance._get_queryset(sort_query='key')
+        qs = view_instance._get_queryset()
         self.assertEqual(qs[0].key, "A_FIELD")
         
         # Test Descending Sort
-        qs_desc = view_instance._get_queryset(sort_query='-key')
+        request_desc = self.factory.get('/api/doc-defs/', {'sort': '-key'})
+        request_desc.session = {}
+        force_authenticate(request_desc, user=self.user)
+        drf_request_desc = view_instance.initialize_request(request_desc)
+        view_instance.request = drf_request_desc
+        qs_desc = view_instance._get_queryset()
         self.assertEqual(qs_desc[0].key, "B_FIELD")
 
     def test_enhanced_pagination_metadata(self):

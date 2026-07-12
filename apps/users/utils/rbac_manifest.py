@@ -20,6 +20,31 @@ class PermissionManifest:
     def has_perm(self, key: str) -> bool:
         return key in self.effective_permissions
 
+    def has_field_read(self, prefix: str, field_name: str) -> bool:
+        """Check if user can read a specific field. O(1) lookup."""
+        return f"{prefix}:field:{field_name}:read" in self.effective_permissions
+
+    def has_field_write(self, prefix: str, field_name: str) -> bool:
+        """Check if user can write a specific field. O(1) lookup."""
+        return f"{prefix}:field:{field_name}:write" in self.effective_permissions
+
+    def has_any_field_perms(self, prefix: str) -> bool:
+        """Check if user has ANY field-level permissions for a model prefix."""
+        prefix_pattern = f"{prefix}:field:"
+        return any(k.startswith(prefix_pattern) for k in self.effective_permissions)
+
+    def get_visible_fields(self, prefix: str, all_fields: list[str]) -> list[str]:
+        """Return list of field names the user can read."""
+        if not self.has_any_field_perms(prefix):
+            return all_fields  # No field perms defined → all visible
+        return [f for f in all_fields if self.has_field_read(prefix, f)]
+
+    def get_writable_fields(self, prefix: str, all_fields: list[str]) -> list[str]:
+        """Return list of field names the user can write."""
+        if not self.has_any_field_perms(prefix):
+            return all_fields  # No field perms defined → all writable
+        return [f for f in all_fields if self.has_field_write(prefix, f)]
+
     def to_dict(self) -> Dict[str, Any]:
         """Convert to a JSON-serializable dictionary."""
         return {

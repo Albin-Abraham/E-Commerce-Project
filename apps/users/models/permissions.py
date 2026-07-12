@@ -9,6 +9,16 @@ class RolePermissions(BaseModel):
     GoF Strategy Pattern: Collection of Permission Keys for a named Role.
     Example: 'Company Admin' -> ['company:view', 'company:edit']
     """
+    permission_prefix = "admin:role"
+    permission_map = {
+        "list": "view",
+        "retrieve": "view",
+        "create": "create",
+        "update": "update",
+        "partial_update": "update",
+        "destroy": "delete",
+    }
+
     id = CustomShortUUIDField(primary_key=True)
     name = CustomCharField(max_length=100, unique=True, verbose_name="Role Name")
     description = models.TextField(blank=True)
@@ -33,6 +43,16 @@ class RoleGroupPermissions(BaseModel):
     GoF Composite Pattern: Groups multiple Roles and bulk Permission Keys.
     Allows for hierarchy-like structures or functional groupings.
     """
+    permission_prefix = "admin:group"
+    permission_map = {
+        "list": "view",
+        "retrieve": "view",
+        "create": "create",
+        "update": "update",
+        "partial_update": "update",
+        "destroy": "delete",
+    }
+
     id = CustomShortUUIDField(primary_key=True)
     name = CustomCharField(max_length=100, unique=True, verbose_name="Group Name")
     
@@ -61,6 +81,16 @@ class UserPermissionModel(BaseModel):
     """
     The Assignment table connecting Users to Roles, Groups, and Overrides.
     """
+    permission_prefix = "admin:permission"
+    permission_map = {
+        "list": "view",
+        "retrieve": "view",
+        "create": "create",
+        "update": "update",
+        "partial_update": "update",
+        "destroy": "delete",
+    }
+
     user = models.OneToOneField(
         "users.UserModel", 
         on_delete=models.CASCADE, 
