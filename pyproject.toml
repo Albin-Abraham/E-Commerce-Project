@@ -1,0 +1,62 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.backends._legacy:_Backend"
+
+[project]
+name = "backend-restful"
+dynamic = ["version"]
+
+# ===========================================================================
+# Import Layering Rules
+# ===========================================================================
+# The project enforces a layered import DAG to prevent circular imports.
+#
+# LAYER 0 – Pure Django / stdlib / 3rd-party (no project imports)
+# LAYER 1 – core/base_models/   (fields, validators, mixins, exceptions)
+# LAYER 2 – core/admin/models/, core/admin/utils/
+# LAYER 3 – core/admin/helpers/, core/admin/services/
+# LAYER 4 – core/base_serializers/
+# LAYER 5 – core/base_views/
+# LAYER 6 – core/admin/views/, core/admin/urls/
+# LAYER 7 – apps/*/
+# LAYER 8 – core/admin/tasks/
+#
+# Rules:
+#   Layer N may import from Layer < N only.
+#   LAYER 0 modules (django, drf, stdlib) may be imported from any layer.
+#
+# Tooling:
+#   Run `python scripts/check_import_dag.py` to verify compliance.
+# ===========================================================================
+
+[tool.ruff]
+target-version = "py311"
+line-length = 100
+
+[tool.ruff.lint]
+select = [
+    "E",   # pycodestyle errors
+    "F",   # pyflakes
+    "W",   # pycodestyle warnings
+    "I",   # isort
+    "UP",  # pyupgrade
+    "N",   # pep8-naming (optional)
+]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["N"]
+"apps/*/tests/*" = ["N"]
+"**/migrations/*" = ["E"]
+"**/settings/*" = ["E"]
+
+[tool.pytest.ini_options]
+DJANGO_SETTINGS_MODULE = "backend.settings.test"
+python_files = ["tests.py", "test_*.py", "*_tests.py"]
+addopts = "--reuse-db"
+
+[tool.pyright]
+include = ["core", "apps", "backend"]
+exclude = ["**/__pycache__", "venv", ".git"]
+extraPaths = ["."]
+typeCheckingMode = "basic"
+reportMissingImports = false

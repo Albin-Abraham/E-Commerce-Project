@@ -1,0 +1,55 @@
+# core/base_models/configs/modules.yaml
+# Scalable System -> Module -> Feature Hierarchy
+# Defines the product structure for SaaS scoping and UI navigation.
+
+systems:
+  hrms:
+    name: "Human Resource Management"
+    description: "Core employee lifecycle and workforce management."
+    modules:
+      employee:
+        name: "Employee Management"
+        features: ["profile", "documents", "directory", "org_chart"]
+      leave:
+        name: "Leave & Attendance"
+        features: ["leave_request", "approval_workflow", "accrual_rules", "attendance_logs"]
+      payroll:
+        name: "Payroll & Compensation"
+        features: ["salary_processing", "payslips", "tax_declarations", "bonus_management"]
+    dependencies: []
+
+  operations:
+    name: "Business Operations"
+    description: "Inventory, procurement, and project tracking."
+    modules:
+      inventory:
+        name: "Inventory Control"
+        features: ["stock_tracking", "warehouse_management", "barcode_scanning"]
+      procurement:
+        name: "Procurement"
+        features: ["purchase_orders", "vendor_management", "rfq_process"]
+    dependencies: ["hrms"]
+
+  finance:
+    name: "Financial Management"
+    description: "General ledger, accounts payable/receivable, and budgeting."
+    modules:
+      accounts:
+        name: "Accounts Management"
+        features: ["ledger", "invoicing", "expense_tracking"]
+      budgeting:
+        name: "Budgeting & Planning"
+        features: ["budget_allocation", "forecasting"]
+    dependencies: ["hrms", "operations"]
+
+  admin:
+    name: "System Governance"
+    description: "Platform-level settings, security, and audit logs."
+    modules:
+      identity:
+        name: "Identity & Access"
+        features: ["user_management", "role_configuration", "division_catalogs"]
+      security:
+        name: "Security & Audit"
+        features: ["audit_logs", "two_factor_auth", "ip_whitelisting"]
+    dependencies: []

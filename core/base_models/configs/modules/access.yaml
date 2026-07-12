@@ -1,0 +1,23 @@
+# core/base_models/configs/modules/access.yaml
+modules:
+  Access Control:
+    code: ACCESS
+    is_active: true
+    icon: Shield
+    color: purple
+    description: "Role-based access control and permission management"
+    features:
+      - code: SYSTEM_ROLE_MGMT
+        model: system_role
+        enable: true
+        description: "Manage system-level roles"
+      - code: GLOBAL_ROLE_MGMT
+        model: global_role
+        enable: true
+        description: "Manage global roles"
+      - code: ROLE_PERMISSION_MGMT
+        enable: true
+        description: "Assign and manage role permissions"
+      - code: USER_PERMISSION_MGMT
+        enable: true
+        description: "Manage individual user permissions"

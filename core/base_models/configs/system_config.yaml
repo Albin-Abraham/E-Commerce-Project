@@ -1,0 +1,18 @@
+
+system_conf_key:
+    - key: "system_timezone"
+      value: "America/New_York"
+      description: "System timezone"
+      
+    - key: "currency_symbol"
+      value: "₹"
+      description: "Currency symbol"
+      
+    - key: "Celery_Broker"
+      value: "redis://localhost:6379/0"
+      description: "Celery broker URL"
+    - key: "Celery_Worker_Timeout" 
+      value: "600" 
+      description: "Celery worker timeout in seconds"
+    
+      

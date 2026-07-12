@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: web
+  namespace: saas
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: web
+  template:
+    metadata:
+      labels:
+        app: web
+    spec:
+      containers:
+      - name: web
+        image: registry/backend-restful:latest
+        ports:
+          - containerPort: 8000
+        envFrom:
+          - secretRef:
+              name: saas-secrets
+          - configMapRef:
+              name: saas-config
+        livenessProbe:
+          httpGet:
+            path: /health/live
+            port: 8000
+        readinessProbe:
+          httpGet:
+            path: /health/ready
+            port: 8000

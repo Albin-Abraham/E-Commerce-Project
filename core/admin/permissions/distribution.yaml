@@ -1,0 +1,34 @@
+permissions:
+  Company:
+    label: "Company Management"
+    actions:
+      - key: "company:view"
+        label: "View Company"
+      - key: "company:create"
+        label: "Create Company"
+      - key: "company:edit"
+        label: "Edit Company"
+      - key: "company:delete"
+        label: "Delete Company"
+      - key: "company:import"
+        label: "Import Company"
+      - key: "company:export"
+        label: "Export Company"
+      - key: "company:audit"
+        label: "Audit Company"
+      - key: "can_get_company_analytics"
+        label: "Get Company Analytics"
+      - key: "can_manage_company_ledger"
+        label: "Manage Company Ledger"
+
+  Division:
+    label: "Division Management"
+    actions:
+      - key: "division:view"
+        label: "View Division"
+      - key: "division:create"
+        label: "Create Division"
+      - key: "division:edit"
+        label: "Edit Division"
+      - key: "division:delete"
+        label: "Delete Division"

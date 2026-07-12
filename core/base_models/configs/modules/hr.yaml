@@ -1,0 +1,39 @@
+# core/base_models/configs/modules/hr.yaml
+modules:
+  HR:
+    code: HR
+    is_active: true
+    icon: Users
+    color: green
+    description: "Human resources, recruitment, and employee lifecycle management"
+    features:
+      - code: EMP_MGMT
+        special: ["can_update_password", "can_manage_employee", "can_view_employee_effective_permissions"]
+        enable: true
+        description: "Manage employee profiles"
+      - code: BRANCH_ASSIGNMENT
+        model: staff_branch_assignment
+        enable: true
+        description: "Assign employees to branches"
+      - code: SKILL_MGMT
+        model: skill
+        enable: true
+        description: "Manage skills catalog"
+      - code: PROMOTION_MGMT
+        model: promotion
+        enable: true
+        description: "Handle promotion requests"
+      - code: TRANSFER_MGMT
+        model: transfer
+        enable: true
+        description: "Handle transfer requests"
+      - code: HOLIDAY_LIST_MGMT
+        model: holiday_list
+        enable: true
+        description: "Manage holiday lists"
+      - code: LEAVE_MGMT
+        enable: true
+        description: "Manage leave"
+      - code: ATTENDANCE_MGMT
+        enable: true
+        description: "Manage attendance"

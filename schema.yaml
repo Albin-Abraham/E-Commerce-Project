@@ -1,0 +1,2503 @@
+openapi: 3.0.3
+info:
+  title: Backend API
+  version: 1.0.0
+  description: API documentation for backend services
+paths:
+  /api/admin/companies/:
+    get:
+      operationId: admin_companies_retrieve
+      description: |-
+        Retrieve a single company record.
+
+        ---
+
+        ## ⚙️ View Configuration
+
+        **View ID:** `CORE_COMPANY_MGMT`
+      summary: GET Company
+      parameters:
+      - in: header
+        name: Is-Select-Option
+        schema:
+          type: boolean
+        description: Return only ID and None using select_serializer_class (skips
+          pagination)
+      - in: query
+        name: code
+        schema:
+          type: string
+        description: Filter by code
+      - in: query
+        name: email
+        schema:
+          type: string
+        description: Filter by email
+      - in: query
+        name: export
+        schema:
+          type: string
+          enum:
+          - csv
+          - excel
+          - pdf
+        description: Export format (e.g., 'csv', 'excel', 'pdf')
+      - in: query
+        name: fields
+        schema:
+          type: string
+        description: Comma-separated list of fields to include in response or export
+      - in: query
+        name: ids
+        schema:
+          type: string
+        description: Comma-separated list of IDs to include (Bulk Selection)
+      - in: query
+        name: include_ids
+        schema:
+          type: string
+        description: Comma-separated list of IDs to always include in select results
+          (ignored if search is active)
+      - in: query
+        name: name
+        schema:
+          type: string
+        description: Filter by name
+      - in: query
+        name: page
+        schema:
+          type: integer
+        description: A page number within the paginated result set.
+      - in: query
+        name: page_size
+        schema:
+          type: integer
+        description: Number of results to return per page.
+      - in: query
+        name: search
+        schema:
+          type: string
+        description: 'Search across fields: name, code, email'
+      - in: query
+        name: select_limit
+        schema:
+          type: integer
+        description: 'Limit the number of results for select requests (default: 10)'
+      - in: query
+        name: selected_ids
+        schema:
+          type: string
+        description: Alias for 'ids' (Bulk Selection)
+      - in: query
+        name: update
+        schema:
+          type: boolean
+        description: Return create/update serializer (for update form display)
+      tags:
+      - Company
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CompanySerializerSingleResponse'
+          description: Success response with single object
+        '404':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: Company not found
+          description: Resource not found
+    post:
+      operationId: admin_companies_create
+      description: |-
+        Create a new company record.
+
+        Validation: validate_create() hook will be called before processing.
+
+        ---
+
+        ## ⚙️ View Configuration
+
+        **View ID:** `CORE_COMPANY_MGMT`
+      summary: POST Company
+      tags:
+      - Company
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CompanyRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/CompanyRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/CompanyRequest'
+        required: true
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CompanySerializerSingleResponse'
+          description: Created successfully
+        '422':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: Validation failed
+                  details:
+                    type: object
+                    properties:
+                      errors:
+                        type: object
+                        additionalProperties:
+                          type: array
+                          items:
+                            type: string
+                        example:
+                          field_name:
+                          - This field is required.
+                          email:
+                          - Enter a valid email address.
+          description: Validation failed
+        '400':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: No data in request
+                  details:
+                    type: object
+                    properties:
+                      error:
+                        type: string
+          description: Bad request (no data provided)
+        '500':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: An error occurred while creating the record.
+                  details:
+                    type: object
+                    properties:
+                      error:
+                        type: string
+          description: Internal server error
+  /api/admin/companies/{id}/:
+    get:
+      operationId: admin_companies_retrieve_2
+      description: |-
+        Retrieve a single company record.
+
+        ---
+
+        ## ⚙️ View Configuration
+
+        **View ID:** `CORE_COMPANY_MGMT`
+      summary: GET Company
+      parameters:
+      - in: header
+        name: Is-Select-Option
+        schema:
+          type: boolean
+        description: Return only ID and None using select_serializer_class (skips
+          pagination)
+      - in: query
+        name: code
+        schema:
+          type: string
+        description: Filter by code
+      - in: query
+        name: email
+        schema:
+          type: string
+        description: Filter by email
+      - in: query
+        name: export
+        schema:
+          type: string
+          enum:
+          - csv
+          - excel
+          - pdf
+        description: Export format (e.g., 'csv', 'excel', 'pdf')
+      - in: query
+        name: fields
+        schema:
+          type: string
+        description: Comma-separated list of fields to include in response or export
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      - in: query
+        name: ids
+        schema:
+          type: string
+        description: Comma-separated list of IDs to include (Bulk Selection)
+      - in: query
+        name: include_ids
+        schema:
+          type: string
+        description: Comma-separated list of IDs to always include in select results
+          (ignored if search is active)
+      - in: query
+        name: name
+        schema:
+          type: string
+        description: Filter by name
+      - in: query
+        name: page
+        schema:
+          type: integer
+        description: A page number within the paginated result set.
+      - in: query
+        name: page_size
+        schema:
+          type: integer
+        description: Number of results to return per page.
+      - in: query
+        name: search
+        schema:
+          type: string
+        description: 'Search across fields: name, code, email'
+      - in: query
+        name: select_limit
+        schema:
+          type: integer
+        description: 'Limit the number of results for select requests (default: 10)'
+      - in: query
+        name: selected_ids
+        schema:
+          type: string
+        description: Alias for 'ids' (Bulk Selection)
+      - in: query
+        name: update
+        schema:
+          type: boolean
+        description: Return create/update serializer (for update form display)
+      tags:
+      - Company
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CompanySerializerSingleResponse'
+          description: Success response with single object
+        '404':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: Company not found
+          description: Resource not found
+    put:
+      operationId: admin_companies_update
+      description: |-
+        Update an existing company record.
+
+        Validation: validate_update() hook will be called before processing.
+
+        ---
+
+        ## ⚙️ View Configuration
+
+        **View ID:** `CORE_COMPANY_MGMT`
+      summary: PUT Company
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - Company
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CompanyRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/CompanyRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/CompanyRequest'
+        required: true
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CompanySerializerSingleResponse'
+          description: Updated successfully
+        '422':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: Validation failed
+                  details:
+                    type: object
+                    properties:
+                      errors:
+                        type: object
+                        additionalProperties:
+                          type: array
+                          items:
+                            type: string
+                        example:
+                          field_name:
+                          - This field is required.
+                          email:
+                          - Enter a valid email address.
+          description: Validation failed
+        '404':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: Company not found
+          description: Resource not found
+        '500':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: An error occurred while creating the record.
+                  details:
+                    type: object
+                    properties:
+                      error:
+                        type: string
+          description: Internal server error
+    patch:
+      operationId: admin_companies_partial_update
+      description: |-
+        Standard PATCH delegating to PUT (which uses partial=True).
+
+        ---
+
+        ## ⚙️ View Configuration
+
+        **View ID:** `CORE_COMPANY_MGMT`
+      summary: PATCH Company
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - Company
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedCompanyRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedCompanyRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedCompanyRequest'
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CompanySerializerSingleResponse'
+          description: Updated successfully
+        '422':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: Validation failed
+                  details:
+                    type: object
+                    properties:
+                      errors:
+                        type: object
+                        additionalProperties:
+                          type: array
+                          items:
+                            type: string
+                        example:
+                          field_name:
+                          - This field is required.
+                          email:
+                          - Enter a valid email address.
+          description: Validation failed
+        '404':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: Company not found
+          description: Resource not found
+        '500':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: An error occurred while creating the record.
+                  details:
+                    type: object
+                    properties:
+                      error:
+                        type: string
+          description: Internal server error
+    delete:
+      operationId: admin_companies_destroy
+      description: |-
+        Soft delete a company record.
+
+        Validation: validate_delete() hook will be called before deletion.
+
+        ---
+
+        ## ⚙️ View Configuration
+
+        **View ID:** `CORE_COMPANY_MGMT`
+      summary: DELETE Company
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - Company
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: Deleted successfully
+          description: Deleted successfully
+        '404':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: Company not found
+          description: Resource not found
+        '500':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: An error occurred while deleting the record.
+                  details:
+                    type: object
+                    properties:
+                      error:
+                        type: string
+          description: Internal server error
+  /api/admin/divisions/:
+    get:
+      operationId: admin_divisions_retrieve
+      description: |-
+        Retrieve a single division record.
+
+        ---
+
+        ## ⚙️ View Configuration
+
+        **View ID:** `CORE_DIVISION_MGMT`
+      summary: GET Division
+      parameters:
+      - in: header
+        name: Is-Select-Option
+        schema:
+          type: boolean
+        description: Return only ID and None using select_serializer_class (skips
+          pagination)
+      - in: query
+        name: code
+        schema:
+          type: string
+        description: Filter by code
+      - in: query
+        name: company
+        schema:
+          type: string
+          format: uuid
+        description: Filter by company
+      - in: query
+        name: export
+        schema:
+          type: string
+          enum:
+          - csv
+          - excel
+          - pdf
+        description: Export format (e.g., 'csv', 'excel', 'pdf')
+      - in: query
+        name: fields
+        schema:
+          type: string
+        description: Comma-separated list of fields to include in response or export
+      - in: query
+        name: ids
+        schema:
+          type: string
+        description: Comma-separated list of IDs to include (Bulk Selection)
+      - in: query
+        name: include_ids
+        schema:
+          type: string
+        description: Comma-separated list of IDs to always include in select results
+          (ignored if search is active)
+      - in: query
+        name: name
+        schema:
+          type: string
+        description: Filter by name
+      - in: query
+        name: page
+        schema:
+          type: integer
+        description: A page number within the paginated result set.
+      - in: query
+        name: page_size
+        schema:
+          type: integer
+        description: Number of results to return per page.
+      - in: query
+        name: search
+        schema:
+          type: string
+        description: 'Search across fields: name, code, location'
+      - in: query
+        name: select_limit
+        schema:
+          type: integer
+        description: 'Limit the number of results for select requests (default: 10)'
+      - in: query
+        name: selected_ids
+        schema:
+          type: string
+        description: Alias for 'ids' (Bulk Selection)
+      - in: query
+        name: update
+        schema:
+          type: boolean
+        description: Return create/update serializer (for update form display)
+      tags:
+      - Division
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DivisionSerializerSingleResponse'
+          description: Success response with single object
+        '404':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: Division not found
+          description: Resource not found
+    post:
+      operationId: admin_divisions_create
+      description: |-
+        Create a new division record.
+
+        Validation: validate_create() hook will be called before processing.
+
+        ---
+
+        ## ⚙️ View Configuration
+
+        **View ID:** `CORE_DIVISION_MGMT`
+      summary: POST Division
+      tags:
+      - Division
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DivisionRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/DivisionRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/DivisionRequest'
+        required: true
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DivisionSerializerSingleResponse'
+          description: Created successfully
+        '422':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: Validation failed
+                  details:
+                    type: object
+                    properties:
+                      errors:
+                        type: object
+                        additionalProperties:
+                          type: array
+                          items:
+                            type: string
+                        example:
+                          field_name:
+                          - This field is required.
+                          email:
+                          - Enter a valid email address.
+          description: Validation failed
+        '400':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: No data in request
+                  details:
+                    type: object
+                    properties:
+                      error:
+                        type: string
+          description: Bad request (no data provided)
+        '500':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: An error occurred while creating the record.
+                  details:
+                    type: object
+                    properties:
+                      error:
+                        type: string
+          description: Internal server error
+  /api/admin/divisions/{id}/:
+    get:
+      operationId: admin_divisions_retrieve_2
+      description: |-
+        Retrieve a single division record.
+
+        ---
+
+        ## ⚙️ View Configuration
+
+        **View ID:** `CORE_DIVISION_MGMT`
+      summary: GET Division
+      parameters:
+      - in: header
+        name: Is-Select-Option
+        schema:
+          type: boolean
+        description: Return only ID and None using select_serializer_class (skips
+          pagination)
+      - in: query
+        name: code
+        schema:
+          type: string
+        description: Filter by code
+      - in: query
+        name: company
+        schema:
+          type: string
+          format: uuid
+        description: Filter by company
+      - in: query
+        name: export
+        schema:
+          type: string
+          enum:
+          - csv
+          - excel
+          - pdf
+        description: Export format (e.g., 'csv', 'excel', 'pdf')
+      - in: query
+        name: fields
+        schema:
+          type: string
+        description: Comma-separated list of fields to include in response or export
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      - in: query
+        name: ids
+        schema:
+          type: string
+        description: Comma-separated list of IDs to include (Bulk Selection)
+      - in: query
+        name: include_ids
+        schema:
+          type: string
+        description: Comma-separated list of IDs to always include in select results
+          (ignored if search is active)
+      - in: query
+        name: name
+        schema:
+          type: string
+        description: Filter by name
+      - in: query
+        name: page
+        schema:
+          type: integer
+        description: A page number within the paginated result set.
+      - in: query
+        name: page_size
+        schema:
+          type: integer
+        description: Number of results to return per page.
+      - in: query
+        name: search
+        schema:
+          type: string
+        description: 'Search across fields: name, code, location'
+      - in: query
+        name: select_limit
+        schema:
+          type: integer
+        description: 'Limit the number of results for select requests (default: 10)'
+      - in: query
+        name: selected_ids
+        schema:
+          type: string
+        description: Alias for 'ids' (Bulk Selection)
+      - in: query
+        name: update
+        schema:
+          type: boolean
+        description: Return create/update serializer (for update form display)
+      tags:
+      - Division
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DivisionSerializerSingleResponse'
+          description: Success response with single object
+        '404':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: Division not found
+          description: Resource not found
+    put:
+      operationId: admin_divisions_update
+      description: |-
+        Update an existing division record.
+
+        Validation: validate_update() hook will be called before processing.
+
+        ---
+
+        ## ⚙️ View Configuration
+
+        **View ID:** `CORE_DIVISION_MGMT`
+      summary: PUT Division
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - Division
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DivisionRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/DivisionRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/DivisionRequest'
+        required: true
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DivisionSerializerSingleResponse'
+          description: Updated successfully
+        '422':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: Validation failed
+                  details:
+                    type: object
+                    properties:
+                      errors:
+                        type: object
+                        additionalProperties:
+                          type: array
+                          items:
+                            type: string
+                        example:
+                          field_name:
+                          - This field is required.
+                          email:
+                          - Enter a valid email address.
+          description: Validation failed
+        '404':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: Division not found
+          description: Resource not found
+        '500':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: An error occurred while creating the record.
+                  details:
+                    type: object
+                    properties:
+                      error:
+                        type: string
+          description: Internal server error
+    patch:
+      operationId: admin_divisions_partial_update
+      description: |-
+        Standard PATCH delegating to PUT (which uses partial=True).
+
+        ---
+
+        ## ⚙️ View Configuration
+
+        **View ID:** `CORE_DIVISION_MGMT`
+      summary: PATCH Division
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - Division
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedDivisionRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedDivisionRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedDivisionRequest'
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DivisionSerializerSingleResponse'
+          description: Updated successfully
+        '422':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: Validation failed
+                  details:
+                    type: object
+                    properties:
+                      errors:
+                        type: object
+                        additionalProperties:
+                          type: array
+                          items:
+                            type: string
+                        example:
+                          field_name:
+                          - This field is required.
+                          email:
+                          - Enter a valid email address.
+          description: Validation failed
+        '404':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: Division not found
+          description: Resource not found
+        '500':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: An error occurred while creating the record.
+                  details:
+                    type: object
+                    properties:
+                      error:
+                        type: string
+          description: Internal server error
+    delete:
+      operationId: admin_divisions_destroy
+      description: |-
+        Soft delete a division record.
+
+        Validation: validate_delete() hook will be called before deletion.
+
+        ---
+
+        ## ⚙️ View Configuration
+
+        **View ID:** `CORE_DIVISION_MGMT`
+      summary: DELETE Division
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - Division
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      - {}
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: Deleted successfully
+          description: Deleted successfully
+        '404':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: Division not found
+          description: Resource not found
+        '500':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: An error occurred while deleting the record.
+                  details:
+                    type: object
+                    properties:
+                      error:
+                        type: string
+          description: Internal server error
+  /api/admin/tests/runs/:
+    get:
+      operationId: admin_tests_runs_retrieve
+      description: Retrieve list of testrun records.
+      summary: GET TestRun
+      parameters:
+      - in: header
+        name: Is-Select-Option
+        schema:
+          type: boolean
+        description: Return only ID and None using select_serializer_class (skips
+          pagination)
+      - in: query
+        name: fields
+        schema:
+          type: string
+        description: Comma-separated list of fields to include in the response
+      - in: query
+        name: ids
+        schema:
+          type: string
+        description: Comma-separated list of IDs to include (Bulk Selection)
+      - in: query
+        name: include_ids
+        schema:
+          type: string
+        description: Comma-separated list of IDs to always include in select results
+          (ignored if search is active)
+      - in: query
+        name: select_limit
+        schema:
+          type: integer
+        description: 'Limit the number of results for select requests (default: 10)'
+      - in: query
+        name: selected_ids
+        schema:
+          type: string
+        description: Alias for 'ids' (Bulk Selection)
+      - in: query
+        name: update
+        schema:
+          type: boolean
+        description: Return create/update serializer (for update form display)
+      tags:
+      - TestRun
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          description: Success
+        '204':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: No data found
+          description: No content found (empty queryset)
+    post:
+      operationId: admin_tests_runs_create
+      description: |-
+        Create a new testrun record.
+
+        Validation: validate_create() hook will be called before processing.
+      summary: POST TestRun
+      tags:
+      - TestRun
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '422':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: Validation failed
+                  details:
+                    type: object
+                    properties:
+                      errors:
+                        type: object
+                        additionalProperties:
+                          type: array
+                          items:
+                            type: string
+                        example:
+                          field_name:
+                          - This field is required.
+                          email:
+                          - Enter a valid email address.
+          description: Validation failed
+        '400':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: No data in request
+                  details:
+                    type: object
+                    properties:
+                      error:
+                        type: string
+          description: Bad request (no data provided)
+        '500':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: An error occurred while creating the record.
+                  details:
+                    type: object
+                    properties:
+                      error:
+                        type: string
+          description: Internal server error
+  /api/admin/tests/runs/{id}/:
+    get:
+      operationId: admin_tests_runs_retrieve_2
+      description: Retrieve a single testrun record.
+      summary: GET TestRun
+      parameters:
+      - in: header
+        name: Is-Select-Option
+        schema:
+          type: boolean
+        description: Return only ID and None using select_serializer_class (skips
+          pagination)
+      - in: query
+        name: fields
+        schema:
+          type: string
+        description: Comma-separated list of fields to include in the response
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      - in: query
+        name: ids
+        schema:
+          type: string
+        description: Comma-separated list of IDs to include (Bulk Selection)
+      - in: query
+        name: include_ids
+        schema:
+          type: string
+        description: Comma-separated list of IDs to always include in select results
+          (ignored if search is active)
+      - in: query
+        name: select_limit
+        schema:
+          type: integer
+        description: 'Limit the number of results for select requests (default: 10)'
+      - in: query
+        name: selected_ids
+        schema:
+          type: string
+        description: Alias for 'ids' (Bulk Selection)
+      - in: query
+        name: update
+        schema:
+          type: boolean
+        description: Return create/update serializer (for update form display)
+      tags:
+      - TestRun
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          description: Success
+        '404':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: TestRun not found
+          description: Resource not found
+    put:
+      operationId: admin_tests_runs_update
+      description: |-
+        Update an existing testrun record.
+
+        Validation: validate_update() hook will be called before processing.
+      summary: PUT TestRun
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - TestRun
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '422':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: Validation failed
+                  details:
+                    type: object
+                    properties:
+                      errors:
+                        type: object
+                        additionalProperties:
+                          type: array
+                          items:
+                            type: string
+                        example:
+                          field_name:
+                          - This field is required.
+                          email:
+                          - Enter a valid email address.
+          description: Validation failed
+        '404':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: TestRun not found
+          description: Resource not found
+        '500':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: An error occurred while creating the record.
+                  details:
+                    type: object
+                    properties:
+                      error:
+                        type: string
+          description: Internal server error
+    patch:
+      operationId: admin_tests_runs_partial_update
+      description: Standard PATCH delegating to PUT (which uses partial=True).
+      summary: PATCH TestRun
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - TestRun
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '422':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: Validation failed
+                  details:
+                    type: object
+                    properties:
+                      errors:
+                        type: object
+                        additionalProperties:
+                          type: array
+                          items:
+                            type: string
+                        example:
+                          field_name:
+                          - This field is required.
+                          email:
+                          - Enter a valid email address.
+          description: Validation failed
+        '404':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: TestRun not found
+          description: Resource not found
+        '500':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: An error occurred while creating the record.
+                  details:
+                    type: object
+                    properties:
+                      error:
+                        type: string
+          description: Internal server error
+    delete:
+      operationId: admin_tests_runs_destroy
+      description: |-
+        Soft delete a testrun record.
+
+        Validation: validate_delete() hook will be called before deletion.
+      summary: DELETE TestRun
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        required: true
+      tags:
+      - TestRun
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+                  message:
+                    type: string
+                    example: Deleted successfully
+          description: Deleted successfully
+        '404':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: TestRun not found
+          description: Resource not found
+        '500':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: An error occurred while deleting the record.
+                  details:
+                    type: object
+                    properties:
+                      error:
+                        type: string
+          description: Internal server error
+  /api/admin/tests/runs/trigger/:
+    get:
+      operationId: admin_tests_runs_trigger_retrieve
+      description: Retrieve a single testrun record.
+      summary: GET TestRun
+      parameters:
+      - in: header
+        name: Is-Select-Option
+        schema:
+          type: boolean
+        description: Return only ID and None using select_serializer_class (skips
+          pagination)
+      - in: query
+        name: fields
+        schema:
+          type: string
+        description: Comma-separated list of fields to include in the response
+      - in: query
+        name: ids
+        schema:
+          type: string
+        description: Comma-separated list of IDs to include (Bulk Selection)
+      - in: query
+        name: include_ids
+        schema:
+          type: string
+        description: Comma-separated list of IDs to always include in select results
+          (ignored if search is active)
+      - in: query
+        name: select_limit
+        schema:
+          type: integer
+        description: 'Limit the number of results for select requests (default: 10)'
+      - in: query
+        name: selected_ids
+        schema:
+          type: string
+        description: Alias for 'ids' (Bulk Selection)
+      - in: query
+        name: update
+        schema:
+          type: boolean
+        description: Return create/update serializer (for update form display)
+      tags:
+      - TestRun
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '200':
+          description: Success
+        '404':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: TestRun not found
+          description: Resource not found
+    post:
+      operationId: admin_tests_runs_trigger_create
+      description: |-
+        Create a new testrun record.
+
+        Validation: validate_create() hook will be called before processing.
+      summary: POST TestRun
+      tags:
+      - TestRun
+      security:
+      - jwtAuth: []
+      - cookieAuth: []
+      responses:
+        '422':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: Validation failed
+                  details:
+                    type: object
+                    properties:
+                      errors:
+                        type: object
+                        additionalProperties:
+                          type: array
+                          items:
+                            type: string
+                        example:
+                          field_name:
+                          - This field is required.
+                          email:
+                          - Enter a valid email address.
+          description: Validation failed
+        '400':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: No data in request
+                  details:
+                    type: object
+                    properties:
+                      error:
+                        type: string
+          description: Bad request (no data provided)
+        '500':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: An error occurred while creating the record.
+                  details:
+                    type: object
+                    properties:
+                      error:
+                        type: string
+          description: Internal server error
+  /api/auth/login/:
+    post:
+      operationId: auth_login_create
+      description: |-
+        Create a new auth record.
+
+        Validation: validate_create() hook will be called before processing.
+      summary: POST Auth
+      tags:
+      - Auth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserLoginRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/UserLoginRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/UserLoginRequest'
+        required: true
+      security:
+      - {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserLoginSerializerSingleResponse'
+          description: Created successfully
+        '422':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: Validation failed
+                  details:
+                    type: object
+                    properties:
+                      errors:
+                        type: object
+                        additionalProperties:
+                          type: array
+                          items:
+                            type: string
+                        example:
+                          field_name:
+                          - This field is required.
+                          email:
+                          - Enter a valid email address.
+          description: Validation failed
+        '400':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: No data in request
+                  details:
+                    type: object
+                    properties:
+                      error:
+                        type: string
+          description: Bad request (no data provided)
+        '500':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: An error occurred while creating the record.
+                  details:
+                    type: object
+                    properties:
+                      error:
+                        type: string
+          description: Internal server error
+  /api/auth/logout/:
+    post:
+      operationId: auth_logout_create
+      description: |-
+        Create a new auth record.
+
+        Validation: validate_create() hook will be called before processing.
+      summary: POST Auth
+      tags:
+      - Auth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LogoutRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/LogoutRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/LogoutRequest'
+        required: true
+      security:
+      - {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LogoutSerializerSingleResponse'
+          description: Created successfully
+        '422':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: Validation failed
+                  details:
+                    type: object
+                    properties:
+                      errors:
+                        type: object
+                        additionalProperties:
+                          type: array
+                          items:
+                            type: string
+                        example:
+                          field_name:
+                          - This field is required.
+                          email:
+                          - Enter a valid email address.
+          description: Validation failed
+        '400':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: No data in request
+                  details:
+                    type: object
+                    properties:
+                      error:
+                        type: string
+          description: Bad request (no data provided)
+        '500':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: An error occurred while creating the record.
+                  details:
+                    type: object
+                    properties:
+                      error:
+                        type: string
+          description: Internal server error
+  /api/auth/register/:
+    post:
+      operationId: auth_register_create
+      description: |-
+        Create a new auth record.
+
+        Validation: validate_create() hook will be called before processing.
+      summary: POST Auth
+      tags:
+      - Auth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserRegistrationRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/UserRegistrationRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/UserRegistrationRequest'
+        required: true
+      security:
+      - {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserRegistrationSerializerSingleResponse'
+          description: Created successfully
+        '422':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: Validation failed
+                  details:
+                    type: object
+                    properties:
+                      errors:
+                        type: object
+                        additionalProperties:
+                          type: array
+                          items:
+                            type: string
+                        example:
+                          field_name:
+                          - This field is required.
+                          email:
+                          - Enter a valid email address.
+          description: Validation failed
+        '400':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: No data in request
+                  details:
+                    type: object
+                    properties:
+                      error:
+                        type: string
+          description: Bad request (no data provided)
+        '500':
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: false
+                  message:
+                    type: string
+                    example: An error occurred while creating the record.
+                  details:
+                    type: object
+                    properties:
+                      error:
+                        type: string
+          description: Internal server error
+  /api/auth/token-refresh/:
+    post:
+      operationId: auth_token_refresh_create
+      description: |-
+        Takes a refresh type JSON web token and returns an access type JSON web
+        token if the refresh token is valid.
+      tags:
+      - auth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TokenRefreshRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TokenRefreshRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/TokenRefreshRequest'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenRefresh'
+          description: ''
+components:
+  schemas:
+    Company:
+      type: object
+      description: |-
+        Base ModelSerializer that includes GoF Domain Validation patterns,
+        dynamic field tailoring, and recursive context propagation.
+      properties:
+        id:
+          type: string
+          readOnly: true
+        name:
+          type: string
+          description: '[Rules: Required, MinLength(3)]'
+          maxLength: 255
+        email:
+          type: string
+          format: email
+          description: '[Rules: Required]'
+          pattern: ^[\w\.-]+@([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}$
+          maxLength: 254
+        code:
+          type: string
+          description: '[Rules: Required]'
+          maxLength: 20
+        subscription:
+          type: integer
+          nullable: true
+        extensions:
+          $ref: '#/components/schemas/CompanyExtension'
+      required:
+      - code
+      - email
+      - id
+      - name
+    CompanyExtension:
+      type: object
+      description: |-
+        Base ModelSerializer that includes GoF Domain Validation patterns,
+        dynamic field tailoring, and recursive context propagation.
+      properties:
+        extra_documents: {}
+        extra_attributes: {}
+    CompanyExtensionRequest:
+      type: object
+      description: |-
+        Base ModelSerializer that includes GoF Domain Validation patterns,
+        dynamic field tailoring, and recursive context propagation.
+      properties:
+        extra_documents: {}
+        extra_attributes: {}
+    CompanyRequest:
+      type: object
+      description: |-
+        Base ModelSerializer that includes GoF Domain Validation patterns,
+        dynamic field tailoring, and recursive context propagation.
+      properties:
+        name:
+          type: string
+          minLength: 1
+          description: '[Rules: Required, MinLength(3)]'
+          maxLength: 255
+        email:
+          type: string
+          format: email
+          minLength: 1
+          description: '[Rules: Required]'
+          pattern: ^[\w\.-]+@([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}$
+          maxLength: 254
+        code:
+          type: string
+          minLength: 1
+          description: '[Rules: Required]'
+          maxLength: 20
+        subscription:
+          type: integer
+          nullable: true
+        extensions:
+          $ref: '#/components/schemas/CompanyExtensionRequest'
+      required:
+      - code
+      - email
+      - name
+    CompanySerializerSingleResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          default: true
+        message:
+          type: string
+          default: Fetched successfully
+        data:
+          $ref: '#/components/schemas/Company'
+      required:
+      - data
+    Division:
+      type: object
+      description: |-
+        Base ModelSerializer that includes GoF Domain Validation patterns,
+        dynamic field tailoring, and recursive context propagation.
+      properties:
+        id:
+          type: string
+          readOnly: true
+        company:
+          type: string
+          nullable: true
+        name:
+          type: string
+          description: '[Rules: Required, MinLength(3)]'
+          maxLength: 255
+        code:
+          type: string
+          description: '[Rules: Required]'
+          maxLength: 20
+        location:
+          type: string
+          maxLength: 255
+        opened_date:
+          type: string
+          format: date
+        extensions:
+          $ref: '#/components/schemas/DivisionExtension'
+      required:
+      - code
+      - id
+      - location
+      - name
+      - opened_date
+    DivisionExtension:
+      type: object
+      description: |-
+        Base ModelSerializer that includes GoF Domain Validation patterns,
+        dynamic field tailoring, and recursive context propagation.
+      properties:
+        extra_attributes: {}
+    DivisionExtensionRequest:
+      type: object
+      description: |-
+        Base ModelSerializer that includes GoF Domain Validation patterns,
+        dynamic field tailoring, and recursive context propagation.
+      properties:
+        extra_attributes: {}
+    DivisionRequest:
+      type: object
+      description: |-
+        Base ModelSerializer that includes GoF Domain Validation patterns,
+        dynamic field tailoring, and recursive context propagation.
+      properties:
+        company:
+          type: string
+          minLength: 1
+          nullable: true
+        name:
+          type: string
+          minLength: 1
+          description: '[Rules: Required, MinLength(3)]'
+          maxLength: 255
+        code:
+          type: string
+          minLength: 1
+          description: '[Rules: Required]'
+          maxLength: 20
+        location:
+          type: string
+          minLength: 1
+          maxLength: 255
+        opened_date:
+          type: string
+          format: date
+        extensions:
+          $ref: '#/components/schemas/DivisionExtensionRequest'
+      required:
+      - code
+      - location
+      - name
+      - opened_date
+    DivisionSerializerSingleResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          default: true
+        message:
+          type: string
+          default: Fetched successfully
+        data:
+          $ref: '#/components/schemas/Division'
+      required:
+      - data
+    Logout:
+      type: object
+      properties:
+        refresh:
+          type: string
+          description: Refresh token to blacklist
+      required:
+      - refresh
+    LogoutRequest:
+      type: object
+      properties:
+        refresh:
+          type: string
+          minLength: 1
+          description: Refresh token to blacklist
+      required:
+      - refresh
+    LogoutSerializerSingleResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          default: true
+        message:
+          type: string
+          default: Fetched successfully
+        data:
+          $ref: '#/components/schemas/Logout'
+      required:
+      - data
+    PatchedCompanyRequest:
+      type: object
+      description: |-
+        Base ModelSerializer that includes GoF Domain Validation patterns,
+        dynamic field tailoring, and recursive context propagation.
+      properties:
+        name:
+          type: string
+          minLength: 1
+          description: '[Rules: Required, MinLength(3)]'
+          maxLength: 255
+        email:
+          type: string
+          format: email
+          minLength: 1
+          description: '[Rules: Required]'
+          pattern: ^[\w\.-]+@([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}$
+          maxLength: 254
+        code:
+          type: string
+          minLength: 1
+          description: '[Rules: Required]'
+          maxLength: 20
+        subscription:
+          type: integer
+          nullable: true
+        extensions:
+          $ref: '#/components/schemas/CompanyExtensionRequest'
+    PatchedDivisionRequest:
+      type: object
+      description: |-
+        Base ModelSerializer that includes GoF Domain Validation patterns,
+        dynamic field tailoring, and recursive context propagation.
+      properties:
+        company:
+          type: string
+          minLength: 1
+          nullable: true
+        name:
+          type: string
+          minLength: 1
+          description: '[Rules: Required, MinLength(3)]'
+          maxLength: 255
+        code:
+          type: string
+          minLength: 1
+          description: '[Rules: Required]'
+          maxLength: 20
+        location:
+          type: string
+          minLength: 1
+          maxLength: 255
+        opened_date:
+          type: string
+          format: date
+        extensions:
+          $ref: '#/components/schemas/DivisionExtensionRequest'
+    TokenRefresh:
+      type: object
+      properties:
+        access:
+          type: string
+          readOnly: true
+        refresh:
+          type: string
+      required:
+      - access
+      - refresh
+    TokenRefreshRequest:
+      type: object
+      properties:
+        refresh:
+          type: string
+          minLength: 1
+      required:
+      - refresh
+    UserLogin:
+      type: object
+      properties:
+        login:
+          type: string
+          description: Username or Email
+        user:
+          type: string
+          description: Alias for login
+    UserLoginRequest:
+      type: object
+      properties:
+        login:
+          type: string
+          minLength: 1
+          description: Username or Email
+        user:
+          type: string
+          minLength: 1
+          description: Alias for login
+        password:
+          type: string
+          writeOnly: true
+          minLength: 1
+      required:
+      - password
+    UserLoginSerializerSingleResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          default: true
+        message:
+          type: string
+          default: Fetched successfully
+        data:
+          $ref: '#/components/schemas/UserLogin'
+      required:
+      - data
+    UserRegistration:
+      type: object
+      description: |-
+        Serializer for User Registration.
+        Delegates validation and creation to AuthService/ValidationMediator.
+      properties:
+        email:
+          type: string
+          format: email
+          title: Email Address
+          pattern: ^[\w\.-]+@([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}$
+          maxLength: 254
+        username:
+          type: string
+          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
+            only.
+          maxLength: 150
+        full_name:
+          type: string
+      required:
+      - email
+      - username
+    UserRegistrationRequest:
+      type: object
+      description: |-
+        Serializer for User Registration.
+        Delegates validation and creation to AuthService/ValidationMediator.
+      properties:
+        email:
+          type: string
+          format: email
+          minLength: 1
+          title: Email Address
+          pattern: ^[\w\.-]+@([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}$
+          maxLength: 254
+        username:
+          type: string
+          minLength: 1
+          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
+            only.
+          maxLength: 150
+        password:
+          type: string
+          writeOnly: true
+          minLength: 1
+        full_name:
+          type: string
+      required:
+      - email
+      - password
+      - username
+    UserRegistrationSerializerSingleResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          default: true
+        message:
+          type: string
+          default: Fetched successfully
+        data:
+          $ref: '#/components/schemas/UserRegistration'
+      required:
+      - data
+  securitySchemes:
+    cookieAuth:
+      type: apiKey
+      in: cookie
+      name: sessionid
+    jwtAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

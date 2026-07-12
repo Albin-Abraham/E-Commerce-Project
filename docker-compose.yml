@@ -1,0 +1,131 @@
+
+x-common-env: &common-env
+  TZ: ${TZ:-UTC}
+  TIME_ZONE: ${TIME_ZONE:-UTC}
+  DATABASE_URL: ${DATABASE_URL:-postgres://postgres:postgres@postgres:5432/backend_db}
+  LEGACY_DATABASE_URL: ${LEGACY_DATABASE_URL:-postgres://legacy_user:legacy_password@postgres_legacy:5432/legacy_db}
+  REDIS_URL: ${REDIS_URL:-redis://redis:6379/0}
+  CACHE_URL: ${CACHE_URL:-redis://redis:6379/1}
+  CELERY_BROKER_URL: ${REDIS_URL:-redis://redis:6379/0}
+  CELERY_RESULT_BACKEND: ${REDIS_URL:-redis://redis:6379/0}
+  SECRET_KEY: ${SECRET_KEY:-django-insecure-fallback}
+  DEBUG: ${DEBUG:-True}
+  DJANGO_SETTINGS_MODULE: ${DJANGO_SETTINGS_MODULE:-backend.settings.dev}
+
+x-logging: &default-logging
+  driver: "json-file"
+  options:
+    max-size: "10m"
+    max-file: "3"
+
+networks:
+  platform:
+
+volumes:
+  postgres_data:
+  redis_data:
+  postgres_legacy_data:
+
+services:
+
+  adminer:
+    image: adminer
+    networks: [platform]
+    ports:
+      - "8081:8080"
+    environment:
+      TZ: ${TZ:-UTC}
+    logging: *default-logging
+
+  postgres_legacy:
+    image: postgres:15
+    networks: [platform]
+    environment:
+      POSTGRES_DB: ${LEGACY_POSTGRES_DB:-legacy_db}
+      POSTGRES_USER: ${LEGACY_POSTGRES_USER:-legacy_user}
+      POSTGRES_PASSWORD: ${LEGACY_POSTGRES_PASSWORD:-legacy_password}
+      TZ: ${TZ:-UTC}
+    volumes:
+      - postgres_legacy_data:/var/lib/postgresql/data
+    logging: *default-logging
+
+  redis:
+    image: redis:7
+    command: redis-server --appendonly yes
+    networks: [platform]
+    volumes:
+      - redis_data:/data
+    logging: *default-logging
+
+  postgres:
+    image: postgres:15
+    networks: [platform]
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-backend_db}
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+      TZ: ${TZ:-UTC}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    logging: *default-logging
+
+  web:
+    build: .
+    command: gunicorn backend.wsgi:application --bind 0.0.0.0:8000 --workers=3 --reload
+    networks: [platform]
+    environment:
+      <<: *common-env
+    ports:
+      - "8000:8000"
+    logging: *default-logging
+    volumes:
+      - .:/app
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health/live/"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    depends_on:
+      postgres:
+        condition: service_started
+      redis:
+        condition: service_started
+
+  celery_default:
+    build: .
+    command: celery -A backend worker -Q default --autoscale=6,2
+    networks: [platform]
+    environment:
+      <<: *common-env
+    logging: *default-logging
+    volumes:
+      - .:/app
+    depends_on:
+      - redis
+      - web
+
+  celery_beat:
+    build: .
+    command: celery -A backend beat
+    networks: [platform]
+    environment:
+      <<: *common-env
+    logging: *default-logging
+    volumes:
+      - .:/app
+    depends_on:
+      - redis
+      - web
+
+  migrate:
+    build: .
+    command: python manage.py migrate
+    networks: [platform]
+    environment:
+      <<: *common-env
+    volumes:
+      - .:/app
+    depends_on:
+      postgres:
+        condition: service_started

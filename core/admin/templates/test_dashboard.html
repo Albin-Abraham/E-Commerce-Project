@@ -1,0 +1,216 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nexus Orchestration | Premium Test Suite</title>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&family=JetBrains+Mono&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'core_admin/css/global.css' %}">
+</head>
+<body>
+    <div class="dashboard">
+        <!-- Sidebar -->
+        <aside class="dashboard__sidebar">
+            <div class="sidebar-logo">Nexus Test Suite</div>
+            
+            <nav class="nav-group">
+                <div class="stat-card__label">Levels</div>
+                <div class="nav-item nav-item--active" data-cat="all">All Suites</div>
+                <div class="nav-item" data-cat="unit">Unit Testing</div>
+                <div class="nav-item" data-cat="system">System Logic</div>
+                <div class="nav-item" data-cat="feature">Features</div>
+                <div class="nav-item" data-cat="regression">Regression</div>
+            </nav>
+
+            <nav class="nav-group">
+                <div class="stat-card__label">Modules</div>
+                {% for module in modules %}
+                <div class="nav-item" data-module="{{ module.code }}">{{ module.name }}</div>
+                {% empty %}
+                <div class="nav-item nav-item--disabled">No Modules Available</div>
+                {% endfor %}
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="dashboard__main">
+            <header class="main-header">
+                <div class="main-header__content">
+                    <h1 class="main-header__title" id="js-view-title">All Test Suites</h1>
+                    <p class="main-header__subtitle">Select a level or module to begin orchestration</p>
+                </div>
+                <button class="btn btn--primary" id="js-btn-run" onclick="orchestrator.run()">Execute Suite</button>
+            </header>
+
+            <!-- Stats -->
+            <section class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-card__label">Passed</div>
+                    <div class="stat-card__value stat-card__value--success" id="js-stat-passed">-</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-card__label">Failed</div>
+                    <div class="stat-card__value stat-card__value--error" id="js-stat-failed">-</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-card__label">Total Coverage</div>
+                    <div class="stat-card__value stat-card__value--primary" id="js-stat-total">-</div>
+                </div>
+            </section>
+
+            <!-- Console -->
+            <div class="console" id="js-console">
+                <div class="console__header" id="js-console-status">// Nexus Console System initialized. Waiting for instruction...</div>
+                <div class="console__viewport" id="js-logs-viewport"></div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        /**
+         * Nexus Test Orchestrator
+         * Encapsulated logic using unique selectors
+         */
+        const orchestrator = {
+            currentModule: 'all',
+            currentCategory: 'all',
+            
+            selectors: {
+                viewTitle: document.getElementById('js-view-title'),
+                btnRun: document.getElementById('js-btn-run'),
+                statPassed: document.getElementById('js-stat-passed'),
+                statFailed: document.getElementById('js-stat-failed'),
+                statTotal: document.getElementById('js-stat-total'),
+                console: document.getElementById('js-console'),
+                logsViewport: document.getElementById('js-logs-viewport'),
+                consoleStatus: document.getElementById('js-console-status'),
+                navItems: document.querySelectorAll('.nav-item')
+            },
+
+            init() {
+                this.setupNavigation();
+            },
+
+            setupNavigation() {
+                this.selectors.navItems.forEach(item => {
+                    item.onclick = () => {
+                        this.selectors.navItems.forEach(i => i.classList.remove('nav-item--active'));
+                        item.classList.add('nav-item--active');
+                        
+                        if (item.dataset.cat) {
+                            this.currentCategory = item.dataset.cat;
+                            this.selectors.viewTitle.innerText = item.innerText;
+                        }
+                        if (item.dataset.module) {
+                            this.currentModule = item.dataset.module;
+                            this.selectors.viewTitle.innerText = item.innerText;
+                        }
+                    };
+                });
+            },
+
+            async run() {
+                this.selectors.btnRun.disabled = true;
+                this.selectors.btnRun.innerText = "Orchestrating...";
+                this.selectors.logsViewport.innerHTML = '';
+                this.selectors.consoleStatus.innerHTML = `<span class="running-indicator"></span>Running ${this.currentCategory} tests for ${this.currentModule}...`;
+
+                try {
+                    const response = await fetch('/api/admin/tests/runs/trigger/', {
+                        method: 'POST',
+                        headers: { 
+                            'Content-Type': 'application/json', 
+                            'X-CSRFToken': this.getCookie('csrftoken') 
+                        },
+                        body: JSON.stringify({ 
+                            module: this.currentModule, 
+                            category: this.currentCategory 
+                        })
+                    });
+                    
+                    const data = await response.json();
+                    if (data.run_id) {
+                        this.pollResults(data.run_id);
+                    } else {
+                        throw new Error(data.error || "Failed to trigger run");
+                    }
+                } catch (err) {
+                    this.appendLog(`Execution Error: ${err.message}`, 'failed');
+                    this.selectors.btnRun.disabled = false;
+                    this.selectors.btnRun.innerText = "Execute Suite";
+                }
+            },
+
+            async pollResults(runId) {
+                const interval = setInterval(async () => {
+                    try {
+                        const response = await fetch(`/api/admin/tests/runs/${runId}/`);
+                        const data = await response.json();
+                        
+                        if (data.status !== 'running') {
+                            clearInterval(interval);
+                            this.updateStats(data.summary);
+                            this.displayLogs(data.logs);
+                            this.selectors.btnRun.disabled = false;
+                            this.selectors.btnRun.innerText = "Execute Suite";
+                            this.selectors.consoleStatus.innerText = `// Suite Completed with status: ${data.status.toUpperCase()}`;
+                        }
+                    } catch (err) {
+                        clearInterval(interval);
+                        this.appendLog(`Polling Error: ${err.message}`, 'failed');
+                    }
+                }, 2000);
+            },
+
+            displayLogs(logs) {
+                this.selectors.logsViewport.innerHTML = '';
+                if (!logs) return;
+
+                logs.split('\n').forEach(line => {
+                    let type = 'info';
+                    if (line.includes('PASSED')) type = 'passed';
+                    if (line.includes('FAILED')) type = 'failed';
+                    if (line.includes('ERROR')) type = 'failed';
+                    
+                    this.appendLog(line, type);
+                });
+                
+                this.selectors.logsViewport.scrollTop = this.selectors.logsViewport.scrollHeight;
+            },
+
+            appendLog(text, type) {
+                const div = document.createElement('div');
+                div.className = `log-line log-line--${type}`;
+                div.innerText = text;
+                this.selectors.logsViewport.appendChild(div);
+            },
+
+            updateStats(summary) {
+                if (!summary) return;
+                this.selectors.statPassed.innerText = summary.passed || 0;
+                this.selectors.statFailed.innerText = summary.failed || 0;
+                this.selectors.statTotal.innerText = summary.total || 0;
+            },
+
+            getCookie(name) {
+                let cookieValue = null;
+                if (document.cookie && document.cookie !== '') {
+                    const cookies = document.cookie.split(';');
+                    for (let i = 0; i < cookies.length; i++) {
+                        const cookie = cookies[i].trim();
+                        if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                            break;
+                        }
+                    }
+                }
+                return cookieValue;
+            }
+        };
+
+        // Initialize Orchestrator
+        orchestrator.init();
+    </script>
+</body>
+</html>

@@ -1,0 +1,55 @@
+# core/base_models/configs/modules/administration.yaml
+modules:
+  Administration:
+    code: ADMIN
+    is_active: true
+    icon: Settings
+    color: blue
+    description: "Core system administration and organizational structure management"
+    features:
+      - code: GENDER_MGMT
+        model: gender
+        enable: true
+        description: "Manage gender categories and classifications"
+      - code: MARITAL_STATUS_MGMT
+        model: marital_status
+        enable: true
+        description: "Manage marital status options"
+      - code: CONFIG_MGMT
+        model: configuration
+        enable: true
+        description: "System-wide configuration and settings management"
+        special: ["can_view_configuration"]
+      - code: AUTORESPONDER_MGMT
+        model: event
+        enable: true
+        description: "Manage system-wide automatic responders"
+      - code: DEPARTMENT_MGMT
+        model: department
+        enable: true
+        description: "Manage organizational departments and structures"
+      - code: BRANCH_MGMT
+        model: branch
+        special: ["can_manage_company"]
+        enable: true
+        description: "Manage company branches and locations"
+      - code: BUILDING_MGMT
+        model: building
+        enable: true
+        description: "Manage physical buildings at branch locations"
+      - code: ROOM_MGMT
+        model: room
+        enable: true
+        description: "Manage rooms and spaces within buildings"
+      - code: APPROVAL_LEVEL
+        model: approval_level
+        enable: true
+        description: "Manage approval levels for workflows"
+      - code: GEO_FENCING
+        model: geo_fencing
+        enable: true
+        description: "Manage geo fencings"
+      - code: MAIL_THREAD
+        model: mail_thread
+        enable: true
+        description: "Manage mail threads and notifications"

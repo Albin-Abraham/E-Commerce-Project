@@ -1,0 +1,29 @@
+# Business Tenants (SaaS Level)
+# These users have ZERO platform-wide administrative privileges.
+# Their access is strictly scoped to their respective Company and Branch.
+tenants:
+  - name: "Zenith Hospital Alpha"
+    code: "ZHA"
+    email: "contact@zha.zenith"
+    branches:
+      - name: "Downtown Branch"
+        code: "ZHA-DT"
+        location: "City Center"
+        users:
+          - email: "admin@zha.zenith"
+            username: "zha_manager"
+            full_name: "ZHA Manager"
+            is_staff: false  # Strictly business-level access
+
+  - name: "HealthCare Plus"
+    code: "HCP"
+    email: "info@healthcareplus.local"
+    branches:
+      - name: "North Wing"
+        code: "HCP-NW"
+        location: "North Suburb"
+        users:
+          - email: "staff@healthcareplus.local"
+            username: "hcp_staff"
+            full_name: "HCP Staff"
+            is_staff: false
