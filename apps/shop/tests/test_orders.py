@@ -39,11 +39,11 @@ class TestOrderViewSet:
     def test_create_order(self):
         data = {
             "user": self.user.pk,
-            "order_number": "ORD-001",
             "status": "pending",
         }
         response = self._post(data)
         assert response.status_code in (200, 201)
+        assert response.data["data"]["order_number"].startswith("ORD-")
 
     def test_list_orders_with_data(self):
         Order.objects.create(user=self.user, order_number="ORD-001", status="pending")

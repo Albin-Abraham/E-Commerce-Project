@@ -1,3 +1,4 @@
+from uuid import uuid4
 from django.db import models
 from core.base_models.validator_model import BaseModel
 from core.base_models.scoping_models import BranchModelMixin
@@ -17,7 +18,6 @@ class Order(BaseModel, BranchModelMixin):
     )
     order_number = CustomCharField(
         max_length=50,
-        rules=[RequiredRule("order_number")],
     )
 
     class StatusChoices(models.TextChoices):
@@ -47,6 +47,10 @@ class Order(BaseModel, BranchModelMixin):
         "update": "edit",
         "destroy": "delete",
     }
+
+    def _override_pre_save(self, is_creating):
+        if is_creating and not self.order_number:
+            self.order_number = f"ORD-{uuid4().hex[:8].upper()}"
 
     class Meta(BaseModel.Meta):
         db_table = "shop_orders"
