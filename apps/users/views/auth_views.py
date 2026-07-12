@@ -8,7 +8,14 @@ from rest_framework.permissions import AllowAny
 from core.base_views.api_views import BaseAPIView
 from core.admin.helpers.response_helpers import ResponseFactory
 
-from ..serializers.auth_serializers import UserLoginSerializer, LogoutSerializer, UserRegistrationSerializer
+from ..serializers.auth_serializers import (
+    UserLoginSerializer,
+    LogoutSerializer,
+    UserRegistrationSerializer,
+    ChangePasswordSerializer,
+    ForgotPasswordSerializer,
+    ResetPasswordSerializer,
+)
 
 
 # ----------------------------
@@ -28,7 +35,6 @@ class UserLoginAuthView(BaseAPIView):
 
     def post(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
-        print(f"DEBUG REQUEST DATA: {request.data}")
         serializer.is_valid(raise_exception=True)
         user = serializer.validated_data["user"]
 
@@ -137,7 +143,7 @@ class UserProfileAuthView(BaseAPIView):
 
     def get(self, request, *args, **kwargs):
         # Industrialized: Use decoupled service instead of direct user/request access
-        profile_manifest = self.session_service.get_user_profile(request)
+        profile_manifest = self.auth_service.get_user_profile(request)
         
         return ResponseFactory.success(
             data=profile_manifest,
@@ -230,3 +236,78 @@ class UserRegistrationAuthView(BaseAPIView):
             message="User registered successfully",
             status_code=status.HTTP_201_CREATED
         )
+
+
+# ----------------------------
+# Change Password View
+# ----------------------------
+class ChangePasswordView(BaseAPIView):
+    """Authenticated password change."""
+    serializer_class = ChangePasswordSerializer
+    entity_name = "Auth"
+    http_method_names = ["post"]
+
+    def post(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        user = request.user
+        user.set_password(serializer.validated_data["new_password"])
+        user.save()
+
+        return ResponseFactory.success(message="Password changed successfully.")
+
+
+# ----------------------------
+# Forgot Password View
+# ----------------------------
+class ForgotPasswordView(BaseAPIView):
+    """Request password reset. Returns token in response (no email backend required)."""
+    permission_classes = [AllowAny]
+    authentication_classes = []
+    serializer_class = ForgotPasswordSerializer
+    entity_name = "Auth"
+    http_method_names = ["post"]
+
+    def post(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        email = serializer.validated_data["email"]
+        from apps.users.services.auth_service import AuthService
+        result = AuthService.generate_password_reset_token(email)
+
+        return ResponseFactory.success(
+            data=result,
+            message="Password reset token generated."
+        )
+
+
+# ----------------------------
+# Reset Password View
+# ----------------------------
+class ResetPasswordView(BaseAPIView):
+    """Reset password using token."""
+    permission_classes = [AllowAny]
+    authentication_classes = []
+    serializer_class = ResetPasswordSerializer
+    entity_name = "Auth"
+    http_method_names = ["post"]
+
+    def post(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
+        from apps.users.services.auth_service import AuthService
+        success = AuthService.reset_password_with_token(
+            token=serializer.validated_data["token"],
+            new_password=serializer.validated_data["new_password"],
+        )
+
+        if not success:
+            return ResponseFactory.error(
+                message="Invalid or expired token.",
+                status_code=status.HTTP_400_BAD_REQUEST,
+            )
+
+        return ResponseFactory.success(message="Password reset successfully.")

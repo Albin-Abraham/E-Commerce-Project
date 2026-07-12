@@ -8,7 +8,7 @@ from drf_spectacular.utils import OpenApiResponse, extend_schema
 from rest_framework.views import APIView
 
 
-from core.admin.helpers.model_helpers import get_object_with_scoping
+from core.admin.helpers.model_helpers import build_tenant_filter, get_object_with_scoping
 from core.admin.helpers.pagination_helpers import StandardResultsSetPagination, paginate_queryset
 from core.admin.helpers.query_helpers import filter_queryset
 from core.admin.helpers.response_helpers import ResponseFactory
@@ -27,6 +27,7 @@ from core.admin.helpers.cache_helpers import (
     get_serializer_cache_key,
     get_cached_serializer_data,
     set_cached_serializer_data,
+    invalidate_serializer_cache,
 )
 from core.admin.throttling import TenantDynamicThrottle  # noqa: DAG — used as class attr throttle_classes = [...]
 from core.admin.decorators.openai_swagger import PlatformOpenAISchema  # noqa: DAG — used as class attr schema = PlatformOpenAISchema()
@@ -180,6 +181,7 @@ class QueryMixin(SerializerMixin):
     orderby: str = "-created_at"
     search_fields: list[str] = []
     filter_fields: list[tuple[str, str]] = []
+    filter_schema = None  # FilterSchema instance for type coercion and validation
     paginate: bool = False
     page_size: int = 20
     supports_soft_delete: bool = True
@@ -196,8 +198,7 @@ class QueryMixin(SerializerMixin):
         include_deleted=False,
         search_query=None,
         field_search=None,
-        sort_query=None,
-        json_query=None,
+        query=None,
         use_create_serializer=False,
     ):
         request = self.platform_request
@@ -205,28 +206,9 @@ class QueryMixin(SerializerMixin):
         queryset = self.get_base_queryset()
         
         # 1. Multi-Tenant Scoping (Bypass for Superusers)
-        user = self.platform_user
-        if user and not user.is_superuser:
-            from core.admin.utils.context import RequestContext
-            company_id = RequestContext.get_company_id()
-            business_unit_id = RequestContext.get_business_unit_id()
-            branch_id = RequestContext.get_branch_id()
-
-            q = Q()
-            if hasattr(self.model, "company"):
-                if company_id:
-                    q &= Q(company=company_id) | Q(company__isnull=True)
-                else:
-                    q &= Q(company__isnull=True)
-
-            if hasattr(self.model, "business_unit") and business_unit_id:
-                q &= Q(business_unit=business_unit_id)
-
-            if hasattr(self.model, "branch") and branch_id:
-                q &= Q(branch=branch_id)
-            
-            if q:
-                queryset = queryset.filter(q)
+        tenant_q = build_tenant_filter(self.model, self.platform_user)
+        if tenant_q:
+            queryset = queryset.filter(tenant_q)
 
         # 2. Performance: Soft Delete & Pre-fetch
         if (
@@ -247,19 +229,21 @@ class QueryMixin(SerializerMixin):
                 queryset = queryset.prefetch_related(*pre_rel)
 
         # 3. Filtering & Dynamic Sorting (Q/F Engine)
+        sort_query = query_params.get("sort")
         queryset = filter_queryset(
             queryset,
             search_fields=getattr(self, "search_fields", []),
             search_query=search_query,
             filter_fields=getattr(self, "filter_fields", []),
+            filter_schema=getattr(self, "filter_schema", None),
             field_search=field_search,
-            sort_query=sort_query or query_params.get("sort"),
-            json_query=json_query,
+            sort_query=sort_query,
+            query=query,
             logger=getattr(self, "logger", None),
         )
 
         # Fallback to default orderby if no dynamic sort
-        if not (sort_query or query_params.get("sort")) and hasattr(self, "orderby"):
+        if not sort_query and hasattr(self, "orderby"):
             queryset = queryset.order_by(self.orderby)
 
         return queryset
@@ -387,14 +371,6 @@ class BaseAPIView(QueryMixin, ObjectMixin, AuditLogMixin, SystemLogMixin, APIVie
             self._cached_auth_service = AuthService()
         return self._cached_auth_service
 
-    @property
-    def session_service(self):
-        """Industrialized Lazy Loader: Provides IUserSessionClassServices."""
-        if not hasattr(self, "_cached_session_service"):
-            from apps.users.services.auth_service import AuthService
-            self._cached_session_service = AuthService()
-        return self._cached_session_service
-
     def get_display_name(self, instance):
         return get_display_name(
             instance,
@@ -461,8 +437,9 @@ class BaseAPIView(QueryMixin, ObjectMixin, AuditLogMixin, SystemLogMixin, APIVie
         )
 
     def post_create(self, instance):
-        """Industrialized: Automatically log creation."""
+        """Industrialized: Automatically log creation and invalidate cache."""
         self._log_audit_entry(instance, "create", changes={"status": "initial_creation"})
+        self._invalidate_instance_cache(instance)
 
     def pre_update(self, request, instance, data):
         """Hook to manipulate data before update validation."""
@@ -473,8 +450,9 @@ class BaseAPIView(QueryMixin, ObjectMixin, AuditLogMixin, SystemLogMixin, APIVie
         return serializer.save()
 
     def post_update(self, instance):
-        """Industrialized: Automatically log update (Diffing coming in Phase 3)."""
+        """Industrialized: Automatically log update and invalidate cache."""
         self._log_audit_entry(instance, "update", changes={"status": "updated"})
+        self._invalidate_instance_cache(instance)
 
     def pre_delete(self, request, instance, *args, **kwargs):
         """Industrialized: Capture state before deletion."""
@@ -489,11 +467,17 @@ class BaseAPIView(QueryMixin, ObjectMixin, AuditLogMixin, SystemLogMixin, APIVie
 
     def post_delete(self, instance):
         """Hook for side-effects after deletion."""
+        self._invalidate_instance_cache(instance)
+
+    def pre_mutation(self, request):
+        """Hook before a mutation operation."""
         pass
 
-    def pre_get(self, request):
-        """Hook before a get operation."""
-        pass
+    def _invalidate_instance_cache(self, instance):
+        """Invalidate cached serializer data for a specific instance."""
+        user = self.platform_user
+        if user and hasattr(instance, "pk") and instance.pk:
+            invalidate_serializer_cache(user.id, instance.__class__.__name__, instance.pk)
 
     # -------------------
     # CRUD Methods
@@ -531,24 +515,29 @@ class BaseAPIView(QueryMixin, ObjectMixin, AuditLogMixin, SystemLogMixin, APIVie
         queryset = self._get_queryset(
             include_deleted=request.query_params.get("deleted") == "true",
             search_query=request.query_params.get("search"),
-            json_query=request.query_params.get("json_query"),
+            query=request.query_params.get("query"),
             field_search={
                 k: v
                 for k, v in request.query_params.items()
-                if k not in {"search", "deleted", "update", "page", "page_size", "cursor", "sort", "fields", "json_query"}
+                if k not in {
+                    "search", "deleted", "update", "page", "page_size", "cursor",
+                    "sort", "fields", "query", "select_limit", "ids", "selected_ids",
+                    "include_ids", "export", "export_format", "export_mode", "explain",
+                }
             },
             use_create_serializer=use_create_serializer,
         )
 
-        if not queryset:
-            return ResponseFactory.no_content()
-
-        is_select = request.headers.get("Is-Select-Option", "").lower() == "true"
-
         if self.paginate and not is_select:
             paginated, paginator = self.paginate_queryset(queryset, request)
+            if paginated is None:
+                return ResponseFactory.no_content()
             serializer = self.get_serializer(paginated, many=True, action="list")
             return paginator.get_paginated_response(serializer.data)
+
+        # Non-paginated path: check existence efficiently
+        if not queryset.exists():
+            return ResponseFactory.no_content()
 
         serializer = self.get_serializer(
             queryset, 
@@ -563,7 +552,7 @@ class BaseAPIView(QueryMixin, ObjectMixin, AuditLogMixin, SystemLogMixin, APIVie
 
     def post(self, request, *args, **kwargs):
         self._validate_tenant_integrity()
-        self.pre_get(request)
+        self.pre_mutation(request)
 
         if not request.data:
             return ResponseFactory.error(details={"error": "No data in request"})
@@ -602,7 +591,7 @@ class BaseAPIView(QueryMixin, ObjectMixin, AuditLogMixin, SystemLogMixin, APIVie
 
     def put(self, request, *args, pk=None, **kwargs):
         self._validate_tenant_integrity()
-        self.pre_get(request)
+        self.pre_mutation(request)
         is_many = isinstance(request.data, list) and pk is None
 
         if pk:
@@ -612,7 +601,7 @@ class BaseAPIView(QueryMixin, ObjectMixin, AuditLogMixin, SystemLogMixin, APIVie
                 return ResponseFactory.not_found(f"{self.entity_name or 'Record'} not found")
 
             data = self.pre_update(request, obj, request.data)
-            serializer = self.init_serializer(
+            serializer = self.get_serializer(
                 obj, data=data, partial=True, is_create_update=True, action="update"
             )
             if not serializer.is_valid():
@@ -623,7 +612,7 @@ class BaseAPIView(QueryMixin, ObjectMixin, AuditLogMixin, SystemLogMixin, APIVie
                 self.post_update(instance)
             return ResponseFactory.success(
                 message="Updated successfully",
-                data=self.init_serializer(instance, action="detail").data,
+                data=self.get_serializer(instance, action="detail").data,
             )
 
         elif is_many:
@@ -647,7 +636,7 @@ class BaseAPIView(QueryMixin, ObjectMixin, AuditLogMixin, SystemLogMixin, APIVie
 
     def delete(self, request, *args, pk=None, **kwargs):
         self._validate_tenant_integrity()
-        self.pre_get(request)
+        self.pre_mutation(request)
         is_many = isinstance(request.data, list) and pk is None
 
         if pk:

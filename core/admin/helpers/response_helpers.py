@@ -86,6 +86,7 @@ class ResponseFactory:
             message=message, status_code=status.HTTP_404_NOT_FOUND
         )
 
+    @staticmethod
     def method_not_allowed(message: str = "Method not allowed") -> Response:
         return ResponseFactory.error(
             message=message, status_code=status.HTTP_405_METHOD_NOT_ALLOWED

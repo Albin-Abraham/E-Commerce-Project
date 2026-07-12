@@ -1,3 +1,4 @@
 discovered_apps:
 - apps.users
-total_count: 1
+- apps.shop
+total_count: 2

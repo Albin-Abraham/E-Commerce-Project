@@ -10,7 +10,6 @@ def get_serializer_cache_key(user_id: Any, model_name: str, pk: Any, fields: Any
     """
     fields_str = json.dumps(sorted(fields)) if fields else "all"
     token = f"{user_id}:{model_name}:{pk}:{fields_str}"
-    # Use MD5 to keep key size manageable
     return f"api_cache:{hashlib.md5(token.encode()).hexdigest()}"
 
 
@@ -25,11 +24,15 @@ def set_cached_serializer_data(key: str, data: Any, timeout: int = 300):
     cache.set(key, data, timeout)
 
 
-def invalidate_serializer_cache(model_name: str, pk: Any):
+def invalidate_serializer_cache(user_id: Any, model_name: str, pk: Any):
     """
-    Optionally invalidate cache for a specific object.
+    Invalidate all cache variants for a specific object across all field selections.
     """
-    pass
+    prefix = f"api_cache:{hashlib.md5(f'{user_id}:{model_name}:{pk}:'.encode()).hexdigest()[:24]}"
+    # Django cache doesn't support key pattern deletion, so delete the common keys
+    for fields_combo in [None, "all"]:
+        key = get_serializer_cache_key(user_id, model_name, pk, fields_combo)
+        cache.delete(key)
 
 
 # --- Metadata (Rules) Caching ---

@@ -427,7 +427,7 @@ def auto_extend_schema(cls):
 
         parameters.append(
             OpenApiParameter(
-                name="json_query",
+                name="query",
                 type=OpenApiTypes.STR,
                 location=OpenApiParameter.QUERY,
                 required=False,
@@ -598,6 +598,37 @@ def auto_extend_schema(cls):
                             required=False,
                             description=description,
                             enum=enum_values,
+                        )
+                    )
+
+        # Document filter_schema fields with lookup-suffixed params
+        filter_schema = getattr(dummy_instance, "filter_schema", None)
+        if filter_schema and hasattr(filter_schema, "fields"):
+            _type_map = {
+                str: OpenApiTypes.STR,
+                int: OpenApiTypes.INT,
+                float: OpenApiTypes.FLOAT,
+                bool: OpenApiTypes.BOOL,
+            }
+            # Collect already-documented param names to avoid duplicates
+            documented_params = {p.name for p in parameters}
+
+            for field_name, field_meta in filter_schema.fields.items():
+                param_type = _type_map.get(field_meta.type, OpenApiTypes.STR)
+                for lookup in field_meta.lookups:
+                    param_name = field_name if lookup == "exact" else f"{field_name}__{lookup}"
+                    if param_name in documented_params:
+                        continue
+                    description = f"Filter by {field_name}"
+                    if lookup != "exact":
+                        description += f" ({lookup})"
+                    parameters.append(
+                        OpenApiParameter(
+                            name=param_name,
+                            type=param_type,
+                            location=OpenApiParameter.QUERY,
+                            required=False,
+                            description=description,
                         )
                     )
 

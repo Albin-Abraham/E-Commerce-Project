@@ -125,6 +125,16 @@ class UserModel(AbstractBaseUser, PermissionsMixin, ValidatorModelMixin):
         verbose_name = "User"
         verbose_name_plural = "Users"
 
+    permission_prefix = "admin:users"
+    permission_map = {
+        "list": "view",
+        "retrieve": "view",
+        "create": "create",
+        "update": "edit",
+        "partial_update": "edit",
+        "destroy": "delete",
+    }
+
     @cached_property
     def permission_manifest(self):
         """

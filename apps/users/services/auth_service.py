@@ -5,6 +5,9 @@ from django.http import HttpRequest
 from core.admin.helpers.mediator_helpers import ValidationMediator
 from .interfaces import IAuthenticationClassService, IUserSessionClassServices
 from core.session.context import SessionContext
+import secrets
+import hashlib
+import time
 
 User = get_user_model()
 
@@ -165,3 +168,55 @@ class AuthService(IAuthenticationClassService, IUserSessionClassServices):
                 "branches": available_branches
             }
         }
+
+    # --- Password Reset Service ---
+
+    _reset_tokens: Dict[str, Dict[str, Any]] = {}
+
+    @classmethod
+    def generate_password_reset_token(cls, email: str) -> Dict[str, Any]:
+        """Generate a password reset token for the given email."""
+        try:
+            user = User.objects.get(email=email, is_active=True)
+        except User.DoesNotExist:
+            return {"message": "If the email exists, a reset token has been generated.", "token": None}
+
+        token = secrets.token_urlsafe(32)
+        token_hash = hashlib.sha256(token.encode()).hexdigest()
+
+        cls._reset_tokens[token_hash] = {
+            "user_id": str(user.id),
+            "created_at": time.time(),
+            "expires_in": 3600,
+        }
+
+        return {
+            "message": "Password reset token generated.",
+            "token": token,
+            "expires_in": 3600,
+        }
+
+    @classmethod
+    def reset_password_with_token(cls, token: str, new_password: str) -> bool:
+        """Reset password using a valid token."""
+        token_hash = hashlib.sha256(token.encode()).hexdigest()
+
+        token_data = cls._reset_tokens.get(token_hash)
+        if not token_data:
+            return False
+
+        elapsed = time.time() - token_data["created_at"]
+        if elapsed > token_data["expires_in"]:
+            del cls._reset_tokens[token_hash]
+            return False
+
+        try:
+            user = User.objects.get(id=token_data["user_id"], is_active=True)
+        except User.DoesNotExist:
+            return False
+
+        user.set_password(new_password)
+        user.save()
+
+        del cls._reset_tokens[token_hash]
+        return True
