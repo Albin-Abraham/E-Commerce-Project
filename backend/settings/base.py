@@ -159,6 +159,11 @@ CACHES = {
 SESSION_ENGINE = "django.contrib.sessions.backends.cache"
 SESSION_CACHE_ALIAS = "default"
 
+# --- Database Router Configuration ---
+DATABASE_ROUTERS = [
+    "core.infrastructure.db.routers.PrimaryReplicaRouter",
+]
+
 
 # --- Industrialization & Infrastructure Control ---
 METADATA_CACHE_ENABLED = env.bool('METADATA_CACHE_ENABLED', default=True)

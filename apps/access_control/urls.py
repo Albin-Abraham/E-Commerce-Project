@@ -1,4 +1,5 @@
 from django.urls import path
+from apps.access_control.views import FieldAccessPolicyAPIView, PolicyConfigurationAPIView
 from apps.access_control.interface.views.approval_views import (
     ApprovalChainViewSet,
     ApprovalRequestViewSet,
@@ -7,6 +8,33 @@ from apps.access_control.interface.views.approval_views import (
 )
 
 urlpatterns = [
+    # Field Access Policies endpoints
+    path(
+        "policies/",
+        FieldAccessPolicyAPIView.as_view(),
+        {"HTTP_METHOD": ["GET", "POST"]},
+        name="field-access-policy-list",
+    ),
+    path(
+        "policies/<str:pk>/",
+        FieldAccessPolicyAPIView.as_view(),
+        {"HTTP_METHOD": ["GET", "PUT", "DELETE"]},
+        name="field-access-policy-detail",
+    ),
+    # Policy Configurations endpoints
+    path(
+        "configurations/",
+        PolicyConfigurationAPIView.as_view(),
+        {"HTTP_METHOD": ["GET", "POST"]},
+        name="policy-configuration-list",
+    ),
+    path(
+        "configurations/<str:pk>/",
+        PolicyConfigurationAPIView.as_view(),
+        {"HTTP_METHOD": ["GET", "PUT", "DELETE"]},
+        name="policy-configuration-detail",
+    ),
+    # Approval Chains endpoints
     path(
         "chains/",
         ApprovalChainViewSet.as_view(),
@@ -19,6 +47,7 @@ urlpatterns = [
         {"HTTP_METHOD": ["get", "put", "patch", "delete"]},
         name="access-control-chain-detail",
     ),
+    # Approval Requests endpoints
     path(
         "requests/",
         ApprovalRequestViewSet.as_view(),

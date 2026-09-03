@@ -1,7 +1,7 @@
 APP_NAME=backend-restful
 COMPOSE=docker compose
 ENV?=dev
-ENV_FILE=.env.$(ENV)
+ENV_FILE=.env
 
 VERSION ?= $(shell git rev-parse --short HEAD 2>/dev/null || echo "latest")
 IMAGE ?= registry/$(APP_NAME):$(VERSION)

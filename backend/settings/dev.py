@@ -17,6 +17,8 @@ MIDDLEWARE = [
 DATABASES = {
     'default': env.db_url('DATABASE_URL', default='postgres://postgres:pstgres@localhost:5432/legacy_db'),
 }
+if env("REPLICA_DATABASE_URL", default=""):
+    DATABASES["replica"] = env.db_url("REPLICA_DATABASE_URL")
 
 AUTHENTICATION_BACKENDS = [
     'core.admin.authentication.MultiFieldAuthBackend',

@@ -1,12 +1,13 @@
-import uuid
-from django.db import models
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
-from core.base_models.validator_model import BaseModel
-from core.base_models.constants import USER_MODEL
+from django.db import models
 from django.utils.translation import gettext_lazy as _
-from core.base_models.scoping_models import BranchModelMixin
+
+from core.base_models.constants import USER_MODEL
 from core.base_models.fields.short_ui_fields import CustomShortUUIDField
+from core.base_models.scoping_models import BranchModelMixin
+from core.base_models.validator_model import BaseModel
+
 
 class EntityAccessControl(BaseModel):
     """
@@ -14,6 +15,7 @@ class EntityAccessControl(BaseModel):
     Uses GenericForeignKey to grant a User access to ANY entity (Company, Branch, Document, Project, etc).
     Replaces brittle junction tables like UserCompanyAccess and UserBranchAccess.
     """
+
     id = CustomShortUUIDField(
         prefix="",
         month=False,
@@ -22,27 +24,27 @@ class EntityAccessControl(BaseModel):
         unique=True,
         primary_key=True,
         editable=False,
-        auto=True
+        auto=True,
     )
     user = models.ForeignKey(USER_MODEL, on_delete=models.CASCADE, related_name="acl_assignments")
-    
+
     # The Entity being granted access to (e.g. Branch, Company)
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
-    object_id = models.CharField(max_length=50) 
+    object_id = models.CharField(max_length=50)
     content_object = GenericForeignKey("content_type", "object_id")
-    
+
     # Optional RBAC mapping for this specific scope
     role = models.ForeignKey(
-        "users.RolePermissions", 
-        on_delete=models.SET_NULL, 
-        null=True, 
+        "users.RolePermissions",
+        on_delete=models.SET_NULL,
+        null=True,
         blank=True,
-        help_text="Optional: Elevate or restrict permissions within this specific entity scope."
+        help_text="Optional: Elevate or restrict permissions within this specific entity scope.",
     )
 
     is_active = models.BooleanField(default=True)
 
-    class Meta: # type: ignore
+    class Meta:  # type: ignore
         db_table = "master_access_control"
         verbose_name = "Master Access Control"
         verbose_name_plural = "Master Access Controls"
@@ -52,13 +54,386 @@ class EntityAccessControl(BaseModel):
         ]
         constraints = [
             models.UniqueConstraint(
-                fields=["user", "content_type", "object_id"],
-                name="unique_user_entity_access"
+                fields=["user", "content_type", "object_id"], name="unique_user_entity_access"
             )
         ]
 
     def __str__(self):
         return f"{self.user} -> {self.content_type.name} ({self.object_id})"
+
+
+class FieldAccessControl(BaseModel):
+    """
+    Column-Level Security Engine.
+    Allows configuring read/write restrictions on specific fields/columns dynamically.
+    Can be applied globally (via Role) or specifically (via User).
+    """
+
+    id = CustomShortUUIDField(
+        prefix="",
+        month=False,
+        day=False,
+        year=False,
+        unique=True,
+        primary_key=True,
+        editable=False,
+        auto=True,
+    )
+
+    # 1. Who is restricted? (Can be a User or a Role)
+    user = models.ForeignKey(
+        USER_MODEL,
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        related_name="field_restrictions",
+    )
+    role = models.ForeignKey(
+        "users.RolePermissions",
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        related_name="field_restrictions",
+    )
+
+    # 2. What are they restricted from?
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
+    field_name = models.CharField(
+        max_length=100, help_text="The exact name of the column/field to restrict."
+    )
+
+    # 3. What kind of restriction?
+    can_read = models.BooleanField(
+        default=True, help_text="If false, the field is stripped from all API responses."
+    )
+    can_write = models.BooleanField(
+        default=False, help_text="If false, the field is marked read-only on all forms."
+    )
+
+    is_active = models.BooleanField(default=True)
+
+    class Meta:  # type: ignore
+        db_table = "field_access_control"
+        verbose_name = "Field Access Control"
+        verbose_name_plural = "Field Access Controls"
+        indexes = [
+            models.Index(fields=["content_type", "field_name"]),
+        ]
+        constraints = [
+            models.UniqueConstraint(
+                fields=["user", "content_type", "field_name"],
+                name="unique_user_field_access",
+                condition=models.Q(user__isnull=False),
+            ),
+            models.UniqueConstraint(
+                fields=["role", "content_type", "field_name"],
+                name="unique_role_field_access",
+                condition=models.Q(role__isnull=False),
+            ),
+        ]
+
+    def __str__(self):
+        target = self.user or self.role
+        return f"{target} -> {self.content_type.name}.{self.field_name} (R:{self.can_read}, W:{self.can_write})"
+
+
+class PolicyEffect(models.TextChoices):
+    ALLOW = "allow", _("Allow")
+    DENY = "deny", _("Deny")
+
+
+class FieldAccessPolicy(BaseModel):
+    """
+    Logical container model for a Column-Level Security (CLS) Policy.
+    Links to configurations and an optional approval workflow chain for changes.
+    """
+
+    id = CustomShortUUIDField(
+        prefix="",
+        month=False,
+        day=False,
+        year=False,
+        unique=True,
+        primary_key=True,
+        editable=False,
+        auto=True,
+    )
+    name = models.CharField(
+        max_length=150, unique=True, default="", help_text="Unique name of the policy."
+    )
+    description = models.TextField(blank=True)
+
+    # Target Resource (What resource is being restricted)
+    content_type = models.ForeignKey(
+        ContentType, on_delete=models.CASCADE, related_name="target_policies"
+    )
+    field_name = models.CharField(
+        max_length=100, help_text="The exact name of the column/field to restrict."
+    )
+
+    # Workflow integration using the Approval Engine
+    approval_chain = models.ForeignKey(
+        "access_control.ApprovalChain",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        help_text="Optional approval workflow to govern policy configuration changes.",
+    )
+
+    is_active = models.BooleanField(default=True)
+
+    class Meta:
+        db_table = "field_access_policies"
+        verbose_name = "Field Access Policy"
+        verbose_name_plural = "Field Access Policies"
+
+    def __str__(self):
+        return f"{self.name} ({self.content_type.model}.{self.field_name})"
+
+
+class PolicyConfigurationStatus(models.TextChoices):
+    DRAFT = "draft", _("Draft")
+    PENDING_APPROVAL = "pending_approval", _("Pending Approval")
+    ACTIVE = "active", _("Active")
+    ARCHIVED = "archived", _("Archived")
+
+
+class PolicyConfiguration(BaseModel):
+    """
+    Separate configuration model representing a specific version of a Policy.
+    Tracks draft, pending approval, and active states.
+    """
+
+    id = CustomShortUUIDField(
+        prefix="",
+        month=False,
+        day=False,
+        year=False,
+        unique=True,
+        primary_key=True,
+        editable=False,
+        auto=True,
+    )
+    policy = models.ForeignKey(
+        FieldAccessPolicy, on_delete=models.CASCADE, related_name="configurations"
+    )
+    version = models.PositiveIntegerField(default=1)
+
+    # Subject (Who the rule applies to) - Generic GFK
+    subject_type = models.ForeignKey(
+        ContentType, on_delete=models.CASCADE, related_name="config_subjects"
+    )
+    subject_id = models.CharField(max_length=50)
+    subject = GenericForeignKey("subject_type", "subject_id")
+
+    # Policy Action and Effect (Extensible)
+    action = models.CharField(
+        max_length=50, default="read", help_text="Action to control: 'read', 'write', 'mask', etc."
+    )
+    effect = models.CharField(
+        max_length=20,
+        choices=PolicyEffect.choices,
+        default=PolicyEffect.DENY,
+        help_text="Effect of the policy: 'allow' or 'deny'.",
+    )
+
+    # Contextual Scoping (Generic GFK)
+    scope_type = models.ForeignKey(
+        ContentType, on_delete=models.CASCADE, null=True, blank=True, related_name="config_scopes"
+    )
+    scope_id = models.CharField(max_length=50, null=True, blank=True)
+    scope = GenericForeignKey("scope_type", "scope_id")
+
+    # Conditional logic
+    conditions = models.JSONField(
+        default=dict,
+        blank=True,
+        help_text="JSON-based conditional rules for dynamic policy matching.",
+    )
+
+    status = models.CharField(
+        max_length=20,
+        choices=PolicyConfigurationStatus.choices,
+        default=PolicyConfigurationStatus.DRAFT,
+    )
+
+    class Meta:
+        db_table = "policy_configurations"
+        verbose_name = "Policy Configuration"
+        verbose_name_plural = "Policy Configurations"
+        constraints = [
+            models.UniqueConstraint(fields=["policy", "version"], name="unique_policy_version")
+        ]
+
+    def __str__(self):
+        return f"{self.policy.name} - v{self.version} ({self.status})"
+
+    def _override_pre_save(self, is_creating: bool):
+        # Auto-calculate checksum and create snapshot on activation
+        is_activation = False
+        if not is_creating and self.pk:
+            orig = PolicyConfiguration.objects.get(pk=self.pk)
+            if orig.status != self.status and self.status == PolicyConfigurationStatus.ACTIVE:
+                is_activation = True
+        elif self.status == PolicyConfigurationStatus.ACTIVE:
+            is_activation = True
+
+        if is_activation:
+            # archive other configurations
+            PolicyConfiguration.objects.filter(
+                policy=self.policy, status=PolicyConfigurationStatus.ACTIVE
+            ).update(status=PolicyConfigurationStatus.ARCHIVED)
+            # Store activation trigger for post_save
+            self._trigger_snapshot = True
+
+    def _override_post_save(self, is_creating: bool):
+        if getattr(self, "_trigger_snapshot", False):
+            import hashlib
+            import json
+
+            # Create snapshot ledger entry
+            snapshot_dict = {
+                "policy_id": str(self.policy_id),
+                "version": self.version,
+                "subject_type_id": self.subject_type_id,
+                "subject_id": self.subject_id,
+                "action": self.action,
+                "effect": self.effect,
+                "scope_type_id": self.scope_type_id,
+                "scope_id": self.scope_id,
+                "conditions": self.conditions,
+            }
+            dumped = json.dumps(snapshot_dict, sort_keys=True)
+            checksum = hashlib.sha256(dumped.encode("utf-8")).hexdigest()
+            PolicySnapshot.objects.create(
+                policy=self.policy,
+                version=self.version,
+                snapshot_data=snapshot_dict,
+                checksum=checksum,
+            )
+
+
+class PolicySnapshot(BaseModel):
+    """
+    Immutable snapshot ledger of field access policies.
+    """
+
+    id = CustomShortUUIDField(
+        prefix="",
+        month=False,
+        day=False,
+        year=False,
+        unique=True,
+        primary_key=True,
+        editable=False,
+        auto=True,
+    )
+    policy = models.ForeignKey(
+        FieldAccessPolicy, on_delete=models.CASCADE, related_name="snapshots"
+    )
+    version = models.PositiveIntegerField()
+    snapshot_data = models.JSONField()
+    checksum = models.CharField(max_length=64)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        db_table = "policy_snapshots"
+        ordering = ["-version"]
+        verbose_name = "Policy Snapshot"
+        verbose_name_plural = "Policy Snapshots"
+
+    def __str__(self):
+        return f"Snapshot {self.policy.name} - v{self.version}"
+
+
+class Department(BaseModel, BranchModelMixin):
+    """
+    Department model to group users/roles and scope approval chains.
+    """
+    id = CustomShortUUIDField(
+        prefix="",
+        month=False,
+        day=False,
+        year=False,
+        unique=True,
+        primary_key=True,
+        editable=False,
+        auto=True,
+    )
+    name = models.CharField(
+        max_length=150,
+        verbose_name=_("Name"),
+        help_text=_("Department name (e.g. HR, Finance, Cardiology)."),
+    )
+    code = models.CharField(
+        max_length=50,
+        unique=True,
+        verbose_name=_("Code"),
+        help_text=_("Unique code for department (e.g. HR, CARD, ENG)."),
+    )
+    description = models.TextField(
+        blank=True,
+        null=True,
+        help_text=_("Optional description or notes about the department."),
+    )
+    is_active = models.BooleanField(
+        default=True,
+        verbose_name=_("Active"),
+    )
+
+    class Meta:
+        db_table = "access_control_departments"
+        verbose_name = _("Department")
+        verbose_name_plural = _("Departments")
+        ordering = ["name"]
+
+    def __str__(self):
+        return f"{self.name} ({self.code})"
+
+
+class Designation(BaseModel, BranchModelMixin):
+    """
+    Designation model for roles/titles in the organization.
+    """
+    id = CustomShortUUIDField(
+        prefix="",
+        month=False,
+        day=False,
+        year=False,
+        unique=True,
+        primary_key=True,
+        editable=False,
+        auto=True,
+    )
+    name = models.CharField(
+        max_length=150,
+        verbose_name=_("Name"),
+        help_text=_("Designation name (e.g. Lead Engineer, Product Manager)."),
+    )
+    code = models.CharField(
+        max_length=50,
+        unique=True,
+        verbose_name=_("Code"),
+        help_text=_("Unique code for designation (e.g. LE, PM)."),
+    )
+    description = models.TextField(
+        blank=True,
+        null=True,
+        help_text=_("Optional description or notes about the designation."),
+    )
+    is_active = models.BooleanField(
+        default=True,
+        verbose_name=_("Active"),
+    )
+
+    class Meta:
+        db_table = "access_control_designations"
+        verbose_name = _("Designation")
+        verbose_name_plural = _("Designations")
+        ordering = ["name"]
+
+    def __str__(self):
+        return f"{self.name} ({self.code})"
 
 
 class AutoSetActionChoices(models.TextChoices):
@@ -72,19 +447,10 @@ class ApprovalChain(BaseModel, BranchModelMixin):
     Industrialized Approval Workflow Template.
     A chain is selected based on:
     - approval_type (e.g., "purchase_order", "leave_request")
+    - designation / department
     - domain_entity (GenericForeignKey to Department, Project, etc.)
     - priority (higher first)
     """
-
-    permission_prefix = "access:approval_chain"
-    permission_map = {
-        "list": "view",
-        "retrieve": "view",
-        "create": "create",
-        "update": "update",
-        "partial_update": "update",
-        "destroy": "delete",
-    }
 
     name = models.CharField(
         max_length=100,
@@ -92,10 +458,28 @@ class ApprovalChain(BaseModel, BranchModelMixin):
         help_text=_("Friendly name (e.g. IT Department Leave Approval)."),
     )
 
+    designation = models.ForeignKey(
+        Designation,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="approval_chains",
+        verbose_name=_("Designation"),
+    )
+
+    department = models.ForeignKey(
+        Department,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="approval_chains",
+        verbose_name=_("Department"),
+    )
+
     approval_type = models.CharField(
         max_length=100,
         verbose_name=_("Approval Type"),
-        help_text=_("Identifier for the type of request (e.g. 'invoice', 'purchase_order')")
+        help_text=_("Identifier for the type of request (e.g. 'invoice', 'purchase_order')"),
     )
 
     conditions = models.JSONField(
@@ -124,7 +508,7 @@ class ApprovalChain(BaseModel, BranchModelMixin):
         null=True,
         blank=True,
         verbose_name=_("Domain Object Type"),
-        related_name="approval_chains"
+        related_name="approval_chains",
     )
     domain_id = models.CharField(
         max_length=50,
@@ -146,7 +530,7 @@ class ApprovalChain(BaseModel, BranchModelMixin):
         verbose_name=_("Active"),
     )
 
-    class Meta: # type: ignore
+    class Meta:  # type: ignore
         db_table = "approval_chains"
         verbose_name = _("Approval Chain")
         verbose_name_plural = _("Approval Chains")
@@ -160,16 +544,6 @@ class ApprovalLevel(BaseModel, BranchModelMixin):
     """
     Represents a single approval step within an ApprovalChain.
     """
-
-    permission_prefix = "access:approval_level"
-    permission_map = {
-        "list": "view",
-        "retrieve": "view",
-        "create": "create",
-        "update": "update",
-        "partial_update": "update",
-        "destroy": "delete",
-    }
 
     class ApprovalByChoices(models.TextChoices):
         SPECIFIC_USER = "specific_user", _("Specific User")
@@ -264,13 +638,17 @@ class ApprovalLevel(BaseModel, BranchModelMixin):
         default=False,
         verbose_name=_("Can Edit Request"),
     )
+    priority = models.PositiveIntegerField(
+        default=0,
+        verbose_name=_("Priority"),
+        help_text=_("Priority ordering for parallel levels at the same sequence step."),
+    )
 
-    class Meta: # type: ignore
+    class Meta:  # type: ignore
         db_table = "approval_levels"
         verbose_name = _("Approval Level")
         verbose_name_plural = _("Approval Levels")
         ordering = ["level"]
-        unique_together = (("chain", "level"),)
 
     def __str__(self):
         return f"{self.chain.name} - Level {self.level}"
@@ -289,16 +667,6 @@ class ApprovalRequest(BaseModel, BranchModelMixin):
     A submitted request awaiting approval through an ApprovalChain.
     Uses GenericForeignKey to bind to any model (purchase order, leave request, etc.).
     """
-
-    permission_prefix = "access:approval_request"
-    permission_map = {
-        "list": "view",
-        "retrieve": "view",
-        "create": "submit",
-        "update": "update",
-        "partial_update": "update",
-        "destroy": "cancel",
-    }
 
     chain = models.ForeignKey(
         ApprovalChain,
@@ -387,13 +755,6 @@ class ApprovalAction(BaseModel):
     """
     An individual action taken on an ApprovalRequest (approve, reject, escalate, comment).
     """
-
-    permission_prefix = "access:approval_action"
-    permission_map = {
-        "list": "view",
-        "retrieve": "view",
-        "create": "action",
-    }
 
     request = models.ForeignKey(
         ApprovalRequest,
