@@ -117,3 +117,16 @@ DELIVERY_STATUS_VALUESET = ValueSet(
     ],
 )
 ValueSetRegistry.register(DELIVERY_STATUS_VALUESET)
+
+SALES_INVOICE_STATUS_VALUESET = ValueSet(
+    name="sales_invoice_status",
+    domain="procurement_pos",
+    items=[
+        ValueSetItem(code="DRAFT", label="Draft"),
+        ValueSetItem(code="SUBMITTED", label="Submitted"),
+        ValueSetItem(code="PAID", label="Paid"),
+        ValueSetItem(code="PARTIALLY_PAID", label="Partially Paid"),
+        ValueSetItem(code="CANCELLED", label="Cancelled"),
+    ],
+)
+ValueSetRegistry.register(SALES_INVOICE_STATUS_VALUESET)

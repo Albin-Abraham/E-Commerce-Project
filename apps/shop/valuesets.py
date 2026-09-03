@@ -47,6 +47,46 @@ STOCK_TRANSFER_STATUS_VALUESET = ValueSet(
 )
 ValueSetRegistry.register(STOCK_TRANSFER_STATUS_VALUESET)
 
+SHOP_EVENT_TYPE_VALUESET = ValueSet(
+    name="shop_event_type",
+    domain="shop",
+    items=[
+        ValueSetItem(code="inventory_reserved", label="Inventory Reserved"),
+        ValueSetItem(code="inventory_released", label="Inventory Released"),
+        ValueSetItem(code="order_placed", label="Order Placed"),
+        ValueSetItem(code="order_shipped", label="Order Shipped"),
+        ValueSetItem(code="order_cancelled", label="Order Cancelled"),
+    ],
+)
+ValueSetRegistry.register(SHOP_EVENT_TYPE_VALUESET)
+
+FACILITY_TYPE_VALUESET = ValueSet(
+    name="facility_type",
+    domain="shop",
+    items=[
+        ValueSetItem(code="FULFILLMENT_CENTER", label="Central Fulfillment Center"),
+        ValueSetItem(code="WAREHOUSE", label="Regional Warehouse"),
+        ValueSetItem(code="RETAIL_STORE", label="Retail Store"),
+        ValueSetItem(code="DARK_STORE", label="Dark Store (Quick Commerce)"),
+        ValueSetItem(code="COLD_STORAGE", label="Cold Storage Facility"),
+        ValueSetItem(code="TRANSIT_HUB", label="Logistics Transit Hub"),
+    ],
+)
+ValueSetRegistry.register(FACILITY_TYPE_VALUESET)
+
+LOCATION_TYPE_VALUESET = ValueSet(
+    name="location_type",
+    domain="shop",
+    items=[
+        ValueSetItem(code="ZONE", label="Warehouse Zone"),
+        ValueSetItem(code="AISLE", label="Storage Aisle"),
+        ValueSetItem(code="RACK", label="Storage Rack"),
+        ValueSetItem(code="SHELF", label="Storage Shelf"),
+        ValueSetItem(code="BIN", label="Individual Bin"),
+    ],
+)
+ValueSetRegistry.register(LOCATION_TYPE_VALUESET)
+
 SHOP_ORDER_STATUS_VALUESET = ValueSet(
     name="shop_order_status",
     domain="shop",

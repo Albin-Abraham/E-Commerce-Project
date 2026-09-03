@@ -14,5 +14,63 @@ system_conf_key:
     - key: "Celery_Worker_Timeout" 
       value: "600" 
       description: "Celery worker timeout in seconds"
-    
-      
+
+    - key: "GOOGLE_STORAGE_BUCKET_NAME"
+      value: "yafei-platform-avatars"
+      description: "Google Cloud Storage Bucket name for customer social avatars and media assets"
+
+    - key: "GOOGLE_API_KEY"
+      value: "AIzaSy_YOUR_GOOGLE_CLOUD_API_KEY_HERE"
+      description: "Google Cloud API Key for GCS Uploads & OAuth Token verification"
+
+    - key: "GOOGLE_CLIENT_ID"
+      value: "YOUR_GOOGLE_CLIENT_ID.apps.googleusercontent.com"
+      description: "Google OAuth 2.0 Client ID for Web and Mobile Storefront Single Sign-On"
+
+    - key: "RAZORPAY_KEY_ID"
+      value: "rzp_test_YOUR_RAZORPAY_KEY_ID"
+      description: "Razorpay Payment Gateway Key ID"
+
+    - key: "RAZORPAY_KEY_SECRET"
+      value: "YOUR_RAZORPAY_KEY_SECRET"
+      description: "Razorpay Payment Gateway Key Secret for HMAC SHA256 Verification"
+
+    - key: "PAYPAL_CLIENT_ID"
+      value: "YOUR_PAYPAL_CLIENT_ID"
+      description: "PayPal Express Checkout REST API Client ID"
+
+    - key: "PAYPAL_CLIENT_SECRET"
+      value: "YOUR_PAYPAL_CLIENT_SECRET"
+      description: "PayPal Express Checkout REST API Client Secret"
+
+    - key: "PAYPAL_MODE"
+      value: "sandbox"
+      description: "PayPal Environment Mode (sandbox or live)"
+
+    - key: "EMAIL_HOST"
+      value: "smtp.gmail.com"
+      description: "SMTP Server Host for sending automated customer emails"
+
+    - key: "EMAIL_PORT"
+      value: "587"
+      description: "SMTP Server Port (e.g. 587 for TLS, 465 for SSL)"
+
+    - key: "EMAIL_HOST_USER"
+      value: "notifications@yafeiplatform.com"
+      description: "SMTP Server Authentication Username / Email address"
+
+    - key: "EMAIL_HOST_PASSWORD"
+      value: "YOUR_SMTP_APP_PASSWORD"
+      description: "SMTP Server Authentication App Password"
+
+    - key: "EMAIL_USE_TLS"
+      value: "true"
+      description: "Enables TLS encryption for SMTP email dispatch"
+
+    - key: "DEFAULT_FROM_EMAIL"
+      value: "Yafei Platform <notifications@yafeiplatform.com>"
+      description: "Default sender email address shown to recipients"
+
+    - key: "FIREBASE_CREDENTIALS_JSON"
+      value: "{}"
+      description: "Google Firebase Service Account JSON credentials for FCM Push Notifications"

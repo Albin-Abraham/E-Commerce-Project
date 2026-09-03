@@ -19,6 +19,7 @@ from core.base_models.fields.date_fields import CustomDateTimeField
 from core.base_models.scoping_models import TenantModelMixin, BranchModelMixin
 from core.base_models.validator_model import ValidatorModelMixin
 from core.base_models.validators.rules import PasswordValidatorRule, UniqueRule
+from apps.users.valuesets import USER_TYPE_VALUESET
 
 # ------------------------------------------------------------
 # User Manager
@@ -171,6 +172,12 @@ class UserProfileModel(models.Model):
         related_name="profile",
         primary_key=True,
     )
+    user_type = models.CharField(
+        max_length=30,
+        choices=USER_TYPE_VALUESET.as_django_choices(),
+        default="STAFF",
+        help_text="Categorizes user into Staff, B2C/B2B Customer, or B2C/B2B Partner",
+    )
     company = models.ForeignKey(
         "core_admin.Company",
         on_delete=models.SET_NULL,
@@ -191,8 +198,28 @@ class UserProfileModel(models.Model):
         verbose_name = "User Profile"
         verbose_name_plural = "User Profiles"
 
+    @property
+    def is_staff_user(self) -> bool:
+        return self.user_type == "STAFF"
+
+    @property
+    def is_customer(self) -> bool:
+        return self.user_type in ["CUSTOMER_B2C", "CUSTOMER_B2B"]
+
+    @property
+    def is_partner(self) -> bool:
+        return self.user_type in ["PARTNER_B2C", "PARTNER_B2B"]
+
+    @property
+    def is_b2b(self) -> bool:
+        return self.user_type in ["CUSTOMER_B2B", "PARTNER_B2B"]
+
+    @property
+    def is_b2c(self) -> bool:
+        return self.user_type in ["CUSTOMER_B2C", "PARTNER_B2C"]
+
     def __str__(self):
-        return f"Profile of {self.user.email}"
+        return f"Profile of {self.user.email} [{self.user_type}]"
 
 
 @receiver(post_save, sender=UserModel)
@@ -200,6 +227,7 @@ def create_user_profile(sender, instance, created, **kwargs):
     if created:
         from django.db import transaction
         with transaction.atomic():
+            initial_user_type = "STAFF" if (instance.is_staff or instance.is_superuser) else "CUSTOMER_B2C"
             if instance.is_superuser:
                 from core.admin.models.company import Company
                 from core.admin.models.branch import Branch
@@ -209,12 +237,17 @@ def create_user_profile(sender, instance, created, **kwargs):
                     # Fetch pre-existing defaults created by migrations
                     company = Company.objects.get(code=SYSTEM_COMPANY_CODE)
                     branch = Branch.objects.get(code=SYSTEM_BRANCH_CODE)
-                    UserProfileModel.objects.create(user=instance, company=company, branch=branch)
+                    UserProfileModel.objects.create(
+                        user=instance,
+                        company=company,
+                        branch=branch,
+                        user_type=initial_user_type,
+                    )
                 except (Company.DoesNotExist, Branch.DoesNotExist):
                     # Fallback for fresh test environments or incomplete setups
-                    UserProfileModel.objects.create(user=instance)
+                    UserProfileModel.objects.create(user=instance, user_type=initial_user_type)
             else:
-                UserProfileModel.objects.create(user=instance)
+                UserProfileModel.objects.create(user=instance, user_type=initial_user_type)
 
 # Removed: UserCompanyAccess and UserBranchAccess 
 # They have been replaced by the industrialized GenericForeignKey EntityAccessControl table 

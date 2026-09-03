@@ -21,6 +21,9 @@ LINK_TYPE_VALUESET = ValueSet(
         ValueSetItem(code="COMPLIANCE_CERT", label="Procurement Compliance Certificate"),
         ValueSetItem(code="ASSEMBLY_BOM", label="Assembly / BOM Diagram"),
         ValueSetItem(code="SPEC_SHEET", label="Technical Spec Sheet"),
+        ValueSetItem(code="FACILITY_SOP", label="Facility Standard Operating Procedure (SOP)"),
+        ValueSetItem(code="BIN_SAFETY_RULE", label="Storage Location & Bin Safety Rules"),
+        ValueSetItem(code="HAZMAT_HANDLING", label="Hazardous Material Handling Guide"),
     ],
 )
 ValueSetRegistry.register(LINK_TYPE_VALUESET)

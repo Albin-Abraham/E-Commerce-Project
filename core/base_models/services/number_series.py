@@ -56,6 +56,11 @@ class NumberSeriesRegistry:
             "default_pattern": "SO-{YYYY}-{SEQ:5}",
             "allowed_reset_policies": [ResetPolicy.NEVER, ResetPolicy.YEARLY, ResetPolicy.MONTHLY, ResetPolicy.DAILY],
         },
+        "sales_invoice": {
+            "label": _("Sales Invoice"),
+            "default_pattern": "INV-{YYYY}-{SEQ:5}",
+            "allowed_reset_policies": [ResetPolicy.NEVER, ResetPolicy.YEARLY, ResetPolicy.MONTHLY, ResetPolicy.DAILY],
+        },
         "delivery_note": {
             "label": _("Delivery Note"),
             "default_pattern": "DN-{YYYY}-{SEQ:5}",
@@ -79,6 +84,11 @@ class NumberSeriesRegistry:
         "vendor": {
             "label": _("Vendor"),
             "default_pattern": "VEN-{SEQ:5}",
+            "allowed_reset_policies": [ResetPolicy.NEVER, ResetPolicy.YEARLY, ResetPolicy.MONTHLY, ResetPolicy.DAILY],
+        },
+        "customer": {
+            "label": _("Customer"),
+            "default_pattern": "CUST-{YYYY}-{SEQ:5}",
             "allowed_reset_policies": [ResetPolicy.NEVER, ResetPolicy.YEARLY, ResetPolicy.MONTHLY, ResetPolicy.DAILY],
         },
     }

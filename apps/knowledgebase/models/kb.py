@@ -1,4 +1,6 @@
 from django.db import models
+from django.contrib.contenttypes.models import ContentType
+from django.contrib.contenttypes.fields import GenericForeignKey
 from core.base_models.validator_model import BaseModel
 from core.base_models.constants import USER_MODEL
 from core.base_models.fields.short_ui_fields import CustomShortUUIDField
@@ -133,6 +135,47 @@ class ProductKnowledgeLink(BaseModel):
         blank=True,
         related_name="knowledge_links",
     )
+    facility = models.ForeignKey(
+        "shop.Facility",
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        related_name="knowledge_links",
+        help_text="Facility SOPs, Operating Hours, Access Protocols",
+    )
+    storage_location = models.ForeignKey(
+        "shop.StorageLocation",
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        related_name="knowledge_links",
+        help_text="Storage Bin Hazmat, Max Load Weight, Safety Rules",
+    )
+    facility_inventory = models.ForeignKey(
+        "shop.FacilityInventory",
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        related_name="knowledge_links",
+        help_text="Item-specific Handling Guides, Assembly Docs",
+    )
+
+    # Polymorphic GenericForeignKey (GFK) Linkage
+    content_type = models.ForeignKey(
+        ContentType,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        help_text="Polymorphic target model e.g. Product, Facility, StorageLocation, FacilityInventory",
+    )
+    object_id = models.CharField(
+        max_length=50,
+        null=True,
+        blank=True,
+        db_index=True,
+        help_text="Polymorphic target object primary key ID",
+    )
+    target_object = GenericForeignKey("content_type", "object_id")
 
     # String Linkage by ID or Slug/SKU
     target_identifier = models.CharField(
@@ -140,7 +183,7 @@ class ProductKnowledgeLink(BaseModel):
         null=True,
         blank=True,
         db_index=True,
-        help_text="Direct lookup identifier e.g. Product ID/Slug, Variant SKU, Inventory ID, Category Slug",
+        help_text="Direct lookup identifier e.g. Product ID/Slug, Facility Code, Bin Code",
     )
 
     link_type = models.CharField(
@@ -156,12 +199,22 @@ class ProductKnowledgeLink(BaseModel):
         ordering = ["-created_at"]
         indexes = [
             models.Index(fields=["target_identifier", "link_type"]),
+            models.Index(fields=["content_type", "object_id"]),
         ]
-        verbose_name = "Product Knowledge Link"
-        verbose_name_plural = "Product Knowledge Links"
+        verbose_name = "Product & Entity Knowledge Link"
+        verbose_name_plural = "Product & Entity Knowledge Links"
+
+    def set_target_entity(self, entity):
+        """
+        Polymorphically attaches any model instance (Product, Facility, StorageLocation, FacilityInventory).
+        """
+        if entity:
+            self.content_type = ContentType.objects.get_for_model(entity)
+            self.object_id = str(entity.pk)
+            self.target_identifier = str(getattr(entity, "facility_code", getattr(entity, "location_code", getattr(entity, "sku", getattr(entity, "name", entity.pk)))))
 
     def __str__(self):
-        target = self.target_identifier or (
-            self.variant.sku if self.variant else (self.product.name if self.product else "Category/Inventory")
+        target = self.target_object or self.target_identifier or (
+            self.variant.sku if self.variant else (self.product.name if self.product else "Entity/Inventory")
         )
         return f"{self.link_type} for {target} -> {self.article.title}"

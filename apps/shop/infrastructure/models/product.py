@@ -8,15 +8,15 @@ from core.base_models.fields.boolean_fields import CustomBooleanField
 from core.base_models.validators.rules import RequiredRule, UniqueRule, MinRule
 
 
+from core.base_models.fields.party_mixin import PartyReferenceMixin
 from apps.shop.valuesets import PRODUCT_STATUS_VALUESET
 
 
-class Product(BaseModel, TenantModelMixin):
+class Product(BaseModel, TenantModelMixin, PartyReferenceMixin):
     """
     Core Product Domain Entity.
     Clean relational model preserving strict domain identity.
-    Content, rich descriptions, specifications, and collateral are decoupled
-    and managed via Knowledgebase (apps.knowledgebase) and resolved in Application Services.
+    Inherits PartyReferenceMixin to link products to vendors/sellers polymorphically.
     """
 
     id = CustomShortUUIDField(primary_key=True, prefix="prod_")
@@ -57,6 +57,14 @@ class Product(BaseModel, TenantModelMixin):
         max_digits=12,
         decimal_places=2,
         rules=[RequiredRule("price"), MinRule("price", 0)],
+    )
+    item_tax_template = models.ForeignKey(
+        "accounting.ItemTaxTemplate",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="products",
+        help_text="Product-specific tax rate template overrides",
     )
     status = models.CharField(
         max_length=20,
