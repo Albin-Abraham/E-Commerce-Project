@@ -137,9 +137,15 @@ class FieldAccessControl(BaseModel):
         return f"{target} -> {self.content_type.name}.{self.field_name} (R:{self.can_read}, W:{self.can_write})"
 
 
-class PolicyEffect(models.TextChoices):
-    ALLOW = "allow", _("Allow")
-    DENY = "deny", _("Deny")
+from apps.access_control.valuesets import (
+    APPROVAL_ACTION_CHOICES_VALUESET,
+    APPROVAL_ACTION_TYPE_VALUESET,
+    APPROVAL_BY_VALUESET,
+    APPROVAL_REQUEST_STATUS_VALUESET,
+    AUTO_SET_ACTION_VALUESET,
+    POLICY_CONFIG_STATUS_VALUESET,
+    POLICY_EFFECT_VALUESET,
+)
 
 
 class FieldAccessPolicy(BaseModel):
@@ -191,13 +197,6 @@ class FieldAccessPolicy(BaseModel):
         return f"{self.name} ({self.content_type.model}.{self.field_name})"
 
 
-class PolicyConfigurationStatus(models.TextChoices):
-    DRAFT = "draft", _("Draft")
-    PENDING_APPROVAL = "pending_approval", _("Pending Approval")
-    ACTIVE = "active", _("Active")
-    ARCHIVED = "archived", _("Archived")
-
-
 class PolicyConfiguration(BaseModel):
     """
     Separate configuration model representing a specific version of a Policy.
@@ -232,8 +231,8 @@ class PolicyConfiguration(BaseModel):
     )
     effect = models.CharField(
         max_length=20,
-        choices=PolicyEffect.choices,
-        default=PolicyEffect.DENY,
+        choices=POLICY_EFFECT_VALUESET.as_django_choices(),
+        default="deny",
         help_text="Effect of the policy: 'allow' or 'deny'.",
     )
 
@@ -253,8 +252,8 @@ class PolicyConfiguration(BaseModel):
 
     status = models.CharField(
         max_length=20,
-        choices=PolicyConfigurationStatus.choices,
-        default=PolicyConfigurationStatus.DRAFT,
+        choices=POLICY_CONFIG_STATUS_VALUESET.as_django_choices(),
+        default="draft",
     )
 
     class Meta:
@@ -273,16 +272,16 @@ class PolicyConfiguration(BaseModel):
         is_activation = False
         if not is_creating and self.pk:
             orig = PolicyConfiguration.objects.get(pk=self.pk)
-            if orig.status != self.status and self.status == PolicyConfigurationStatus.ACTIVE:
+            if orig.status != self.status and self.status == "active":
                 is_activation = True
-        elif self.status == PolicyConfigurationStatus.ACTIVE:
+        elif self.status == "active":
             is_activation = True
 
         if is_activation:
             # archive other configurations
             PolicyConfiguration.objects.filter(
-                policy=self.policy, status=PolicyConfigurationStatus.ACTIVE
-            ).update(status=PolicyConfigurationStatus.ARCHIVED)
+                policy=self.policy, status="active"
+            ).update(status="archived")
             # Store activation trigger for post_save
             self._trigger_snapshot = True
 
@@ -436,12 +435,6 @@ class Designation(BaseModel, BranchModelMixin):
         return f"{self.name} ({self.code})"
 
 
-class AutoSetActionChoices(models.TextChoices):
-    NULL = "null", _("Level Based")
-    APPROVE = "approve", _("Auto Approve")
-    REJECT = "reject", _("Auto Reject")
-
-
 class ApprovalChain(BaseModel, BranchModelMixin):
     """
     Industrialized Approval Workflow Template.
@@ -520,8 +513,8 @@ class ApprovalChain(BaseModel, BranchModelMixin):
 
     chain_auto_action = models.CharField(
         max_length=20,
-        choices=AutoSetActionChoices.choices,
-        default=AutoSetActionChoices.NULL,
+        choices=AUTO_SET_ACTION_VALUESET.as_django_choices(),
+        default="null",
         verbose_name=_("Chain Auto Action"),
     )
 
@@ -545,16 +538,6 @@ class ApprovalLevel(BaseModel, BranchModelMixin):
     Represents a single approval step within an ApprovalChain.
     """
 
-    class ApprovalByChoices(models.TextChoices):
-        SPECIFIC_USER = "specific_user", _("Specific User")
-        ROLE = "role", _("Role")
-
-    class ActionChoices(models.TextChoices):
-        NONE = "none", _("Do Nothing")
-        AUTO_APPROVE = "auto_approve", _("Auto Approve")
-        AUTO_REJECT = "auto_reject", _("Auto Reject")
-        ESCALATE = "escalate", _("Escalate to Next Level")
-
     chain = models.ForeignKey(
         ApprovalChain,
         on_delete=models.CASCADE,
@@ -572,7 +555,7 @@ class ApprovalLevel(BaseModel, BranchModelMixin):
     # ----------------------------------------------------
     approver_by_type = models.CharField(
         max_length=50,
-        choices=ApprovalByChoices.choices,
+        choices=APPROVAL_BY_VALUESET.as_django_choices(),
         verbose_name=_("Approver By"),
     )
     approver_type = models.ForeignKey(
@@ -594,7 +577,7 @@ class ApprovalLevel(BaseModel, BranchModelMixin):
     # ----------------------------------------------------
     fallback_approver_by_type = models.CharField(
         max_length=50,
-        choices=ApprovalByChoices.choices,
+        choices=APPROVAL_BY_VALUESET.as_django_choices(),
         verbose_name=_("Fallback Approver By"),
     )
     fallback_approver_type = models.ForeignKey(
@@ -630,8 +613,8 @@ class ApprovalLevel(BaseModel, BranchModelMixin):
     )
     timeout_action = models.CharField(
         max_length=20,
-        choices=ActionChoices.choices,
-        default=ActionChoices.NONE,
+        choices=APPROVAL_ACTION_TYPE_VALUESET.as_django_choices(),
+        default="none",
         verbose_name=_("Timeout Action"),
     )
     can_edit_request = models.BooleanField(
@@ -652,14 +635,6 @@ class ApprovalLevel(BaseModel, BranchModelMixin):
 
     def __str__(self):
         return f"{self.chain.name} - Level {self.level}"
-
-
-class ApprovalRequestStatus(models.TextChoices):
-    PENDING = "pending", _("Pending")
-    APPROVED = "approved", _("Approved")
-    REJECTED = "rejected", _("Rejected")
-    CANCELLED = "cancelled", _("Cancelled")
-    ESCALATED = "escalated", _("Escalated")
 
 
 class ApprovalRequest(BaseModel, BranchModelMixin):
@@ -696,8 +671,8 @@ class ApprovalRequest(BaseModel, BranchModelMixin):
 
     status = models.CharField(
         max_length=20,
-        choices=ApprovalRequestStatus.choices,
-        default=ApprovalRequestStatus.PENDING,
+        choices=APPROVAL_REQUEST_STATUS_VALUESET.as_django_choices(),
+        default="pending",
         verbose_name=_("Status"),
     )
 
@@ -744,13 +719,6 @@ class ApprovalRequest(BaseModel, BranchModelMixin):
         return f"Request {self.id} ({self.status}) via {self.chain.name}"
 
 
-class ApprovalActionType(models.TextChoices):
-    APPROVE = "approve", _("Approve")
-    REJECT = "reject", _("Reject")
-    ESCALATE = "escalate", _("Escalate")
-    COMMENT = "comment", _("Comment")
-
-
 class ApprovalAction(BaseModel):
     """
     An individual action taken on an ApprovalRequest (approve, reject, escalate, comment).
@@ -772,7 +740,7 @@ class ApprovalAction(BaseModel):
 
     action_type = models.CharField(
         max_length=20,
-        choices=ApprovalActionType.choices,
+        choices=APPROVAL_ACTION_CHOICES_VALUESET.as_django_choices(),
         verbose_name=_("Action Type"),
     )
 

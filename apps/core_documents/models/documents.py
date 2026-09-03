@@ -6,6 +6,9 @@ from core.base_models.constants import USER_MODEL
 from core.base_models.validator_model import BaseModel
 
 
+from apps.core_documents.valuesets import DOCUMENT_STATUS_VALUESET
+
+
 class Document(BaseModel):
     """
     Generic document attachment.
@@ -22,13 +25,6 @@ class Document(BaseModel):
     object_id = models.CharField(max_length=50)
     content_object = GenericForeignKey("content_type", "object_id")
 
-    class DocumentStatus(models.TextChoices):
-        DRAFT = "DRAFT", "Draft"
-        SUBMITTED = "SUBMITTED", "Submitted"
-        UNDER_REVIEW = "UNDER_REVIEW", "Under Review"
-        APPROVED = "APPROVED", "Approved"
-        REJECTED = "REJECTED", "Rejected"
-
     current_version = models.PositiveIntegerField(default=1)
     metadata = models.JSONField(default=dict, blank=True)
     is_archived = models.BooleanField(default=False)
@@ -40,8 +36,8 @@ class Document(BaseModel):
     )
     status = models.CharField(
         max_length=20,
-        choices=DocumentStatus.choices,
-        default=DocumentStatus.DRAFT,
+        choices=DOCUMENT_STATUS_VALUESET.as_django_choices(),
+        default="DRAFT",
         help_text="Current lifecycle state of the document"
     )
     rejection_reason = models.TextField(

@@ -8,6 +8,9 @@ from core.base_models.fields.numeric_fields import CustomDecimalField
 from core.base_models.validators.rules import RequiredRule
 
 
+from apps.shop.valuesets import SHOP_ORDER_STATUS_VALUESET
+
+
 class Order(BaseModel, BranchModelMixin):
     id = CustomShortUUIDField(primary_key=True, prefix="ord_")
 
@@ -20,17 +23,10 @@ class Order(BaseModel, BranchModelMixin):
         max_length=50,
     )
 
-    class StatusChoices(models.TextChoices):
-        PENDING = "pending", "Pending"
-        CONFIRMED = "confirmed", "Confirmed"
-        SHIPPED = "shipped", "Shipped"
-        DELIVERED = "delivered", "Delivered"
-        CANCELLED = "cancelled", "Cancelled"
-
     status = CustomCharField(
         max_length=20,
-        choices=StatusChoices.choices,
-        default=StatusChoices.PENDING,
+        choices=SHOP_ORDER_STATUS_VALUESET.as_django_choices(),
+        default="pending",
         rules=[RequiredRule("status")],
     )
     total_amount = CustomDecimalField(

@@ -22,6 +22,9 @@ class CustomShortUUIDField(RulesFieldMixin, models.CharField):
         year=False,
         month_format="short",
         prefix="",
+        prefix_factory=None,
+        prefix_config_key=None,
+        prefix_config_default="",
         length=32,
         alphabet="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789",
         auto=True,
@@ -57,6 +60,9 @@ class CustomShortUUIDField(RulesFieldMixin, models.CharField):
         self.year = bool(year)
         self.month_format = month_format
         self.prefix = str(prefix) if prefix else ""
+        self.prefix_factory = prefix_factory
+        self.prefix_config_key = prefix_config_key
+        self.prefix_config_default = str(prefix_config_default) if prefix_config_default else ""
         self.length = length
         self.alphabet = alphabet
         self.auto = bool(auto)
@@ -70,8 +76,9 @@ class CustomShortUUIDField(RulesFieldMixin, models.CharField):
         # Compute expected max_length
         # --------------------------
         segments = []
-        if self.prefix:
-            segments.append(self.prefix)
+        initial_prefix_sample = self.prefix or self.prefix_config_default or "PREFIX"
+        if initial_prefix_sample:
+            segments.append(initial_prefix_sample)
         if self.month:
             segments.append(
                 {"number": "MM", "short": "MMM", "full": "Monthname"}[self.month_format]
@@ -119,6 +126,9 @@ class CustomShortUUIDField(RulesFieldMixin, models.CharField):
         if self.year: kwargs['year'] = self.year
         if self.month_format != 'short': kwargs['month_format'] = self.month_format
         if self.prefix: kwargs['prefix'] = self.prefix
+        if self.prefix_factory: kwargs['prefix_factory'] = self.prefix_factory
+        if self.prefix_config_key: kwargs['prefix_config_key'] = self.prefix_config_key
+        if self.prefix_config_default: kwargs['prefix_config_default'] = self.prefix_config_default
         if self.length != 32: kwargs['length'] = self.length
         if self.alphabet != "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789": kwargs['alphabet'] = self.alphabet
         if not self.auto: kwargs['auto'] = self.auto
@@ -128,6 +138,25 @@ class CustomShortUUIDField(RulesFieldMixin, models.CharField):
     # --------------------------
     # Internal helpers
     # --------------------------
+    def _resolve_prefix(self, model_instance=None) -> str:
+        """Resolve static, factory, or config-based prefix."""
+        if self.prefix_config_key:
+            try:
+                from django.conf import settings
+                p = getattr(settings, self.prefix_config_key, self.prefix_config_default)
+                return str(p)
+            except Exception:
+                return self.prefix_config_default
+        if callable(self.prefix_factory) and model_instance:
+            try:
+                p = self.prefix_factory(model_instance)
+                return str(p) if p else ""
+            except Exception as e:
+                if self.debug:
+                    logging.error(f"[CustomShortUUIDField] prefix_factory error: {e}")
+                return ""
+        return self.prefix
+
     def _get_month_str(self, dt: datetime) -> str:
         if not self.month:
             return ""
@@ -149,15 +178,16 @@ class CustomShortUUIDField(RulesFieldMixin, models.CharField):
     # --------------------------
     # Core functionality
     # --------------------------
-    def generate_uuid(self) -> str:
+    def generate_uuid(self, model_instance=None) -> str:
         """Generate UUID string with configured format."""
         uuid_generator = shortuuid.ShortUUID(alphabet=self.alphabet)
         short_id = uuid_generator.random(length=self.length)
 
         now = datetime.now()
         segments = []
-        if self.prefix:
-            segments.append(self.prefix)
+        prefix = self._resolve_prefix(model_instance)
+        if prefix:
+            segments.append(prefix)
         if self.month:
             segments.append(self._get_month_str(now))
         if self.day:
@@ -180,7 +210,7 @@ class CustomShortUUIDField(RulesFieldMixin, models.CharField):
         if add and self.auto and not value:
             retries = 0
             while retries < self.max_retries:
-                new_value = self.generate_uuid()
+                new_value = self.generate_uuid(model_instance)
                 if not self._exists_in_db(model_instance, new_value):
                     setattr(model_instance, self.attname, new_value)
                     return new_value

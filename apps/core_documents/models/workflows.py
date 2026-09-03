@@ -3,15 +3,17 @@ from core.base_models.constants import USER_MODEL
 from core.base_models.validator_model import BaseModel
 
 
+from apps.core_documents.valuesets import (
+    APPROVAL_ACTION_VALUESET,
+    LEVEL_STATUS_VALUESET,
+    WORKFLOW_STATUS_VALUESET,
+)
+
+
 class ApprovalWorkflow(BaseModel):
     """
     Tracks the active approval process for a Document.
     """
-
-    class WorkflowStatus(models.TextChoices):
-        PENDING = "PENDING", "Pending"
-        APPROVED = "APPROVED", "Approved"
-        REJECTED = "REJECTED", "Rejected"
 
     document = models.ForeignKey(
         "core_documents.Document",
@@ -24,8 +26,8 @@ class ApprovalWorkflow(BaseModel):
     )
     status = models.CharField(
         max_length=20,
-        choices=WorkflowStatus.choices,
-        default=WorkflowStatus.PENDING,
+        choices=WORKFLOW_STATUS_VALUESET.as_django_choices(),
+        default="PENDING",
         help_text="The overall status of this approval workflow",
     )
 
@@ -41,11 +43,6 @@ class ApprovalLevel(BaseModel):
     """
     Represents a specific level of approval within a workflow.
     """
-
-    class LevelStatus(models.TextChoices):
-        PENDING = "PENDING", "Pending"
-        APPROVED = "APPROVED", "Approved"
-        REJECTED = "REJECTED", "Rejected"
 
     workflow = models.ForeignKey(
         ApprovalWorkflow,
@@ -65,8 +62,8 @@ class ApprovalLevel(BaseModel):
     )
     status = models.CharField(
         max_length=20,
-        choices=LevelStatus.choices,
-        default=LevelStatus.PENDING,
+        choices=LEVEL_STATUS_VALUESET.as_django_choices(),
+        default="PENDING",
         help_text="Sign-off status of this specific level",
     )
     actioned_by = models.ForeignKey(
@@ -126,10 +123,7 @@ class ApprovalHistory(BaseModel):
     )
     action = models.CharField(
         max_length=20,
-        choices=[
-            ("APPROVED", "Approved"),
-            ("REJECTED", "Rejected"),
-        ],
+        choices=APPROVAL_ACTION_VALUESET.as_django_choices(),
         help_text="Action taken"
     )
     actioned_at = models.DateTimeField(
