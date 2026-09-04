@@ -8,6 +8,9 @@ from apps.shop.infrastructure.models.inventory import Inventory
 from apps.shop.infrastructure.serializers.shop_serializers import WarehouseSerializer, InventorySerializer
 
 
+from core.admin.helpers.response_helpers import ResponseFactory
+
+
 class WarehouseViewSet(BaseAPIView):
     model = Warehouse
     serializer_class = WarehouseSerializer
@@ -57,23 +60,29 @@ class InventoryViewSet(BaseAPIView):
         if action == "reserve":
             try:
                 Inventory.reserve_stock(inventory_id, int(qty))
-                return Response(
-                    {"status": "success", "message": f"Successfully reserved {qty} units"},
-                    status=status.HTTP_200_OK,
+                return ResponseFactory.success(
+                    message="Successfully reserved {reserved_unit} units",
+                    context={"reserved_unit": int(qty), "inventory_id": inventory_id},
                 )
             except Exception as e:
-                return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+                return ResponseFactory.error(message=str(e))
 
         elif action == "release":
             success = Inventory.release_stock(inventory_id, int(qty))
             if success:
-                return Response({"status": "success", "message": f"Released {qty} units"}, status=status.HTTP_200_OK)
-            return Response({"error": "Failed to release stock"}, status=status.HTTP_400_BAD_REQUEST)
+                return ResponseFactory.success(
+                    message="Released {released_unit} units",
+                    context={"released_unit": int(qty), "inventory_id": inventory_id},
+                )
+            return ResponseFactory.error(message="Failed to release stock")
 
         elif action == "commit":
             success = Inventory.commit_stock(inventory_id, int(qty))
             if success:
-                return Response({"status": "success", "message": f"Committed {qty} units"}, status=status.HTTP_200_OK)
-            return Response({"error": "Failed to commit stock"}, status=status.HTTP_400_BAD_REQUEST)
+                return ResponseFactory.success(
+                    message="Committed {committed_unit} units",
+                    context={"committed_unit": int(qty), "inventory_id": inventory_id},
+                )
+            return ResponseFactory.error(message="Failed to commit stock")
 
         return super().post(request, *args, **kwargs)

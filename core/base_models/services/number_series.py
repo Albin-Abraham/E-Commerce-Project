@@ -8,7 +8,7 @@ from django.db import transaction
 from django.utils import timezone
 from django.utils.translation import gettext_lazy as _
 
-from core.admin.models.number_series import NumberSeries, ResetPolicy
+# Lazy imports inside methods to comply with DAG import rules
 
 
 class NumberSeriesRegistry:
@@ -29,73 +29,90 @@ class NumberSeriesRegistry:
         "purchase_request": {
             "label": _("Purchase Request"),
             "default_pattern": "PR-{YYYY}-{SEQ:5}",
-            "allowed_reset_policies": [ResetPolicy.NEVER, ResetPolicy.YEARLY, ResetPolicy.MONTHLY, ResetPolicy.DAILY],
+            "allowed_reset_policies": ["NEVER", "YEARLY", "MONTHLY", "DAILY"],
+            "field_name": "request_number",
         },
         "rfq": {
             "label": _("RFQ"),
             "default_pattern": "RFQ-{YYYY}-{SEQ:5}",
-            "allowed_reset_policies": [ResetPolicy.NEVER, ResetPolicy.YEARLY, ResetPolicy.MONTHLY, ResetPolicy.DAILY],
+            "allowed_reset_policies": ["NEVER", "YEARLY", "MONTHLY", "DAILY"],
+            "field_name": "rfq_number",
         },
         "purchase_order": {
             "label": _("Purchase Order"),
             "default_pattern": "PO-{YYYY}-{SEQ:5}",
-            "allowed_reset_policies": [ResetPolicy.NEVER, ResetPolicy.YEARLY, ResetPolicy.MONTHLY, ResetPolicy.DAILY],
+            "allowed_reset_policies": ["NEVER", "YEARLY", "MONTHLY", "DAILY"],
+            "field_name": "po_number",
         },
         "grn": {
             "label": _("GRN"),
             "default_pattern": "GRN-{YYYY}-{SEQ:5}",
-            "allowed_reset_policies": [ResetPolicy.NEVER, ResetPolicy.YEARLY, ResetPolicy.MONTHLY, ResetPolicy.DAILY],
+            "allowed_reset_policies": ["NEVER", "YEARLY", "MONTHLY", "DAILY"],
+            "field_name": "grn_number",
         },
         "purchase_invoice": {
             "label": _("Purchase Invoice"),
             "default_pattern": "PI-{YYYY}-{SEQ:5}",
-            "allowed_reset_policies": [ResetPolicy.NEVER, ResetPolicy.YEARLY, ResetPolicy.MONTHLY, ResetPolicy.DAILY],
+            "allowed_reset_policies": ["NEVER", "YEARLY", "MONTHLY", "DAILY"],
+            "field_name": "invoice_number",
         },
         "sales_order": {
             "label": _("Sales Order"),
             "default_pattern": "SO-{YYYY}-{SEQ:5}",
-            "allowed_reset_policies": [ResetPolicy.NEVER, ResetPolicy.YEARLY, ResetPolicy.MONTHLY, ResetPolicy.DAILY],
+            "allowed_reset_policies": ["NEVER", "YEARLY", "MONTHLY", "DAILY"],
+            "field_name": "order_number",
         },
         "sales_invoice": {
             "label": _("Sales Invoice"),
             "default_pattern": "INV-{YYYY}-{SEQ:5}",
-            "allowed_reset_policies": [ResetPolicy.NEVER, ResetPolicy.YEARLY, ResetPolicy.MONTHLY, ResetPolicy.DAILY],
+            "allowed_reset_policies": ["NEVER", "YEARLY", "MONTHLY", "DAILY"],
+            "field_name": "invoice_number",
         },
         "delivery_note": {
             "label": _("Delivery Note"),
             "default_pattern": "DN-{YYYY}-{SEQ:5}",
-            "allowed_reset_policies": [ResetPolicy.NEVER, ResetPolicy.YEARLY, ResetPolicy.MONTHLY, ResetPolicy.DAILY],
+            "allowed_reset_policies": ["NEVER", "YEARLY", "MONTHLY", "DAILY"],
+            "field_name": "delivery_number",
         },
         "item": {
             "label": _("Item"),
             "default_pattern": "ITEM-{SEQ:5}",
-            "allowed_reset_policies": [ResetPolicy.NEVER, ResetPolicy.YEARLY, ResetPolicy.MONTHLY, ResetPolicy.DAILY],
+            "allowed_reset_policies": ["NEVER", "YEARLY", "MONTHLY", "DAILY"],
+            "field_name": "sku",
         },
         "serial_number": {
             "label": _("Serial Number"),
             "default_pattern": "SN-{SEQ:5}",
-            "allowed_reset_policies": [ResetPolicy.NEVER, ResetPolicy.YEARLY, ResetPolicy.MONTHLY, ResetPolicy.DAILY],
+            "allowed_reset_policies": ["NEVER", "YEARLY", "MONTHLY", "DAILY"],
+            "field_name": "serial_number",
         },
         "stock_transfer": {
             "label": _("Stock Transfer"),
             "default_pattern": "TRF-{SEQ:5}",
-            "allowed_reset_policies": [ResetPolicy.NEVER, ResetPolicy.YEARLY, ResetPolicy.MONTHLY, ResetPolicy.DAILY],
+            "allowed_reset_policies": ["NEVER", "YEARLY", "MONTHLY", "DAILY"],
+            "field_name": "transfer_number",
         },
         "vendor": {
             "label": _("Vendor"),
             "default_pattern": "VEN-{SEQ:5}",
-            "allowed_reset_policies": [ResetPolicy.NEVER, ResetPolicy.YEARLY, ResetPolicy.MONTHLY, ResetPolicy.DAILY],
+            "allowed_reset_policies": ["NEVER", "YEARLY", "MONTHLY", "DAILY"],
+            "field_name": "code",
         },
         "customer": {
             "label": _("Customer"),
             "default_pattern": "CUST-{YYYY}-{SEQ:5}",
-            "allowed_reset_policies": [ResetPolicy.NEVER, ResetPolicy.YEARLY, ResetPolicy.MONTHLY, ResetPolicy.DAILY],
+            "allowed_reset_policies": ["NEVER", "YEARLY", "MONTHLY", "DAILY"],
+            "field_name": "customer_code",
         },
     }
 
     @classmethod
     def get(cls, document_type: str) -> dict:
         return cls._registry.get(document_type, {})
+
+    @classmethod
+    def get_field_name(cls, document_type: str) -> str | None:
+        return cls._registry.get(document_type, {}).get("field_name")
 
     @classmethod
     def register(
@@ -127,6 +144,7 @@ class NumberSeriesRegistry:
 
     @classmethod
     def get_types(cls) -> list[dict]:
+        from core.admin.models.number_series import NumberSeries
         types: list[dict] = []
         definitions = NumberSeries.VARIABLE_DEFINITIONS
         for key, meta in cls._registry.items():
@@ -172,6 +190,7 @@ class NumberSeriesService:
 
     @classmethod
     def _should_reset(cls, reset_policy: str, last_reset_at: datetime | None, now: datetime) -> bool:
+        from core.admin.models.number_series import ResetPolicy
         if not last_reset_at or reset_policy == ResetPolicy.NEVER:
             return False
 
@@ -198,6 +217,7 @@ class NumberSeriesService:
         number_length: int = 5,
         is_preview: bool = False,
     ) -> str:
+        from core.admin.models.number_series import NumberSeries
         now_loc = timezone.localtime(now)
         year_str = f"{now_loc.year:04d}"
         yy_str = year_str[-2:]
@@ -244,6 +264,7 @@ class NumberSeriesService:
         Ensure company-scoped NumberSeries records exist for every registry type.
         Allows administrative users to view and edit configurations in DB.
         """
+        from core.admin.models.number_series import NumberSeries, ResetPolicy
         company_id = getattr(company, "pk", company)
         created_count = 0
 

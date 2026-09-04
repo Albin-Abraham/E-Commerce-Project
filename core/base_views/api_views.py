@@ -36,6 +36,7 @@ from core.admin.utils.integrity.log_mixin import LogMixin as SystemLogMixin
 
 
 from core.base_views.contracts import IPublicContract
+from core.base_views.mixins import NumberSeriesInjectionMixin, CurrencyInjectionMixin
 
 # --------------------------
 # Architectural Contracts
@@ -273,7 +274,15 @@ class AuditLogMixin(ViewContractMixin):
             
         instance.create_audit_log(action, reason=trigger_reason)
 
-class BaseAPIView(QueryMixin, ObjectMixin, AuditLogMixin, SystemLogMixin, APIView):
+class BaseAPIView(
+    NumberSeriesInjectionMixin,
+    CurrencyInjectionMixin,
+    QueryMixin,
+    ObjectMixin,
+    AuditLogMixin,
+    SystemLogMixin,
+    APIView,
+):
     schema = PlatformOpenAISchema()
     permission_classes = [CustomPermissionClass]
     throttle_classes = [TenantDynamicThrottle]

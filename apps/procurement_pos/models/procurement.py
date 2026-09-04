@@ -210,9 +210,8 @@ class PurchaseOrderItem(BaseModel):
         verbose_name = "PO Item"
         verbose_name_plural = "PO Items"
 
-    def save(self, *args, **kwargs):
+    def _override_pre_save(self, is_creating: bool):
         self.total_cost = self.quantity_ordered * self.unit_cost
-        super().save(*args, **kwargs)
 
 
 class GoodsReceivedNote(BaseModel):
@@ -320,6 +319,29 @@ class PurchaseInvoice(BaseModel):
         ordering = ["-created_at"]
         verbose_name = "Purchase Invoice"
         verbose_name_plural = "Purchase Invoices"
+
+    @classmethod
+    def execute_three_way_match(cls, invoice_id: str) -> bool:
+        """
+        3-Way Matching Engine: Verifies Purchase Order total amount == GRN received total == Invoice billed amount.
+        """
+        inv = cls.objects.select_related("purchase_order", "goods_received_note").get(pk=invoice_id)
+        po = inv.purchase_order
+        grn = inv.goods_received_note
+
+        if not grn or grn.status != "COMPLETED":
+            inv.status = "MISMATCH"
+            inv.save(update_fields=["status", "updated_at"])
+            return False
+
+        if abs(po.total_amount - inv.billed_amount) < 0.01:
+            inv.status = "MATCHED"
+            inv.save(update_fields=["status", "updated_at"])
+            return True
+        else:
+            inv.status = "MISMATCH"
+            inv.save(update_fields=["status", "updated_at"])
+            return False
 
     @classmethod
     def execute_three_way_match(cls, invoice_id: str) -> bool:

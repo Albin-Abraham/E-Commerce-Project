@@ -8,6 +8,7 @@ class SupplierSerializer(BaseModelSerializer):
         model = Supplier
         fields = ["id", "name", "code", "contact_person", "email", "phone", "address", "tax_id", "is_active", "metadata", "created_at"]
         read_only_fields = ["id", "created_at"]
+        extra_kwargs = {"code": {"required": False, "allow_blank": True}}
 
 
 class PurchaseOrderItemSerializer(BaseModelSerializer):
@@ -27,6 +28,7 @@ class PurchaseOrderSerializer(BaseModelSerializer):
         model = PurchaseOrder
         fields = ["id", "po_number", "supplier", "supplier_name", "status", "total_amount", "expected_delivery_date", "created_by", "items", "created_at"]
         read_only_fields = ["id", "created_at"]
+        extra_kwargs = {"po_number": {"required": False, "allow_blank": True}}
 
 
 class GoodsReceivedNoteSerializer(BaseModelSerializer):
@@ -37,3 +39,4 @@ class GoodsReceivedNoteSerializer(BaseModelSerializer):
         model = GoodsReceivedNote
         fields = ["id", "grn_number", "purchase_order", "po_number", "warehouse", "warehouse_name", "received_by", "status", "received_at", "created_at"]
         read_only_fields = ["id", "created_at"]
+        extra_kwargs = {"grn_number": {"required": False, "allow_blank": True}}

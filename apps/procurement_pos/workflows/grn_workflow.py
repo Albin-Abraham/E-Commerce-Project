@@ -1,5 +1,5 @@
 import logging
-from django.db import transaction
+from django.db import models, transaction
 from django.core.exceptions import ValidationError
 from apps.procurement_pos.models.procurement import GoodsReceivedNote, PurchaseOrder
 from apps.shop.infrastructure.models.inventory import Inventory, Batch

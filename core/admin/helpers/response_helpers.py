@@ -5,7 +5,20 @@ from rest_framework.response import Response
 
 
 class ResponseFactory:
-    """Factory class for standardized API responses."""
+    """Factory class for standardized API responses with dynamic message formatting & context support."""
+
+    @staticmethod
+    def format_message(message: str, context: dict | None = None) -> str:
+        """
+        Dynamically formats a template message using the context dictionary.
+        Gracefully returns unformatted message on syntax mismatch.
+        """
+        if not context:
+            return message
+        try:
+            return message.format(**context)
+        except (KeyError, ValueError, IndexError):
+            return message
 
     # -----------------------
     # Success Responses
@@ -16,28 +29,32 @@ class ResponseFactory:
         message: str = "Request successful",
         status_code: int = status.HTTP_200_OK,
         meta: dict | None = None,
+        context: dict | None = None,
     ) -> Response:
-        payload = {"success": True, "message": message, "data": data}
-        if meta:
-            payload["meta"] = meta
+        formatted_msg = ResponseFactory.format_message(message, context)
+        payload = {"success": True, "message": formatted_msg, "data": data}
+        metadata = meta or context
+        if metadata:
+            payload["meta"] = metadata
         return Response(payload, status=status_code)
 
     @staticmethod
     def created(
         data: Any = None, 
         message: str = "Resource created successfully",
-        meta: dict | None = None
+        meta: dict | None = None,
+        context: dict | None = None,
     ) -> Response:
         return ResponseFactory.success(
-            data=data, message=message, status_code=status.HTTP_201_CREATED, meta=meta
+            data=data, message=message, status_code=status.HTTP_201_CREATED, meta=meta, context=context
         )
 
     @staticmethod
     def accepted(
-        data: Any = None, message: str = "Request accepted for processing"
+        data: Any = None, message: str = "Request accepted for processing", context: dict | None = None
     ) -> Response:
         return ResponseFactory.success(
-            data=data, message=message, status_code=status.HTTP_202_ACCEPTED
+            data=data, message=message, status_code=status.HTTP_202_ACCEPTED, context=context
         )
 
     @staticmethod
@@ -54,10 +71,14 @@ class ResponseFactory:
         message: str = "Bad request",
         details: dict | None = None,
         status_code: int = status.HTTP_400_BAD_REQUEST,
+        context: dict | None = None,
     ) -> Response:
-        payload = {"success": False, "message": message}
+        formatted_msg = ResponseFactory.format_message(message, context)
+        payload = {"success": False, "message": formatted_msg}
         if details:
             payload["details"] = details
+        elif context:
+            payload["details"] = context
         return Response(payload, status=status_code)
 
     @staticmethod

@@ -50,7 +50,12 @@ class Account(BaseModel):
         related_name="children",
         help_text="Parent account for hierarchical grouping",
     )
-    currency = models.CharField(max_length=5, default="USD")
+    currency = models.CharField(
+        max_length=5,
+        blank=True,
+        null=True,
+        help_text="Account posting currency; defaults to Company Base Currency if unassigned",
+    )
     is_group = models.BooleanField(
         default=False,
         help_text="Group accounts hold sub-accounts and cannot receive direct GL postings",

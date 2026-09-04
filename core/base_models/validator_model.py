@@ -129,6 +129,95 @@ class StructuralIntegrityMixin(models.Model):
                     f"Override `_override_pre_delete()` or `_override_post_delete()` instead."
                 )
 
+class NumberSeriesModelMixin(models.Model):
+    """
+    Model Mixin for automatic Number Series sequence generation on creation.
+    Hooks into pre-save lifecycle without overriding save().
+    """
+
+    _number_series_doc_type: str | None = None
+    _number_series_field: str | None = None
+
+    class Meta:
+        abstract = True
+
+    def _auto_generate_number_series(self):
+        doc_type = getattr(self, "_number_series_doc_type", None)
+        field_name = getattr(self, "_number_series_field", None)
+
+        from core.base_models.services.number_series import (
+            NumberSeriesRegistry,
+            NumberSeriesService,
+        )
+
+        if not doc_type:
+            model_name = self.__class__.__name__.lower()
+            if model_name == "purchaseinvoice":
+                doc_type = "purchase_invoice"
+            elif model_name == "salesinvoice":
+                doc_type = "sales_invoice"
+            elif model_name == "supplier":
+                doc_type = "vendor"
+            else:
+                for dt, config in NumberSeriesRegistry._registry.items():
+                    fname = config.get("field_name")
+                    if fname and hasattr(self, fname):
+                        doc_type = dt
+                        field_name = fname
+                        break
+
+        if doc_type:
+            if not field_name:
+                field_name = NumberSeriesRegistry.get_field_name(doc_type)
+
+            if field_name and hasattr(self, field_name) and not getattr(self, field_name):
+                company = getattr(self, "company", None)
+                series_number = NumberSeriesService.next(doc_type, company=company)
+                setattr(self, field_name, series_number)
+
+
+class CompanyCurrencyModelMixin(models.Model):
+    """
+    Model Mixin to auto-assign Company base currency during object creation.
+    Hooks into pre-save lifecycle without overriding save().
+    """
+
+    class Meta:
+        abstract = True
+
+    def _auto_assign_currency(self):
+        for field_name in ["currency", "valuation_currency"]:
+            if hasattr(self, field_name) and not getattr(self, field_name):
+                company_id = getattr(self, "company_id", None)
+                currency_obj = None
+
+                if company_id:
+                    from apps.accounting.models.currency import CompanyCurrencySetting
+
+                    setting = (
+                        CompanyCurrencySetting.objects.filter(company_id=company_id)
+                        .select_related("base_currency")
+                        .first()
+                    )
+                    if setting and setting.base_currency:
+                        currency_obj = setting.base_currency
+
+                if not currency_obj:
+                    from apps.accounting.models.currency import Currency
+
+                    currency_obj = Currency.objects.filter(is_active=True).first()
+
+                if currency_obj:
+                    try:
+                        field = self._meta.get_field(field_name)
+                        if isinstance(field, models.CharField):
+                            setattr(self, field_name, currency_obj.code)
+                        else:
+                            setattr(self, field_name, currency_obj)
+                    except Exception:
+                        setattr(self, field_name, currency_obj)
+
+
 class LifecycleHookMixin(models.Model):
     """Provides safe pre/post save/delete hooks without overriding save."""
     class Meta:
@@ -141,6 +230,11 @@ class LifecycleHookMixin(models.Model):
 
     def save(self, *args, **kwargs):
         is_creating = self._state.adding
+        if is_creating:
+            if hasattr(self, "_auto_generate_number_series"):
+                self._auto_generate_number_series()
+            if hasattr(self, "_auto_assign_currency"):
+                self._auto_assign_currency()
         self._override_pre_save(is_creating)
         super().save(*args, **kwargs)
         self._override_post_save(is_creating)
@@ -234,6 +328,8 @@ class OptimisticLockingMixin(models.Model):
 class BaseModel(
     StructuralIntegrityMixin,
     LifecycleHookMixin,
+    NumberSeriesModelMixin,
+    CompanyCurrencyModelMixin,
     ValidationGuardMixin,
     TimestampMixin,
     AutoAuditLogMixin,

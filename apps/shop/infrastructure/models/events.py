@@ -54,3 +54,24 @@ class DomainEventOutbox(BaseModel):
         self.retry_count += 1
         self.error_log = error
         self.save(update_fields=["status", "retry_count", "error_log", "updated_at"])
+
+    @classmethod
+    def record_event(
+        cls,
+        event_type: str,
+        entity_id: str | None = None,
+        aggregate_id: str | None = None,
+        aggregate_type: str = "",
+        payload: dict | None = None,
+        idempotency_key: str | None = None,
+        version: str = "1.0",
+    ) -> "DomainEventOutbox":
+        eid = entity_id or aggregate_id or ""
+        key = idempotency_key or f"{event_type}_{eid}_{uuid.uuid4().hex[:8]}"
+        return cls.objects.create(
+            event_type=str(event_type),
+            entity_id=eid,
+            payload=payload or {},
+            idempotency_key=key,
+            version=version,
+        )

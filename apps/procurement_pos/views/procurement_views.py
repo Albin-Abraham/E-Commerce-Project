@@ -1,14 +1,17 @@
+from django.core.exceptions import ValidationError
 from rest_framework import status
-from rest_framework.response import Response
 
 from core.base_views.api_views import BaseAPIView
 from core.admin.helpers.query_helpers import FilterSchema, FilterField
+from core.admin.helpers.response_helpers import ResponseFactory
 from apps.procurement_pos.models.procurement import Supplier, PurchaseOrder, GoodsReceivedNote
 from apps.procurement_pos.serializers import (
     SupplierSerializer,
     PurchaseOrderSerializer,
     GoodsReceivedNoteSerializer,
 )
+from apps.procurement_pos.workflows.purchase_order_workflow import PurchaseOrderWorkflow
+from apps.procurement_pos.workflows.grn_workflow import GRNWorkflow
 
 
 class SupplierViewSet(BaseAPIView):
@@ -26,6 +29,10 @@ class SupplierViewSet(BaseAPIView):
 
 
 class PurchaseOrderViewSet(BaseAPIView):
+    """
+    Purchase Order API ViewSet.
+    Supports state machine actions (submit, approve, cancel) via workflows and ResponseFactory.
+    """
     model = PurchaseOrder
     serializer_class = PurchaseOrderSerializer
     entity_name = "PurchaseOrder"
@@ -43,11 +50,38 @@ class PurchaseOrderViewSet(BaseAPIView):
     def get_base_queryset(self):
         return PurchaseOrder.objects.select_related("supplier", "created_by").prefetch_related("items")
 
+    def post(self, request, *args, **kwargs):
+        action = request.data.get("action")
+        po_id = request.data.get("po_id") or kwargs.get("pk")
+
+        if action in ["submit", "approve", "cancel"]:
+            try:
+                if action == "submit":
+                    po = PurchaseOrderWorkflow.submit_po(po_id, request.user)
+                    msg = f"Purchase Order #{po.po_number} submitted successfully."
+                elif action == "approve":
+                    po = PurchaseOrderWorkflow.approve_po(po_id, request.user)
+                    msg = f"Purchase Order #{po.po_number} approved successfully."
+                elif action == "cancel":
+                    reason = request.data.get("reason", "")
+                    po = PurchaseOrderWorkflow.cancel_po(po_id, request.user, reason=reason)
+                    msg = f"Purchase Order #{po.po_number} cancelled successfully."
+
+                serializer = self.serializer_class(po)
+                return ResponseFactory.success(data=serializer.data, message=msg)
+
+            except ValidationError as e:
+                return ResponseFactory.validation_error(errors={"detail": str(e)})
+            except Exception as e:
+                return ResponseFactory.error(message=str(e), status_code=status.HTTP_400_BAD_REQUEST)
+
+        return super().post(request, *args, **kwargs)
+
 
 class GoodsReceivedNoteViewSet(BaseAPIView):
     """
     GRN API ViewSet.
-    Includes custom action 'finalize' to complete GRN and update Inventory stock dynamically!
+    Includes custom action 'finalize' to complete GRN and update Inventory stock dynamically via GRNWorkflow.
     """
     model = GoodsReceivedNote
     serializer_class = GoodsReceivedNoteSerializer
@@ -70,13 +104,15 @@ class GoodsReceivedNoteViewSet(BaseAPIView):
 
         if action == "finalize":
             try:
-                grn = GoodsReceivedNote.process_grn_receipt(grn_id)
+                grn = GRNWorkflow.process_and_receive(grn_id, request.user)
                 serializer = self.serializer_class(grn)
-                return Response(
-                    {"status": "success", "message": "GRN processed and inventory stock updated.", "data": serializer.data},
-                    status=status.HTTP_200_OK,
+                return ResponseFactory.success(
+                    data=serializer.data,
+                    message="GRN processed and inventory stock updated successfully."
                 )
+            except ValidationError as e:
+                return ResponseFactory.validation_error(errors={"detail": str(e)})
             except Exception as e:
-                return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+                return ResponseFactory.error(message=str(e), status_code=status.HTTP_400_BAD_REQUEST)
 
         return super().post(request, *args, **kwargs)

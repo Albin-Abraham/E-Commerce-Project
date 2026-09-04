@@ -30,9 +30,7 @@ class SalesOrderWorkflow:
         if order.status not in [SalesOrder.OrderStatus.CONFIRMED, SalesOrder.OrderStatus.DISPATCHED]:
             raise ValidationError(f"Cannot generate Delivery Note for SalesOrder in state {order.status}.")
 
-        dn_number = f"DN-{order.order_number}-{DeliveryNote.objects.filter(sales_order=order).count() + 1}"
         delivery_note = DeliveryNote.objects.create(
-            delivery_number=dn_number,
             sales_order=order,
             warehouse=warehouse,
             tracking_number=tracking_number,
@@ -41,5 +39,5 @@ class SalesOrderWorkflow:
 
         order.status = SalesOrder.OrderStatus.DISPATCHED
         order.save(update_fields=["status", "updated_at"])
-        logger.info(f"DeliveryNote #{dn_number} generated for SalesOrder #{order.order_number}")
+        logger.info(f"DeliveryNote #{delivery_note.delivery_number} generated for SalesOrder #{order.order_number}")
         return delivery_note

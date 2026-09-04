@@ -72,7 +72,8 @@ class SalesOrder(BaseModel, PartyReferenceMixin):
         verbose_name_plural = "Sales Orders"
 
     def __str__(self):
-        return f"SO #{self.order_number} (${self.total_amount})"
+        curr_str = self.currency.format_amount(self.total_amount) if self.currency else f"${self.total_amount}"
+        return f"SO #{self.order_number} ({curr_str})"
 
 
 class DeliveryNote(BaseModel):
@@ -170,7 +171,8 @@ class SalesInvoice(BaseModel, PartyReferenceMixin):
         verbose_name_plural = "Sales Invoices"
 
     def __str__(self):
-        return f"Sales Invoice #{self.invoice_number} (${self.grand_total})"
+        curr_str = self.currency.format_amount(self.grand_total) if self.currency else f"${self.grand_total}"
+        return f"Sales Invoice #{self.invoice_number} ({curr_str})"
 
 
 class SalesInvoiceItem(BaseModel):
@@ -205,9 +207,10 @@ class SalesInvoiceItem(BaseModel):
         verbose_name = "Sales Invoice Item"
         verbose_name_plural = "Sales Invoice Items"
 
-    def save(self, *args, **kwargs):
+    def _override_pre_save(self, is_creating: bool):
         self.amount = self.unit_price * self.quantity
-        super().save(*args, **kwargs)
 
     def __str__(self):
-        return f"{self.quantity}x {self.product.name} (${self.amount})"
+        curr = self.sales_invoice.currency if self.sales_invoice else None
+        curr_str = curr.format_amount(self.amount) if curr else f"${self.amount}"
+        return f"{self.quantity}x {self.product.name} ({curr_str})"

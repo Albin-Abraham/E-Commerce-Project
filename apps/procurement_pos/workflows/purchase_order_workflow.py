@@ -1,6 +1,7 @@
 import logging
 from django.db import transaction
 from django.core.exceptions import ValidationError
+from apps.procurement_pos.constants import ProcurementPOSEventType
 from apps.procurement_pos.models.procurement import PurchaseOrder
 from apps.shop.infrastructure.models.events import DomainEventOutbox
 
@@ -25,7 +26,7 @@ class PurchaseOrderWorkflow:
 
         # Record Outbox Event for Async Processors / Notifications
         DomainEventOutbox.record_event(
-            event_type="PROCUREMENT_PO_SUBMITTED",
+            event_type=ProcurementPOSEventType.PO_SUBMITTED,
             aggregate_id=po.id,
             aggregate_type="PurchaseOrder",
             payload={
@@ -51,7 +52,7 @@ class PurchaseOrderWorkflow:
         po.save(update_fields=["status", "updated_at"])
 
         DomainEventOutbox.record_event(
-            event_type="PROCUREMENT_PO_APPROVED",
+            event_type=ProcurementPOSEventType.PO_APPROVED,
             aggregate_id=po.id,
             aggregate_type="PurchaseOrder",
             payload={
@@ -77,7 +78,7 @@ class PurchaseOrderWorkflow:
         po.save(update_fields=["status", "updated_at"])
 
         DomainEventOutbox.record_event(
-            event_type="PROCUREMENT_PO_CANCELLED",
+            event_type=ProcurementPOSEventType.PO_CANCELLED,
             aggregate_id=po.id,
             aggregate_type="PurchaseOrder",
             payload={"po_number": po.po_number, "reason": reason, "cancelled_by": user.id if user else None},
