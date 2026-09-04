@@ -159,6 +159,14 @@ class PurchaseOrder(BaseModel):
         choices=PO_STATUS_VALUESET.as_django_choices(),
         default="DRAFT",
     )
+    currency = models.ForeignKey(
+        "accounting.Currency",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="purchase_orders",
+        help_text="Purchase Order billing currency",
+    )
     total_amount = models.DecimalField(max_digits=12, decimal_places=2, default=0.0)
     expected_delivery_date = models.DateField(null=True, blank=True)
     created_by = models.ForeignKey(

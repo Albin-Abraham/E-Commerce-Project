@@ -107,7 +107,14 @@ class Cart(BaseModel):
         choices=CART_STATUS_VALUESET.as_django_choices(),
         default="ACTIVE",
     )
-    currency = models.CharField(max_length=5, default="USD")
+    currency = models.ForeignKey(
+        "accounting.Currency",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="customer_carts",
+        help_text="Cart checkout currency",
+    )
     total_amount = models.DecimalField(max_digits=12, decimal_places=2, default=0.0)
 
     class Meta(BaseModel.Meta):

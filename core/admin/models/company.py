@@ -52,6 +52,14 @@ class Company(BaseModel):
         blank=True,
         related_name="companies",
     )
+    default_currency = models.ForeignKey(
+        "accounting.Currency",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="companies_using_base",
+        help_text="Company base General Ledger reporting currency e.g. USD, SAR, EUR",
+    )
 
     permission_prefix = "company"
 

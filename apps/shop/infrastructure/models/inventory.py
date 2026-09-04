@@ -138,6 +138,20 @@ class Inventory(BaseModel, BranchModelMixin):
         default=10,
         rules=[MinRule("reorder_point", 0)],
     )
+    unit_cost = models.DecimalField(
+        max_digits=18,
+        decimal_places=4,
+        default=0.0,
+        help_text="Stock unit valuation cost",
+    )
+    valuation_currency = models.ForeignKey(
+        "accounting.Currency",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="inventory_records",
+        help_text="Inventory valuation cost currency",
+    )
 
     permission_prefix = "shop:inventory"
     permission_map = {

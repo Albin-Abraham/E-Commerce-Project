@@ -55,6 +55,14 @@ class SalesOrder(BaseModel, PartyReferenceMixin):
         choices=SALES_ORDER_STATUS_VALUESET.as_django_choices(),
         default="DRAFT",
     )
+    currency = models.ForeignKey(
+        "accounting.Currency",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="sales_orders",
+        help_text="Sales Order transaction currency",
+    )
     total_amount = models.DecimalField(max_digits=12, decimal_places=2, default=0.0)
 
     class Meta(BaseModel.Meta):
@@ -140,6 +148,14 @@ class SalesInvoice(BaseModel, PartyReferenceMixin):
         null=True,
         blank=True,
         related_name="sales_invoices",
+    )
+    currency = models.ForeignKey(
+        "accounting.Currency",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="sales_invoices",
+        help_text="Sales Invoice transaction currency",
     )
     net_total = models.DecimalField(max_digits=18, decimal_places=2, default=0.0)
     tax_amount = models.DecimalField(max_digits=18, decimal_places=2, default=0.0)

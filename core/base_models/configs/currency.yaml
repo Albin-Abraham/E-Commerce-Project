@@ -1,0 +1,115 @@
+# ==============================================================================
+# MASTER CURRENCY & FORMATTING CONFIGURATION (currency.yaml)
+# ==============================================================================
+# Architecture:
+# 1. Base Company Currency: Used for General Ledger (GL), Accounting, Tax Filing & Purchasing.
+# 2. Customer Display Currency: Presentation layer selected in Customer Preferences & Cart.
+# 3. Exchange Rate Engine: Real-time conversion with decimal precision & digit grouping rules.
+# ==============================================================================
+
+currencies:
+  - code: "USD"
+    name: "United States Dollar"
+    symbol: "$"
+    symbol_position: "PREFIX"        # PREFIX ($100) or SUFFIX (100 $)
+    decimal_places: 2
+    decimal_separator: "."
+    thousand_separator: ","
+    digit_grouping: "WESTERN"       # WESTERN (1,000,000) or INDIAN_LAKHS (10,00,000)
+    is_active: true
+    is_base_supported: true
+
+  - code: "EUR"
+    name: "Euro"
+    symbol: "€"
+    symbol_position: "PREFIX"
+    decimal_places: 2
+    decimal_separator: "."
+    thousand_separator: ","
+    digit_grouping: "WESTERN"
+    is_active: true
+    is_base_supported: true
+
+  - code: "SAR"
+    name: "Saudi Riyal"
+    symbol: "SAR"
+    symbol_position: "SUFFIX"
+    decimal_places: 2
+    decimal_separator: "."
+    thousand_separator: ","
+    digit_grouping: "WESTERN"
+    is_active: true
+    is_base_supported: true
+
+  - code: "AED"
+    name: "United Arab Emirates Dirham"
+    symbol: "AED"
+    symbol_position: "SUFFIX"
+    decimal_places: 2
+    decimal_separator: "."
+    thousand_separator: ","
+    digit_grouping: "WESTERN"
+    is_active: true
+    is_base_supported: true
+
+  - code: "INR"
+    name: "Indian Rupee"
+    symbol: "₹"
+    symbol_position: "PREFIX"
+    decimal_places: 2
+    decimal_separator: "."
+    thousand_separator: ","
+    digit_grouping: "INDIAN_LAKHS"
+    is_active: true
+    is_base_supported: true
+
+  - code: "KWD"
+    name: "Kuwaiti Dinar"
+    symbol: "KWD"
+    symbol_position: "SUFFIX"
+    decimal_places: 3
+    decimal_separator: "."
+    thousand_separator: ","
+    digit_grouping: "WESTERN"
+    is_active: true
+    is_base_supported: true
+
+  - code: "JPY"
+    name: "Japanese Yen"
+    symbol: "¥"
+    symbol_position: "PREFIX"
+    decimal_places: 0
+    decimal_separator: ""
+    thousand_separator: ","
+    digit_grouping: "WESTERN"
+    is_active: true
+    is_base_supported: true
+
+  - code: "GBP"
+    name: "British Pound Sterling"
+    symbol: "£"
+    symbol_position: "PREFIX"
+    decimal_places: 2
+    decimal_separator: "."
+    thousand_separator: ","
+    digit_grouping: "WESTERN"
+    is_active: true
+    is_base_supported: true
+
+exchange_rate_config:
+  provider: "FIXER_IO"              # FIXER_IO, OPEN_EXCHANGE_RATES, CURRENCYLAYER, MANUAL
+  refresh_interval_hours: 6
+  auto_update_rates: true
+  fallback_rates:
+    USD_TO_SAR: 3.75
+    USD_TO_AED: 3.6725
+    USD_TO_INR: 83.50
+    USD_TO_EUR: 0.92
+    USD_TO_GBP: 0.79
+    USD_TO_KWD: 0.317
+    USD_TO_JPY: 155.00
+
+company_currency_rules:
+  allow_multi_currency_sales: true
+  allow_multi_currency_purchases: true
+  exchange_rate_buffer_percentage: 0.5   # 0.5% buffer for FX volatility

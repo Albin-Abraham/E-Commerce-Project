@@ -69,7 +69,14 @@ class CustomerPreference(BaseModel):
         primary_key=True,
     )
     preferred_language = models.CharField(max_length=10, default="en")
-    preferred_currency = models.CharField(max_length=5, default="USD")
+    preferred_currency = models.ForeignKey(
+        "accounting.Currency",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="customer_preferences",
+        help_text="Customer preferred storefront display currency",
+    )
     newsletter_opt_in = models.BooleanField(default=False)
     sms_notifications = models.BooleanField(default=True)
     email_notifications = models.BooleanField(default=True)
