@@ -364,23 +364,6 @@ class NumberSeries(NumberSeriesBase):
                 }
             )
 
-    def save(self, *args, **kwargs):
-        update_fields = kwargs.get("update_fields")
-        identity_fields = {
-            "document_type",
-            "company",
-            "company_id",
-            "business_unit",
-            "business_unit_id",
-            "branch",
-            "branch_id",
-            "pattern",
-            "reset_policy",
-            "number_length",
-            "prefix",
-            "suffix",
-            "is_active",
-        }
-        if update_fields is None or identity_fields.intersection(update_fields):
-            self.full_clean()
-        super().save(*args, **kwargs)
+    def _override_pre_save(self, is_creating: bool):
+        self.full_clean()
+

@@ -67,8 +67,9 @@ class PaymentTransaction(BaseModel):
 
     id = CustomShortUUIDField(prefix="tx_", primary_key=True)
     transaction_code = CustomCharField(max_length=60, unique=True)
-    customer = models.ForeignKey("customers.Customer", on_delete=django.db.models.deletion.CASCADE, related_name="payment_transactions")
-    order = models.ForeignKey("shop.Order", on_delete=django.db.models.deletion.CASCADE, related_name="transactions", null=True, blank=True)
+    customer = models.ForeignKey("customers.Customer", on_delete=models.CASCADE, related_name="payment_transactions")
+    order = models.ForeignKey("shop.Order", on_delete=models.CASCADE, related_name="transactions", null=True, blank=True)
+
     gateway_type = models.CharField(max_length=30, choices=PAYMENT_GATEWAY_VALUESET.as_django_choices())
     gateway_order_id = models.CharField(max_length=255, blank=True, null=True, db_index=True)
     gateway_payment_id = models.CharField(max_length=255, blank=True, null=True, db_index=True)

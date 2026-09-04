@@ -147,8 +147,16 @@ class VendorQuotation(BaseModel):
 
 
 class PurchaseOrder(BaseModel):
+    class POStatus:
+        DRAFT = "DRAFT"
+        SUBMITTED = "SUBMITTED"
+        APPROVED = "APPROVED"
+        REJECTED = "REJECTED"
+        CANCELLED = "CANCELLED"
+        COMPLETED = "COMPLETED"
 
     id = CustomShortUUIDField(primary_key=True, prefix="po_")
+
     po_number = CustomCharField(
         max_length=50,
         blank=True,

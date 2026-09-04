@@ -132,12 +132,12 @@ class CustomerAddress(BaseModel):
         verbose_name = "Customer Address Line"
         verbose_name_plural = "Customer Address Lines"
 
-    def save(self, *args, **kwargs):
+    def _override_pre_save(self, is_creating: bool):
         if self.is_default_delivery:
             CustomerAddress.objects.filter(customer=self.customer, is_default_delivery=True).exclude(pk=self.pk).update(is_default_delivery=False)
         if self.is_default_billing:
             CustomerAddress.objects.filter(customer=self.customer, is_default_billing=True).exclude(pk=self.pk).update(is_default_billing=False)
-        super().save(*args, **kwargs)
+
 
     def __str__(self):
         return f"{self.title}: {self.address_line_1}, {self.city} ({self.postal_code})"
@@ -175,10 +175,10 @@ class CustomerContact(BaseModel):
         verbose_name = "Customer Contact Line"
         verbose_name_plural = "Customer Contact Lines"
 
-    def save(self, *args, **kwargs):
+    def _override_pre_save(self, is_creating: bool):
         if self.is_primary:
             CustomerContact.objects.filter(customer=self.customer, is_primary=True).exclude(pk=self.pk).update(is_primary=False)
-        super().save(*args, **kwargs)
+
 
     def __str__(self):
         return f"{self.contact_name} ({self.contact_type}) - {self.email or self.phone}"

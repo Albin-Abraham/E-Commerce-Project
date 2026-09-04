@@ -1,59 +1,60 @@
-from shared_domain.base.valuesets import ValueSet
+from shared_domain.base.valuesets import ValueSet, ValueSetItem
 
 ACCOUNT_ROOT_TYPE_VALUESET = ValueSet(
-    code="ACCOUNT_ROOT_TYPE",
-    name="Account Root Type",
+    name="ACCOUNT_ROOT_TYPE",
+    domain="accounting",
     description="Fundamental financial account classification",
     items=[
-        {"code": "ASSET", "label": "Asset", "is_active": True},
-        {"code": "LIABILITY", "label": "Liability", "is_active": True},
-        {"code": "EQUITY", "label": "Equity", "is_active": True},
-        {"code": "INCOME", "label": "Income / Revenue", "is_active": True},
-        {"code": "EXPENSE", "label": "Expense", "is_active": True},
+        ValueSetItem(code="ASSET", label="Asset", is_active=True),
+        ValueSetItem(code="LIABILITY", label="Liability", is_active=True),
+        ValueSetItem(code="EQUITY", label="Equity", is_active=True),
+        ValueSetItem(code="INCOME", label="Income / Revenue", is_active=True),
+        ValueSetItem(code="EXPENSE", label="Expense", is_active=True),
     ],
 )
 
 ACCOUNT_TYPE_VALUESET = ValueSet(
-    code="ACCOUNT_TYPE",
-    name="Account Type",
+    name="ACCOUNT_TYPE",
+    domain="accounting",
     description="Detailed operational classification of chart of accounts",
     items=[
-        {"code": "BANK", "label": "Bank Account", "is_active": True},
-        {"code": "CASH", "label": "Cash Account", "is_active": True},
-        {"code": "RECEIVABLE", "label": "Accounts Receivable (AR)", "is_active": True},
-        {"code": "PAYABLE", "label": "Accounts Payable (AP)", "is_active": True},
-        {"code": "COST_OF_GOODS_SOLD", "label": "Cost of Goods Sold (COGS)", "is_active": True},
-        {"code": "STOCK_IN_HAND", "label": "Stock in Hand (Inventory)", "is_active": True},
-        {"code": "DIRECT_EXPENSE", "label": "Direct Expense", "is_active": True},
-        {"code": "INDIRECT_EXPENSE", "label": "Indirect Expense", "is_active": True},
-        {"code": "TAX", "label": "Tax / Duty Account", "is_active": True},
-        {"code": "ACCUMULATED_DEPRECIATION", "label": "Accumulated Depreciation", "is_active": True},
-        {"code": "RETAINED_EARNINGS", "label": "Retained Earnings", "is_active": True},
+        ValueSetItem(code="BANK", label="Bank Account", is_active=True),
+        ValueSetItem(code="CASH", label="Cash Account", is_active=True),
+        ValueSetItem(code="RECEIVABLE", label="Accounts Receivable (AR)", is_active=True),
+        ValueSetItem(code="PAYABLE", label="Accounts Payable (AP)", is_active=True),
+        ValueSetItem(code="COST_OF_GOODS_SOLD", label="Cost of Goods Sold (COGS)", is_active=True),
+        ValueSetItem(code="STOCK_IN_HAND", label="Stock in Hand (Inventory)", is_active=True),
+        ValueSetItem(code="DIRECT_EXPENSE", label="Direct Expense", is_active=True),
+        ValueSetItem(code="INDIRECT_EXPENSE", label="Indirect Expense", is_active=True),
+        ValueSetItem(code="TAX", label="Tax / Duty Account", is_active=True),
+        ValueSetItem(code="ACCUMULATED_DEPRECIATION", label="Accumulated Depreciation", is_active=True),
+        ValueSetItem(code="RETAINED_EARNINGS", label="Retained Earnings", is_active=True),
     ],
 )
 
 JOURNAL_ENTRY_TYPE_VALUESET = ValueSet(
-    code="JOURNAL_ENTRY_TYPE",
-    name="Journal Entry Type",
+    name="JOURNAL_ENTRY_TYPE",
+    domain="accounting",
     description="Classification of accounting journal vouchers",
     items=[
-        {"code": "JOURNAL_ENTRY", "label": "Standard Journal Entry", "is_active": True},
-        {"code": "OPENING_ENTRY", "label": "Opening Balance Entry", "is_active": True},
-        {"code": "DEPRECIATION_ENTRY", "label": "Depreciation Entry", "is_active": True},
-        {"code": "BANK_ENTRY", "label": "Bank Transaction", "is_active": True},
-        {"code": "CASH_ENTRY", "label": "Cash Transaction", "is_active": True},
-        {"code": "CREDIT_NOTE", "label": "Credit Note", "is_active": True},
-        {"code": "DEBIT_NOTE", "label": "Debit Note", "is_active": True},
+        ValueSetItem(code="JOURNAL_ENTRY", label="Standard Journal Entry", is_active=True),
+        ValueSetItem(code="OPENING_ENTRY", label="Opening Balance Entry", is_active=True),
+        ValueSetItem(code="DEPRECIATION_ENTRY", label="Depreciation Entry", is_active=True),
+        ValueSetItem(code="BANK_ENTRY", label="Bank Transaction", is_active=True),
+        ValueSetItem(code="CASH_ENTRY", label="Cash Transaction", is_active=True),
+        ValueSetItem(code="CREDIT_NOTE", label="Credit Note", is_active=True),
+        ValueSetItem(code="DEBIT_NOTE", label="Debit Note", is_active=True),
     ],
 )
 
 PAYMENT_TYPE_VALUESET = ValueSet(
-    code="PAYMENT_TYPE",
-    name="Payment Type",
+    name="PAYMENT_TYPE",
+    domain="accounting",
     description="Direction of payment entries",
     items=[
-        {"code": "RECEIVE", "label": "Payment Received (Customer)", "is_active": True},
-        {"code": "PAY", "label": "Payment Sent (Vendor)", "is_active": True},
-        {"code": "INTERNAL_TRANSFER", "label": "Internal Bank/Cash Transfer", "is_active": True},
+        ValueSetItem(code="RECEIVE", label="Payment Received (Customer)", is_active=True),
+        ValueSetItem(code="PAY", label="Payment Sent (Vendor)", is_active=True),
+        ValueSetItem(code="INTERNAL_TRANSFER", label="Internal Bank/Cash Transfer", is_active=True),
     ],
 )
+

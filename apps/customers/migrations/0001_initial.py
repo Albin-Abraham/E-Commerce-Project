@@ -13,9 +13,10 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ('core_admin', '0001_initial'),
-        ('shop', '0001_initial'),
+        ('shop', '0002_brand_remove_category_description_and_more'),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]
+
 
     operations = [
         migrations.CreateModel(

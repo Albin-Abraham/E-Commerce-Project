@@ -1,0 +1,87 @@
+# Development Workflow Test Spec: Purchase Order State Machine & Transaction Boundaries
+# Tests: Initial Setup -> Commit A (Submit PO) -> State Assertions -> Rollback Simulation -> Commit B (Approve PO) -> Teardown/Revert
+
+test_suite:
+  name: "Purchase Order Workflow Transaction & State Rollback Suite"
+  description: "Validates workflow state transitions, Outbox event generation, transaction commit A, state checking, error rollback, and DB action reversion."
+  target_module: "apps.procurement_pos.workflows.purchase_order_workflow.PurchaseOrderWorkflow"
+
+scenarios:
+  - id: "po_submission_commit_and_invalid_transition_rollback"
+    name: "Test PO Submission (Commit A), Invalid Transition (Rollback), and DB State Assertions"
+    
+    # Prerequisites created before running workflow steps
+    setup:
+      factories:
+        - name: "po"
+          factory: "tests.factories.procurement.PurchaseOrderFactory"
+          params:
+            status: "DRAFT"
+            po_number: "PO-TEST-001"
+            total_amount: 1500.00
+        - name: "user"
+          factory: "tests.factories.user.UserFactory"
+          params:
+            username: "po_manager"
+
+    steps:
+      # --- STEP 1: COMMIT A (Submit Draft PO) ---
+      - step_id: "commit_a_submit_po"
+        action: "submit_po"
+        args:
+          po_id: "$po.id"
+          user: "$user"
+        expect:
+          success: true
+          state_check:
+            model: "apps.procurement_pos.models.procurement.PurchaseOrder"
+            filter:
+              id: "$po.id"
+            assert_fields:
+              status: "SUBMITTED"
+            outbox_events:
+              count: 1
+              event_type: "PROCUREMENT_PO_SUBMITTED"
+              aggregate_id: "$po.id"
+
+      # --- STEP 2: ROLLBACK SIMULATION (Attempt Double Submit on already SUBMITTED PO) ---
+      - step_id: "rollback_invalid_double_submit"
+        action: "submit_po"
+        args:
+          po_id: "$po.id"
+          user: "$user"
+        expect:
+          raises: "django.core.exceptions.ValidationError"
+          error_message_contains: "Cannot submit PO in status SUBMITTED"
+          rollback_verified: true
+          state_check_after_rollback:
+            model: "apps.procurement_pos.models.procurement.PurchaseOrder"
+            filter:
+              id: "$po.id"
+            assert_fields:
+              status: "SUBMITTED"  # Confirms state remains intact, no corrupted mutations
+
+      # --- STEP 3: COMMIT B (Approve PO) ---
+      - step_id: "commit_b_approve_po"
+        action: "approve_po"
+        args:
+          po_id: "$po.id"
+          approver: "$user"
+        expect:
+          success: true
+          state_check:
+            model: "apps.procurement_pos.models.procurement.PurchaseOrder"
+            filter:
+              id: "$po.id"
+            assert_fields:
+              status: "APPROVED"
+            outbox_events:
+              count: 1
+              event_type: "PROCUREMENT_PO_APPROVED"
+              aggregate_id: "$po.id"
+
+
+
+    # --- TEARDOWN / REVERT DB ACTIONS ---
+    teardown:
+      strategy: "atomic_transaction_rollback"

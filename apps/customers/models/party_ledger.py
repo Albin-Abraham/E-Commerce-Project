@@ -2,19 +2,20 @@ from django.db import models
 from core.base_models.validator_model import BaseModel
 from core.base_models.fields.short_ui_fields import CustomShortUUIDField
 from core.base_models.fields.party_mixin import PartyReferenceMixin
-from shared_domain.base.valuesets import ValueSet
+from shared_domain.base.valuesets import ValueSet, ValueSetItem
 
 VOUCHER_TYPE_VALUESET = ValueSet(
-    code="VOUCHER_TYPE",
-    name="Voucher Type",
+    name="VOUCHER_TYPE",
+    domain="customers",
     description="Types of financial vouchers posting to Party Ledger",
     items=[
-        {"code": "SALES_INVOICE", "label": "Sales Invoice", "is_active": True},
-        {"code": "PURCHASE_INVOICE", "label": "Purchase Invoice", "is_active": True},
-        {"code": "PAYMENT_ENTRY", "label": "Payment Entry", "is_active": True},
-        {"code": "JOURNAL_ENTRY", "label": "Journal Entry", "is_active": True},
+        ValueSetItem(code="SALES_INVOICE", label="Sales Invoice", is_active=True),
+        ValueSetItem(code="PURCHASE_INVOICE", label="Purchase Invoice", is_active=True),
+        ValueSetItem(code="PAYMENT_ENTRY", label="Payment Entry", is_active=True),
+        ValueSetItem(code="JOURNAL_ENTRY", label="Journal Entry", is_active=True),
     ],
 )
+
 
 
 class PartyLedgerEntry(BaseModel, PartyReferenceMixin):

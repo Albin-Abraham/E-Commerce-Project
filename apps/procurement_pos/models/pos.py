@@ -159,6 +159,6 @@ class POSTransactionItem(BaseModel):
     class Meta(BaseModel.Meta):
         db_table = "pos_transaction_items"
 
-    def save(self, *args, **kwargs):
+    def _override_pre_save(self, is_creating: bool):
         self.total_price = (self.quantity * self.unit_price) - self.discount
-        super().save(*args, **kwargs)
+

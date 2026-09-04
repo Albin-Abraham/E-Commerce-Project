@@ -4,20 +4,21 @@ from core.base_models.fields.short_ui_fields import CustomShortUUIDField
 from core.base_models.fields.char_fields import CustomCharField
 from core.base_models.validators.rules import RequiredRule, UniqueRule
 from apps.accounting.models.chart_of_accounts import Account
-from shared_domain.base.valuesets import ValueSet
+from shared_domain.base.valuesets import ValueSet, ValueSetItem
 
 TAX_CATEGORY_VALUESET = ValueSet(
-    code="TAX_CATEGORY",
-    name="Tax Category",
+    name="TAX_CATEGORY",
+    domain="accounting",
     description="Classification of tax rules and compliance regimes",
     items=[
-        {"code": "VAT", "label": "Value Added Tax (VAT)", "is_active": True},
-        {"code": "GST", "label": "Goods and Services Tax (GST)", "is_active": True},
-        {"code": "SALES_TAX", "label": "Standard Sales Tax", "is_active": True},
-        {"code": "EXCISE", "label": "Excise Duty", "is_active": True},
-        {"code": "ZERO_RATED", "label": "Zero Rated / Exempt", "is_active": True},
+        ValueSetItem(code="VAT", label="Value Added Tax (VAT)", is_active=True),
+        ValueSetItem(code="GST", label="Goods and Services Tax (GST)", is_active=True),
+        ValueSetItem(code="SALES_TAX", label="Standard Sales Tax", is_active=True),
+        ValueSetItem(code="EXCISE", label="Excise Duty", is_active=True),
+        ValueSetItem(code="ZERO_RATED", label="Zero Rated / Exempt", is_active=True),
     ],
 )
+
 
 
 class SalesTaxTemplate(BaseModel):

@@ -177,11 +177,13 @@ class CartItem(BaseModel):
         verbose_name = "Cart Item"
         verbose_name_plural = "Cart Items"
 
-    def save(self, *args, **kwargs):
+    def _override_pre_save(self, is_creating: bool):
         self.total_price = self.unit_price * self.quantity
-        super().save(*args, **kwargs)
+
+    def _override_post_save(self, is_creating: bool):
         if self.cart_id:
             self.cart.recalculate_total()
+
 
     def __str__(self):
         return f"{self.quantity}x {self.product.name} (${self.total_price})"

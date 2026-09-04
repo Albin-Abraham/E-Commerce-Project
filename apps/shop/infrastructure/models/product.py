@@ -37,8 +37,11 @@ class Product(BaseModel, TenantModelMixin, PartyReferenceMixin):
     )
     slug = CustomCharField(
         max_length=220,
+        blank=True,
+        default="",
         rules=[RequiredRule("slug"), UniqueRule("slug")],
     )
+
     brand = models.ForeignKey(
         "shop.Brand",
         on_delete=models.SET_NULL,

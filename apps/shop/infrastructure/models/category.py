@@ -21,8 +21,11 @@ class Category(BaseModel):
     )
     slug = CustomCharField(
         max_length=120,
+        blank=True,
+        default="",
         rules=[RequiredRule("slug"), UniqueRule("slug")],
     )
+
     parent = models.ForeignKey(
         "self",
         on_delete=models.CASCADE,
