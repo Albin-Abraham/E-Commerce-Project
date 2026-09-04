@@ -28,8 +28,11 @@ class Command(BaseCommand):
             self.seed_system_config(config_dir)
         elif section in ['superadmin', 'Set-Admin']:
             self.seed_superadmin(config_dir)
+        elif section in ['master_data', 'Set-MasterData', 'shop_master_data']:
+            self.seed_master_data(config_dir)
         else:
             self.stderr.write(self.style.ERROR(f"Unknown section: {section}"))
+
 
     def seed_modules(self, config_dir):
         # Support both a monolithic file and sharded files in the 'modules' subdirectory
@@ -200,3 +203,151 @@ class Command(BaseCommand):
                 self.stdout.write(self.style.SUCCESS(f"Verified System Linkage for {email}"))
             except Exception as e:
                 self.stderr.write(self.style.ERROR(f"Critical Error creating System Company/Branch: {str(e)}"))
+
+    def seed_master_data(self, config_dir):
+        file_path = os.path.join(config_dir, 'master_data.yaml')
+        if not os.path.exists(file_path):
+            self.stderr.write(self.style.ERROR(f"Master data config not found at {file_path}"))
+            return
+
+        with open(file_path, 'r') as f:
+            data = yaml.safe_load(f)
+
+        if not data:
+            self.stderr.write(self.style.WARNING("Master data file is empty."))
+            return
+
+        from apps.shop.infrastructure.models.brand import Brand
+        from apps.shop.infrastructure.models.category import Category, CategoryEdge
+        from apps.shop.infrastructure.models.product import Product
+        from apps.shop.infrastructure.models.variant import ProductVariant
+
+        # 1. Seed Brands
+        brands_data = data.get('brands', [])
+        for b_info in brands_data:
+            name = b_info.get('name')
+            slug = b_info.get('slug')
+            if not name or not slug:
+                continue
+
+            brand, created = Brand.objects.update_or_create(
+                slug=slug,
+                defaults={
+                    'name': name,
+                    'description': b_info.get('description', ''),
+                    'website': b_info.get('website'),
+                    'is_active': b_info.get('is_active', True),
+                    'metadata': b_info.get('metadata', {}),
+                }
+            )
+            status = "Created" if created else "Updated"
+            self.stdout.write(self.style.SUCCESS(f"{status} Brand: {name} ({slug})"))
+
+        # 2. Seed Categories
+        categories_data = data.get('categories', [])
+        sorted_categories = sorted(categories_data, key=lambda c: 0 if not c.get('parent') else 1)
+        
+        for c_info in sorted_categories:
+            name = c_info.get('name')
+            slug = c_info.get('slug')
+            if not name or not slug:
+                continue
+
+            parent_cat = None
+            parent_slug = c_info.get('parent')
+            if parent_slug:
+                parent_cat = Category.objects.filter(slug=parent_slug).first()
+
+            category, created = Category.objects.update_or_create(
+                slug=slug,
+                defaults={
+                    'name': name,
+                    'parent': parent_cat,
+                    'is_active': c_info.get('is_active', True),
+                    'metadata': c_info.get('metadata', {}),
+                }
+            )
+            status = "Created" if created else "Updated"
+            self.stdout.write(self.style.SUCCESS(f"{status} Category: {name} ({slug})"))
+
+        # 3. Seed Category Edges
+        edges_data = data.get('category_edges', [])
+        for e_info in edges_data:
+            from_slug = e_info.get('from_category')
+            to_slug = e_info.get('to_category')
+            rel_type = e_info.get('relation_type', 'belongs_to')
+            
+            from_cat = Category.objects.filter(slug=from_slug).first() if from_slug else None
+            to_cat = Category.objects.filter(slug=to_slug).first() if to_slug else None
+
+            if from_cat and to_cat:
+                edge, created = CategoryEdge.objects.update_or_create(
+                    from_category=from_cat,
+                    to_category=to_cat,
+                    relation_type=rel_type,
+                    defaults={
+                        'weight': e_info.get('weight', 1.0),
+                        'metadata': e_info.get('metadata', {}),
+                    }
+                )
+                status = "Created" if created else "Updated"
+                self.stdout.write(self.style.SUCCESS(f"{status} CategoryEdge: {from_cat.name} -> {to_cat.name} ({rel_type})"))
+
+        # 4. Seed Products and Variants
+        products_data = data.get('products', [])
+        for p_info in products_data:
+            sku = p_info.get('sku')
+            name = p_info.get('name')
+            slug = p_info.get('slug')
+            if not sku or not name or not slug:
+                continue
+
+            brand_obj = None
+            brand_slug = p_info.get('brand')
+            if brand_slug:
+                brand_obj = Brand.objects.filter(slug=brand_slug).first()
+
+            cat_obj = None
+            cat_slug = p_info.get('category')
+            if cat_slug:
+                cat_obj = Category.objects.filter(slug=cat_slug).first()
+
+            product, created = Product.objects.update_or_create(
+                sku=sku,
+                defaults={
+                    'name': name,
+                    'slug': slug,
+                    'brand': brand_obj,
+                    'category': cat_obj,
+                    'price': p_info.get('price', 0.0),
+                    'status': p_info.get('status', 'ACTIVE'),
+                    'is_active': p_info.get('is_active', True),
+                    'metadata': p_info.get('metadata', {}),
+                    'extensions': p_info.get('extensions', {}),
+                }
+            )
+            status = "Created" if created else "Updated"
+            self.stdout.write(self.style.SUCCESS(f"{status} Product: {name} ({sku})"))
+
+            # Seed Variants for this product
+            variants_data = p_info.get('variants', [])
+            for v_info in variants_data:
+                v_sku = v_info.get('sku')
+                if not v_sku:
+                    continue
+
+                variant, v_created = ProductVariant.objects.update_or_create(
+                    sku=v_sku,
+                    defaults={
+                        'product': product,
+                        'price': v_info.get('price', product.price),
+                        'compare_at_price': v_info.get('compare_at_price'),
+                        'barcode': v_info.get('barcode'),
+                        'status': v_info.get('status', 'ACTIVE'),
+                        'attributes': v_info.get('attributes', {}),
+                        'is_active': v_info.get('is_active', True),
+                    }
+                )
+                v_status = "Created" if v_created else "Updated"
+                self.stdout.write(self.style.SUCCESS(f"  {v_status} Variant: {v_sku}"))
+

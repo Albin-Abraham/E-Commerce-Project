@@ -1,0 +1,174 @@
+# Master Data Configuration Seed File
+# Contains curated Brands, Category Hierarchies, Category Edges, Products, and Product Variants for Shop Domain.
+
+brands:
+  - name: "Apex Electronics"
+    slug: "apex-electronics"
+    description: "High-performance consumer electronics, modern computing devices, and premium audio gear."
+    website: "https://apex-electronics.example.com"
+    is_active: true
+    metadata:
+      country_of_origin: "USA"
+      established: 2012
+      tier: "Premium"
+
+  - name: "Zenith Tech"
+    slug: "zenith-tech"
+    description: "Enterprise software, cloud infrastructure hardware, and scalable IoT components."
+    website: "https://zenithtech.example.com"
+    is_active: true
+    metadata:
+      country_of_origin: "Germany"
+      established: 2008
+      tier: "Enterprise"
+
+  - name: "Lumina Home"
+    slug: "lumina-home"
+    description: "Smart home automation, energy-efficient ambient lighting, and eco-friendly lifestyle gadgets."
+    website: "https://luminahome.example.com"
+    is_active: true
+    metadata:
+      country_of_origin: "Japan"
+      established: 2018
+      tier: "Consumer"
+
+categories:
+  - name: "Electronics"
+    slug: "electronics"
+    parent: null
+    is_active: true
+    metadata:
+      tax_category: "standard_tech"
+      icon: "cpu"
+
+  - name: "Computers & Laptops"
+    slug: "computers-laptops"
+    parent: "electronics"
+    is_active: true
+    metadata:
+      tax_category: "standard_tech"
+      icon: "laptop"
+
+  - name: "Smartphones & Accessories"
+    slug: "smartphones-accessories"
+    parent: "electronics"
+    is_active: true
+    metadata:
+      tax_category: "standard_tech"
+      icon: "smartphone"
+
+  - name: "Home & Office Automation"
+    slug: "home-office-automation"
+    parent: null
+    is_active: true
+    metadata:
+      tax_category: "consumer_goods"
+      icon: "home"
+
+category_edges:
+  - from_category: "computers-laptops"
+    to_category: "smartphones-accessories"
+    relation_type: "related_to"
+    weight: 0.85
+    metadata:
+      context: "Cross-sell tech accessories"
+
+products:
+  - sku: "PROD-APX-LAPTOP-15"
+    name: "Apex ProBook 15 Laptop"
+    slug: "apex-probook-15-laptop"
+    brand: "apex-electronics"
+    category: "computers-laptops"
+    price: 1299.99
+    status: "ACTIVE"
+    is_active: true
+    metadata:
+      processor: "Intel Core i7-13700H"
+      ram: "16GB DDR5"
+      storage: "512GB NVMe SSD"
+      display: "15.6-inch OLED 120Hz"
+      warranty: "2 Years Limited"
+    extensions:
+      seo:
+        meta_title: "Apex ProBook 15 - High Performance Laptop"
+        meta_description: "Buy Apex ProBook 15 Laptop with Intel i7 and OLED screen."
+      shipping:
+        weight_kg: 1.85
+        dimensions_cm: "35x24x1.8"
+    variants:
+      - sku: "VAR-APX-LAP-15-SLV-512"
+        price: 1299.99
+        compare_at_price: 1399.99
+        barcode: "840123450011"
+        status: "ACTIVE"
+        attributes:
+          color: "Silver"
+          storage: "512GB SSD"
+          ram: "16GB"
+      - sku: "VAR-APX-LAP-15-BLK-1TB"
+        price: 1499.99
+        compare_at_price: 1599.99
+        barcode: "840123450012"
+        status: "ACTIVE"
+        attributes:
+          color: "Space Black"
+          storage: "1TB SSD"
+          ram: "32GB"
+
+  - sku: "PROD-ZTH-SERVER-R1"
+    name: "Zenith RackServer R1000"
+    slug: "zenith-rackserver-r1000"
+    brand: "zenith-tech"
+    category: "computers-laptops"
+    price: 3499.00
+    status: "ACTIVE"
+    is_active: true
+    metadata:
+      rack_unit: "1U"
+      power_supply: "Dual Redundant 750W"
+      warranty: "3 Years Onsite"
+    extensions:
+      seo:
+        meta_title: "Zenith RackServer R1000 Enterprise Server"
+        meta_description: "Enterprise rack server for high throughput cloud workloads."
+      shipping:
+        weight_kg: 14.5
+        dimensions_cm: "60x48x4.4"
+    variants:
+      - sku: "VAR-ZTH-R1-STD"
+        price: 3499.00
+        compare_at_price: 3799.00
+        barcode: "840123450021"
+        status: "ACTIVE"
+        attributes:
+          cpu_cores: 32
+          ram: "64GB ECC"
+          storage: "2x 960GB NVMe Enterprise SSD"
+
+  - sku: "PROD-LUM-SMART-HUB"
+    name: "Lumina Smart Automation Hub"
+    slug: "lumina-smart-automation-hub"
+    brand: "lumina-home"
+    category: "home-office-automation"
+    price: 149.50
+    status: "ACTIVE"
+    is_active: true
+    metadata:
+      connectivity: "Zigbee 3.0 / Matter / Wi-Fi 6"
+      voice_assistant: "Multi-Platform"
+    extensions:
+      seo:
+        meta_title: "Lumina Smart Automation Hub with Matter Support"
+        meta_description: "Connect all your smart home sensors seamlessly."
+      shipping:
+        weight_kg: 0.35
+        dimensions_cm: "12x12x3"
+    variants:
+      - sku: "VAR-LUM-HUB-WHT"
+        price: 149.50
+        compare_at_price: 169.00
+        barcode: "840123450031"
+        status: "ACTIVE"
+        attributes:
+          color: "Pure White"
+          power_plug: "Universal"

@@ -30,3 +30,21 @@ class TestSeedingOrchestration(BaseTest, SeedingMixin, AssertionMixin):
         hrm = SystemModule.objects.filter(code='HRM').first()
         if hrm:
             self.assert_field(hrm, 'code', 'HRM')
+
+    def test_seed_master_data(self):
+        """Test seeding master data (Brands, Categories, CategoryEdges, Products, ProductVariants)."""
+        from apps.shop.infrastructure.models.brand import Brand
+        from apps.shop.infrastructure.models.category import Category, CategoryEdge
+        from apps.shop.infrastructure.models.product import Product
+        from apps.shop.infrastructure.models.variant import ProductVariant
+
+        output = self.run_seed_command('master_data')
+        assert "Created Brand" in output or "Updated Brand" in output
+        assert "Created Category" in output or "Updated Category" in output
+        assert "Created Product" in output or "Updated Product" in output
+
+        assert Brand.objects.filter(slug='apex-electronics').exists()
+        assert Category.objects.filter(slug='computers-laptops').exists()
+        assert Product.objects.filter(sku='PROD-APX-LAPTOP-15').exists()
+        assert ProductVariant.objects.filter(sku='VAR-APX-LAP-15-SLV-512').exists()
+
