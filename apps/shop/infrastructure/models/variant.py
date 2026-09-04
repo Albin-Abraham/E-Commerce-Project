@@ -18,7 +18,9 @@ class ProductVariant(BaseModel):
     )
     sku = CustomCharField(
         max_length=60,
-        rules=[RequiredRule("sku"), UniqueRule("sku")],
+        blank=True,
+        default="",
+        rules=[UniqueRule("sku")],
     )
     price = CustomDecimalField(
         max_digits=12,

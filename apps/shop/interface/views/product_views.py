@@ -1,5 +1,5 @@
 from core.base_views.api_views import BaseAPIView
-from core.admin.helpers.query_helpers import FilterSchema, FilterField
+from core.admin.helpers.query_helpers import FilterSchema, FilterField, LOOKUP_OPERATORS
 from apps.shop.infrastructure.models.product import Product
 from apps.shop.infrastructure.models.variant import ProductVariant
 from apps.shop.infrastructure.models.brand import Brand
@@ -52,6 +52,7 @@ class ProductViewSet(BaseAPIView):
         category=FilterField(type=str, lookups=["exact"]),
         brand=FilterField(type=str, lookups=["exact"]),
         price=FilterField(type=float, lookups=["exact", "gte", "lte", "gt", "lt"]),
+        metadata=FilterField(type=str, lookups=LOOKUP_OPERATORS),
     )
 
     def get_base_queryset(self):
@@ -61,6 +62,7 @@ class ProductViewSet(BaseAPIView):
 class ProductVariantViewSet(BaseAPIView):
     """
     Product Variants API ViewSet.
+    Integrated with FilterSchema for attribute and specifications filtering.
     """
     model = ProductVariant
     serializer_class = ProductVariantSerializer
@@ -74,6 +76,7 @@ class ProductVariantViewSet(BaseAPIView):
         status=FilterField(type=str, lookups=["exact"]),
         is_active=FilterField(type=bool),
         price=FilterField(type=float, lookups=["exact", "gte", "lte"]),
+        attributes=FilterField(type=str, lookups=LOOKUP_OPERATORS),
     )
 
     def get_base_queryset(self):

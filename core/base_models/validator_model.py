@@ -152,12 +152,33 @@ class NumberSeriesModelMixin(models.Model):
 
         if not doc_type:
             model_name = self.__class__.__name__.lower()
-            if model_name == "purchaseinvoice":
-                doc_type = "purchase_invoice"
-            elif model_name == "salesinvoice":
-                doc_type = "sales_invoice"
-            elif model_name == "supplier":
-                doc_type = "vendor"
+            model_doc_map = {
+                "requestforquotation": "rfq",
+                "rfq": "rfq",
+                "purchaserequest": "purchase_request",
+                "pr": "purchase_request",
+                "purchaseorder": "purchase_order",
+                "po": "purchase_order",
+                "goodsreceivednote": "grn",
+                "grn": "grn",
+                "purchaseinvoice": "purchase_invoice",
+                "pi": "purchase_invoice",
+                "salesorder": "sales_order",
+                "so": "sales_order",
+                "salesinvoice": "sales_invoice",
+                "si": "sales_invoice",
+                "deliverynote": "delivery_note",
+                "dn": "delivery_note",
+                "supplier": "vendor",
+                "customer": "customer",
+                "postransaction": "pos_transaction",
+                "journalentry": "journal_entry",
+                "jv": "journal_entry",
+                "paymententry": "payment_entry",
+                "pe": "payment_entry",
+            }
+            if model_name in model_doc_map:
+                doc_type = model_doc_map[model_name]
             else:
                 for dt, config in NumberSeriesRegistry._registry.items():
                     fname = config.get("field_name")

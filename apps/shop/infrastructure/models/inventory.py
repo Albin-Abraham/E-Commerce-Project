@@ -59,7 +59,9 @@ class SerialNumber(BaseModel):
     id = CustomShortUUIDField(primary_key=True, prefix="sno_")
     serial_number = CustomCharField(
         max_length=80,
-        rules=[RequiredRule("serial_number"), UniqueRule("serial_number")],
+        blank=True,
+        default="",
+        rules=[UniqueRule("serial_number")],
     )
     variant = models.ForeignKey(
         "shop.ProductVariant",
@@ -239,7 +241,9 @@ class StockTransfer(BaseModel):
     id = CustomShortUUIDField(primary_key=True, prefix="stf_")
     transfer_number = CustomCharField(
         max_length=60,
-        rules=[RequiredRule("transfer_number"), UniqueRule("transfer_number")],
+        blank=True,
+        default="",
+        rules=[UniqueRule("transfer_number")],
     )
     from_warehouse = models.ForeignKey(
         "shop.Warehouse",

@@ -106,7 +106,9 @@ class POSTransaction(BaseModel):
     )
     transaction_number = CustomCharField(
         max_length=60,
-        rules=[RequiredRule("transaction_number"), UniqueRule("transaction_number")],
+        blank=True,
+        default="",
+        rules=[UniqueRule("transaction_number")],
     )
     customer = models.ForeignKey(
         USER_MODEL,

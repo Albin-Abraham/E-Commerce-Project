@@ -1,5 +1,5 @@
 from core.base_views.api_views import BaseAPIView
-from core.admin.helpers.query_helpers import FilterSchema, FilterField
+from core.admin.helpers.query_helpers import FilterSchema, FilterField, LOOKUP_OPERATORS
 from apps.knowledgebase.models.kb import KnowledgeCategory, KnowledgeArticle, ProductKnowledgeLink
 from apps.knowledgebase.serializers import (
     KnowledgeCategorySerializer,
@@ -24,7 +24,7 @@ class KnowledgeCategoryViewSet(BaseAPIView):
 class KnowledgeArticleViewSet(BaseAPIView):
     """
     Knowledge Base Article API ViewSet.
-    Integrated with FilterSchema for searching manuals, guides, pitches, and compliance certs by title, slug, or tags.
+    Integrated with FilterSchema for searching manuals, guides, pitches, and compliance certs by title, slug, metadata, or tags.
     """
     model = KnowledgeArticle
     serializer_class = KnowledgeArticleSerializer
@@ -39,6 +39,7 @@ class KnowledgeArticleViewSet(BaseAPIView):
         category=FilterField(type=str, lookups=["exact"]),
         status=FilterField(type=str, lookups=["exact"]),
         is_internal_only=FilterField(type=bool),
+        metadata=FilterField(type=str, lookups=LOOKUP_OPERATORS),
     )
 
     def get_base_queryset(self):

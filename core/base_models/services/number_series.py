@@ -104,6 +104,24 @@ class NumberSeriesRegistry:
             "allowed_reset_policies": ["NEVER", "YEARLY", "MONTHLY", "DAILY"],
             "field_name": "customer_code",
         },
+        "pos_transaction": {
+            "label": _("POS Transaction"),
+            "default_pattern": "POS-{YYYY}-{SEQ:5}",
+            "allowed_reset_policies": ["NEVER", "YEARLY", "MONTHLY", "DAILY"],
+            "field_name": "transaction_number",
+        },
+        "journal_entry": {
+            "label": _("Journal Entry"),
+            "default_pattern": "JV-{YYYY}-{SEQ:5}",
+            "allowed_reset_policies": ["NEVER", "YEARLY", "MONTHLY", "DAILY"],
+            "field_name": "entry_number",
+        },
+        "payment_entry": {
+            "label": _("Payment Entry"),
+            "default_pattern": "PE-{YYYY}-{SEQ:5}",
+            "allowed_reset_policies": ["NEVER", "YEARLY", "MONTHLY", "DAILY"],
+            "field_name": "payment_number",
+        },
     }
 
     @classmethod

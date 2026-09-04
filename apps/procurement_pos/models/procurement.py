@@ -54,7 +54,9 @@ class PurchaseRequest(BaseModel):
     id = CustomShortUUIDField(primary_key=True, prefix="pr_")
     request_number = CustomCharField(
         max_length=50,
-        rules=[RequiredRule("request_number"), UniqueRule("request_number")],
+        blank=True,
+        default="",
+        rules=[UniqueRule("request_number")],
     )
     requested_by = models.ForeignKey(
         USER_MODEL,
@@ -88,7 +90,9 @@ class RequestForQuotation(BaseModel):
     id = CustomShortUUIDField(primary_key=True, prefix="rfq_")
     rfq_number = CustomCharField(
         max_length=50,
-        rules=[RequiredRule("rfq_number"), UniqueRule("rfq_number")],
+        blank=True,
+        default="",
+        rules=[UniqueRule("rfq_number")],
     )
     purchase_request = models.ForeignKey(
         PurchaseRequest,
@@ -147,7 +151,9 @@ class PurchaseOrder(BaseModel):
     id = CustomShortUUIDField(primary_key=True, prefix="po_")
     po_number = CustomCharField(
         max_length=50,
-        rules=[RequiredRule("po_number"), UniqueRule("po_number")],
+        blank=True,
+        default="",
+        rules=[UniqueRule("po_number")],
     )
     supplier = models.ForeignKey(
         Supplier,
@@ -219,7 +225,9 @@ class GoodsReceivedNote(BaseModel):
     id = CustomShortUUIDField(primary_key=True, prefix="grn_")
     grn_number = CustomCharField(
         max_length=50,
-        rules=[RequiredRule("grn_number"), UniqueRule("grn_number")],
+        blank=True,
+        default="",
+        rules=[UniqueRule("grn_number")],
     )
     purchase_order = models.ForeignKey(
         PurchaseOrder,
@@ -289,7 +297,9 @@ class PurchaseInvoice(BaseModel):
     id = CustomShortUUIDField(primary_key=True, prefix="piv_")
     invoice_number = CustomCharField(
         max_length=60,
-        rules=[RequiredRule("invoice_number"), UniqueRule("invoice_number")],
+        blank=True,
+        default="",
+        rules=[UniqueRule("invoice_number")],
     )
     purchase_order = models.ForeignKey(
         PurchaseOrder,

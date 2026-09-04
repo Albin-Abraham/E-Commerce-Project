@@ -17,7 +17,9 @@ class PaymentEntry(BaseModel, PartyReferenceMixin):
     id = CustomShortUUIDField(primary_key=True, prefix="pe_")
     payment_number = CustomCharField(
         max_length=60,
-        rules=[RequiredRule("payment_number"), UniqueRule("payment_number")],
+        blank=True,
+        default="",
+        rules=[UniqueRule("payment_number")],
     )
     company = models.ForeignKey(
         "core_admin.Company",

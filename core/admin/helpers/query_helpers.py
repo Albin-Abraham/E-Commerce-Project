@@ -103,13 +103,14 @@ class FilterSchema:
         """
         Resolve a query param name to its FilterField.
         Handles lookup suffixes: 'name__icontains' -> field='name', lookup='icontains'
+        Supports JSONField deep key paths (e.g., 'metadata__specs__ram', 'attributes__color__icontains')
         Returns (FilterField, resolved_lookup, model_field) or (None, None, None) if not found.
         """
-        # Try exact match first (e.g., param "name" -> field "name")
+        # 1. Try exact match first (e.g., param "name" -> field "name")
         if param_name in self.fields:
             return self.fields[param_name], "exact", param_name
 
-        # Try splitting lookup suffix (e.g., "name__icontains" -> base="name", lookup="icontains")
+        # 2. Try splitting single lookup suffix (e.g., "name__icontains" -> base="name", lookup="icontains")
         parts = param_name.rsplit("__", 1)
         if len(parts) == 2:
             base, lookup = parts
@@ -117,8 +118,21 @@ class FilterSchema:
                 field = self.fields[base]
                 if lookup in field.lookups:
                     return field, lookup, base
-                # Lookup not allowed for this field
-                return None, None, None
+
+        # 3. Handle multi-level JSON key paths (e.g., "attributes__color__icontains", "metadata__specs__ram")
+        if "__" in param_name:
+            segments = param_name.split("__")
+            root_field = segments[0]
+            if root_field in self.fields:
+                field_meta = self.fields[root_field]
+                last_segment = segments[-1]
+                if last_segment in LOOKUP_OPERATORS:
+                    lookup = last_segment
+                    resolved_field = "__".join(segments[:-1])
+                else:
+                    lookup = "exact"
+                    resolved_field = param_name
+                return field_meta, lookup, resolved_field
 
         return None, None, None
 

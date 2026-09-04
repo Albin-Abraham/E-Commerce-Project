@@ -19,7 +19,9 @@ class Customer(BaseModel):
     id = CustomShortUUIDField(primary_key=True, prefix="cust_")
     customer_code = CustomCharField(
         max_length=50,
-        rules=[RequiredRule("customer_code"), UniqueRule("customer_code")],
+        blank=True,
+        default="",
+        rules=[UniqueRule("customer_code")],
         help_text="Unique customer identifier code.",
     )
     user = models.OneToOneField(

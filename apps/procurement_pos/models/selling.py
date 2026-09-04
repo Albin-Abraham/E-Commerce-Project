@@ -25,7 +25,9 @@ class SalesOrder(BaseModel, PartyReferenceMixin):
     id = CustomShortUUIDField(primary_key=True, prefix="so_")
     order_number = CustomCharField(
         max_length=60,
-        rules=[RequiredRule("order_number"), UniqueRule("order_number")],
+        blank=True,
+        default="",
+        rules=[UniqueRule("order_number")],
     )
     customer = models.ForeignKey(
         "customers.Customer",
@@ -85,7 +87,9 @@ class DeliveryNote(BaseModel):
     id = CustomShortUUIDField(primary_key=True, prefix="dn_")
     delivery_number = CustomCharField(
         max_length=60,
-        rules=[RequiredRule("delivery_number"), UniqueRule("delivery_number")],
+        blank=True,
+        default="",
+        rules=[UniqueRule("delivery_number")],
     )
     sales_order = models.ForeignKey(
         SalesOrder,
@@ -122,7 +126,9 @@ class SalesInvoice(BaseModel, PartyReferenceMixin):
     id = CustomShortUUIDField(primary_key=True, prefix="sinv_")
     invoice_number = CustomCharField(
         max_length=60,
-        rules=[RequiredRule("invoice_number"), UniqueRule("invoice_number")],
+        blank=True,
+        default="",
+        rules=[UniqueRule("invoice_number")],
     )
     sales_order = models.ForeignKey(
         SalesOrder,
