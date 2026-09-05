@@ -4,7 +4,8 @@ from apps.shop.infrastructure.models.brand import Brand
 from apps.shop.infrastructure.models.warehouse import Warehouse
 from apps.shop.infrastructure.models.inventory import Inventory
 from apps.shop.infrastructure.models.polymorphic import Media, Review, ActivityLog
-from apps.shop.infrastructure.models.graph import EntityEdge, BOMEdge, CategoryEdge
+from apps.shop.infrastructure.models.graph import EntityEdge, BOMEdge
+from apps.shop.infrastructure.models.category import CategoryEdge
 from apps.shop.infrastructure.models.events import DomainEventOutbox
 
 

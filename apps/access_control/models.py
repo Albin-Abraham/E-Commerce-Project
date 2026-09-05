@@ -145,6 +145,8 @@ from apps.access_control.valuesets import (
     AUTO_SET_ACTION_VALUESET,
     POLICY_CONFIG_STATUS_VALUESET,
     POLICY_EFFECT_VALUESET,
+    ApprovalActionType,
+    ApprovalRequestStatus,
 )
 
 

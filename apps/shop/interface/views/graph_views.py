@@ -1,6 +1,7 @@
 from core.base_views.api_views import BaseAPIView
 from core.admin.helpers.query_helpers import FilterSchema, FilterField
-from apps.shop.infrastructure.models.graph import EntityEdge, CategoryEdge, BOMEdge
+from apps.shop.infrastructure.models.graph import EntityEdge, BOMEdge
+from apps.shop.infrastructure.models.category import CategoryEdge
 from apps.shop.infrastructure.serializers.shop_serializers import (
     EntityEdgeSerializer,
     CategoryEdgeSerializer,

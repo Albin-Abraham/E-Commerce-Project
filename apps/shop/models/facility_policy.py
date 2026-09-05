@@ -3,18 +3,18 @@ from core.base_models.validator_model import BaseModel
 from core.base_models.fields.short_ui_fields import CustomShortUUIDField
 from core.base_models.fields.char_fields import CustomCharField, CustomTextField
 from core.base_models.validators.rules import RequiredRule, UniqueRule
-from shared_domain.base.valuesets import ValueSet
+from shared_domain.base.valuesets import ValueSet, ValueSetItem
 
 DELIVERY_PARTNER_TYPE_VALUESET = ValueSet(
-    code="DELIVERY_PARTNER_TYPE",
-    name="Delivery Partner Type",
+    name="delivery_partner_type",
+    domain="shop",
     description="Classification of logistics delivery partners and courier fleets",
     items=[
-        {"code": "IN_HOUSE", "label": "In-House Delivery Fleet", "is_active": True},
-        {"code": "EXPRESS_COURIER", "label": "Express Courier (Same-Day / 30-Min)", "is_active": True},
-        {"code": "NATIONAL_CARRIER", "label": "National 3PL Carrier (FedEx/DHL)", "is_active": True},
-        {"code": "HYPERLOCAL", "label": "Hyperlocal Bike / EV Courier", "is_active": True},
-        {"code": "COLD_CHAIN", "label": "Cold Chain Refrigerated Fleet", "is_active": True},
+        ValueSetItem(code="IN_HOUSE", label="In-House Delivery Fleet"),
+        ValueSetItem(code="EXPRESS_COURIER", label="Express Courier (Same-Day / 30-Min)"),
+        ValueSetItem(code="NATIONAL_CARRIER", label="National 3PL Carrier (FedEx/DHL)"),
+        ValueSetItem(code="HYPERLOCAL", label="Hyperlocal Bike / EV Courier"),
+        ValueSetItem(code="COLD_CHAIN", label="Cold Chain Refrigerated Fleet"),
     ],
 )
 

@@ -1,5 +1,22 @@
 from shared_domain.base.valuesets import ValueSet, ValueSetItem, ValueSetRegistry
 
+
+class ApprovalRequestStatus:
+    PENDING = "pending"
+    APPROVED = "approved"
+    REJECTED = "rejected"
+    CANCELLED = "cancelled"
+    ESCALATED = "escalated"
+
+
+class ApprovalActionType:
+    AUTO_APPROVE = "auto_approve"
+    AUTO_REJECT = "auto_reject"
+    ESCALATE = "escalate"
+    NONE = "none"
+    APPROVE = "approve"
+    REJECT = "reject"
+
 POLICY_EFFECT_VALUESET = ValueSet(
     name="policy_effect",
     domain="access_control",

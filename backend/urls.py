@@ -8,6 +8,11 @@ from core.admin.views.health_views import health_live, health_ready
 
 from rest_framework.permissions import AllowAny
 
+handler400 = "django.views.defaults.bad_request"
+handler403 = "django.views.defaults.permission_denied"
+handler404 = "django.views.defaults.page_not_found"
+handler500 = "django.views.defaults.server_error"
+
 urlpatterns = [
     # Root Redirect
     path('', RedirectView.as_view(url='/api/docs/', permanent=False), name='api-root'),
