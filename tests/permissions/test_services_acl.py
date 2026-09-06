@@ -1,6 +1,7 @@
 import pytest
 from core.admin.models.company import Company
 from core.admin.models.branch import Branch
+from core.admin.models.business_unit import BusinessUnit
 from apps.access_control.models import EntityAccessControl
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.auth import get_user_model
@@ -37,17 +38,30 @@ class TestServiceACL:
 
     def test_get_queryset_scopes_by_master_acl(self, db, test_user, companies):
         from core.admin.services.branch_service import BranchService
-        
+
+        # Create business units for companies
+        bu1 = BusinessUnit(name="BU-1", code="BU-1", company=companies[0])
+        bu1._validated_by_mediator = True
+        bu1.save()
+
+        bu2 = BusinessUnit(name="BU-2", code="BU-2", company=companies[1])
+        bu2._validated_by_mediator = True
+        bu2.save()
+
+        bu3 = BusinessUnit(name="BU-3", code="BU-3", company=companies[2])
+        bu3._validated_by_mediator = True
+        bu3.save()
+
         # Create branches for companies
-        b1 = Branch(name="B1", code="B1", company=companies[0], opened_date="2024-01-01", location="L1")
+        b1 = Branch(name="B1", code="B1", company=companies[0], business_unit=bu1, opened_date="2024-01-01", location="L1")
         b1._validated_by_mediator = True
         b1.save()
         
-        b2 = Branch(name="B2", code="B2", company=companies[1], opened_date="2024-01-01", location="L2")
+        b2 = Branch(name="B2", code="B2", company=companies[1], business_unit=bu2, opened_date="2024-01-01", location="L2")
         b2._validated_by_mediator = True
         b2.save()
         
-        b3 = Branch(name="B3", code="B3", company=companies[2], opened_date="2024-01-01", location="L3")
+        b3 = Branch(name="B3", code="B3", company=companies[2], business_unit=bu3, opened_date="2024-01-01", location="L3")
         b3._validated_by_mediator = True
         b3.save()
 
@@ -72,8 +86,12 @@ class TestServiceACL:
 
     def test_get_queryset_no_access(self, db, test_user, companies):
         from core.admin.services.branch_service import BranchService
-        
-        b1 = Branch(name="B1", code="B1", company=companies[0], opened_date="2024-01-01", location="L1")
+
+        bu1 = BusinessUnit(name="BU-1", code="BU-1", company=companies[0])
+        bu1._validated_by_mediator = True
+        bu1.save()
+
+        b1 = Branch(name="B1", code="B1", company=companies[0], business_unit=bu1, opened_date="2024-01-01", location="L1")
         b1._validated_by_mediator = True
         b1.save()
 

@@ -1,7 +1,5 @@
 import json
 import logging
-import firebase_admin
-from firebase_admin import credentials, messaging
 from core.base_models.system_models import SystemConfig
 
 logger = logging.getLogger(__name__)
@@ -14,9 +12,40 @@ class FirebaseNotificationService:
     Dispatches FCM multicast push notifications and automatically cleans up expired device tokens.
     """
 
+    _firebase_import_error: str | None = None
+
+    @classmethod
+    def _firebase(cls):
+        """
+        Lazily imports the firebase_admin SDK so the module and any downstream
+        workers/autoresponders load cleanly even when firebase-admin is not
+        installed (CI/test/dev). Raises later only if a push is actually attempted.
+        """
+        if cls._firebase_import_error is not None:
+            return None
+        if cls.__dict__.get("_firebase_admin"):
+            return cls._firebase_admin
+        try:
+            import firebase_admin
+            from firebase_admin import credentials, messaging  # noqa: F401 (re-exposed via _firebase_admin)
+            cls._firebase_admin = {
+                "app": firebase_admin,
+                "credentials": credentials,
+                "messaging": messaging,
+            }
+            return cls._firebase_admin
+        except Exception as exc:  # ModuleNotFoundError or init failure
+            cls._firebase_import_error = str(exc)
+            logger.warning(f"firebase_admin unavailable; FCM push disabled: {cls._firebase_import_error}")
+            return None
+
     @classmethod
     def _initialize_firebase(cls):
         """Initializes firebase_admin app singleton if not already initialized."""
+        fb = cls._firebase()
+        if fb is None:
+            return False
+        firebase_admin, credentials = fb["app"], fb["credentials"]
         if not firebase_admin._apps:
             cred_json_str = SystemConfig.load_val("FIREBASE_CREDENTIALS_JSON")
             if not cred_json_str:
@@ -45,6 +74,11 @@ class FirebaseNotificationService:
 
         if not cls._initialize_firebase():
             return {"success": 0, "failure": len(tokens), "error": "Firebase SDK not initialized"}
+
+        fb = cls._firebase()
+        if fb is None:
+            return {"success": 0, "failure": len(tokens), "error": "Firebase SDK not installed"}
+        messaging = fb["messaging"]
 
         try:
             message = messaging.MulticastMessage(

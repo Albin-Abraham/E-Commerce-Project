@@ -1,4 +1,3 @@
-from uuid import uuid4
 from django.db import models
 from core.base_models.validator_model import BaseModel
 from core.base_models.scoping_models import BranchModelMixin
@@ -12,6 +11,13 @@ from apps.shop.valuesets import SHOP_ORDER_STATUS_VALUESET
 
 
 class Order(BaseModel, BranchModelMixin):
+    class StatusChoices:
+        PENDING = SHOP_ORDER_STATUS_VALUESET.get("pending").code
+        CONFIRMED = SHOP_ORDER_STATUS_VALUESET.get("confirmed").code
+        SHIPPED = SHOP_ORDER_STATUS_VALUESET.get("shipped").code
+        DELIVERED = SHOP_ORDER_STATUS_VALUESET.get("delivered").code
+        CANCELLED = SHOP_ORDER_STATUS_VALUESET.get("cancelled").code
+
     id = CustomShortUUIDField(primary_key=True, prefix="ord_")
 
     user = models.ForeignKey(
@@ -44,9 +50,8 @@ class Order(BaseModel, BranchModelMixin):
         "destroy": "delete",
     }
 
-    def _override_pre_save(self, is_creating):
-        if is_creating and not self.order_number:
-            self.order_number = f"ORD-{uuid4().hex[:8].upper()}"
+    _number_series_doc_type = "shop_order"
+    _number_series_field = "order_number"
 
     class Meta(BaseModel.Meta):
         db_table = "shop_orders"

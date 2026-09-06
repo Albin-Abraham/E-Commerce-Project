@@ -14,6 +14,11 @@ class DomainEventOutbox(BaseModel):
     Guarantees event persistence, idempotency, versioning, and replay capability.
     """
 
+    class EventStatus:
+        PENDING = EVENT_STATUS_VALUESET.get("PENDING").code
+        PROCESSED = EVENT_STATUS_VALUESET.get("PROCESSED").code
+        FAILED = EVENT_STATUS_VALUESET.get("FAILED").code
+
     id = CustomShortUUIDField(primary_key=True, prefix="evt_")
     event_type = models.CharField(max_length=100, help_text="e.g. PRODUCT_UPDATED, STOCK_RESERVED")
     version = models.CharField(max_length=20, default="1.0", help_text="Event schema version")
@@ -45,12 +50,12 @@ class DomainEventOutbox(BaseModel):
         verbose_name_plural = "Domain Event Outbox Entries"
 
     def mark_processed(self):
-        self.status = "PROCESSED"
+        self.status = self.EventStatus.PROCESSED
         self.processed_at = timezone.now()
         self.save(update_fields=["status", "processed_at", "updated_at"])
 
     def mark_failed(self, error: str):
-        self.status = "FAILED"
+        self.status = self.EventStatus.FAILED
         self.retry_count += 1
         self.error_log = error
         self.save(update_fields=["status", "retry_count", "error_log", "updated_at"])

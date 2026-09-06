@@ -44,14 +44,13 @@ class CustomerRegistrationService:
             username=username_clean,
             email=email_clean,
             password=password,
-            first_name=full_name.split()[0] if full_name else "",
-            last_name=" ".join(full_name.split()[1:]) if full_name and len(full_name.split()) > 1 else "",
+            full_name=full_name.strip() if full_name else "",
         )
 
         # 2. Auto-generate Customer Code
         customer_code = NumberSeriesService.next(
             document_type="customer",
-            company_id=company_id,
+            company=company_id,
         ) or f"CUST-{user.id[:6].upper()}"
 
         # 3. Create Customer Entity
@@ -68,10 +67,16 @@ class CustomerRegistrationService:
         )
 
         # 4. Create Customer Preferences Default Profile
+        preferred_currency = None
+        if company_id:
+            from apps.accounting.models.currency import Currency
+
+            preferred_currency = Currency.objects.filter(code__iexact="USD").first()
+
         CustomerPreference.objects.create(
             customer=customer,
             preferred_language="en",
-            preferred_currency="USD",
+            preferred_currency=preferred_currency,
             email_notifications=True,
             sms_notifications=bool(phone),
         )

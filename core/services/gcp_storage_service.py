@@ -99,4 +99,4 @@ class GCPStorageService:
         except Exception as exc:
             logger.warning(f"Failed to mirror social avatar to Google Bucket: {exc}")
 
-        return source_avatar_url or gcs_public_url
+        return gcs_public_url

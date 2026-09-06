@@ -46,6 +46,10 @@ CELERY_TASK_EAGER_PROPAGATES = True
 
 ALLOWED_HOSTS = ['*']
 
+import tempfile
+STATIC_ROOT = Path(tempfile.mkdtemp(prefix="yafei_static_"))
+MEDIA_ROOT = Path(tempfile.mkdtemp(prefix="yafei_media_"))
+
 AUTHENTICATION_BACKENDS = [
     'core.admin.authentication.MultiFieldAuthBackend',
 ]

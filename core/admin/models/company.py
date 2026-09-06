@@ -38,6 +38,8 @@ class Company(BaseModel):
     )
     email = CustomEmailField(
         unique=True,
+        null=True,
+        blank=True,
         rules=[RequiredRule("email"), EmailRule("email"), UniqueRule("email")]
     )
     code = CustomCharField(

@@ -6,7 +6,8 @@ from rest_framework import status
 from apps.customers.models.customer import Customer, CustomerAddress, CustomerPreference, SocialAccount
 from apps.customers.services.registration_service import CustomerRegistrationService
 from apps.customers.services.oauth_service import SocialOAuthAuthService
-from core.base_models.system_models import SystemConfig, Company
+from core.base_models.system_models import SystemConfig
+from core.admin.models.company import Company
 
 User = get_user_model()
 

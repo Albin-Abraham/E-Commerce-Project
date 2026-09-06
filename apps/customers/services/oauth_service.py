@@ -2,6 +2,7 @@ import logging
 from django.contrib.auth import get_user_model
 from django.db import transaction
 from django.utils import timezone
+from django.utils.crypto import get_random_string
 from apps.customers.models.customer import Customer, SocialAccount
 from apps.customers.services.registration_service import CustomerRegistrationService
 from core.services.gcp_storage_service import GCPStorageService
@@ -107,7 +108,7 @@ class SocialOAuthAuthService:
             username_candidate = f"{username_candidate}_{provider_uid[:4]}"
 
         # Generate temporary random password for OAuth social user
-        temp_pass = User.objects.make_random_password()
+        temp_pass = get_random_string(32)
 
         user, customer = CustomerRegistrationService.register_customer(
             username=username_candidate,

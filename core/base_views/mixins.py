@@ -32,15 +32,17 @@ class NumberSeriesInjectionMixin:
             ) or NumberSeriesRegistry.get_field_name(doc_type)
 
             if field_name and not data.get(field_name):
-                company_id = (
-                    request.session.get("company_id")
-                    if hasattr(request, "session")
-                    else None
-                )
+                company_id = None
+                if hasattr(request, "session"):
+                    company_id = request.session.get("company_id")
+                if not company_id:
+                    from core.admin.utils.context import RequestContext
+
+                    company_id = RequestContext.get_company_id()
 
                 company = None
                 if company_id:
-                    from core.admin.models.admin import Company
+                    from core.admin.models.company import Company
 
                     company = Company.objects.filter(pk=company_id).first()
 
@@ -72,11 +74,13 @@ class CurrencyInjectionMixin:
 
         field_name = getattr(self, "currency_field", "currency")
         if field_name and not data.get(field_name):
-            company_id = (
-                request.session.get("company_id")
-                if hasattr(request, "session")
-                else None
-            )
+            company_id = None
+            if hasattr(request, "session"):
+                company_id = request.session.get("company_id")
+            if not company_id:
+                from core.admin.utils.context import RequestContext
+
+                company_id = RequestContext.get_company_id()
             currency_code = None
 
             if company_id:

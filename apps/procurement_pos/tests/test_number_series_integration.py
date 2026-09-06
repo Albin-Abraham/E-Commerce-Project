@@ -1,6 +1,8 @@
 import pytest
+from decimal import Decimal
 from unittest.mock import MagicMock
 from django.test import TestCase
+from django.contrib.auth import get_user_model
 
 from core.base_models.services.number_series import NumberSeriesRegistry, NumberSeriesService
 from apps.procurement_pos.models.procurement import (
@@ -17,8 +19,11 @@ from apps.procurement_pos.models.selling import (
     SalesInvoice,
 )
 from apps.shop.infrastructure.models.product import Product
+from apps.shop.infrastructure.models.variant import ProductVariant
 from apps.shop.infrastructure.models.inventory import SerialNumber, StockTransfer
+from apps.shop.infrastructure.models.warehouse import Warehouse
 from apps.customers.models.customer import Customer
+from core.admin.models.company import Company
 
 
 class NumberSeriesIntegrationTestCase(TestCase):
@@ -26,6 +31,17 @@ class NumberSeriesIntegrationTestCase(TestCase):
     Test suite verifying seamless integration of NumberSeriesService
     across Procurement, Selling, Inventory, and Customer entities.
     """
+
+    def _create_user(self, username):
+        return get_user_model().objects.create_user(
+            username=username, email=f"{username}@example.com", password="password123"
+        )
+
+    def _create_company(self, name):
+        return Company.objects.create(name=name, code=name.upper().replace(" ", "-"))
+
+    def _create_warehouse(self, name, code):
+        return Warehouse.objects.create(name=name, code=code)
 
     def test_registry_contains_all_domain_document_types(self):
         registered_types = NumberSeriesRegistry.enabled_document_types()
@@ -61,11 +77,9 @@ class NumberSeriesIntegrationTestCase(TestCase):
         self.assertTrue(supplier.code.startswith("VEN-"))
 
         # PurchaseRequest number auto-generation
-        user_mock = MagicMock()
-        user_mock.id = "user_1"
-        user_mock.username = "procurement_officer"
-        
-        pr = PurchaseRequest(requested_by=user_mock)
+        user = self._create_user("procurement_officer")
+
+        pr = PurchaseRequest(requested_by=user)
         pr.save()
         self.assertTrue(pr.request_number.startswith("PR-"))
 
@@ -75,14 +89,13 @@ class NumberSeriesIntegrationTestCase(TestCase):
         self.assertTrue(rfq.rfq_number.startswith("RFQ-"))
 
         # PurchaseOrder number auto-generation
-        po = PurchaseOrder(supplier=supplier, created_by=user_mock)
+        po = PurchaseOrder(supplier=supplier, created_by=user)
         po.save()
         self.assertTrue(po.po_number.startswith("PO-"))
 
         # GoodsReceivedNote number auto-generation
-        warehouse_mock = MagicMock()
-        warehouse_mock.name = "Central Warehouse"
-        grn = GoodsReceivedNote(purchase_order=po, warehouse=warehouse_mock)
+        warehouse = self._create_warehouse("Central Warehouse", "WH-CEN")
+        grn = GoodsReceivedNote(purchase_order=po, warehouse=warehouse)
         grn.save()
         self.assertTrue(grn.grn_number.startswith("GRN-"))
 
@@ -92,19 +105,21 @@ class NumberSeriesIntegrationTestCase(TestCase):
         self.assertTrue(pi.invoice_number.startswith("PI-"))
 
     def test_selling_models_auto_generate_numbers(self):
+        company = self._create_company("Selling Co")
+
         # SalesOrder order_number auto-generation
-        so = SalesOrder(total_amount=250.00)
+        so = SalesOrder(total_amount=250.00, company=company)
         so.save()
         self.assertTrue(so.order_number.startswith("SO-"))
 
         # DeliveryNote delivery_number auto-generation
-        warehouse_mock = MagicMock()
-        dn = DeliveryNote(sales_order=so, warehouse=warehouse_mock)
+        warehouse = self._create_warehouse("Dispatch Warehouse", "WH-DSP")
+        dn = DeliveryNote(sales_order=so, warehouse=warehouse)
         dn.save()
         self.assertTrue(dn.delivery_number.startswith("DN-"))
 
         # SalesInvoice invoice_number auto-generation
-        sinv = SalesInvoice(sales_order=so, grand_total=250.00)
+        sinv = SalesInvoice(sales_order=so, grand_total=250.00, company=company)
         sinv.save()
         self.assertTrue(sinv.invoice_number.startswith("INV-"))
 
@@ -115,17 +130,15 @@ class NumberSeriesIntegrationTestCase(TestCase):
         self.assertTrue(product.sku.startswith("ITEM-"))
 
         # SerialNumber auto-generation
-        variant_mock = MagicMock()
-        variant_mock.sku = product.sku
-        sn = SerialNumber(variant=variant_mock)
+        variant = ProductVariant(product=product, sku="VAR-MOUSE", price=Decimal("29.99"))
+        variant.save()
+        sn = SerialNumber(variant=variant)
         sn.save()
         self.assertTrue(sn.serial_number.startswith("SN-"))
 
         # StockTransfer transfer_number auto-generation
-        wh_a = MagicMock()
-        wh_a.name = "Warehouse A"
-        wh_b = MagicMock()
-        wh_b.name = "Warehouse B"
+        wh_a = self._create_warehouse("Warehouse A", "WH-A")
+        wh_b = self._create_warehouse("Warehouse B", "WH-B")
         st = StockTransfer(from_warehouse=wh_a, to_warehouse=wh_b)
         st.save()
         self.assertTrue(st.transfer_number.startswith("TRF-"))
@@ -139,9 +152,9 @@ class NumberSeriesIntegrationTestCase(TestCase):
         custom_po_number = "CUSTOM-PO-9999"
         supplier = Supplier(name="Custom Vendor")
         supplier.save()
-        
-        user_mock = MagicMock()
-        po = PurchaseOrder(po_number=custom_po_number, supplier=supplier, created_by=user_mock)
+
+        user = self._create_user("po_creator")
+        po = PurchaseOrder(po_number=custom_po_number, supplier=supplier, created_by=user)
         po.save()
         self.assertEqual(po.po_number, custom_po_number)
 
@@ -154,6 +167,9 @@ class NumberSeriesIntegrationTestCase(TestCase):
 
     def test_base_apiview_mixins_injection(self):
         from core.base_views.mixins import NumberSeriesInjectionMixin, CurrencyInjectionMixin
+        from apps.accounting.models.currency import Currency
+
+        Currency.objects.create(code="USD", name="US Dollar")
 
         class MockView(NumberSeriesInjectionMixin, CurrencyInjectionMixin):
             document_type = "sales_order"

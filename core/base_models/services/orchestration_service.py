@@ -81,7 +81,8 @@ class OrchestrationService:
         """
         Updates or creates a SystemHealth record.
         """
-        logger.debug(f"Health check for {component}: {status} ({latency:.2f}ms)")
+        latency_str = f"{latency:.2f}" if latency is not None else "?"
+        logger.debug(f"Health check for {component}: {status} ({latency_str}ms)")
         
         if not persist:
             logger.info(f"Bootstrap verified {component} connectivity: {status}")

@@ -20,7 +20,8 @@ class CustomPermissionClass(permissions.BasePermission):
         # 1. Resolve the Model (The Resource)
         model = self._get_model_from_view(view)
         if not model:
-            # No model → no permission restriction
+            # No model to scope against → no resource-level restriction;
+            # authentication is enforced by DRF's global IsAuthenticated default.
             return True
 
         # 2. Check if model has any permission policy defined

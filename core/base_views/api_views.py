@@ -9,6 +9,7 @@ from rest_framework.views import APIView
 
 
 from core.admin.helpers.model_helpers import build_tenant_filter, get_object_with_scoping
+from core.admin.helpers.display_helpers import get_display_name
 from core.admin.helpers.pagination_helpers import StandardResultsSetPagination, paginate_queryset
 from core.admin.helpers.query_helpers import filter_queryset
 from core.admin.helpers.response_helpers import ResponseFactory

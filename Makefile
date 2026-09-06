@@ -119,7 +119,7 @@ lint-imports:
 lint: lint-imports
 
 test:
-	$(COMPOSE) --env-file $(ENV_FILE) run --rm web python manage.py test
+	$(COMPOSE) --env-file $(ENV_FILE) run --rm web python -m pytest
 
 check: lint test check-migrate
 

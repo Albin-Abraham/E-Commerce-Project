@@ -50,3 +50,7 @@ os.environ['DEBUG'] = 'True'
 os.environ['SECRET_KEY'] = SECRET_KEY
 os.environ['CACHE_URL'] = 'locmem://'
 
+import tempfile
+STATIC_ROOT = Path(tempfile.mkdtemp(prefix='yafei_static_'))
+MEDIA_ROOT = Path(tempfile.mkdtemp(prefix='yafei_media_'))
+

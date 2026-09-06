@@ -66,6 +66,11 @@ class SalesOrder(BaseModel, PartyReferenceMixin):
         help_text="Sales Order transaction currency",
     )
     total_amount = models.DecimalField(max_digits=12, decimal_places=2, default=0.0)
+    company = models.ForeignKey(
+        "core_admin.Company",
+        on_delete=models.CASCADE,
+        related_name="sales_orders",
+    )
 
     class Meta(BaseModel.Meta):
         db_table = "sales_orders"

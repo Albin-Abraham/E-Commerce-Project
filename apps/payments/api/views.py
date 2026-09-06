@@ -1,5 +1,6 @@
 from rest_framework import viewsets, status
 from rest_framework.decorators import action
+from rest_framework.permissions import AllowAny
 from core.base_views.api_views import BaseAPIView
 from core.admin.helpers.response_helpers import ResponseFactory
 from apps.payments.models import PaymentTransaction, PaymentGatewayConfig
@@ -107,14 +108,14 @@ class PaymentTransactionViewSet(viewsets.ModelViewSet):
     queryset = PaymentTransaction.objects.all()
     serializer_class = PaymentTransactionSerializer
 
-    @action(detail=False, methods=["post"], url_path="initiate")
+    @action(detail=False, methods=["post"], url_path="initiate", permission_classes=[AllowAny])
     def initiate_payment(self, request):
         return PaymentInitiateWorkflowAPIView().post(request)
 
-    @action(detail=False, methods=["post"], url_path="verify-razorpay")
+    @action(detail=False, methods=["post"], url_path="verify-razorpay", permission_classes=[AllowAny])
     def verify_razorpay(self, request):
         return PaymentRazorpayVerifyWorkflowAPIView().post(request)
 
-    @action(detail=False, methods=["post"], url_path="capture-paypal")
+    @action(detail=False, methods=["post"], url_path="capture-paypal", permission_classes=[AllowAny])
     def capture_paypal(self, request):
         return PaymentPayPalCaptureWorkflowAPIView().post(request)

@@ -1,8 +1,10 @@
 # core/admin/utils/context.py
 import contextvars
 from typing import Optional, Dict, Any
+from django.http import JsonResponse
 from core.admin.constants import PlatformHeaders
 from core.session.context import SessionContext
+from core.base_models.exceptions import DomainException
 from contextlib import contextmanager
 
 # Industrialized Context Variables (ASGI/Channels Ready)
@@ -122,6 +124,16 @@ class RequestContextMiddleware:
     def __init__(self, get_response):
         self.get_response = get_response
 
+    @staticmethod
+    def _tenant_error_response(exc: DomainException) -> JsonResponse:
+        status = 403 if exc.code in ("unauthorized_company", "unauthorized_branch") else exc.status_code
+        payload = {
+            "status": "error",
+            "code": exc.code,
+            "message": exc.message,
+        }
+        return JsonResponse(payload, status=status)
+
     def __call__(self, request):
         # 1. Identity & Network
         RequestContext._set_user(request.user if request.user.is_authenticated else None)
@@ -136,9 +148,31 @@ class RequestContextMiddleware:
         RequestContext._set_version(request.headers.get(PlatformHeaders.PLATFORM_VERSION, '1.0.0'))
 
         # 3. Tenant Scoping Adaptation (Session -> Headers)
-        company_id = SessionContext.get_company_id(request) or request.headers.get(PlatformHeaders.TENANT)
-        business_unit_id = SessionContext.get_business_unit_id(request) or request.headers.get(PlatformHeaders.TENANT_BUSINESS_UNIT)
-        branch_id = SessionContext.get_branch_id(request) or request.headers.get(PlatformHeaders.TENANT_BRANCH)
+        if request.user.is_authenticated:
+            company_id = SessionContext.get_company_id(request) or request.headers.get(PlatformHeaders.TENANT)
+            business_unit_id = SessionContext.get_business_unit_id(request) or request.headers.get(PlatformHeaders.TENANT_BUSINESS_UNIT)
+            branch_id = SessionContext.get_branch_id(request) or request.headers.get(PlatformHeaders.TENANT_BRANCH)
+
+            # Header-provided scope must pass the same hierarchy + ACL validation as session scope.
+            if (
+                request.headers.get(PlatformHeaders.TENANT)
+                or request.headers.get(PlatformHeaders.TENANT_BUSINESS_UNIT)
+                or request.headers.get(PlatformHeaders.TENANT_BRANCH)
+            ):
+                try:
+                    SessionContext._validate_hierarchy(
+                        request,
+                        company_id=company_id,
+                        business_unit_id=business_unit_id,
+                        branch_id=branch_id,
+                    )
+                except DomainException as e:
+                    return self._tenant_error_response(e)
+        else:
+            # Unauthenticated flows (login, token, schema) must not consume header-based tenant scope.
+            company_id = SessionContext.get_company_id(request)
+            business_unit_id = SessionContext.get_business_unit_id(request)
+            branch_id = SessionContext.get_branch_id(request)
         
         RequestContext._set_company_id(company_id)
         RequestContext._set_business_unit_id(business_unit_id)

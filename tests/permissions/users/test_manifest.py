@@ -138,7 +138,6 @@ class TestManifestCaching:
         m2 = ManifestOrchestrator.build_for_user(user.id)
         assert m1 == m2
 
-    @pytest.mark.xfail(reason="Pre-existing: DummyCache always returns None in test settings")
     def test_cache_key_includes_user_id(self, user_with_role):
         cache.clear()
         ManifestOrchestrator.build_for_user(user_with_role.id)

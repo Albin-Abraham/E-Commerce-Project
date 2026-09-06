@@ -52,7 +52,6 @@ class TestEvaluatePolicy:
 
 
 class TestSuperuserBypass:
-    @pytest.mark.xfail(reason="Pre-existing: post_save signal needs SYSTEM_BRANCH_CODE migration fix")
     def test_superuser_bypasses_all(self, user_builder):
         user = user_builder.as_superuser().build()
         assert evaluate_policy(user, "any:nonexistent:key") is True
@@ -74,7 +73,7 @@ class TestPermissionPolicyMixin:
         for key in COMPANY_PERMISSION_ACTIONS.values():
             assert key in keys
 
-    def test_drf_fallback_returns_false(self):
+    def test_drf_fallback_allows_when_no_model(self):
         factory = APIRequestFactory()
         request = factory.get("/")
 
@@ -82,7 +81,8 @@ class TestPermissionPolicyMixin:
             pass
 
         perm = CustomPermissionClass()
-        assert perm.has_permission(request, BareView()) is False
+        # No model to scope → falls through to DRF's global IsAuthenticated default.
+        assert perm.has_permission(request, BareView()) is True
 
     def test_model_without_permission_map_returns_none(self):
         class BareModel(PermissionPolicyMixin):

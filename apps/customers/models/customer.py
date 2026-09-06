@@ -17,6 +17,14 @@ class Customer(BaseModel):
     """
 
     id = CustomShortUUIDField(primary_key=True, prefix="cust_")
+    company = models.ForeignKey(
+        "core_admin.Company",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="customers",
+        help_text="Company / tenant this customer belongs to.",
+    )
     customer_code = CustomCharField(
         max_length=50,
         blank=True,
@@ -123,6 +131,8 @@ class CustomerAddress(BaseModel):
     postal_code = CustomCharField(max_length=20, rules=[RequiredRule("postal_code")])
     country = CustomCharField(max_length=100, default="USA", rules=[RequiredRule("country")])
     pincode = models.CharField(max_length=20, blank=True, null=True, help_text="Serviceability pincode")
+    latitude = models.DecimalField(max_digits=9, decimal_places=6, null=True, blank=True)
+    longitude = models.DecimalField(max_digits=9, decimal_places=6, null=True, blank=True)
     is_default_delivery = models.BooleanField(default=False)
     is_default_billing = models.BooleanField(default=False)
 

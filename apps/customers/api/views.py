@@ -1,5 +1,6 @@
 from rest_framework import viewsets, status
 from rest_framework.decorators import action
+from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 
 from apps.customers.models.customer import Customer, CustomerPreference, CustomerAddress, CustomerContact
@@ -30,7 +31,7 @@ class CustomerViewSet(viewsets.ModelViewSet):
     serializer_class = CustomerSerializer
     lookup_field = "pk"
 
-    @action(detail=False, methods=["post"], url_path="register")
+    @action(detail=False, methods=["post"], url_path="register", permission_classes=[AllowAny])
     def register_customer(self, request):
         """
         Self-registration endpoint for Retail (INDIVIDUAL) and Business (COMMERCIAL) Customers.
@@ -76,7 +77,7 @@ class CustomerViewSet(viewsets.ModelViewSet):
         except ValueError as exc:
             return Response({"detail": str(exc)}, status=status.HTTP_400_BAD_REQUEST)
 
-    @action(detail=False, methods=["post"], url_path="social-login")
+    @action(detail=False, methods=["post"], url_path="social-login", permission_classes=[AllowAny])
     def social_login(self, request):
         """
         Social Login & OAuth SSO Endpoint (Google, GitHub, Facebook, Apple, Microsoft).

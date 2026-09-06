@@ -238,6 +238,12 @@ class StockTransfer(BaseModel):
     Moves stock between source and target warehouses.
     """
 
+    class TransferStatus:
+        DRAFT = STOCK_TRANSFER_STATUS_VALUESET.get("DRAFT").code
+        IN_TRANSIT = STOCK_TRANSFER_STATUS_VALUESET.get("IN_TRANSIT").code
+        COMPLETED = STOCK_TRANSFER_STATUS_VALUESET.get("COMPLETED").code
+        CANCELLED = STOCK_TRANSFER_STATUS_VALUESET.get("CANCELLED").code
+
     id = CustomShortUUIDField(primary_key=True, prefix="stf_")
     transfer_number = CustomCharField(
         max_length=60,

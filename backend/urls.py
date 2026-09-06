@@ -32,6 +32,12 @@ urlpatterns = [
     # Auth / User Management
     path('api/auth/', include("apps.users.urls")),
 
+    # Customer Self-Service (Registration, Social Login, Cart, Wishlist)
+    path('api/v1/', include("apps.customers.urls")),
+
+    # Payments
+    path('api/v1/payments/', include("apps.payments.urls")),
+
     # Access Control (RBAC + Approval)
     path('api/access/', include("apps.access_control.urls")),
 

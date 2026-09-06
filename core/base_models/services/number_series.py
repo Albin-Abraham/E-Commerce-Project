@@ -62,6 +62,12 @@ class NumberSeriesRegistry:
             "allowed_reset_policies": ["NEVER", "YEARLY", "MONTHLY", "DAILY"],
             "field_name": "order_number",
         },
+        "shop_order": {
+            "label": _("Shop Order"),
+            "default_pattern": "ORD-{YYYY}-{SEQ:5}",
+            "allowed_reset_policies": ["NEVER", "YEARLY", "MONTHLY", "DAILY"],
+            "field_name": "order_number",
+        },
         "sales_invoice": {
             "label": _("Sales Invoice"),
             "default_pattern": "INV-{YYYY}-{SEQ:5}",
@@ -467,6 +473,8 @@ class NumberSeriesService:
         Allocate the next sequence number for a document type and org scope atomically.
         Respects DB configurations edited by users.
         """
+        from core.admin.models.number_series import NumberSeries, ResetPolicy
+
         now = timezone.now()
 
         with transaction.atomic():

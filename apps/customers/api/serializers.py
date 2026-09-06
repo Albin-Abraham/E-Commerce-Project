@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from apps.customers.models.customer import Customer, CustomerPreference, CustomerAddress, CustomerContact
+from apps.customers.models.customer import Customer, CustomerPreference, CustomerAddress, CustomerContact, SocialAccount
 from apps.customers.models.shopping import Cart, CartItem, Wishlist, WishlistItem, ProductLike
 from apps.shop.infrastructure.models.product import Product
 

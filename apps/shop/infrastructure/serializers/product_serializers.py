@@ -1,8 +1,21 @@
+from django.utils.text import slugify
 from rest_framework import serializers
 from core.base_serializers.base_serializers import BaseModelSerializer
 from apps.shop.infrastructure.models.product import Product
 from apps.shop.infrastructure.models.variant import ProductVariant
 from apps.shop.application.services.product_knowledge_service import ProductKnowledgeService
+
+
+def _auto_slug(serializer, data):
+    if isinstance(data, dict):
+        data = dict(data)
+    if not data.get("slug"):
+        name = data.get("name")
+        if name:
+            data["slug"] = slugify(name)
+        elif serializer.instance is not None:
+            data["slug"] = serializer.instance.slug
+    return data
 
 
 class ProductVariantSerializer(BaseModelSerializer):
@@ -39,3 +52,6 @@ class ProductSerializer(BaseModelSerializer):
 
     def get_knowledge_content(self, obj):
         return ProductKnowledgeService.resolve_knowledge_content(obj)
+
+    def to_internal_value(self, data):
+        return super().to_internal_value(_auto_slug(self, data))
