@@ -46,10 +46,9 @@ class TaxEngineService:
         breakdown = []
         total_tax = Decimal("0.00")
 
-        if template.is_inclusive:
+        if bool(getattr(template, "is_inclusive", False)):
             # Net = Gross / (1 + Rate / 100)
             calculated_net = net_amount / (Decimal("1.00") + (total_rate / Decimal("100.00")))
-            total_tax = net_amount - calculated_net
             gross_amount = net_amount
             base_for_line = calculated_net
         else:
@@ -57,7 +56,7 @@ class TaxEngineService:
             gross_amount = net_amount
 
         for line in tax_lines:
-            if template.is_inclusive:
+            if bool(getattr(template, "is_inclusive", False)):
                 line_tax = (calculated_net * line.rate) / Decimal("100.00")
             else:
                 line_tax = (net_amount * line.rate) / Decimal("100.00")
@@ -73,14 +72,14 @@ class TaxEngineService:
                 )
             )
 
-        if not template.is_inclusive:
+        if not bool(getattr(template, "is_inclusive", False)):
             gross_amount = net_amount + total_tax
 
         return TaxCalculationResult(
             net_amount=round(calculated_net, 2),
             total_tax_amount=round(total_tax, 2),
             gross_amount=round(gross_amount, 2),
-            is_inclusive=template.is_inclusive,
+            is_inclusive=bool(getattr(template, "is_inclusive", False)),
             breakdown=breakdown,
         )
 
@@ -104,16 +103,15 @@ class TaxEngineService:
         breakdown = []
         total_tax = Decimal("0.00")
 
-        if template.is_inclusive:
+        if bool(getattr(template, "is_inclusive", False)):
             calculated_net = net_amount / (Decimal("1.00") + (total_rate / Decimal("100.00")))
-            total_tax = net_amount - calculated_net
             gross_amount = net_amount
         else:
             calculated_net = net_amount
             gross_amount = net_amount
 
         for line in tax_lines:
-            if template.is_inclusive:
+            if bool(getattr(template, "is_inclusive", False)):
                 line_tax = (calculated_net * line.rate) / Decimal("100.00")
             else:
                 line_tax = (net_amount * line.rate) / Decimal("100.00")
@@ -129,13 +127,13 @@ class TaxEngineService:
                 )
             )
 
-        if not template.is_inclusive:
+        if not bool(getattr(template, "is_inclusive", False)):
             gross_amount = net_amount + total_tax
 
         return TaxCalculationResult(
             net_amount=round(calculated_net, 2),
             total_tax_amount=round(total_tax, 2),
             gross_amount=round(gross_amount, 2),
-            is_inclusive=template.is_inclusive,
+            is_inclusive=bool(getattr(template, "is_inclusive", False)),
             breakdown=breakdown,
         )

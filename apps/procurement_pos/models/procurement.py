@@ -39,6 +39,7 @@ class Supplier(BaseModel):
 
 from apps.procurement_pos.valuesets import (
     GRN_STATUS_VALUESET,
+    PO_ITEM_STATUS_VALUESET,
     PO_STATUS_VALUESET,
     PR_STATUS_VALUESET,
     PURCHASE_INVOICE_STATUS_VALUESET,
@@ -80,6 +81,23 @@ class PurchaseRequest(BaseModel):
 
     def __str__(self):
         return f"PR #{self.request_number} by {self.requested_by.username}"
+
+    def _transition(self, new_status):
+        self.status = new_status
+        self.save(update_fields=["status", "updated_at"])
+        return self
+
+    def submit(self):
+        return self._transition("SUBMITTED")
+
+    def approve(self):
+        return self._transition("APPROVED")
+
+    def mark_po_created(self):
+        return self._transition("PO_CREATED")
+
+    def reject(self):
+        return self._transition("REJECTED")
 
 
 class RequestForQuotation(BaseModel):
@@ -168,6 +186,22 @@ class PurchaseOrder(BaseModel):
         on_delete=models.PROTECT,
         related_name="purchase_orders",
     )
+    purchase_request = models.ForeignKey(
+        PurchaseRequest,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="purchase_orders",
+        help_text="Source requisition this PO fulfils",
+    )
+    vendor_quotation = models.ForeignKey(
+        VendorQuotation,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="purchase_orders",
+        help_text="Selected vendor quotation this PO was created from",
+    )
     status = models.CharField(
         max_length=30,
         choices=PO_STATUS_VALUESET.as_django_choices(),
@@ -201,6 +235,47 @@ class PurchaseOrder(BaseModel):
     def __str__(self):
         return f"PO #{self.po_number} - {self.supplier.name} ({self.status})"
 
+    @property
+    def charges(self):
+        """
+        Charge items applied to this Purchase Order (Freight, Insurance, Customs, Discounts).
+        """
+        from apps.accounting.models.charges import ChargeItem
+        return ChargeItem.for_document(self)
+
+    def set_status(self, new_status, user=None, description=None):
+        """
+        Transition the PO to a new status and record a tracking event.
+        No duplicate event is written when the status is unchanged.
+        """
+        if new_status == self.status:
+            return self
+        self.status = new_status
+        self.save(update_fields=["status", "updated_at"])
+        self.log_event(new_status, user, description)
+        return self
+
+    def log_event(self, status, user=None, description=None):
+        from .tracking import PurchaseOrderEvent
+        return PurchaseOrderEvent.objects.create(
+            purchase_order=self,
+            status=status,
+            description=description,
+            changed_by=user,
+        )
+
+    def submit(self, user=None):
+        return self.set_status("SUBMITTED", user, "PO submitted to supplier")
+
+    def approve(self, user=None):
+        return self.set_status("APPROVED", user, "PO approved")
+
+    def reject(self, user=None):
+        return self.set_status("REJECTED", user, "PO rejected")
+
+    def cancel(self, user=None):
+        return self.set_status("CANCELLED", user, "PO cancelled")
+
 
 class PurchaseOrderItem(BaseModel):
     id = CustomShortUUIDField(primary_key=True, prefix="poi_")
@@ -218,6 +293,11 @@ class PurchaseOrderItem(BaseModel):
     quantity_received = models.PositiveIntegerField(default=0)
     unit_cost = models.DecimalField(max_digits=12, decimal_places=2)
     total_cost = models.DecimalField(max_digits=12, decimal_places=2)
+    status = models.CharField(
+        max_length=20,
+        choices=PO_ITEM_STATUS_VALUESET.as_django_choices(),
+        default="PENDING",
+    )
 
     class Meta(BaseModel.Meta):
         db_table = "procurement_po_items"
@@ -226,6 +306,19 @@ class PurchaseOrderItem(BaseModel):
 
     def _override_pre_save(self, is_creating: bool):
         self.total_cost = self.quantity_ordered * self.unit_cost
+
+    @property
+    def remaining_quantity(self):
+        """Quantity still due for delivery after already received amounts."""
+        return self.quantity_ordered - self.quantity_received
+
+    @property
+    def is_fully_received(self):
+        return self.remaining_quantity <= 0
+
+    @property
+    def is_partially_received(self):
+        return 0 < self.quantity_received < self.quantity_ordered
 
 
 class GoodsReceivedNote(BaseModel):
@@ -268,32 +361,109 @@ class GoodsReceivedNote(BaseModel):
     @classmethod
     @transaction.atomic
     def process_grn_receipt(cls, grn_id: str):
+        from django.core.exceptions import ValidationError
         from apps.shop.infrastructure.models.inventory import Inventory
         grn = cls.objects.select_related("purchase_order", "warehouse").get(pk=grn_id)
         if grn.status == "COMPLETED":
             return grn
 
         po = grn.purchase_order
-        for item in po.items.all():
-            inv, created = Inventory.objects.get_or_create(
-                variant=item.variant,
-                warehouse=grn.warehouse,
-                defaults={"quantity": item.quantity_ordered}
+        if po.status in ("CANCELLED", "REJECTED"):
+            raise ValidationError(
+                f"Cannot receive goods against a PO in status '{po.status}'."
             )
-            if not created:
-                inv.quantity = models.F("quantity") + item.quantity_ordered
-                inv.save(update_fields=["quantity", "updated_at"])
+        po_items = po.items.all()
 
-            item.quantity_received += item.quantity_ordered
-            item.save(update_fields=["quantity_received", "updated_at"])
+        if grn.lines.exists():
+            for line in grn.lines.select_related("purchase_order_item", "variant"):
+                item = line.purchase_order_item
+                if item.quantity_received >= item.quantity_ordered:
+                    continue
+                receive_qty = min(line.quantity_received, item.remaining_quantity)
+                inv, created = Inventory.objects.get_or_create(
+                    variant=item.variant,
+                    warehouse=grn.warehouse,
+                    defaults={"quantity": receive_qty},
+                )
+                if not created:
+                    inv.quantity = models.F("quantity") + receive_qty
+                    inv.save(update_fields=["quantity", "updated_at"])
+                item.quantity_received += receive_qty
+                item.save(update_fields=["quantity_received", "updated_at"])
+                item.refresh_from_db()
+                if item.is_fully_received:
+                    item.status = "RECEIVED"
+                elif item.quantity_received > 0:
+                    item.status = "PARTIAL"
+                item.save(update_fields=["status", "updated_at"])
+        else:
+            for item in po_items:
+                inv, created = Inventory.objects.get_or_create(
+                    variant=item.variant,
+                    warehouse=grn.warehouse,
+                    defaults={"quantity": item.quantity_ordered},
+                )
+                if not created:
+                    inv.quantity = models.F("quantity") + item.quantity_ordered
+                    inv.save(update_fields=["quantity", "updated_at"])
+                item.quantity_received = item.quantity_ordered
+                item.status = "RECEIVED"
+                item.save(update_fields=["quantity_received", "status", "updated_at"])
 
         grn.status = "COMPLETED"
         grn.save(update_fields=["status", "updated_at"])
 
-        po.status = "COMPLETED"
-        po.save(update_fields=["status", "updated_at"])
+        po.refresh_from_db()
+        items = po.items.all()
+        if items and all(i.is_fully_received for i in items):
+            po.set_status("COMPLETED", description="All PO lines fully received")
+        elif any(i.quantity_received > 0 for i in items):
+            po.set_status("PARTIALLY_RECEIVED", description="Partial goods received")
 
         return grn
+
+
+class GoodsReceivedNoteLine(BaseModel):
+    """
+    Line-level receipt: captures the exact quantity received per PO item inside a GRN.
+    Enables partial deliveries and per-line purchase tracking.
+    """
+
+    id = CustomShortUUIDField(primary_key=True, prefix="grnl_")
+    goods_received_note = models.ForeignKey(
+        GoodsReceivedNote,
+        on_delete=models.CASCADE,
+        related_name="lines",
+    )
+    purchase_order_item = models.ForeignKey(
+        PurchaseOrderItem,
+        on_delete=models.CASCADE,
+        related_name="grn_lines",
+    )
+    variant = models.ForeignKey(
+        "shop.ProductVariant",
+        on_delete=models.PROTECT,
+        related_name="grn_lines",
+    )
+    quantity_received = models.PositiveIntegerField()
+    unit_cost = models.DecimalField(max_digits=12, decimal_places=2)
+
+    class Meta(BaseModel.Meta):
+        db_table = "procurement_grn_lines"
+        verbose_name = "GRN Line"
+        verbose_name_plural = "GRN Lines"
+
+    def _override_pre_save(self, is_creating: bool):
+        from django.core.exceptions import ValidationError
+        if is_creating and self.quantity_received > self.purchase_order_item.remaining_quantity:
+            raise ValidationError(
+                f"Cannot receive {self.quantity_received} for PO item "
+                f"with only {self.purchase_order_item.remaining_quantity} remaining."
+            )
+
+    @property
+    def total_cost(self):
+        return self.quantity_received * self.unit_cost
 
 
 class PurchaseInvoice(BaseModel):
@@ -338,48 +508,45 @@ class PurchaseInvoice(BaseModel):
         verbose_name = "Purchase Invoice"
         verbose_name_plural = "Purchase Invoices"
 
+    @property
+    def charges(self):
+        """
+        Charge items applied to this Purchase Invoice (Freight, Insurance, Customs, Discounts).
+        """
+        from apps.accounting.models.charges import ChargeItem
+        return ChargeItem.for_document(self)
+
     @classmethod
     def execute_three_way_match(cls, invoice_id: str) -> bool:
         """
-        3-Way Matching Engine: Verifies Purchase Order total amount == GRN received total == Invoice billed amount.
+        3-Way Matching Engine: Purchase Order ordered totals, GRN received quantity,
+        and Invoice billed amount must all agree before the invoice is accepted for payment.
+
+        Conditions:
+          - GRN exists and is COMPLETED
+          - every PO line is fully received (no open / partial quantities)
+          - PO total amount matches the invoice billed amount
+        Any deviation flags the invoice MISMATCH so it cannot drive payment.
         """
         inv = cls.objects.select_related("purchase_order", "goods_received_note").get(pk=invoice_id)
         po = inv.purchase_order
         grn = inv.goods_received_note
 
-        if not grn or grn.status != "COMPLETED":
+        def mismatch():
             inv.status = "MISMATCH"
             inv.save(update_fields=["status", "updated_at"])
             return False
-
-        if abs(po.total_amount - inv.billed_amount) < 0.01:
-            inv.status = "MATCHED"
-            inv.save(update_fields=["status", "updated_at"])
-            return True
-        else:
-            inv.status = "MISMATCH"
-            inv.save(update_fields=["status", "updated_at"])
-            return False
-
-    @classmethod
-    def execute_three_way_match(cls, invoice_id: str) -> bool:
-        """
-        3-Way Matching Engine: Verifies Purchase Order total amount == GRN received total == Invoice billed amount.
-        """
-        inv = cls.objects.select_related("purchase_order", "goods_received_note").get(pk=invoice_id)
-        po = inv.purchase_order
-        grn = inv.goods_received_note
 
         if not grn or grn.status != "COMPLETED":
-            inv.status = "MISMATCH"
-            inv.save(update_fields=["status", "updated_at"])
-            return False
+            return mismatch()
 
-        if abs(po.total_amount - inv.billed_amount) < 0.01:
-            inv.status = "MATCHED"
-            inv.save(update_fields=["status", "updated_at"])
-            return True
-        else:
-            inv.status = "MISMATCH"
-            inv.save(update_fields=["status", "updated_at"])
-            return False
+        items = po.items.all()
+        if not items or not all(item.is_fully_received for item in items):
+            return mismatch()
+
+        if abs(po.total_amount - inv.billed_amount) >= 0.01:
+            return mismatch()
+
+        inv.status = "MATCHED"
+        inv.save(update_fields=["status", "updated_at"])
+        return True

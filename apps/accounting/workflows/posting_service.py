@@ -21,10 +21,22 @@ class GLPostingService:
         if jv.is_posted:
             return jv
 
-        if abs(jv.total_debit - jv.total_credit) > 0.001:
-            raise ValueError(f"Journal Entry #{jv.entry_number} is unbalanced! Debit ({jv.total_debit}) != Credit ({jv.total_credit})")
+        lines = list(jv.lines.select_related("account", "cost_center"))
+        debit_total = sum((line.debit or 0) for line in lines)
+        credit_total = sum((line.credit or 0) for line in lines)
 
-        for line in jv.lines.select_related("account", "cost_center"):
+        if abs(debit_total - credit_total) > 0.001:
+            raise ValueError(
+                f"Journal Entry #{jv.entry_number} lines are unbalanced! "
+                f"Debit ({debit_total}) != Credit ({credit_total})"
+            )
+        if abs(jv.total_debit - debit_total) > 0.001 or abs(jv.total_credit - credit_total) > 0.001:
+            raise ValueError(
+                f"Journal Entry #{jv.entry_number} header totals do not match its lines. "
+                f"Header Dr/Cr {jv.total_debit}/{jv.total_credit} != Lines Dr/Cr {debit_total}/{credit_total}"
+            )
+
+        for line in lines:
             # Create GL Entry
             gl_entry = GLEntry.objects.create(
                 company=jv.company,
@@ -64,11 +76,19 @@ class GLPostingService:
     @classmethod
     @transaction.atomic
     def post_payment_entry(cls, payment_entry_id: str, user=None) -> PaymentEntry:
+        from apps.procurement_pos.models.procurement import PurchaseInvoice
+
         pe = PaymentEntry.objects.select_for_update().get(pk=payment_entry_id)
         if pe.is_submitted:
             return pe
 
-        # Debit Received Account / Credit Paid From Account
+        if pe.paid_amount < 0 or pe.received_amount < 0:
+            raise ValueError(f"Payment Entry #{pe.payment_number} cannot have negative amounts.")
+        settle_amount = pe.paid_amount if pe.payment_type == "PAY" else pe.received_amount
+        if settle_amount <= 0:
+            raise ValueError(f"Payment Entry #{pe.payment_number} has no amount to settle.")
+
+        # Debit Received/Settled Account / Credit Paid From Account
         gl_dr = GLEntry.objects.create(
             company=pe.company,
             branch=pe.branch,
@@ -77,7 +97,7 @@ class GLPostingService:
             voucher_type="Payment Entry",
             voucher_no=pe.payment_number,
             voucher_id=str(pe.id),
-            debit=pe.received_amount,
+            debit=settle_amount,
             credit=0.0,
         )
         gl_dr.set_party(pe.party)
@@ -92,7 +112,7 @@ class GLPostingService:
             voucher_no=pe.payment_number,
             voucher_id=str(pe.id),
             debit=0.0,
-            credit=pe.paid_amount,
+            credit=settle_amount,
         )
         gl_cr.set_party(pe.party)
         gl_cr.save()
@@ -105,12 +125,31 @@ class GLPostingService:
                 voucher_id=str(pe.id),
                 voucher_no=pe.payment_number,
                 posting_date=pe.posting_date,
-                debit=pe.received_amount if pe.payment_type == "RECEIVE" else 0.0,
-                credit=pe.paid_amount if pe.payment_type == "PAY" else 0.0,
+                debit=settle_amount if pe.payment_type == "RECEIVE" else 0.0,
+                credit=settle_amount if pe.payment_type == "PAY" else 0.0,
                 paid_amount=pe.paid_amount,
             )
             ple.set_party(pe.party)
             ple.save()
+
+        # Settle referenced invoices (reduce outstanding, close fully-paid bills)
+        remaining = settle_amount
+        for ref in pe.references.select_for_update():
+            if remaining <= 0:
+                break
+            settle = min(remaining, ref.outstanding_amount)
+            if settle <= 0:
+                continue
+            remaining -= settle
+            ref.outstanding_amount -= settle
+            ref.allocated_amount += settle
+            ref.save(update_fields=["outstanding_amount", "allocated_amount", "updated_at"])
+
+            if ref.outstanding_amount <= 0 and ref.voucher_id:
+                invoice = PurchaseInvoice.objects.filter(pk=ref.voucher_id).first()
+                if invoice is not None and invoice.status != "PAID":
+                    invoice.status = "PAID"
+                    invoice.save(update_fields=["status", "updated_at"])
 
         pe.is_submitted = True
         pe.save(update_fields=["is_submitted", "updated_at"])

@@ -82,6 +82,14 @@ class SalesOrder(BaseModel, PartyReferenceMixin):
         curr_str = self.currency.format_amount(self.total_amount) if self.currency else f"${self.total_amount}"
         return f"SO #{self.order_number} ({curr_str})"
 
+    @property
+    def charges(self):
+        """
+        Charge items applied to this Sales Order (Shipping, Handling, Discounts, Surcharges).
+        """
+        from apps.accounting.models.charges import ChargeItem
+        return ChargeItem.for_document(self)
+
 
 class DeliveryNote(BaseModel):
     """
@@ -184,6 +192,14 @@ class SalesInvoice(BaseModel, PartyReferenceMixin):
     def __str__(self):
         curr_str = self.currency.format_amount(self.grand_total) if self.currency else f"${self.grand_total}"
         return f"Sales Invoice #{self.invoice_number} ({curr_str})"
+
+    @property
+    def charges(self):
+        """
+        Charge items applied to this Sales Invoice (Shipping, Handling, Discounts, Surcharges).
+        """
+        from apps.accounting.models.charges import ChargeItem
+        return ChargeItem.for_document(self)
 
 
 class SalesInvoiceItem(BaseModel):

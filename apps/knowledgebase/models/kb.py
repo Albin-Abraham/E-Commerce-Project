@@ -44,6 +44,11 @@ from apps.knowledgebase.valuesets import (
 
 
 class KnowledgeArticle(BaseModel):
+    class ArticleStatus:
+        DRAFT = "DRAFT"
+        PUBLISHED = "PUBLISHED"
+        ARCHIVED = "ARCHIVED"
+
     id = CustomShortUUIDField(primary_key=True, prefix="art_")
     title = CustomCharField(
         max_length=200,
@@ -97,6 +102,10 @@ class ProductKnowledgeLink(BaseModel):
     Product, Variant, Inventory, & Category Knowledgebase Linkage.
     Supports foreign key references and direct ID or Slug/SKU string lookups.
     Empowers POS Cashiers (sales pitch, troubleshooting) and Procurement Managers (quality, compliance certs).
+
+    `link_type` is data-driven from the extensible `LINK_TYPE_VALUESET` registry
+    (not a hardcoded enum), so product teams can add new knowledge categories
+    without redeploying code.
     """
 
     id = CustomShortUUIDField(primary_key=True, prefix="pkl_")

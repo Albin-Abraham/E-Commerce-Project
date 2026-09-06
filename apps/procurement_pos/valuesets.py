@@ -71,6 +71,30 @@ PO_STATUS_VALUESET = ValueSet(
 )
 ValueSetRegistry.register(PO_STATUS_VALUESET)
 
+PO_ITEM_STATUS_VALUESET = ValueSet(
+    name="po_item_status",
+    domain="procurement_pos",
+    items=[
+        ValueSetItem(code="PENDING", label="Pending"),
+        ValueSetItem(code="PARTIAL", label="Partially Received"),
+        ValueSetItem(code="RECEIVED", label="Received"),
+        ValueSetItem(code="CLOSED", label="Closed"),
+    ],
+)
+ValueSetRegistry.register(PO_ITEM_STATUS_VALUESET)
+
+TRACKING_STATUS_VALUESET = ValueSet(
+    name="purchase_tracking_status",
+    domain="procurement_pos",
+    items=[
+        ValueSetItem(code="PENDING", label="Pending Shipment"),
+        ValueSetItem(code="IN_TRANSIT", label="In Transit"),
+        ValueSetItem(code="DELIVERED", label="Delivered"),
+        ValueSetItem(code="DELAYED", label="Delayed"),
+    ],
+)
+ValueSetRegistry.register(TRACKING_STATUS_VALUESET)
+
 GRN_STATUS_VALUESET = ValueSet(
     name="grn_status",
     domain="procurement_pos",
