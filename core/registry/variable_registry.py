@@ -67,3 +67,16 @@ class DomainVariableRegistry:
                 if item.code == key:
                     return str(item.label)
         return key
+class SystemFinancialVariableKeys(StrEnum):
+    """
+    System-Critical Financial Calculation & Voucher Totals Keys.
+    """
+    GROSS_AMOUNT = "gross_amount"
+    NET_AMOUNT = "net_amount"
+    TAX_AMOUNT = "tax_amount"
+    GRAND_TOTAL = "grand_total"
+    PAID_AMOUNT = "paid_amount"
+    OUTSTANDING_AMOUNT = "outstanding_amount"
+
+
+DomainVariableRegistry.register_app_variables("system_financial", SystemFinancialVariableKeys)

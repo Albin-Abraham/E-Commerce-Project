@@ -1,31 +1,28 @@
 from enum import StrEnum
-from core.registry.variable_registry import DomainVariableRegistry
 
 
-class ProcurementPOSVariableKey(StrEnum):
-    """
-    App-Scoped Variable Keys for Procurement & POS Module.
-    """
-    PO_TOTAL = "po_total"
-    TOTAL_COST = "total_cost"
-    BILLED_AMOUNT = "billed_amount"
-    QUANTITY_ORDERED = "quantity_ordered"
-    QUANTITY_RECEIVED = "quantity_received"
-    ITEMS = "items"
+class ProcurementKeys(StrEnum):
+    PR_STATUS_DRAFT = "DRAFT"
+    PR_STATUS_SUBMITTED = "SUBMITTED"
+    PR_STATUS_APPROVED = "APPROVED"
+    RFQ_STATUS_DRAFT = "DRAFT"
+    RFQ_STATUS_PUBLISHED = "PUBLISHED"
+    PO_STATUS_DRAFT = "DRAFT"
+    PO_STATUS_SUBMITTED = "SUBMITTED"
+    PO_STATUS_APPROVED = "APPROVED"
+    PO_STATUS_COMPLETED = "COMPLETED"
+    PO_STATUS_CANCELLED = "CANCELLED"
+    GRN_STATUS_DRAFT = "DRAFT"
+    GRN_STATUS_COMPLETED = "COMPLETED"
+    INVOICE_STATUS_DRAFT = "DRAFT"
+    INVOICE_STATUS_MATCHED = "MATCHED"
+    INVOICE_STATUS_MISMATCH = "MISMATCH"
 
 
-DomainVariableRegistry.register_app_variables("procurement_pos", ProcurementPOSVariableKey)
-
-
-class ProcurementPOSEventType(StrEnum):
-    """
-    Standardized Outbox Event Types for Procurement & POS Domain.
-    """
-    PO_SUBMITTED = "PROCUREMENT_PO_SUBMITTED"
-    PO_APPROVED = "PROCUREMENT_PO_APPROVED"
-    PO_CANCELLED = "PROCUREMENT_PO_CANCELLED"
-    GRN_COMPLETED = "PROCUREMENT_GRN_COMPLETED"
-    INVOICE_MATCHED = "PROCUREMENT_INVOICE_MATCHED"
-    INVOICE_PAID = "PROCUREMENT_INVOICE_PAID"
-    SALES_ORDER_CONFIRMED = "SALES_ORDER_CONFIRMED"
-    SALES_ORDER_DISPATCHED = "SALES_ORDER_DISPATCHED"
+class POSKeys(StrEnum):
+    SESSION_STATUS_OPEN = "OPEN"
+    SESSION_STATUS_CLOSED = "CLOSED"
+    TRANSACTION_STATUS_COMPLETED = "COMPLETED"
+    PAYMENT_METHOD_CASH = "CASH"
+    PAYMENT_METHOD_CARD = "CARD"
+    PAYMENT_METHOD_UPI = "UPI"

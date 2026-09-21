@@ -2,7 +2,8 @@ import logging
 from django.db import transaction
 from apps.customers.models.shopping import Cart, CartItem
 from apps.customers.models.customer import Customer
-from apps.shop.infrastructure.models.product import Product, ProductVariant
+from apps.shop.infrastructure.models.product import Product
+from apps.shop.infrastructure.models.variant import ProductVariant
 from apps.shop.infrastructure.models.facility import FacilityInventory
 
 logger = logging.getLogger(__name__)

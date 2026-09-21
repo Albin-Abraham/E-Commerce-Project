@@ -3,6 +3,7 @@ from django.db import transaction
 from django.utils import timezone
 from apps.accounting.models.journal_entry import GLEntry, JournalEntry
 from apps.accounting.models.payment_entry import PaymentEntry
+from apps.accounting.constants import AccountingKeys
 from apps.customers.models.party_ledger import PartyLedgerEntry
 
 logger = logging.getLogger(__name__)
@@ -32,7 +33,7 @@ class GLPostingService:
                 account=line.account,
                 cost_center=line.cost_center,
                 posting_date=jv.posting_date,
-                voucher_type="Journal Entry",
+                voucher_type=AccountingKeys.VOUCHER_JOURNAL_ENTRY,
                 voucher_no=jv.entry_number,
                 voucher_id=str(jv.id),
                 debit=line.debit,
@@ -74,7 +75,7 @@ class GLPostingService:
             branch=pe.branch,
             account=pe.paid_to_account,
             posting_date=pe.posting_date,
-            voucher_type="Payment Entry",
+            voucher_type=AccountingKeys.VOUCHER_PAYMENT_ENTRY,
             voucher_no=pe.payment_number,
             voucher_id=str(pe.id),
             debit=pe.received_amount,
@@ -88,7 +89,7 @@ class GLPostingService:
             branch=pe.branch,
             account=pe.paid_from_account,
             posting_date=pe.posting_date,
-            voucher_type="Payment Entry",
+            voucher_type=AccountingKeys.VOUCHER_PAYMENT_ENTRY,
             voucher_no=pe.payment_number,
             voucher_id=str(pe.id),
             debit=0.0,
@@ -116,3 +117,56 @@ class GLPostingService:
         pe.save(update_fields=["is_submitted", "updated_at"])
         logger.info(f"Payment Entry #{pe.payment_number} successfully posted.")
         return pe
+
+    @classmethod
+    @transaction.atomic
+    def post_grn_financial_entry(cls, grn_id: str, user=None):
+        """
+        Automated Financial Ledger posting for Goods Received Notes (GRN).
+        Debits Inventory Stock Asset Account and Credits Stock Received Not Billed Accrual Account.
+        """
+        from apps.procurement_pos.models.procurement import GoodsReceivedNote
+        from apps.accounting.models.chart_of_accounts import Account
+
+        grn = GoodsReceivedNote.objects.select_related("purchase_order", "warehouse").get(pk=grn_id)
+        po = grn.purchase_order
+
+        total_value = sum(item.quantity_ordered * item.unit_cost for item in po.items.all())
+        if total_value <= 0:
+            return None
+
+        stock_asset_account = Account.objects.filter(account_type="ASSET", name__icontains="Stock").first()
+        accrued_liability_account = Account.objects.filter(account_type="LIABILITY", name__icontains="Accrued").first()
+
+        posting_date = grn.received_at.date() if hasattr(grn.received_at, "date") else timezone.now().date()
+
+        if stock_asset_account:
+            gl_dr = GLEntry.objects.create(
+                account=stock_asset_account,
+                posting_date=posting_date,
+                voucher_type=AccountingKeys.VOUCHER_GRN,
+                voucher_no=grn.grn_number,
+                voucher_id=str(grn.id),
+                debit=total_value,
+                credit=0.0,
+            )
+            if hasattr(gl_dr, "set_party") and po.supplier:
+                gl_dr.set_party(po.supplier)
+                gl_dr.save()
+
+        if accrued_liability_account:
+            gl_cr = GLEntry.objects.create(
+                account=accrued_liability_account,
+                posting_date=posting_date,
+                voucher_type=AccountingKeys.VOUCHER_GRN,
+                voucher_no=grn.grn_number,
+                voucher_id=str(grn.id),
+                debit=0.0,
+                credit=total_value,
+            )
+            if hasattr(gl_cr, "set_party") and po.supplier:
+                gl_cr.set_party(po.supplier)
+                gl_cr.save()
+
+        logger.info(f"Financial GL Voucher posted for GRN #{grn.grn_number} (Total Value: {total_value})")
+        return total_value

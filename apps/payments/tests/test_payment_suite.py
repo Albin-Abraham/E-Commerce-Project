@@ -3,7 +3,8 @@ from django.test import TestCase
 from django.contrib.auth import get_user_model
 from rest_framework.test import APIClient
 from rest_framework import status
-from core.base_models.system_models import SystemConfig, Company
+from core.base_models.system_models import SystemConfig
+from core.admin.models.company import Company
 from apps.customers.models.customer import Customer
 from apps.payments.models import PaymentTransaction
 from apps.payments.services.payment_service import (

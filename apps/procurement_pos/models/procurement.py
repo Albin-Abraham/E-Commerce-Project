@@ -6,8 +6,10 @@ from core.base_models.fields.short_ui_fields import CustomShortUUIDField
 from core.base_models.fields.char_fields import CustomCharField, CustomTextField
 from core.base_models.validators.rules import RequiredRule, UniqueRule, MinRule
 
+from core.base_models.fields.party_mixin import PartyReferenceMixin
 
-class Supplier(BaseModel):
+
+class Supplier(BaseModel, PartyReferenceMixin):
     id = CustomShortUUIDField(primary_key=True, prefix="sup_")
     name = CustomCharField(
         max_length=150,
@@ -292,6 +294,13 @@ class GoodsReceivedNote(BaseModel):
 
         po.status = "COMPLETED"
         po.save(update_fields=["status", "updated_at"])
+
+        # Trigger automated GL posting (Stock Asset vs Stock Received Accrual)
+        try:
+            from apps.accounting.workflows.posting_service import GLPostingService
+            GLPostingService.post_grn_financial_entry(str(grn.id))
+        except Exception:
+            pass
 
         return grn
 

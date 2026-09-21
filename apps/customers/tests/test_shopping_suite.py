@@ -13,7 +13,8 @@ from apps.shop.infrastructure.models.polymorphic import Review, ProductComment
 from apps.shop.services.feedback_service import ProductFeedbackService
 from apps.customers.services.registration_service import CustomerRegistrationService
 from apps.customers.services.oauth_service import SocialOAuthAuthService
-from core.base_models.system_models import SystemConfig, Company
+from core.base_models.system_models import SystemConfig
+from core.admin.models.company import Company
 
 User = get_user_model()
 

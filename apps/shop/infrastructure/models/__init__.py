@@ -9,12 +9,20 @@ from .polymorphic import Media, Review, ActivityLog, ProductComment, ProductTest
 from .graph import EntityEdge, BOMEdge
 from .events import DomainEventOutbox
 
+from .uom import UOM, UOMConversion, ItemUOM
+from .pricing import PriceList, PricingRule
+
 __all__ = [
     "Brand",
     "Category",
     "CategoryEdge",
     "Product",
     "ProductVariant",
+    "UOM",
+    "UOMConversion",
+    "ItemUOM",
+    "PriceList",
+    "PricingRule",
     "Warehouse",
     "Facility",
     "StorageLocation",

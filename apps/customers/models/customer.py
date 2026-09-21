@@ -10,8 +10,10 @@ from apps.customers.valuesets import (
     CUSTOMER_TYPE_VALUESET,
 )
 
+from core.base_models.fields.party_mixin import PartyReferenceMixin
 
-class Customer(BaseModel):
+
+class Customer(BaseModel, PartyReferenceMixin):
     """
     Unified Customer Entity for B2C Retail & B2B Commercial Sales.
     """
