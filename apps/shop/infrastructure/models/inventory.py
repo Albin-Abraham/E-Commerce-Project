@@ -184,52 +184,62 @@ class Inventory(BaseModel, BranchModelMixin):
         return self.available_quantity <= self.reorder_point
 
     @classmethod
-    @transaction.atomic
     def reserve_stock(cls, inventory_id: str, qty: int) -> bool:
-        if qty <= 0:
-            raise ValidationError("Reservation quantity must be positive")
-
-        updated_count = cls.objects.filter(
-            id=inventory_id,
-            quantity__gte=models.F("reserved_quantity") + qty
-        ).update(
-            reserved_quantity=models.F("reserved_quantity") + qty
+        from apps.shop.application.use_cases.inventory_use_cases import (
+            ReserveInventoryUseCase,
+            StockActionInputDTO,
         )
+        from apps.shop.infrastructure.repository import DjangoInventoryRepository
+        from core.infrastructure.uow import DjangoUnitOfWork
+        from shared_domain.validation.exceptions import DomainValidationError
 
-        if updated_count == 0:
-            raise ValidationError(f"Insufficient stock for inventory {inventory_id}. Failed to reserve {qty} units.")
-
-        return True
+        try:
+            repo = DjangoInventoryRepository()
+            uow = DjangoUnitOfWork()
+            use_case = ReserveInventoryUseCase(repo, uow)
+            use_case.execute(StockActionInputDTO(inventory_id=str(inventory_id), quantity=qty))
+            return True
+        except DomainValidationError as e:
+            raise ValidationError(str(e))
 
     @classmethod
-    @transaction.atomic
     def release_stock(cls, inventory_id: str, qty: int) -> bool:
-        if qty <= 0:
-            return False
-
-        cls.objects.filter(
-            id=inventory_id,
-            reserved_quantity__gte=qty
-        ).update(
-            reserved_quantity=models.F("reserved_quantity") - qty
+        from apps.shop.application.use_cases.inventory_use_cases import (
+            ReleaseInventoryUseCase,
+            StockActionInputDTO,
         )
-        return True
+        from apps.shop.infrastructure.repository import DjangoInventoryRepository
+        from core.infrastructure.uow import DjangoUnitOfWork
+        from shared_domain.validation.exceptions import DomainValidationError
+
+        try:
+            repo = DjangoInventoryRepository()
+            uow = DjangoUnitOfWork()
+            use_case = ReleaseInventoryUseCase(repo, uow)
+            use_case.execute(StockActionInputDTO(inventory_id=str(inventory_id), quantity=qty))
+            return True
+        except DomainValidationError:
+            return False
 
     @classmethod
-    @transaction.atomic
     def commit_stock(cls, inventory_id: str, qty: int) -> bool:
-        if qty <= 0:
+        from apps.shop.application.use_cases.inventory_use_cases import (
+            CommitInventoryUseCase,
+            StockActionInputDTO,
+        )
+        from apps.shop.infrastructure.repository import DjangoInventoryRepository
+        from core.infrastructure.uow import DjangoUnitOfWork
+        from shared_domain.validation.exceptions import DomainValidationError
+
+        try:
+            repo = DjangoInventoryRepository()
+            uow = DjangoUnitOfWork()
+            use_case = CommitInventoryUseCase(repo, uow)
+            use_case.execute(StockActionInputDTO(inventory_id=str(inventory_id), quantity=qty))
+            return True
+        except DomainValidationError:
             return False
 
-        cls.objects.filter(
-            id=inventory_id,
-            quantity__gte=qty,
-            reserved_quantity__gte=qty
-        ).update(
-            quantity=models.F("quantity") - qty,
-            reserved_quantity=models.F("reserved_quantity") - qty
-        )
-        return True
 
 
 class StockTransfer(BaseModel):

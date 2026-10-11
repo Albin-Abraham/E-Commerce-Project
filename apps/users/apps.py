@@ -8,3 +8,7 @@ class UsersConfig(AppConfig):
     def ready(self):
         # Register RBAC Signals
         import apps.users.tasks.rbac_tasks
+
+        from core.registry.provider_registry import ProviderRegistry
+        from apps.users.services.auth_service import AuthService
+        ProviderRegistry.register_auth_provider(AuthService())

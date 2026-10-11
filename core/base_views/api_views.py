@@ -379,8 +379,13 @@ class BaseAPIView(
     def auth_service(self):
         """Industrialized Lazy Loader: Provides IAuthenticationClassService."""
         if not hasattr(self, "_cached_auth_service"):
-            from apps.users.services.auth_service import AuthService
-            self._cached_auth_service = AuthService()
+            from core.registry.provider_registry import ProviderRegistry
+            provider = ProviderRegistry.get_auth_provider()
+            if provider is not None:
+                self._cached_auth_service = provider
+            else:
+                from apps.users.services.auth_service import AuthService
+                self._cached_auth_service = AuthService()
         return self._cached_auth_service
 
     def get_display_name(self, instance):

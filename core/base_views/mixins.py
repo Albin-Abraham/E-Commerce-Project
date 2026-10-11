@@ -83,23 +83,17 @@ class CurrencyInjectionMixin:
                 company_id = RequestContext.get_company_id()
             currency_code = None
 
-            if company_id:
-                from apps.accounting.models.currency import CompanyCurrencySetting
-
-                setting = (
-                    CompanyCurrencySetting.objects.filter(company_id=company_id)
-                    .select_related("base_currency")
-                    .first()
-                )
-                if setting and setting.base_currency:
-                    currency_code = setting.base_currency.code
-
-            if not currency_code:
-                from apps.accounting.models.currency import Currency
-
-                default_curr = Currency.objects.filter(is_active=True).first()
-                if default_curr:
-                    currency_code = default_curr.code
+            from core.registry.provider_registry import ProviderRegistry
+            provider = ProviderRegistry.get_currency_provider()
+            if provider:
+                if company_id:
+                    base_curr = provider.get_base_currency(company_id)
+                    if base_curr:
+                        currency_code = getattr(base_curr, "code", str(base_curr))
+                if not currency_code:
+                    default_curr = provider.get_default_currency()
+                    if default_curr:
+                        currency_code = getattr(default_curr, "code", str(default_curr))
 
             if currency_code:
                 data[field_name] = currency_code

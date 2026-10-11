@@ -5,3 +5,9 @@ class AccountingConfig(AppConfig):
     default_auto_field = "django.db.models.BigAutoField"
     name = "apps.accounting"
     verbose_name = "Financial Accounting & General Ledger"
+
+    def ready(self):
+        from core.registry.provider_registry import ProviderRegistry
+        from apps.accounting.providers import AccountingCurrencyProvider
+        ProviderRegistry.register_currency_provider(AccountingCurrencyProvider())
+

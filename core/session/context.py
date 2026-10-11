@@ -26,12 +26,17 @@ class SessionContext:
                 raise DomainException(f"Company {company_id} does not exist.", code="invalid_company")
                 
             if not is_super:
-                from django.contrib.contenttypes.models import ContentType
-                from apps.access_control.models import EntityAccessControl
-                company_ct = ContentType.objects.get_for_model(Company)
-                
-                # Fallback to Profile check for legacy 1-to-1, or check Master ACL
-                has_acl = EntityAccessControl.objects.filter(user=request.user, content_type=company_ct, object_id=str(company_id)).exists()
+                from core.registry.provider_registry import ProviderRegistry
+                acl_provider = ProviderRegistry.get_acl_provider()
+                has_acl = False
+                if acl_provider:
+                    has_acl = acl_provider.has_entity_access(request.user, Company, str(company_id))
+                else:
+                    from django.contrib.contenttypes.models import ContentType
+                    from apps.access_control.models import EntityAccessControl
+                    company_ct = ContentType.objects.get_for_model(Company)
+                    has_acl = EntityAccessControl.objects.filter(user=request.user, content_type=company_ct, object_id=str(company_id)).exists()
+
                 if not has_acl and getattr(request.user, "profile", None):
                     has_acl = (request.user.profile.company_id == str(company_id))
                 if not has_acl:
@@ -58,16 +63,22 @@ class SessionContext:
                 raise DomainException(f"Branch {branch_id} is invalid or does not belong to the selected hierarchy.", code="invalid_branch")
                 
             if not is_super:
-                from django.contrib.contenttypes.models import ContentType
-                from apps.access_control.models import EntityAccessControl
-                branch_ct = ContentType.objects.get_for_model(Branch)
-                
-                # Fallback to Profile check for legacy 1-to-1, or check Master ACL
-                has_acl = EntityAccessControl.objects.filter(user=request.user, content_type=branch_ct, object_id=str(branch_id)).exists()
+                from core.registry.provider_registry import ProviderRegistry
+                acl_provider = ProviderRegistry.get_acl_provider()
+                has_acl = False
+                if acl_provider:
+                    has_acl = acl_provider.has_entity_access(request.user, Branch, str(branch_id))
+                else:
+                    from django.contrib.contenttypes.models import ContentType
+                    from apps.access_control.models import EntityAccessControl
+                    branch_ct = ContentType.objects.get_for_model(Branch)
+                    has_acl = EntityAccessControl.objects.filter(user=request.user, content_type=branch_ct, object_id=str(branch_id)).exists()
+
                 if not has_acl and getattr(request.user, "profile", None):
                     has_acl = (request.user.profile.branch_id == str(branch_id))
                 if not has_acl:
                     raise DomainException("You do not have authorization to access this Branch.", code="unauthorized_branch")
+
 
     @classmethod
     def set_context(

@@ -16,15 +16,18 @@ class BaseService(Generic[T]):
         queryset = cls.model.objects.all()
         if user and not user.is_superuser:
             if hasattr(cls.model, 'company'):
-                from django.contrib.contenttypes.models import ContentType
-                from apps.access_control.models import EntityAccessControl
-                
-                # Fetch allowed company IDs from Master ACL
                 company_model = cls.model._meta.get_field('company').related_model
-                company_ct = ContentType.objects.get_for_model(company_model)
-                allowed_company_ids = EntityAccessControl.objects.filter(
-                    user=user, content_type=company_ct
-                ).values_list('object_id', flat=True)
+                from core.registry.provider_registry import ProviderRegistry
+                acl_provider = ProviderRegistry.get_acl_provider()
+                if acl_provider:
+                    allowed_company_ids = acl_provider.get_allowed_object_ids(user, company_model)
+                else:
+                    from django.contrib.contenttypes.models import ContentType
+                    from apps.access_control.models import EntityAccessControl
+                    company_ct = ContentType.objects.get_for_model(company_model)
+                    allowed_company_ids = EntityAccessControl.objects.filter(
+                        user=user, content_type=company_ct
+                    ).values_list('object_id', flat=True)
                 
                 # Fallback to legacy profile if Master ACL is empty
                 profile = getattr(user, 'profile', None)

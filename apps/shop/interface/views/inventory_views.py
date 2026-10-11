@@ -57,9 +57,22 @@ class InventoryViewSet(BaseAPIView):
         inventory_id = request.data.get("inventory_id") or kwargs.get("pk")
         qty = request.data.get("quantity", 0)
 
+        from apps.shop.application.use_cases.inventory_use_cases import (
+            ReserveInventoryUseCase,
+            ReleaseInventoryUseCase,
+            CommitInventoryUseCase,
+            StockActionInputDTO,
+        )
+        from apps.shop.infrastructure.repository import DjangoInventoryRepository
+        from core.infrastructure.uow import DjangoUnitOfWork
+
+        repo = DjangoInventoryRepository()
+        uow = DjangoUnitOfWork()
+
         if action == "reserve":
             try:
-                Inventory.reserve_stock(inventory_id, int(qty))
+                use_case = ReserveInventoryUseCase(repo, uow)
+                res = use_case.execute(StockActionInputDTO(inventory_id=str(inventory_id), quantity=int(qty)))
                 return ResponseFactory.success(
                     message="Successfully reserved {reserved_unit} units",
                     context={"reserved_unit": int(qty), "inventory_id": inventory_id},
@@ -68,21 +81,30 @@ class InventoryViewSet(BaseAPIView):
                 return ResponseFactory.error(message=str(e))
 
         elif action == "release":
-            success = Inventory.release_stock(inventory_id, int(qty))
-            if success:
-                return ResponseFactory.success(
-                    message="Released {released_unit} units",
-                    context={"released_unit": int(qty), "inventory_id": inventory_id},
-                )
+            try:
+                use_case = ReleaseInventoryUseCase(repo, uow)
+                res = use_case.execute(StockActionInputDTO(inventory_id=str(inventory_id), quantity=int(qty)))
+                if res.success:
+                    return ResponseFactory.success(
+                        message="Released {released_unit} units",
+                        context={"released_unit": int(qty), "inventory_id": inventory_id},
+                    )
+            except Exception as e:
+                return ResponseFactory.error(message=str(e))
             return ResponseFactory.error(message="Failed to release stock")
 
         elif action == "commit":
-            success = Inventory.commit_stock(inventory_id, int(qty))
-            if success:
-                return ResponseFactory.success(
-                    message="Committed {committed_unit} units",
-                    context={"committed_unit": int(qty), "inventory_id": inventory_id},
-                )
+            try:
+                use_case = CommitInventoryUseCase(repo, uow)
+                res = use_case.execute(StockActionInputDTO(inventory_id=str(inventory_id), quantity=int(qty)))
+                if res.success:
+                    return ResponseFactory.success(
+                        message="Committed {committed_unit} units",
+                        context={"committed_unit": int(qty), "inventory_id": inventory_id},
+                    )
+            except Exception as e:
+                return ResponseFactory.error(message=str(e))
             return ResponseFactory.error(message="Failed to commit stock")
 
         return super().post(request, *args, **kwargs)
+

@@ -213,20 +213,18 @@ class CompanyCurrencyModelMixin(models.Model):
                 currency_obj = None
 
                 if company_id:
-                    from apps.accounting.models.currency import CompanyCurrencySetting
-
-                    setting = (
-                        CompanyCurrencySetting.objects.filter(company_id=company_id)
-                        .select_related("base_currency")
-                        .first()
-                    )
-                    if setting and setting.base_currency:
-                        currency_obj = setting.base_currency
+                    from core.registry.provider_registry import ProviderRegistry
+                    provider = ProviderRegistry.get_currency_provider()
+                    if provider:
+                        currency_obj = provider.get_base_currency(company_id)
+                        if not currency_obj:
+                            currency_obj = provider.get_default_currency()
 
                 if not currency_obj:
-                    from apps.accounting.models.currency import Currency
-
-                    currency_obj = Currency.objects.filter(is_active=True).first()
+                    from core.registry.provider_registry import ProviderRegistry
+                    provider = ProviderRegistry.get_currency_provider()
+                    if provider:
+                        currency_obj = provider.get_default_currency()
 
                 if currency_obj:
                     try:
