@@ -286,3 +286,64 @@ class StockTransfer(BaseModel):
 
     def __str__(self):
         return f"Transfer #{self.transfer_number}: {self.from_warehouse.name} -> {self.to_warehouse.name}"
+
+
+class StockMovement(BaseModel):
+    """
+    Immutable Stock Movement Audit Ledger.
+    Records every physical inventory quantity delta with historical balance snapshot.
+    """
+
+    class MovementType(models.TextChoices):
+        PURCHASE_RECEIPT = "PURCHASE_RECEIPT", "Purchase Receipt (GRN)"
+        POS_SALE = "POS_SALE", "Point of Sale Checkout"
+        ECOMMERCE_ORDER = "ECOMMERCE_ORDER", "E-commerce Order Fulfillment"
+        STOCK_TRANSFER_IN = "TRANSFER_IN", "Stock Transfer In"
+        STOCK_TRANSFER_OUT = "TRANSFER_OUT", "Stock Transfer Out"
+        INVENTORY_ADJUSTMENT = "ADJUSTMENT", "Manual / Reconciliation Adjustment"
+        RETURN = "RETURN", "Customer Return"
+
+    id = CustomShortUUIDField(primary_key=True, prefix="smv_")
+    inventory = models.ForeignKey(
+        "shop.Inventory",
+        on_delete=models.CASCADE,
+        related_name="movements",
+        null=True,
+        blank=True,
+    )
+    variant = models.ForeignKey(
+        "shop.ProductVariant",
+        on_delete=models.PROTECT,
+        related_name="stock_movements",
+    )
+    warehouse = models.ForeignKey(
+        "shop.Warehouse",
+        on_delete=models.PROTECT,
+        related_name="stock_movements",
+    )
+    batch = models.ForeignKey(
+        Batch,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="stock_movements",
+    )
+    movement_type = models.CharField(max_length=30, choices=MovementType.choices)
+    quantity_delta = models.IntegerField(help_text="Positive for inbound, negative for outbound")
+    balance_after = models.IntegerField(help_text="Snapshot of on-hand inventory immediately following this movement")
+    unit_cost = models.DecimalField(max_digits=18, decimal_places=4, default=0.0)
+    reference_type = models.CharField(max_length=50, help_text="e.g. POSTransaction, GoodsReceivedNote")
+    reference_id = models.CharField(max_length=100)
+
+    class Meta(BaseModel.Meta):
+        db_table = "shop_stock_movements"
+        ordering = ["-created_at"]
+        indexes = [
+            models.Index(fields=["variant", "warehouse", "-created_at"]),
+            models.Index(fields=["reference_type", "reference_id"]),
+        ]
+        verbose_name = "Stock Movement"
+        verbose_name_plural = "Stock Movements"
+
+    def __str__(self):
+        return f"{self.movement_type}: {self.variant.sku} ({self.quantity_delta}) @ {self.warehouse.name}"

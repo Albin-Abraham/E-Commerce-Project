@@ -6,6 +6,7 @@ from apps.procurement_pos.views import (
     POSRegisterViewSet,
     POSSessionViewSet,
     POSTransactionViewSet,
+    POSProductLookupView,
 )
 
 urlpatterns = [
@@ -20,8 +21,10 @@ urlpatterns = [
     # POS
     path("pos/registers/", POSRegisterViewSet.as_view(), {"HTTP_METHOD": ["GET", "POST"]}, name="pos-register-list"),
     path("pos/registers/<str:pk>/", POSRegisterViewSet.as_view(), {"HTTP_METHOD": ["GET", "PUT", "DELETE"]}, name="pos-register-detail"),
+    path("pos/registers/<str:register_id>/product-lookup/", POSProductLookupView.as_view(), name="pos-product-lookup"),
     path("pos/sessions/", POSSessionViewSet.as_view(), {"HTTP_METHOD": ["GET", "POST"]}, name="pos-session-list"),
     path("pos/sessions/<str:pk>/", POSSessionViewSet.as_view(), {"HTTP_METHOD": ["GET", "PUT", "DELETE"]}, name="pos-session-detail"),
     path("pos/transactions/", POSTransactionViewSet.as_view(), {"HTTP_METHOD": ["GET", "POST"]}, name="pos-transaction-list"),
     path("pos/transactions/<str:pk>/", POSTransactionViewSet.as_view(), {"HTTP_METHOD": ["GET", "PUT", "DELETE"]}, name="pos-transaction-detail"),
 ]
+

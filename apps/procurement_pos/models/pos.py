@@ -129,6 +129,14 @@ class POSTransaction(BaseModel):
         choices=POS_TRANSACTION_STATUS_VALUESET.as_django_choices(),
         default="COMPLETED",
     )
+    payment_status = models.CharField(max_length=30, default="PAID")
+    idempotency_key = models.CharField(
+        max_length=120,
+        unique=True,
+        null=True,
+        blank=True,
+        help_text="Unique client idempotency key to prevent double checkout",
+    )
 
     class Meta(BaseModel.Meta):
         db_table = "pos_transactions"

@@ -35,14 +35,46 @@ class POSTransactionItemSerializer(BaseModelSerializer):
         read_only_fields = ["id", "total_price"]
 
 
+class POSTransactionItemInputSerializer(serializers.Serializer):
+    variant_id = serializers.CharField(required=True)
+    quantity = serializers.IntegerField(min_value=1, default=1)
+    unit_price = serializers.DecimalField(max_digits=12, decimal_places=2, required=False)
+    discount = serializers.DecimalField(max_digits=12, decimal_places=2, default=0.0)
+
+
 class POSTransactionSerializer(BaseModelSerializer):
     items = POSTransactionItemSerializer(many=True, read_only=True)
+    cart_items = POSTransactionItemInputSerializer(many=True, write_only=True, required=False)
+    idempotency_key = serializers.CharField(max_length=120, required=False, allow_null=True, allow_blank=True)
+    payment_status = serializers.CharField(max_length=30, required=False, default="PAID")
 
     class Meta:
         model = POSTransaction
         fields = [
             "id", "session", "transaction_number", "customer",
             "payment_method", "total_amount", "tax_amount", "discount_amount",
-            "status", "items", "created_at",
+            "status", "payment_status", "idempotency_key", "items", "cart_items", "created_at",
         ]
         read_only_fields = ["id", "created_at"]
+
+    def create(self, validated_data):
+        cart_items = (
+            validated_data.pop("cart_items", None)
+            or self.initial_data.get("items", [])
+            or self.initial_data.get("cart_items", [])
+        )
+        if cart_items:
+            from apps.procurement_pos.workflows.pos_checkout_workflow import POSCheckoutWorkflow
+            request = self.context.get("request")
+            user = request.user if request else None
+            return POSCheckoutWorkflow.process_checkout(
+                session=validated_data["session"],
+                customer=validated_data.get("customer"),
+                payment_method=validated_data.get("payment_method", "CASH"),
+                items_data=cart_items,
+                idempotency_key=validated_data.get("idempotency_key"),
+                discount_amount=validated_data.get("discount_amount", 0.0),
+                tax_amount=validated_data.get("tax_amount"),
+                user=user,
+            )
+        return super().create(validated_data)

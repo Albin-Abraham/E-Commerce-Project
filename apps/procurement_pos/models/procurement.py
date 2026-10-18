@@ -362,7 +362,7 @@ class GoodsReceivedNote(BaseModel):
     @transaction.atomic
     def process_grn_receipt(cls, grn_id: str):
         from django.core.exceptions import ValidationError
-        from apps.shop.infrastructure.models.inventory import Inventory
+        from apps.shop.infrastructure.models.inventory import Inventory, StockMovement
         grn = cls.objects.select_related("purchase_order", "warehouse").get(pk=grn_id)
         if grn.status == "COMPLETED":
             return grn
@@ -383,11 +383,26 @@ class GoodsReceivedNote(BaseModel):
                 inv, created = Inventory.objects.get_or_create(
                     variant=item.variant,
                     warehouse=grn.warehouse,
-                    defaults={"quantity": receive_qty},
+                    defaults={"quantity": receive_qty, "unit_cost": item.unit_cost},
                 )
                 if not created:
-                    inv.quantity = models.F("quantity") + receive_qty
-                    inv.save(update_fields=["quantity", "updated_at"])
+                    inv.quantity = inv.quantity + receive_qty
+                    if item.unit_cost:
+                        inv.unit_cost = item.unit_cost
+                    inv.save(update_fields=["quantity", "unit_cost", "updated_at"])
+
+                StockMovement.objects.create(
+                    inventory=inv,
+                    variant=item.variant,
+                    warehouse=grn.warehouse,
+                    movement_type=StockMovement.MovementType.PURCHASE_RECEIPT,
+                    quantity_delta=receive_qty,
+                    balance_after=inv.quantity,
+                    unit_cost=item.unit_cost or 0.0,
+                    reference_type="GoodsReceivedNote",
+                    reference_id=str(grn.id),
+                )
+
                 item.quantity_received += receive_qty
                 item.save(update_fields=["quantity_received", "updated_at"])
                 item.refresh_from_db()
@@ -401,11 +416,26 @@ class GoodsReceivedNote(BaseModel):
                 inv, created = Inventory.objects.get_or_create(
                     variant=item.variant,
                     warehouse=grn.warehouse,
-                    defaults={"quantity": item.quantity_ordered},
+                    defaults={"quantity": item.quantity_ordered, "unit_cost": item.unit_cost},
                 )
                 if not created:
-                    inv.quantity = models.F("quantity") + item.quantity_ordered
-                    inv.save(update_fields=["quantity", "updated_at"])
+                    inv.quantity = inv.quantity + item.quantity_ordered
+                    if item.unit_cost:
+                        inv.unit_cost = item.unit_cost
+                    inv.save(update_fields=["quantity", "unit_cost", "updated_at"])
+
+                StockMovement.objects.create(
+                    inventory=inv,
+                    variant=item.variant,
+                    warehouse=grn.warehouse,
+                    movement_type=StockMovement.MovementType.PURCHASE_RECEIPT,
+                    quantity_delta=item.quantity_ordered,
+                    balance_after=inv.quantity,
+                    unit_cost=item.unit_cost or 0.0,
+                    reference_type="GoodsReceivedNote",
+                    reference_id=str(grn.id),
+                )
+
                 item.quantity_received = item.quantity_ordered
                 item.status = "RECEIVED"
                 item.save(update_fields=["quantity_received", "status", "updated_at"])

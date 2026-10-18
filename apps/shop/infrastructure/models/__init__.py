@@ -4,7 +4,7 @@ from .product import Product
 from .variant import ProductVariant
 from .warehouse import Warehouse
 from .facility import Facility, StorageLocation, FacilityInventory
-from .inventory import Inventory, Batch, SerialNumber, StockTransfer
+from .inventory import Inventory, Batch, SerialNumber, StockTransfer, StockMovement
 from .polymorphic import Media, Review, ActivityLog, ProductComment, ProductTestimonial
 from .graph import EntityEdge, BOMEdge
 from .events import DomainEventOutbox
@@ -23,6 +23,7 @@ __all__ = [
     "Batch",
     "SerialNumber",
     "StockTransfer",
+    "StockMovement",
     "Media",
     "Review",
     "ProductComment",
