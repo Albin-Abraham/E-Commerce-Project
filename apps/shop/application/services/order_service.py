@@ -74,17 +74,21 @@ class OrderService(BaseService[Order], IOrderService):
         }
 
     @classmethod
-    @retry_on_conflict(max_retries=3)
     def _reserve_stock(cls, product_id: UUID, branch_id: UUID, quantity: int):
-        Inventory.objects.filter(
-            product_id=product_id,
-            branch_id=branch_id,
-        ).update(reserved_quantity=F("reserved_quantity") + quantity)
+        from apps.shop.infrastructure.repository import DjangoInventoryRepository
+        from apps.shop.workflows.inventory_reservation_workflow import InventoryReservationWorkflow
+
+        repo = DjangoInventoryRepository()
+        inv = repo.get_by_product_and_branch(str(product_id), str(branch_id) if branch_id else None)
+        if inv and inv.id:
+            InventoryReservationWorkflow.reserve(inv.id, quantity)
 
     @classmethod
-    @retry_on_conflict(max_retries=3)
     def _release_stock(cls, product_id: UUID, branch_id: UUID, quantity: int):
-        Inventory.objects.filter(
-            product_id=product_id,
-            branch_id=branch_id,
-        ).update(reserved_quantity=F("reserved_quantity") - quantity)
+        from apps.shop.infrastructure.repository import DjangoInventoryRepository
+        from apps.shop.workflows.inventory_reservation_workflow import InventoryReservationWorkflow
+
+        repo = DjangoInventoryRepository()
+        inv = repo.get_by_product_and_branch(str(product_id), str(branch_id) if branch_id else None)
+        if inv and inv.id:
+            InventoryReservationWorkflow.release(inv.id, quantity)

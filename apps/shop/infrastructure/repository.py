@@ -32,6 +32,16 @@ class DjangoInventoryRepository(IInventoryRepository):
         model = qs.first()
         return InventoryDataMapper.to_domain(model) if model else None
 
+    def get_by_product_and_branch(
+        self, product_id: str, branch_id: Optional[str] = None, for_update: bool = False
+    ) -> Optional[InventoryAggregate]:
+        qs = Inventory.objects.select_for_update() if for_update else Inventory.objects
+        qs = qs.filter(product_id=product_id)
+        if branch_id:
+            qs = qs.filter(branch_id=branch_id)
+        model = qs.first()
+        return InventoryDataMapper.to_domain(model) if model else None
+
     def save(self, inventory: InventoryAggregate) -> InventoryAggregate:
         existing = Inventory.objects.filter(id=inventory.id).first() if inventory.id else None
         model = InventoryDataMapper.to_orm(inventory, existing)

@@ -107,3 +107,8 @@ class PaymentRefund(BaseModel):
         verbose_name = "Payment Refund"
         verbose_name_plural = "Payment Refunds"
         ordering = ["-created_at"]
+
+
+# Import PaymentGatewayHealth so Django includes it in the payments app models
+from apps.payments.health.models import PaymentGatewayHealth  # noqa: E402, F401
+

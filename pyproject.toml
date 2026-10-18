@@ -53,6 +53,11 @@ select = [
 DJANGO_SETTINGS_MODULE = "backend.settings.test"
 python_files = ["tests.py", "test_*.py", "*_tests.py"]
 addopts = "--reuse-db"
+markers = [
+    "system: system integration tests",
+    "feature: feature tests",
+    "module: module tests",
+]
 
 [tool.pyright]
 include = ["core", "apps", "backend"]

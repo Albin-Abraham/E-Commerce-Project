@@ -14,179 +14,18 @@ from apps.payments.models import PaymentTransaction, PaymentGatewayConfig, Payme
 logger = logging.getLogger(__name__)
 
 
-class RazorpayPaymentGateway:
-    """
-    Razorpay Payment Gateway Integration Service.
-    Supports Order Creation, HMAC SHA256 Signature Verification, and Refunds.
-    Strictly loads API Keys from SystemConfig.
-    """
+from apps.payments.adapters.razorpay_adapter import RazorpayPaymentAdapter
 
-    @classmethod
-    def get_credentials(cls) -> tuple[str, str]:
-        key_id = SystemConfig.load_val("RAZORPAY_KEY_ID")
-        key_secret = SystemConfig.load_val("RAZORPAY_KEY_SECRET")
-        if not key_id or not key_secret:
-            raise ValueError("RAZORPAY_KEY_ID or RAZORPAY_KEY_SECRET is missing in SystemConfig.")
-        return key_id, key_secret
-
-    @classmethod
-    def create_order(cls, amount: Decimal, currency: str, receipt_id: str) -> dict:
-        """
-        Creates a Razorpay Order via Razorpay REST API (v1/orders).
-        Amount is converted to subunit (cents / paise).
-        """
-        key_id, key_secret = cls.get_credentials()
-        amount_in_subunits = int(amount * 100)
-
-        url = "https://api.razorpay.com/v1/orders"
-        payload = json.dumps({
-            "amount": amount_in_subunits,
-            "currency": currency.upper(),
-            "receipt": receipt_id,
-            "payment_capture": 1,
-        }).encode("utf-8")
-
-        auth_str = base64.b64encode(f"{key_id}:{key_secret}".encode()).decode("utf-8")
-        headers = {
-            "Content-Type": "application/json",
-            "Authorization": f"Basic {auth_str}",
-        }
-
-        try:
-            req = urllib.request.Request(url, data=payload, headers=headers, method="POST")
-            with urllib.request.urlopen(req, timeout=10) as resp:
-                result = json.loads(resp.read().decode("utf-8"))
-                logger.info(f"Razorpay order created: {result.get('id')}")
-                return result
-        except Exception as exc:
-            logger.warning(f"Razorpay order creation fallback: {exc}")
-            return {
-                "id": f"order_rzp_mock_{receipt_id[:8]}",
-                "entity": "order",
-                "amount": amount_in_subunits,
-                "currency": currency,
-                "status": "created",
-            }
-
-    @classmethod
-    def verify_signature(cls, razorpay_order_id: str, razorpay_payment_id: str, razorpay_signature: str) -> bool:
-        """
-        Verifies Razorpay Checkout HMAC SHA256 Signature.
-        """
-        _, key_secret = cls.get_credentials()
-        msg = f"{razorpay_order_id}|{razorpay_payment_id}".encode("utf-8")
-        generated_signature = hmac.new(key_secret.encode("utf-8"), msg, hashlib.sha256).hexdigest()
-        return hmac.compare_digest(generated_signature, razorpay_signature)
-
-
-class PayPalPaymentGateway:
-    """
-    PayPal Express Checkout v2 REST API Integration Service.
-    Supports Order Creation, Capture, and Refunds.
-    Strictly loads Client ID and Secret from SystemConfig.
-    """
-
-    @classmethod
-    def get_credentials(cls) -> tuple[str, str, str]:
-        client_id = SystemConfig.load_val("PAYPAL_CLIENT_ID")
-        client_secret = SystemConfig.load_val("PAYPAL_CLIENT_SECRET")
-        mode = SystemConfig.load_val("PAYPAL_MODE", "sandbox")
-        if not client_id or not client_secret:
-            raise ValueError("PAYPAL_CLIENT_ID or PAYPAL_CLIENT_SECRET is missing in SystemConfig.")
-        return client_id, client_secret, mode
-
-    @classmethod
-    def get_access_token(cls) -> str:
-        client_id, client_secret, mode = cls.get_credentials()
-        base_url = "https://api-m.sandbox.paypal.com" if mode == "sandbox" else "https://api-m.paypal.com"
-        url = f"{base_url}/v1/oauth2/token"
-
-        auth_str = base64.b64encode(f"{client_id}:{client_secret}".encode()).decode("utf-8")
-        data = urllib.parse.urlencode({"grant_type": "client_credentials"}).encode("utf-8")
-        headers = {
-            "Authorization": f"Basic {auth_str}",
-            "Content-Type": "application/x-www-form-urlencoded",
-        }
-
-        try:
-            req = urllib.request.Request(url, data=data, headers=headers, method="POST")
-            with urllib.request.urlopen(req, timeout=10) as resp:
-                result = json.loads(resp.read().decode("utf-8"))
-                return result.get("access_token")
-        except Exception as exc:
-            logger.warning(f"PayPal Token fallback: {exc}")
-            return "mock_paypal_access_token"
-
-    @classmethod
-    def create_order(cls, amount: Decimal, currency: str, return_url: str = "https://example.com/paypal/return") -> dict:
-        """
-        Creates a PayPal Order via PayPal REST API (/v2/checkout/orders).
-        """
-        client_id, _, mode = cls.get_credentials()
-        token = cls.get_access_token()
-        base_url = "https://api-m.sandbox.paypal.com" if mode == "sandbox" else "https://api-m.paypal.com"
-        url = f"{base_url}/v2/checkout/orders"
-
-        payload = json.dumps({
-            "intent": "CAPTURE",
-            "purchase_units": [{
-                "amount": {
-                    "currency_code": currency.upper(),
-                    "value": f"{amount:.2f}",
-                }
-            }],
-            "application_context": {
-                "return_url": return_url,
-                "cancel_url": f"{return_url}?cancelled=true",
-            }
-        }).encode("utf-8")
-
-        headers = {
-            "Content-Type": "application/json",
-            "Authorization": f"Bearer {token}",
-        }
-
-        try:
-            req = urllib.request.Request(url, data=payload, headers=headers, method="POST")
-            with urllib.request.urlopen(req, timeout=10) as resp:
-                result = json.loads(resp.read().decode("utf-8"))
-                logger.info(f"PayPal order created: {result.get('id')}")
-                return result
-        except Exception as exc:
-            logger.warning(f"PayPal order creation fallback: {exc}")
-            return {
-                "id": f"PAYPAL_MOCK_{int(amount)}",
-                "status": "CREATED",
-                "links": [{"href": return_url, "rel": "approve"}],
-            }
-
-    @classmethod
-    def capture_order(cls, paypal_order_id: str) -> dict:
-        """
-        Captures an approved PayPal Order.
-        """
-        _, _, mode = cls.get_credentials()
-        token = cls.get_access_token()
-        base_url = "https://api-m.sandbox.paypal.com" if mode == "sandbox" else "https://api-m.paypal.com"
-        url = f"{base_url}/v2/checkout/orders/{paypal_order_id}/capture"
-
-        headers = {
-            "Content-Type": "application/json",
-            "Authorization": f"Bearer {token}",
-        }
-
-        try:
-            req = urllib.request.Request(url, data=b"", headers=headers, method="POST")
-            with urllib.request.urlopen(req, timeout=10) as resp:
-                return json.loads(resp.read().decode("utf-8"))
-        except Exception as exc:
-            logger.warning(f"PayPal capture fallback: {exc}")
-            return {"id": paypal_order_id, "status": "COMPLETED"}
+# Backward compatibility alias pointing to official adapter
+RazorpayPaymentGateway = RazorpayPaymentAdapter
 
 
 from apps.payments.adapters.factory import PaymentGatewayAdapterFactory
-from apps.payments.adapters.razorpay_adapter import RazorpayPaymentAdapter
 from apps.payments.adapters.paypal_adapter import PayPalPaymentAdapter
+
+# Backward compatibility alias pointing to official adapter
+PayPalPaymentGateway = PayPalPaymentAdapter
+
 
 logger = logging.getLogger(__name__)
 
@@ -205,6 +44,14 @@ class PaymentOrchestrationService:
         Initiates a new payment transaction via the appropriate gateway adapter.
         """
         gateway_clean = gateway_type.strip().upper()
+
+        # Operational circuit breaker check
+        from apps.payments.health.circuit_breaker import GatewayCircuitBreaker
+        if not GatewayCircuitBreaker.can_execute(gateway_clean):
+            raise ValueError(
+                f"Payment gateway '{gateway_clean}' is temporarily unavailable due to upstream provider outages. Please retry shortly."
+            )
+
         adapter = PaymentGatewayAdapterFactory.get_adapter(gateway_clean)
         tx_code = f"TX-{timezone.now().strftime('%Y%m%d%H%M%S')}-{customer_id[:4].upper()}"
 
@@ -218,7 +65,13 @@ class PaymentOrchestrationService:
             status="INITIATED",
         )
 
-        order_res = adapter.create_order(amount, currency, tx.transaction_code)
+        try:
+            order_res = adapter.create_order(amount, currency, tx.transaction_code)
+            GatewayCircuitBreaker.record_success(gateway_clean)
+        except Exception as exc:
+            GatewayCircuitBreaker.record_failure(gateway_clean)
+            raise exc
+
         tx.gateway_order_id = order_res.gateway_order_id
         tx.gateway_response = order_res.raw_response
         tx.status = "AUTHORIZED" if gateway_clean == "COD" else "PENDING"

@@ -1,3 +1,4 @@
+from typing import TYPE_CHECKING
 from decimal import Decimal
 from apps.payments.adapters.base import (
     IPaymentGatewayAdapter,
@@ -7,11 +8,20 @@ from apps.payments.adapters.base import (
     PaymentRefundResult,
 )
 
+if TYPE_CHECKING:
+    from apps.payments.configuration.schemas import ResolvedPaymentGatewayConfig
+
 
 class CODPaymentAdapter(IPaymentGatewayAdapter):
     """
     Cash on Delivery (COD) Adapter implementing IPaymentGatewayAdapter.
     """
+
+    def __init__(self, config: "ResolvedPaymentGatewayConfig | None" = None):
+        if config is None:
+            from apps.payments.configuration.resolver import PaymentGatewayConfigResolver
+            config = PaymentGatewayConfigResolver.resolve_gateway("COD")
+        self.config = config
 
     def create_order(self, amount: Decimal, currency: str, reference_id: str, **kwargs) -> PaymentOrderResult:
         cod_id = f"COD_{reference_id}"

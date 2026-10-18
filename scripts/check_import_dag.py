@@ -34,6 +34,7 @@ REPO = Path(__file__).resolve().parent.parent
 # (package_prefix, layer_number, description)
 LAYERS: list[tuple[str, int, str]] = [
     ("core.registry", 0, "Registry"),
+    ("core.configuration", 0, "Configuration"),
     ("core.base_models", 1, "Base Models"),
     ("core.admin.models", 2, "Admin Models"),
     ("core.admin.utils", 2, "Admin Utils"),
@@ -123,7 +124,7 @@ def _check_import(
         return
     if target.startswith(("django", "rest_framework", "celery", "redis", "environ", "yaml")):
         return
-    if target.startswith("core.registry"):
+    if target.startswith(("core.registry", "core.configuration")):
         return
     # Allow same-package imports within core.base_*
     if target.startswith(("core.base_models", "core.base_serializers", "core.base_views")):

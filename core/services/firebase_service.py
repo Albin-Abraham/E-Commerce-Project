@@ -1,6 +1,5 @@
-import json
-import logging
-from core.base_models.system_models import SystemConfig
+import os
+from core.configuration.resolver import CoreConfigurationResolver
 
 logger = logging.getLogger(__name__)
 
@@ -8,7 +7,8 @@ logger = logging.getLogger(__name__)
 class FirebaseNotificationService:
     """
     Google Firebase Cloud Messaging (FCM) Push Notification Service.
-    Loads service account JSON credentials dynamically from SystemConfig ('FIREBASE_CREDENTIALS_JSON').
+    Loads service account JSON credentials dynamically via CoreConfigurationResolver
+    ('FIREBASE_CREDENTIALS_JSON' or 'FIREBASE_CREDENTIALS_PATH').
     Dispatches FCM multicast push notifications and automatically cleans up expired device tokens.
     """
 
@@ -47,16 +47,25 @@ class FirebaseNotificationService:
             return False
         firebase_admin, credentials = fb["app"], fb["credentials"]
         if not firebase_admin._apps:
-            cred_json_str = SystemConfig.load_val("FIREBASE_CREDENTIALS_JSON")
-            if not cred_json_str:
-                logger.warning("FIREBASE_CREDENTIALS_JSON is missing in SystemConfig. FCM Push notifications disabled.")
+            cred_json_str = CoreConfigurationResolver.get("FIREBASE_CREDENTIALS_JSON")
+            cred_path = CoreConfigurationResolver.get("FIREBASE_CREDENTIALS_PATH")
+
+            if not cred_json_str and not cred_path:
+                logger.warning("Neither FIREBASE_CREDENTIALS_JSON nor FIREBASE_CREDENTIALS_PATH configured. FCM push disabled.")
                 return False
 
             try:
-                cred_dict = json.loads(cred_json_str)
-                cred = credentials.Certificate(cred_dict)
+                if cred_json_str:
+                    cred_dict = json.loads(cred_json_str) if isinstance(cred_json_str, str) else cred_json_str
+                    cred = credentials.Certificate(cred_dict)
+                elif cred_path and os.path.exists(cred_path):
+                    cred = credentials.Certificate(cred_path)
+                else:
+                    logger.error(f"Configured FIREBASE_CREDENTIALS_PATH '{cred_path}' does not exist.")
+                    return False
+
                 firebase_admin.initialize_app(cred)
-                logger.info("Successfully initialized Firebase Admin SDK from SystemConfig")
+                logger.info("Successfully initialized Firebase Admin SDK via CoreConfigurationResolver")
                 return True
             except Exception as exc:
                 logger.error(f"Failed to initialize Firebase Admin SDK: {exc}")

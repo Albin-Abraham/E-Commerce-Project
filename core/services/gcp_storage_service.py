@@ -3,7 +3,7 @@ import logging
 import urllib.request
 import json
 from django.conf import settings
-from core.base_models.system_models import SystemConfig
+from core.configuration.resolver import CoreConfigurationResolver
 
 logger = logging.getLogger(__name__)
 
@@ -12,23 +12,23 @@ class GCPStorageService:
     """
     Google Cloud Storage (GCS) Bucket & OAuth API Service.
     Handles media asset uploads to Google Storage Buckets and Google OAuth ID Token verification.
-    Strictly resolves API keys, Bucket names, and OAuth Client IDs exclusively from the SystemConfig model.
+    Resolves API keys, Bucket names, and OAuth Client IDs hierarchically via CoreConfigurationResolver.
     """
 
     @classmethod
     def get_bucket_name(cls) -> str:
-        bucket_name = SystemConfig.load_val("GOOGLE_STORAGE_BUCKET_NAME")
+        bucket_name = CoreConfigurationResolver.get("GOOGLE_STORAGE_BUCKET_NAME")
         if not bucket_name:
-            raise ValueError("GOOGLE_STORAGE_BUCKET_NAME is missing or not configured in SystemConfig.")
+            raise ValueError("GOOGLE_STORAGE_BUCKET_NAME is missing or not configured in SystemConfig or environment.")
         return bucket_name
 
     @classmethod
     def get_api_key(cls) -> str | None:
-        return SystemConfig.load_val("GOOGLE_API_KEY")
+        return CoreConfigurationResolver.get("GOOGLE_API_KEY")
 
     @classmethod
     def get_google_client_id(cls) -> str | None:
-        return SystemConfig.load_val("GOOGLE_CLIENT_ID")
+        return CoreConfigurationResolver.get("GOOGLE_CLIENT_ID")
 
     @classmethod
     def verify_google_oauth_token(cls, id_token: str) -> dict:

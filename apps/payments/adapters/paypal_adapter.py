@@ -4,7 +4,7 @@ import urllib.request
 import urllib.parse
 import base64
 from decimal import Decimal
-from core.base_models.system_models import SystemConfig
+from typing import TYPE_CHECKING
 from apps.payments.adapters.base import (
     IPaymentGatewayAdapter,
     PaymentOrderResult,
@@ -13,21 +13,29 @@ from apps.payments.adapters.base import (
     PaymentRefundResult,
 )
 
+if TYPE_CHECKING:
+    from apps.payments.configuration.schemas import ResolvedPaymentGatewayConfig
+
 logger = logging.getLogger(__name__)
 
 
 class PayPalPaymentAdapter(IPaymentGatewayAdapter):
     """
     PayPal Express Checkout Adapter implementing IPaymentGatewayAdapter.
+    Accepts an immutable ResolvedPaymentGatewayConfig profile.
     """
 
+    def __init__(self, config: "ResolvedPaymentGatewayConfig | None" = None):
+        if config is None:
+            from apps.payments.configuration.resolver import PaymentGatewayConfigResolver
+            config = PaymentGatewayConfigResolver.resolve_gateway("PAYPAL")
+        self.config = config
+        self.client_id = config.api_key
+        self.client_secret = config.api_secret
+        self.mode = "sandbox" if config.is_sandbox else "live"
+
     def _get_credentials(self) -> tuple[str, str, str]:
-        client_id = SystemConfig.load_val("PAYPAL_CLIENT_ID")
-        client_secret = SystemConfig.load_val("PAYPAL_CLIENT_SECRET")
-        mode = SystemConfig.load_val("PAYPAL_MODE", "sandbox")
-        if not client_id or not client_secret:
-            raise ValueError("PAYPAL_CLIENT_ID or PAYPAL_CLIENT_SECRET is missing in SystemConfig.")
-        return client_id, client_secret, mode
+        return self.client_id, self.client_secret, self.mode
 
     def _get_token(self) -> str:
         client_id, client_secret, mode = self._get_credentials()

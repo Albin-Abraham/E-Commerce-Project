@@ -2,7 +2,7 @@ import logging
 import re
 from django.core.mail import send_mail
 from django.core.mail.backends.smtp import EmailBackend
-from core.base_models.system_models import SystemConfig
+from core.configuration.resolver import CoreConfigurationResolver
 
 logger = logging.getLogger(__name__)
 
@@ -11,23 +11,23 @@ class DynamicSMTPEmailService:
     """
     SMTP Email Service that dynamically loads SMTP server configuration
     (EMAIL_HOST, EMAIL_PORT, EMAIL_HOST_USER, EMAIL_HOST_PASSWORD, EMAIL_USE_TLS, DEFAULT_FROM_EMAIL)
-    strictly from the SystemConfig database registry.
+    hierarchically via CoreConfigurationResolver (SystemConfig -> settings -> .env).
     Integrated with AutoResponder event templates and dynamic context placeholder rendering (e.g. {{user}}, {{order_number}}).
     """
 
     @classmethod
     def get_smtp_connection(cls):
         """
-        Builds a Django SMTP EmailBackend instance dynamically using SystemConfig entries.
+        Builds a Django SMTP EmailBackend instance dynamically using CoreConfigurationResolver.
         """
-        host = SystemConfig.load_val("EMAIL_HOST", "smtp.gmail.com")
-        port = int(SystemConfig.load_val("EMAIL_PORT", "587"))
-        username = SystemConfig.load_val("EMAIL_HOST_USER")
-        password = SystemConfig.load_val("EMAIL_HOST_PASSWORD")
-        use_tls = SystemConfig.load_val("EMAIL_USE_TLS", "true").strip().lower() in ("true", "1", "yes")
+        host = CoreConfigurationResolver.get("EMAIL_HOST", default="smtp.gmail.com")
+        port = CoreConfigurationResolver.get_int("EMAIL_PORT", default=587)
+        username = CoreConfigurationResolver.get("EMAIL_HOST_USER")
+        password = CoreConfigurationResolver.get("EMAIL_HOST_PASSWORD")
+        use_tls = CoreConfigurationResolver.get_bool("EMAIL_USE_TLS", default=True)
 
         if not username or not password:
-            logger.warning("EMAIL_HOST_USER or EMAIL_HOST_PASSWORD is missing in SystemConfig. Using default Django backend.")
+            logger.warning("EMAIL_HOST_USER or EMAIL_HOST_PASSWORD is missing in configuration. Using default Django backend.")
             return None
 
         return EmailBackend(
@@ -42,9 +42,9 @@ class DynamicSMTPEmailService:
     @classmethod
     def send_email(cls, subject: str, body: str, recipient_email: str, html_body: str | None = None) -> bool:
         """
-        Dispatches an email to recipient using SystemConfig SMTP credentials.
+        Dispatches an email to recipient using resolved SMTP credentials.
         """
-        from_email = SystemConfig.load_val("DEFAULT_FROM_EMAIL", "No-Reply <noreply@yafeiplatform.com>")
+        from_email = CoreConfigurationResolver.get("DEFAULT_FROM_EMAIL", default="No-Reply <noreply@yafeiplatform.com>")
         connection = cls.get_smtp_connection()
 
         try:

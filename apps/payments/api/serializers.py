@@ -1,8 +1,32 @@
 from rest_framework import serializers
 from apps.payments.models import PaymentTransaction, PaymentGatewayConfig, PaymentRefund
+from apps.payments.health.models import PaymentGatewayHealth
+
+
+class PaymentGatewayHealthSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PaymentGatewayHealth
+        fields = [
+            "id",
+            "gateway_type",
+            "status",
+            "configuration_status",
+            "connectivity_status",
+            "authentication_status",
+            "readiness_status",
+            "last_checked_at",
+            "last_success_at",
+            "latency_ms",
+            "last_error_code",
+            "last_error_message",
+            "consecutive_failures",
+            "details",
+        ]
 
 
 class PaymentGatewayConfigSerializer(serializers.ModelSerializer):
+    health = PaymentGatewayHealthSerializer(read_only=True)
+
     class Meta:
         model = PaymentGatewayConfig
         fields = [
@@ -12,6 +36,7 @@ class PaymentGatewayConfigSerializer(serializers.ModelSerializer):
             "is_active",
             "is_sandbox",
             "supported_currencies",
+            "health",
         ]
 
 

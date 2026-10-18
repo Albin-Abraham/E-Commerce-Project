@@ -25,20 +25,28 @@ class InventoryService(BaseService[Inventory]):
         ]
 
     @classmethod
-    @retry_on_conflict(max_retries=3)
-    @transaction.atomic
     def update_stock(cls, inventory_id: UUID, quantity_change: int, user_id: UUID = None) -> bool:
-        record = cls.get_object(inventory_id)
-        if not record:
-            return False
+        from apps.shop.infrastructure.repository import DjangoInventoryRepository
+        from core.infrastructure.uow import DjangoUnitOfWork
+        from shared_domain.validation.exceptions import DomainValidationError
 
-        new_quantity = record.quantity + quantity_change
-        if new_quantity < 0:
-            return False
+        repo = DjangoInventoryRepository()
+        uow = DjangoUnitOfWork()
 
-        record.quantity = new_quantity
-        record.save()
-        return True
+        try:
+            with uow:
+                aggregate = repo.get_by_id(str(inventory_id), for_update=True)
+                if not aggregate:
+                    return False
+                new_quantity = aggregate.quantity + quantity_change
+                if new_quantity < 0:
+                    return False
+                aggregate.adjust_stock(new_quantity)
+                repo.save(aggregate)
+                uow.commit()
+            return True
+        except DomainValidationError:
+            return False
 
     @classmethod
     def initialize_stock(cls, product_id: UUID, branch_id: UUID, initial_quantity: int = 0) -> Inventory:

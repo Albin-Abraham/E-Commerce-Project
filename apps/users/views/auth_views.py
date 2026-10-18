@@ -230,12 +230,38 @@ class UserRegistrationAuthView(BaseAPIView):
     def post(self, request, *args, **kwargs):
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        user = serializer.save()
-        return ResponseFactory.success(
-            data={"user_id": str(user.id), "username": user.username},
-            message="User registered successfully",
-            status_code=status.HTTP_201_CREATED
+
+        from apps.users.application.use_cases.register_user import (
+            RegisterUserUseCase,
+            RegisterUserInputDTO,
         )
+        from apps.users.infrastructure.repository import DjangoUserRepository
+        from core.infrastructure.uow import DjangoUnitOfWork
+        from shared_domain.validation.exceptions import DomainValidationError
+
+        validated = serializer.validated_data
+        dto = RegisterUserInputDTO(
+            username=validated["username"],
+            email=validated["email"],
+            password=validated["password"],
+            full_name=validated.get("full_name", ""),
+            company_id=validated.get("company_id"),
+            branch_id=validated.get("branch_id"),
+        )
+
+        try:
+            use_case = RegisterUserUseCase(
+                user_repo=DjangoUserRepository(),
+                uow=DjangoUnitOfWork()
+            )
+            output = use_case.execute(dto)
+            return ResponseFactory.success(
+                data={"user_id": output.user_id, "username": output.username, "email": output.email},
+                message="User registered successfully",
+                status_code=status.HTTP_201_CREATED,
+            )
+        except DomainValidationError as e:
+            return ResponseFactory.validation_error(e.errors, message=str(e))
 
 
 # ----------------------------

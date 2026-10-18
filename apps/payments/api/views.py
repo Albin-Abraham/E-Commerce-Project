@@ -12,11 +12,85 @@ from apps.payments.api.serializers import (
     CapturePayPalPaymentSerializer,
 )
 from apps.payments.services.payment_service import PaymentOrchestrationService
+from apps.payments.configuration.exceptions import (
+    GatewayDisabledError,
+    GatewayNotConfiguredError,
+    GatewayConfigurationError,
+)
 
 
-class PaymentGatewayConfigViewSet(viewsets.ReadOnlyModelViewSet):
-    queryset = PaymentGatewayConfig.objects.filter(is_active=True)
+from apps.payments.health.service import PaymentGatewayHealthMonitorService
+from apps.payments.health.models import PaymentGatewayHealth
+from apps.payments.api.serializers import PaymentGatewayHealthSerializer
+
+
+class PaymentGatewayConfigViewSet(viewsets.ModelViewSet):
+    queryset = PaymentGatewayConfig.objects.all()
     serializer_class = PaymentGatewayConfigSerializer
+    permission_classes = [AllowAny]
+
+    @action(detail=True, methods=["post"], url_path="health-check")
+    def health_check(self, request, pk=None):
+        """
+        On-demand manual health check ('Test Connection') for administrators.
+        Runs full 4-tier health check pipeline and returns diagnostic results.
+        """
+        config = self.get_object()
+        result = PaymentGatewayHealthMonitorService.check_gateway_health(config.gateway_type, persist=True)
+        return ResponseFactory.success(
+            data=result.to_dict(),
+            message=f"Health check completed for '{config.gateway_type}': {result.overall_status}",
+        )
+
+    @action(detail=True, methods=["get"], url_path="health")
+    def get_health(self, request, pk=None):
+        """
+        Retrieves the latest persisted health assessment for this gateway.
+        """
+        config = self.get_object()
+        health = getattr(config, "health", None)
+        if not health:
+            health = PaymentGatewayHealth.objects.filter(gateway_type=config.gateway_type).first()
+
+        if not health:
+            result = PaymentGatewayHealthMonitorService.check_gateway_health(config.gateway_type, persist=True)
+            return ResponseFactory.success(
+                data=result.to_dict(),
+                message=f"Initial health check completed for '{config.gateway_type}'",
+            )
+
+        return ResponseFactory.success(
+            data=PaymentGatewayHealthSerializer(health).data,
+            message=f"Retrieved health status for '{config.gateway_type}'",
+        )
+
+    @action(detail=True, methods=["post"], url_path="activate")
+    def activate(self, request, pk=None):
+        """
+        Activates the payment gateway after configuration validation.
+        """
+        config = self.get_object()
+        config.is_active = True
+        config.save(update_fields=["is_active", "updated_at"])
+        PaymentGatewayHealthMonitorService.check_gateway_health(config.gateway_type, persist=True)
+        return ResponseFactory.success(
+            data=PaymentGatewayConfigSerializer(config).data,
+            message=f"Payment gateway '{config.gateway_type}' activated successfully.",
+        )
+
+    @action(detail=True, methods=["post"], url_path="deactivate")
+    def deactivate(self, request, pk=None):
+        """
+        Deactivates the payment gateway and marks health as DISABLED.
+        """
+        config = self.get_object()
+        config.is_active = False
+        config.save(update_fields=["is_active", "updated_at"])
+        PaymentGatewayHealthMonitorService.check_gateway_health(config.gateway_type, persist=True)
+        return ResponseFactory.success(
+            data=PaymentGatewayConfigSerializer(config).data,
+            message=f"Payment gateway '{config.gateway_type}' deactivated successfully.",
+        )
 
 
 class PaymentInitiateWorkflowAPIView(BaseAPIView):
@@ -45,6 +119,10 @@ class PaymentInitiateWorkflowAPIView(BaseAPIView):
                 data=PaymentTransactionSerializer(tx).data,
                 message="Payment transaction initiated successfully via workflow engine",
             )
+        except GatewayDisabledError as exc:
+            return ResponseFactory.error(message=str(exc), status_code=status.HTTP_409_CONFLICT)
+        except (GatewayNotConfiguredError, GatewayConfigurationError) as exc:
+            return ResponseFactory.error(message=str(exc), status_code=status.HTTP_503_SERVICE_UNAVAILABLE)
         except ValueError as exc:
             return ResponseFactory.error(message=str(exc), status_code=status.HTTP_400_BAD_REQUEST)
 

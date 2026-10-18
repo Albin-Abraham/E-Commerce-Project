@@ -54,6 +54,15 @@ class InMemoryInventoryRepository(IInventoryRepository):
                     return inv
         return None
 
+    def get_by_product_and_branch(
+        self, product_id: str, branch_id: Optional[str] = None, for_update: bool = False
+    ) -> Optional[InventoryAggregate]:
+        for inv in self._storage.values():
+            if inv.product_id == product_id:
+                if branch_id is None or inv.branch_id == branch_id:
+                    return inv
+        return None
+
     def save(self, inventory: InventoryAggregate) -> InventoryAggregate:
         if not inventory.id:
             inventory.id = f"inv_{self._id_counter}"

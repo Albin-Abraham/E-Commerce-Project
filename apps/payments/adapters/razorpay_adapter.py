@@ -5,7 +5,7 @@ import logging
 import urllib.request
 import base64
 from decimal import Decimal
-from core.base_models.system_models import SystemConfig
+from typing import TYPE_CHECKING
 from apps.payments.adapters.base import (
     IPaymentGatewayAdapter,
     PaymentOrderResult,
@@ -14,20 +14,28 @@ from apps.payments.adapters.base import (
     PaymentRefundResult,
 )
 
+if TYPE_CHECKING:
+    from apps.payments.configuration.schemas import ResolvedPaymentGatewayConfig
+
 logger = logging.getLogger(__name__)
 
 
 class RazorpayPaymentAdapter(IPaymentGatewayAdapter):
     """
     Razorpay Adapter implementing IPaymentGatewayAdapter.
+    Accepts an immutable ResolvedPaymentGatewayConfig profile.
     """
 
+    def __init__(self, config: "ResolvedPaymentGatewayConfig | None" = None):
+        if config is None:
+            from apps.payments.configuration.resolver import PaymentGatewayConfigResolver
+            config = PaymentGatewayConfigResolver.resolve_gateway("RAZORPAY")
+        self.config = config
+        self.key_id = config.api_key
+        self.key_secret = config.api_secret
+
     def _get_credentials(self) -> tuple[str, str]:
-        key_id = SystemConfig.load_val("RAZORPAY_KEY_ID")
-        key_secret = SystemConfig.load_val("RAZORPAY_KEY_SECRET")
-        if not key_id or not key_secret:
-            raise ValueError("RAZORPAY_KEY_ID or RAZORPAY_KEY_SECRET is missing in SystemConfig.")
-        return key_id, key_secret
+        return self.key_id, self.key_secret
 
     def create_order(self, amount: Decimal, currency: str, reference_id: str, **kwargs) -> PaymentOrderResult:
         key_id, key_secret = self._get_credentials()

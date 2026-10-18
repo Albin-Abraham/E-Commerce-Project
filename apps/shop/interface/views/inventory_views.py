@@ -69,6 +69,8 @@ class InventoryViewSet(BaseAPIView):
         repo = DjangoInventoryRepository()
         uow = DjangoUnitOfWork()
 
+        from shared_domain.validation.exceptions import DomainValidationError
+
         if action == "reserve":
             try:
                 use_case = ReserveInventoryUseCase(repo, uow)
@@ -77,6 +79,8 @@ class InventoryViewSet(BaseAPIView):
                     message="Successfully reserved {reserved_unit} units",
                     context={"reserved_unit": int(qty), "inventory_id": inventory_id},
                 )
+            except DomainValidationError as e:
+                return ResponseFactory.validation_error(e.errors, message=str(e))
             except Exception as e:
                 return ResponseFactory.error(message=str(e))
 
@@ -89,6 +93,8 @@ class InventoryViewSet(BaseAPIView):
                         message="Released {released_unit} units",
                         context={"released_unit": int(qty), "inventory_id": inventory_id},
                     )
+            except DomainValidationError as e:
+                return ResponseFactory.validation_error(e.errors, message=str(e))
             except Exception as e:
                 return ResponseFactory.error(message=str(e))
             return ResponseFactory.error(message="Failed to release stock")
@@ -102,6 +108,8 @@ class InventoryViewSet(BaseAPIView):
                         message="Committed {committed_unit} units",
                         context={"committed_unit": int(qty), "inventory_id": inventory_id},
                     )
+            except DomainValidationError as e:
+                return ResponseFactory.validation_error(e.errors, message=str(e))
             except Exception as e:
                 return ResponseFactory.error(message=str(e))
             return ResponseFactory.error(message="Failed to commit stock")

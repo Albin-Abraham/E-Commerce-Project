@@ -25,6 +25,13 @@ class IInventoryRepository(ABC):
         pass
 
     @abstractmethod
+    def get_by_product_and_branch(
+        self, product_id: str, branch_id: Optional[str] = None, for_update: bool = False
+    ) -> Optional[InventoryAggregate]:
+        """Fetch inventory aggregate by product and branch."""
+        pass
+
+    @abstractmethod
     def save(self, inventory: InventoryAggregate) -> InventoryAggregate:
         """Persist state changes of the inventory aggregate."""
         pass
