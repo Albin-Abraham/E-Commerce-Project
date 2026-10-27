@@ -55,15 +55,19 @@ class CustomerCheckoutService:
             for item in cart_items
         ]
 
+        lat_val = getattr(address, "latitude", None)
+        lng_val = getattr(address, "longitude", None)
+
         # 2. Dynamic Facility Allocation & Policy Check
         allocation_result = DynamicFacilityRouter.allocate_order(
             company_id=str(cart.customer.company_id),
-            target_pincode=address.pincode,
+            target_pincode=getattr(address, "pincode", getattr(address, "postal_code", "")),
             items=router_items,
-            lat=float(address.latitude) if address.latitude else None,
-            lng=float(address.longitude) if address.longitude else None,
+            lat=float(lat_val) if lat_val is not None else None,
+            lng=float(lng_val) if lng_val is not None else None,
             delivery_partner=delivery_partner,
         )
+
 
         if not allocation_result.is_fully_allocated:
             unallocated_names = [i["product_id"] for i in allocation_result.unallocated_items]
@@ -94,12 +98,12 @@ class CustomerCheckoutService:
         )
         sales_order = SalesOrder.objects.create(
             order_number=order_number,
-            company=cart.customer.company,
             customer=cart.customer,
             delivery_address=address,
             status="CONFIRMED",
             total_amount=tax_result.gross_amount,
         )
+
         sales_order.set_party(cart.customer)
         sales_order.save()
 

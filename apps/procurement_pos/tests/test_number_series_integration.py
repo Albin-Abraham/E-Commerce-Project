@@ -20,10 +20,15 @@ from apps.procurement_pos.models.selling import (
 )
 from apps.shop.infrastructure.models.product import Product
 from apps.shop.infrastructure.models.variant import ProductVariant
-from apps.shop.infrastructure.models.inventory import SerialNumber, StockTransfer
+from django.contrib.auth import get_user_model
 from apps.shop.infrastructure.models.warehouse import Warehouse
+from apps.shop.infrastructure.models.inventory import SerialNumber, StockTransfer
 from apps.customers.models.customer import Customer
 from core.admin.models.company import Company
+
+
+
+User = get_user_model()
 
 
 class NumberSeriesIntegrationTestCase(TestCase):
@@ -123,6 +128,8 @@ class NumberSeriesIntegrationTestCase(TestCase):
         sinv.save()
         self.assertTrue(sinv.invoice_number.startswith("INV-"))
 
+
+
     def test_inventory_models_auto_generate_numbers(self):
         # Product SKU auto-generation
         product = Product(name="Wireless Mouse", slug="wireless-mouse", price=29.99)
@@ -182,3 +189,4 @@ class NumberSeriesIntegrationTestCase(TestCase):
         self.assertIn("order_number", data)
         self.assertTrue(data["order_number"].startswith("SO-"))
         self.assertIn("currency", data)
+

@@ -33,6 +33,12 @@ class UserManager(BaseUserManager):
         if not username:
             raise ValueError("Users must have a username")
 
+        # Handle legacy or third-party first_name/last_name kwargs by composing full_name
+        first_name = extra_fields.pop("first_name", None)
+        last_name = extra_fields.pop("last_name", None)
+        if (first_name or last_name) and "full_name" not in extra_fields:
+            extra_fields["full_name"] = f"{first_name or ''} {last_name or ''}".strip()
+
         from django.db import transaction
         with transaction.atomic(using=self._db):
             email = self.normalize_email(email)
@@ -40,6 +46,10 @@ class UserManager(BaseUserManager):
             user.set_password(password)
             user.save(using=self._db)
             return user
+
+    def make_random_password(self, length=10, allowed_chars="abcdefghjkmnpqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ23456789"):
+        from django.utils.crypto import get_random_string
+        return get_random_string(length, allowed_chars)
 
     def create_superuser(self, email, username, password=None, **extra_fields):
         extra_fields.setdefault("is_staff", True)
@@ -56,6 +66,7 @@ class UserManager(BaseUserManager):
         from django.db import transaction
         with transaction.atomic(using=self._db):
             return self.create_user(email, username, password, **extra_fields)
+
 
 
 # ------------------------------------------------------------

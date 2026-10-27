@@ -17,6 +17,15 @@ from .feedback_views import (
     FeedbackSummaryViewSet,
 )
 
+from .catalog_views import (
+    CatalogViewSet,
+    CatalogItemViewSet,
+    CatalogCollectionViewSet,
+    CatalogPublicationViewSet,
+    TagDefinitionViewSet,
+    EntityTagViewSet,
+)
+
 __all__ = [
     "CategoryViewSet",
     "OrderViewSet",
@@ -24,6 +33,12 @@ __all__ = [
     "ProductViewSet",
     "ProductVariantViewSet",
     "BrandViewSet",
+    "CatalogViewSet",
+    "CatalogItemViewSet",
+    "CatalogCollectionViewSet",
+    "CatalogPublicationViewSet",
+    "TagDefinitionViewSet",
+    "EntityTagViewSet",
     "WarehouseViewSet",
     "InventoryViewSet",
     "EntityEdgeViewSet",

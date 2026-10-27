@@ -4,6 +4,7 @@ from apps.customers.models.shopping import Cart, CartItem, Wishlist, WishlistIte
 from apps.shop.infrastructure.models.product import Product
 
 
+
 class CustomerPreferenceSerializer(serializers.ModelSerializer):
     class Meta:
         model = CustomerPreference

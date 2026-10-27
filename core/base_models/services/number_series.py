@@ -279,8 +279,14 @@ class NumberSeriesService:
                     return f"{seq:0{int(length_str)}d}"
             return match.group(0)
 
+        from core.admin.models.number_series import NumberSeries
         result = NumberSeries.TOKEN_PATTERN.sub(replace_seq, result)
         return result
+
+    @classmethod
+    def _get_models(cls):
+        from core.admin.models.number_series import NumberSeries, ResetPolicy
+        return NumberSeries, ResetPolicy
 
     @classmethod
     def ensure_company_series(cls, company) -> int:
@@ -288,7 +294,7 @@ class NumberSeriesService:
         Ensure company-scoped NumberSeries records exist for every registry type.
         Allows administrative users to view and edit configurations in DB.
         """
-        from core.admin.models.number_series import NumberSeries, ResetPolicy
+        NumberSeries, ResetPolicy = cls._get_models()
         company_id = getattr(company, "pk", company)
         created_count = 0
 
@@ -319,6 +325,7 @@ class NumberSeriesService:
         Returns all user-editable NumberSeries configurations for a company,
         including a preview of the next generated code.
         """
+        NumberSeries, _ = cls._get_models()
         cls.ensure_company_series(company)
         company_id = getattr(company, "pk", company)
 
@@ -371,6 +378,7 @@ class NumberSeriesService:
         Allows administrative users to bulk update NumberSeries configurations in the database.
         Changes immediately take effect for future sequence code generations.
         """
+        NumberSeries, _ = cls._get_models()
         company_id = getattr(company, "pk", company)
         cls.ensure_company_series(company)
 
@@ -421,6 +429,7 @@ class NumberSeriesService:
         """
         Generates a preview code without incrementing sequence counters in DB.
         """
+        NumberSeries, _ = cls._get_models()
         now = timezone.now()
         company_id = getattr(company, "pk", company)
         bu_id = getattr(business_unit, "pk", business_unit)
@@ -468,6 +477,9 @@ class NumberSeriesService:
         company=None,
         business_unit=None,
         branch=None,
+        company_id=None,
+        business_unit_id=None,
+        branch_id=None,
     ) -> str:
         """
         Allocate the next sequence number for a document type and org scope atomically.
@@ -476,6 +488,7 @@ class NumberSeriesService:
         from core.admin.models.number_series import NumberSeries, ResetPolicy
 
         now = timezone.now()
+
 
         with transaction.atomic():
             company_id = getattr(company, "pk", company)

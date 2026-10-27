@@ -32,7 +32,7 @@ class Order(BaseModel, BranchModelMixin):
     status = CustomCharField(
         max_length=20,
         choices=SHOP_ORDER_STATUS_VALUESET.as_django_choices(),
-        default="pending",
+        default=StatusChoices.PENDING,
         rules=[RequiredRule("status")],
     )
     total_amount = CustomDecimalField(

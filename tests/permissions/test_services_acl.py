@@ -1,5 +1,6 @@
 import pytest
 from core.admin.models.company import Company
+from core.admin.models.business_unit import BusinessUnit
 from core.admin.models.branch import Branch
 from core.admin.models.business_unit import BusinessUnit
 from apps.access_control.models import EntityAccessControl
@@ -16,19 +17,35 @@ def test_user(db):
 
 @pytest.fixture
 def companies(db):
-    c1 = Company(name="Company 1", code="C1")
+    c1 = Company(name="Company 1", code="C1", email="c1@example.com")
     c1._validated_by_mediator = True
     c1.save()
     
-    c2 = Company(name="Company 2", code="C2")
+    c2 = Company(name="Company 2", code="C2", email="c2@example.com")
     c2._validated_by_mediator = True
     c2.save()
     
-    c3 = Company(name="Company 3", code="C3")
+    c3 = Company(name="Company 3", code="C3", email="c3@example.com")
     c3._validated_by_mediator = True
     c3.save()
     
     return [c1, c2, c3]
+
+@pytest.fixture
+def business_units(db, companies):
+    bu1 = BusinessUnit(name="BU 1", code="BU1", company=companies[0])
+    bu1._validated_by_mediator = True
+    bu1.save()
+
+    bu2 = BusinessUnit(name="BU 2", code="BU2", company=companies[1])
+    bu2._validated_by_mediator = True
+    bu2.save()
+
+    bu3 = BusinessUnit(name="BU 3", code="BU3", company=companies[2])
+    bu3._validated_by_mediator = True
+    bu3.save()
+
+    return [bu1, bu2, bu3]
 
 class TestServiceACL:
     """
@@ -36,7 +53,7 @@ class TestServiceACL:
     (EntityAccessControl) for scoping querysets and injecting context.
     """
 
-    def test_get_queryset_scopes_by_master_acl(self, db, test_user, companies):
+    def test_get_queryset_scopes_by_master_acl(self, db, test_user, companies, business_units):
         from core.admin.services.branch_service import BranchService
 
         # Create business units for companies
@@ -84,7 +101,7 @@ class TestServiceACL:
         assert b2 in qs
         assert b3 not in qs
 
-    def test_get_queryset_no_access(self, db, test_user, companies):
+    def test_get_queryset_no_access(self, db, test_user, companies, business_units):
         from core.admin.services.branch_service import BranchService
 
         bu1 = BusinessUnit(name="BU-1", code="BU-1", company=companies[0])
@@ -100,3 +117,4 @@ class TestServiceACL:
         
         # Assert empty
         assert qs.count() == 0
+

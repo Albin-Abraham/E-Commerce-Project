@@ -99,6 +99,7 @@ class CurrencyInjectionMixin:
                 data[field_name] = currency_code
                 logger.debug(f"[CurrencyInjectionMixin] Injected {field_name}={currency_code}")
 
+
         return data
 
     def pre_create(self, request, data):

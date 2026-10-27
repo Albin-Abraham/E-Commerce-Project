@@ -52,6 +52,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'rest_framework_simplejwt.token_blacklist',
     'drf_spectacular',
+    'import_export',
 ] + AppRegistry.discover()
 
 

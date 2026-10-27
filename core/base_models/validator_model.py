@@ -296,6 +296,7 @@ class TimestampMixin(models.Model):
         super().save(*args, **kwargs)
 
 
+
 class AutoAuditLogMixin(models.Model):
     """Triggers AuditMixin logs securely after a save."""
     class Meta:

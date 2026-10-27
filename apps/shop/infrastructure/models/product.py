@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils.text import slugify
 from core.base_models.validator_model import BaseModel
 from core.base_models.scoping_models import TenantModelMixin
 from core.base_models.fields.short_ui_fields import CustomShortUUIDField
@@ -39,7 +40,7 @@ class Product(BaseModel, TenantModelMixin, PartyReferenceMixin):
         max_length=220,
         blank=True,
         default="",
-        rules=[RequiredRule("slug"), UniqueRule("slug")],
+        rules=[UniqueRule("slug")],
     )
 
     brand = models.ForeignKey(
@@ -103,6 +104,10 @@ class Product(BaseModel, TenantModelMixin, PartyReferenceMixin):
         ordering = ["name"]
         verbose_name = "Product"
         verbose_name_plural = "Products"
+
+    def _override_pre_save(self, is_creating: bool):
+        if not self.slug and self.name:
+            self.slug = slugify(self.name)
 
     def __str__(self):
         return f"{self.name} ({self.sku})"

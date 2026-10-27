@@ -38,7 +38,10 @@ def get_serializer_cache_key(user_id: Any, model_name: str, pk: Any, fields: Any
 
 
 def get_cached_serializer_data(key: str) -> Any | None:
-    return cache.get(key)
+    try:
+        return cache.get(key)
+    except Exception:
+        return None
 
 
 def set_cached_serializer_data(key: str, data: Any, timeout: int = 300):
@@ -77,7 +80,10 @@ def get_metadata_cache_key(model_name: str, context: str = "default") -> str:
 
 
 def get_cached_metadata(key: str) -> dict | None:
-    return cache.get(key)
+    try:
+        return cache.get(key)
+    except Exception:
+        return None
 
 
 def set_cached_metadata(key: str, data: dict, timeout: int = 3600):

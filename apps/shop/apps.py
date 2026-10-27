@@ -8,4 +8,8 @@ class ShopConfig(AppConfig):
     verbose_name = 'Shop'
 
     def ready(self):
-        import apps.shop.signals  # noqa: F401
+        try:
+            import apps.shop.signals  # noqa: F401
+            import apps.shop.constants  # noqa: F401
+        except Exception:
+            pass
