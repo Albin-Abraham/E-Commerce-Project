@@ -1,0 +1,66 @@
+# ZenOS Architectural Import Layers
+# Enforces a directed acyclic graph (DAG) to prevent circular imports and architectural boundary violations.
+#
+# Fundamental Rule:
+# Layer N may import from Layer < N only (top-level imports).
+# Layer 0 modules (pure stdlib / Django / DRF / core registry) may be imported from any layer.
+version: 1
+
+layers:
+  - layer: 0
+    prefix: "core.registry"
+    description: "Registry Engine"
+  - layer: 0
+    prefix: "core.configuration"
+    description: "Configuration"
+  - layer: 1
+    prefix: "core.base_models"
+    description: "Base Models & Mixins"
+  - layer: 2
+    prefix: "core.admin.models"
+    description: "Admin Models"
+  - layer: 2
+    prefix: "core.admin.utils"
+    description: "Admin Utils"
+  - layer: 3
+    prefix: "core.admin.helpers"
+    description: "Admin Helpers"
+  - layer: 3
+    prefix: "core.admin.services"
+    description: "Admin Services"
+  - layer: 4
+    prefix: "core.base_serializers"
+    description: "Base Serializers"
+  - layer: 5
+    prefix: "core.base_views"
+    description: "Base Views"
+  - layer: 6
+    prefix: "core.admin.views"
+    description: "Admin Views"
+  - layer: 6
+    prefix: "core.admin.urls"
+    description: "Admin URLs"
+  - layer: 6
+    prefix: "core.admin.throttling"
+    description: "Admin Throttling"
+  - layer: 6
+    prefix: "core.admin.decorators"
+    description: "Admin Decorators"
+  - layer: 6
+    prefix: "core.admin.permissions"
+    description: "Admin Permissions"
+  - layer: 7
+    prefix: "apps."
+    description: "Feature Applications"
+  - layer: 8
+    prefix: "core.admin.tasks"
+    description: "Celery Background Tasks"
+
+exemptions:
+  path_patterns:
+    - "management/commands"
+    - "tests"
+  suppression_tags:
+    - "# DAG"
+    - "# noqa: DAG"
+    - "# noqa-dag"

@@ -1,0 +1,22 @@
+# ZenOS Quality Thresholds
+version: 1
+
+complexity:
+  max_cyclomatic_complexity: 10
+  max_cognitive_complexity: 15
+  max_function_arguments: 6
+  max_nested_blocks: 4
+
+size:
+  max_function_lines: 60
+  max_class_lines: 300
+  max_file_lines: 500
+
+coverage:
+  min_overall_coverage_pct: 75
+  min_domain_coverage_pct: 90
+  fail_under: 70
+
+suppressions:
+  max_unassigned_suppressions: 0
+  require_ticket_or_code: true

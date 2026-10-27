@@ -1,0 +1,22 @@
+name: ZenOS Pull Request Labeler
+
+on:
+  pull_request_target:
+    types: [opened, synchronize, reopened]
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  labeler:
+    name: Auto-Label Pull Request
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Apply Area & Component Labels
+        uses: actions/labeler@v5
+        with:
+          repo-token: "${{ secrets.GITHUB_TOKEN }}"
+          configuration-path: ".github/labeler.yml"
+          sync-labels: true

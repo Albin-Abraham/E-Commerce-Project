@@ -1,0 +1,20 @@
+# ZenOS Code Owners Policy
+# See: https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
+
+# Default fallback owners for the entire repository
+* @Albin-Abraham
+
+# Core architecture and engine registries
+/core/ @Albin-Abraham
+/core/registry/ @Albin-Abraham
+/core/base_models/ @Albin-Abraham
+/core/base_serializers/ @Albin-Abraham
+/core/base_views/ @Albin-Abraham
+
+# Feature applications
+/apps/ @Albin-Abraham
+
+# Quality engineering, orchestration, and CI workflows
+/tools/quality/ @Albin-Abraham
+/.github/ @Albin-Abraham
+/config/engineering/quality/ @Albin-Abraham

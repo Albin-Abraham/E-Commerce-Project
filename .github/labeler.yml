@@ -1,0 +1,24 @@
+# Configuration for actions/labeler
+"area:core":
+  - changed-files:
+      - any-glob-to-any-file: "core/**"
+
+"area:apps":
+  - changed-files:
+      - any-glob-to-any-file: "apps/**"
+
+"area:quality-tooling":
+  - changed-files:
+      - any-glob-to-any-file: ["tools/quality/**", "config/engineering/**"]
+
+"area:ci-cd":
+  - changed-files:
+      - any-glob-to-any-file: ".github/**"
+
+"area:documentation":
+  - changed-files:
+      - any-glob-to-any-file: ["docs/**", "documents/**", "*.md"]
+
+"area:dependencies":
+  - changed-files:
+      - any-glob-to-any-file: ["requirements*.txt", "pyproject.toml", "**/package.json", "**/pnpm-lock.yaml"]

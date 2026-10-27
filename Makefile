@@ -113,23 +113,20 @@ ping:
 	$(COMPOSE) --env-file $(ENV_FILE) run --rm web sh -c "ping -c 4 $(svc)"
 
 # --- Quality & Linting ---
-lint-imports:
-	$(COMPOSE) --env-file $(ENV_FILE) run --rm web python scripts/check_import_dag.py
-
-lint-ruff:
-	$(COMPOSE) --env-file $(ENV_FILE) run --rm web ruff check .
-
-lint: lint-imports lint-ruff
+lint:
+	./tools/quality/orchestrator/check.sh fast
 
 format:
-	$(COMPOSE) --env-file $(ENV_FILE) run --rm web ruff format .
+	./tools/quality/orchestrator/check.sh fast --fix
+
+check:
+	./tools/quality/orchestrator/check.sh full
+
+ci:
+	./tools/quality/orchestrator/check.sh ci
 
 test:
 	$(COMPOSE) --env-file $(ENV_FILE) run --rm web python -m pytest
-
-ci: lint test
-
-check: lint test check-migrate
 
 # Kubernetes
 k8-apply:

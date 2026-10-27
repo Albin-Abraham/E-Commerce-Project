@@ -1,0 +1,18 @@
+# ZenOS Suppression Rules
+# Prevents unreviewed and blanket suppression comments across Python and TypeScript.
+version: 1
+
+python:
+  disallowed_patterns:
+    - pattern: '^\s*#\s*noqa\s*$'
+      description: "Blanket # noqa is prohibited. You must specify the rule code (e.g., # noqa: F401)."
+    - pattern: '^\s*#\s*type:\s*ignore\s*$'
+      description: "Blanket # type: ignore is prohibited. Specify the code or include an explanation."
+  allowed_exemptions:
+    - "__init__.py"
+    - "tests/**"
+
+typescript:
+  disallowed_patterns:
+    - pattern: '//\s*@ts-ignore\s*$'
+      description: "Blanket @ts-ignore is prohibited. Use @ts-expect-error with a reason comment."

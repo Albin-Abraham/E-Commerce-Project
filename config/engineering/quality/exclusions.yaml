@@ -1,0 +1,30 @@
+# ZenOS Shared Exclusions Configuration
+version: 1
+
+paths:
+  global:
+    - ".git/**"
+    - ".venv/**"
+    - "venv/**"
+    - "env/**"
+    - "__pycache__/**"
+    - "*.egg-info/**"
+    - "dist/**"
+    - "build/**"
+    - "node_modules/**"
+
+  migrations:
+    - "**/migrations/**"
+
+  fixtures_and_data:
+    - "**/fixtures/**"
+    - "documents/**"
+    - "k8/**"
+    - "*.yaml"
+    - "*.json"
+
+  exempt_from_architecture_dag:
+    - "**/management/commands/**"
+    - "tests/**"
+    - "scripts/**"
+    - "tools/**"

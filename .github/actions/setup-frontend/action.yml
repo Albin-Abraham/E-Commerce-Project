@@ -1,0 +1,41 @@
+name: "Setup Frontend Environment"
+description: "Configures Node.js and pnpm if frontend package.json exists"
+
+inputs:
+  node-version:
+    description: "Node.js version to use"
+    required: false
+    default: "20"
+
+runs:
+  using: "composite"
+  steps:
+    - name: Check for frontend package.json
+      id: check-frontend
+      shell: bash
+      run: |
+        if [ -f "frontend/package.json" ]; then
+          echo "exists=true" >> "$GITHUB_OUTPUT"
+        else
+          echo "exists=false" >> "$GITHUB_OUTPUT"
+        fi
+
+    - name: Setup pnpm
+      if: steps.check-frontend.outputs.exists == 'true'
+      uses: pnpm/action-setup@v4
+      with:
+        version: 9
+
+    - name: Setup Node.js
+      if: steps.check-frontend.outputs.exists == 'true'
+      uses: actions/setup-node@v4
+      with:
+        node-version: ${{ inputs.node-version }}
+        cache: "pnpm"
+        cache-dependency-path: "frontend/pnpm-lock.yaml"
+
+    - name: Install Frontend Dependencies
+      if: steps.check-frontend.outputs.exists == 'true'
+      shell: bash
+      run: |
+        cd frontend && pnpm install --frozen-lockfile

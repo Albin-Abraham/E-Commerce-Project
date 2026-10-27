@@ -1,0 +1,106 @@
+# ZenOS Quality Engineering Configuration
+version: 1
+project_name: "zenos"
+
+policy:
+  fail_fast: false
+  default_timeout_seconds: 60
+  report_format: "console" # console | json | markdown | github-summary
+  color: true
+
+# Check definitions mapping to tools or custom scripts
+checks:
+  formatters.ruff:
+    name: "Python Code Formatting"
+    module: "formatters"
+    command: ["ruff", "format", "--check", "."]
+    fix_command: ["ruff", "format", "."]
+    timeout_seconds: 20
+    severity: "error"
+
+  linters.ruff:
+    name: "Python Linter"
+    module: "linters"
+    command: ["ruff", "check", "."]
+    fix_command: ["ruff", "check", "--fix", "."]
+    timeout_seconds: 30
+    severity: "error"
+
+  clean_code.debug_artifacts:
+    name: "Debug Artifacts Check"
+    module: "clean-code"
+    command: ["python", "tools/quality/clean-code/custom-checks/check_debug_artifacts.py"]
+    timeout_seconds: 20
+    severity: "error"
+
+  clean_code.suppressions:
+    name: "Suppression Discipline Check"
+    module: "clean-code"
+    command: ["python", "tools/quality/clean-code/custom-checks/check_suppressions.py"]
+    timeout_seconds: 20
+    severity: "error"
+
+  architecture.dag:
+    name: "Architectural Layered DAG"
+    module: "architecture"
+    command: ["python", "tools/quality/architecture/custom-checks/check_layered_dag.py"]
+    timeout_seconds: 30
+    severity: "error"
+
+  django.system_check:
+    name: "Django System Check"
+    module: "django"
+    command: ["python", "manage.py", "check", "--settings=backend.settings.test"]
+    timeout_seconds: 45
+    severity: "error"
+
+  django.migrations:
+    name: "Migration Graph Consistency"
+    module: "django"
+    command: ["python", "manage.py", "showmigrations", "--settings=backend.settings.test"]
+    timeout_seconds: 45
+    severity: "error"
+
+  tests.domain:
+    name: "Domain Unit Tests"
+    module: "tests"
+    command: ["pytest", "tests/domain/", "--timeout=30"]
+    timeout_seconds: 90
+    severity: "error"
+
+  tests.core:
+    name: "Core Integration Tests"
+    module: "tests"
+    command: ["pytest", "tests/", "--reuse-db", "--timeout=45"]
+    timeout_seconds: 180
+    severity: "error"
+
+# Execution profiles
+profiles:
+  fast:
+    description: "Fast local validation prior to commit"
+    steps:
+      - formatters.ruff
+      - linters.ruff
+      - clean_code.debug_artifacts
+      - architecture.dag
+
+  pre_commit:
+    description: "Local git pre-commit hook checks"
+    inherits: [fast]
+    steps:
+      - clean_code.suppressions
+
+  ci:
+    description: "Full CI validation pipeline"
+    inherits: [pre_commit]
+    steps:
+      - django.system_check
+      - django.migrations
+      - tests.domain
+
+  full:
+    description: "Comprehensive local verification including all tests"
+    inherits: [ci]
+    steps:
+      - tests.core
