@@ -121,8 +121,13 @@ lint-ruff:
 
 lint: lint-imports lint-ruff
 
+format:
+	$(COMPOSE) --env-file $(ENV_FILE) run --rm web ruff format .
+
 test:
 	$(COMPOSE) --env-file $(ENV_FILE) run --rm web python -m pytest
+
+ci: lint test
 
 check: lint test check-migrate
 

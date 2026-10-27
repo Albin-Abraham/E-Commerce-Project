@@ -152,3 +152,10 @@ static/
 # OS specific
 .DS_Store
 Thumbs.db
+
+# Celery & Testing Caches
+celerybeat-schedule*
+.ruff_cache/
+.pytest_cache/
+.coverage
+htmlcov/
