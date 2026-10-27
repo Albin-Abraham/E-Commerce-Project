@@ -292,10 +292,11 @@ class TimestampMixin(models.Model):
     def save(self, *args, **kwargs):
         from core.admin.utils.integrity.time_registry import TimeRegistry
         now = TimeRegistry.get_local_now()
-        if not self.id or not self.created_at:
+        if not self.pk or not self.created_at:
             self.created_at = now
         self.updated_at = now
         super().save(*args, **kwargs)
+
 
 
 class AutoAuditLogMixin(models.Model):
@@ -319,6 +320,10 @@ class OptimisticLockingMixin(models.Model):
 
     def save(self, *args, **kwargs):
         if not self._state.adding:
+            try:
+                self.version = int(self.version or 1)
+            except (ValueError, TypeError):
+                self.version = 1
             original_version = self.version
             self.version += 1
             

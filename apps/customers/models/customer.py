@@ -1,5 +1,6 @@
 from django.db import models
 from core.base_models.validator_model import BaseModel
+from core.base_models.scoping_models import TenantModelMixin
 from core.base_models.constants import USER_MODEL
 from core.base_models.fields.short_ui_fields import CustomShortUUIDField
 from core.base_models.fields.char_fields import CustomCharField, CustomEmailField, CustomTextField
@@ -13,7 +14,8 @@ from apps.customers.valuesets import (
 from core.base_models.fields.party_mixin import PartyReferenceMixin
 
 
-class Customer(BaseModel, PartyReferenceMixin):
+class Customer(BaseModel, TenantModelMixin, PartyReferenceMixin):
+
     """
     Unified Customer Entity for B2C Retail & B2B Commercial Sales.
     """

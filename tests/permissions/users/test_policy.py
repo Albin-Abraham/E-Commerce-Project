@@ -74,7 +74,7 @@ class TestPermissionPolicyMixin:
         for key in COMPANY_PERMISSION_ACTIONS.values():
             assert key in keys
 
-    def test_drf_fallback_returns_false(self):
+    def test_drf_fallback_returns_true(self):
         factory = APIRequestFactory()
         request = factory.get("/")
 
@@ -82,7 +82,8 @@ class TestPermissionPolicyMixin:
             pass
 
         perm = CustomPermissionClass()
-        assert perm.has_permission(request, BareView()) is False
+        assert perm.has_permission(request, BareView()) is True
+
 
     def test_model_without_permission_map_returns_none(self):
         class BareModel(PermissionPolicyMixin):

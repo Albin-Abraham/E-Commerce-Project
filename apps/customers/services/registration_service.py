@@ -55,26 +55,38 @@ class CustomerRegistrationService:
         ) or f"CUST-{user.id[:6].upper()}"
 
         # 3. Create Customer Entity
-        customer = Customer.objects.create(
-            customer_code=customer_code,
-            user=user,
-            name=full_name.strip(),
-            customer_type=customer_type.upper(),
-            email=email_clean,
-            phone=phone,
-            tax_id=tax_id,
-            company_id=company_id,
-            is_active=True,
-        )
+        customer_kwargs = {
+            "customer_code": customer_code,
+            "user": user,
+            "name": full_name.strip(),
+            "customer_type": customer_type.upper(),
+            "email": email_clean,
+            "phone": phone,
+            "tax_id": tax_id,
+            "is_active": True,
+        }
+        if company_id:
+            if hasattr(company_id, "pk"):
+                customer_kwargs["company"] = company_id
+            else:
+                customer_kwargs["company_id"] = str(company_id)
+
+        customer = Customer.objects.create(**customer_kwargs)
+
+
 
         # 4. Create Customer Preferences Default Profile
+        from apps.accounting.models.currency import Currency
+        curr_obj = Currency.objects.filter(code="USD").first()
+
         CustomerPreference.objects.create(
             customer=customer,
             preferred_language="en",
-            preferred_currency="USD",
+            preferred_currency=curr_obj,
             email_notifications=True,
             sms_notifications=bool(phone),
         )
+
 
         # 5. Create Default Delivery Address (If provided during signup)
         if address_data and isinstance(address_data, dict):

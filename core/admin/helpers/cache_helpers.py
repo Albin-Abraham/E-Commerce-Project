@@ -14,25 +14,34 @@ def get_serializer_cache_key(user_id: Any, model_name: str, pk: Any, fields: Any
 
 
 def get_cached_serializer_data(key: str) -> Any | None:
-    return cache.get(key)
+    try:
+        return cache.get(key)
+    except Exception:
+        return None
 
 
 def set_cached_serializer_data(key: str, data: Any, timeout: int = 300):
     """
     Cache serialized data for a specific period (default 5 mins).
     """
-    cache.set(key, data, timeout)
+    try:
+        cache.set(key, data, timeout)
+    except Exception:
+        pass
 
 
 def invalidate_serializer_cache(user_id: Any, model_name: str, pk: Any):
     """
     Invalidate all cache variants for a specific object across all field selections.
     """
-    prefix = f"api_cache:{hashlib.md5(f'{user_id}:{model_name}:{pk}:'.encode()).hexdigest()[:24]}"
-    # Django cache doesn't support key pattern deletion, so delete the common keys
-    for fields_combo in [None, "all"]:
-        key = get_serializer_cache_key(user_id, model_name, pk, fields_combo)
-        cache.delete(key)
+    try:
+        prefix = f"api_cache:{hashlib.md5(f'{user_id}:{model_name}:{pk}:'.encode()).hexdigest()[:24]}"
+        # Django cache doesn't support key pattern deletion, so delete the common keys
+        for fields_combo in [None, "all"]:
+            key = get_serializer_cache_key(user_id, model_name, pk, fields_combo)
+            cache.delete(key)
+    except Exception:
+        pass
 
 
 # --- Metadata (Rules) Caching ---
@@ -45,11 +54,18 @@ def get_metadata_cache_key(model_name: str, context: str = "default") -> str:
 
 
 def get_cached_metadata(key: str) -> dict | None:
-    return cache.get(key)
+    try:
+        return cache.get(key)
+    except Exception:
+        return None
 
 
 def set_cached_metadata(key: str, data: dict, timeout: int = 3600):
     """
     Cache metadata for 1 hour by default.
     """
-    cache.set(key, data, timeout)
+    try:
+        cache.set(key, data, timeout)
+    except Exception:
+        pass
+

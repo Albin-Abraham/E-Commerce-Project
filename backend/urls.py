@@ -35,7 +35,14 @@ urlpatterns = [
     # Access Control (RBAC + Approval)
     path('api/access/', include("apps.access_control.urls")),
 
+    # E-Commerce & Operations API v1
+    path('api/v1/', include("apps.customers.urls")),
+    path('api/v1/payments/', include("apps.payments.urls")),
+    path('api/v1/shop/', include("apps.shop.urls")),
+    path('api/v1/procurement/', include("apps.procurement_pos.urls")),
+
     # Health Checks (Can also be accessed via api/admin/health/)
     path('health/live/', health_live, name='health_live'),
     path('health/ready/', health_ready, name='health_ready'),
 ]
+

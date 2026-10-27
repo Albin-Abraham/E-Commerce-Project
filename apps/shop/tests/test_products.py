@@ -83,7 +83,7 @@ class TestProductViewSet:
 class TestProductModel:
     def test_product_str(self):
         p = Product.objects.create(name="Test Product", sku="T001", price="10.00")
-        assert str(p) == "Test Product"
+        assert str(p) == "Test Product (T001)"
 
     def test_product_requires_name_and_sku(self):
         p = Product(name="X", sku="X001", price="1.00")

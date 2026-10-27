@@ -11,6 +11,14 @@ from .events import DomainEventOutbox
 
 from .uom import UOM, UOMConversion, ItemUOM
 from .pricing import PriceList, PricingRule
+from .catalog import (
+    Catalog,
+    CatalogItem,
+    CatalogCollection,
+    CatalogPublication,
+    TagDefinition,
+    EntityTag,
+)
 
 __all__ = [
     "Brand",
@@ -18,6 +26,12 @@ __all__ = [
     "CategoryEdge",
     "Product",
     "ProductVariant",
+    "Catalog",
+    "CatalogItem",
+    "CatalogCollection",
+    "CatalogPublication",
+    "TagDefinition",
+    "EntityTag",
     "UOM",
     "UOMConversion",
     "ItemUOM",

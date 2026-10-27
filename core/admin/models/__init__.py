@@ -5,4 +5,5 @@ from .branch import Branch, BranchExtension
 from .auditlog import AuditEntry, SystemLogEntry
 from .test_execution import TestRun
 from .number_series import NumberSeries, ResetPolicy, RuleResetPolicy, SequenceSource
+from .import_engine import ImportPackage, ImportPackageItem
 

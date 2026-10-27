@@ -124,10 +124,11 @@ class SocialOAuthAuthService:
             user=user,
             provider=provider_clean,
             uid=provider_uid,
-            avatar_url=gcs_avatar_url,
+            avatar_url=gcs_avatar_url or avatar_url,
             extra_data=extra_data or {},
             last_login_at=timezone.now(),
         )
+
 
         logger.info(f"Successfully registered new social user {user.username} via {provider_clean}")
         return user, customer, social_acc, True

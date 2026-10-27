@@ -17,8 +17,16 @@ from apps.procurement_pos.models.selling import (
     SalesInvoice,
 )
 from apps.shop.infrastructure.models.product import Product
+from django.contrib.auth import get_user_model
+from apps.shop.infrastructure.models.warehouse import Warehouse
 from apps.shop.infrastructure.models.inventory import SerialNumber, StockTransfer
+from apps.shop.infrastructure.models.product import Product
+from apps.shop.infrastructure.models.variant import ProductVariant
 from apps.customers.models.customer import Customer
+
+
+
+User = get_user_model()
 
 
 class NumberSeriesIntegrationTestCase(TestCase):
@@ -61,11 +69,9 @@ class NumberSeriesIntegrationTestCase(TestCase):
         self.assertTrue(supplier.code.startswith("VEN-"))
 
         # PurchaseRequest number auto-generation
-        user_mock = MagicMock()
-        user_mock.id = "user_1"
-        user_mock.username = "procurement_officer"
+        user = User.objects.create_user(username="procurement_officer", email="po@example.com", password="pwd")
         
-        pr = PurchaseRequest(requested_by=user_mock)
+        pr = PurchaseRequest(requested_by=user)
         pr.save()
         self.assertTrue(pr.request_number.startswith("PR-"))
 
@@ -75,14 +81,13 @@ class NumberSeriesIntegrationTestCase(TestCase):
         self.assertTrue(rfq.rfq_number.startswith("RFQ-"))
 
         # PurchaseOrder number auto-generation
-        po = PurchaseOrder(supplier=supplier, created_by=user_mock)
+        po = PurchaseOrder(supplier=supplier, created_by=user)
         po.save()
         self.assertTrue(po.po_number.startswith("PO-"))
 
         # GoodsReceivedNote number auto-generation
-        warehouse_mock = MagicMock()
-        warehouse_mock.name = "Central Warehouse"
-        grn = GoodsReceivedNote(purchase_order=po, warehouse=warehouse_mock)
+        warehouse = Warehouse.objects.create(name="Central Warehouse")
+        grn = GoodsReceivedNote(purchase_order=po, warehouse=warehouse)
         grn.save()
         self.assertTrue(grn.grn_number.startswith("GRN-"))
 
@@ -92,21 +97,26 @@ class NumberSeriesIntegrationTestCase(TestCase):
         self.assertTrue(pi.invoice_number.startswith("PI-"))
 
     def test_selling_models_auto_generate_numbers(self):
+        from core.admin.models.company import Company
+        company = Company.objects.create(name="Selling Co", code="SEL-01", email="sel@example.com")
+
         # SalesOrder order_number auto-generation
         so = SalesOrder(total_amount=250.00)
         so.save()
         self.assertTrue(so.order_number.startswith("SO-"))
 
         # DeliveryNote delivery_number auto-generation
-        warehouse_mock = MagicMock()
-        dn = DeliveryNote(sales_order=so, warehouse=warehouse_mock)
+        warehouse = Warehouse.objects.create(name="Delivery Warehouse")
+        dn = DeliveryNote(sales_order=so, warehouse=warehouse)
         dn.save()
         self.assertTrue(dn.delivery_number.startswith("DN-"))
 
         # SalesInvoice invoice_number auto-generation
-        sinv = SalesInvoice(sales_order=so, grand_total=250.00)
+        sinv = SalesInvoice(company=company, sales_order=so, grand_total=250.00)
         sinv.save()
         self.assertTrue(sinv.invoice_number.startswith("INV-"))
+
+
 
     def test_inventory_models_auto_generate_numbers(self):
         # Product SKU auto-generation
@@ -115,17 +125,14 @@ class NumberSeriesIntegrationTestCase(TestCase):
         self.assertTrue(product.sku.startswith("ITEM-"))
 
         # SerialNumber auto-generation
-        variant_mock = MagicMock()
-        variant_mock.sku = product.sku
-        sn = SerialNumber(variant=variant_mock)
+        variant = ProductVariant.objects.create(product=product, sku=f"VAR-{product.sku}", price=29.99)
+        sn = SerialNumber(variant=variant)
         sn.save()
         self.assertTrue(sn.serial_number.startswith("SN-"))
 
         # StockTransfer transfer_number auto-generation
-        wh_a = MagicMock()
-        wh_a.name = "Warehouse A"
-        wh_b = MagicMock()
-        wh_b.name = "Warehouse B"
+        wh_a = Warehouse.objects.create(name="Warehouse A")
+        wh_b = Warehouse.objects.create(name="Warehouse B")
         st = StockTransfer(from_warehouse=wh_a, to_warehouse=wh_b)
         st.save()
         self.assertTrue(st.transfer_number.startswith("TRF-"))
@@ -140,8 +147,8 @@ class NumberSeriesIntegrationTestCase(TestCase):
         supplier = Supplier(name="Custom Vendor")
         supplier.save()
         
-        user_mock = MagicMock()
-        po = PurchaseOrder(po_number=custom_po_number, supplier=supplier, created_by=user_mock)
+        user = User.objects.create_user(username="override_user", email="override@example.com", password="pwd")
+        po = PurchaseOrder(po_number=custom_po_number, supplier=supplier, created_by=user)
         po.save()
         self.assertEqual(po.po_number, custom_po_number)
 
@@ -166,3 +173,4 @@ class NumberSeriesIntegrationTestCase(TestCase):
         self.assertIn("order_number", data)
         self.assertTrue(data["order_number"].startswith("SO-"))
         self.assertIn("currency", data)
+

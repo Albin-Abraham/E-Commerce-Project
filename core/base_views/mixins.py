@@ -96,10 +96,13 @@ class CurrencyInjectionMixin:
                 default_curr = Currency.objects.filter(is_active=True).first()
                 if default_curr:
                     currency_code = default_curr.code
+                else:
+                    currency_code = "USD"
 
             if currency_code:
                 data[field_name] = currency_code
                 logger.debug(f"[CurrencyInjectionMixin] Injected {field_name}={currency_code}")
+
 
         return data
 

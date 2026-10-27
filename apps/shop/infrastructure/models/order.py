@@ -12,6 +12,13 @@ from apps.shop.valuesets import SHOP_ORDER_STATUS_VALUESET
 
 
 class Order(BaseModel, BranchModelMixin):
+    class StatusChoices(models.TextChoices):
+        PENDING = "pending", "Pending"
+        CONFIRMED = "confirmed", "Confirmed"
+        SHIPPED = "shipped", "Shipped"
+        DELIVERED = "delivered", "Delivered"
+        CANCELLED = "cancelled", "Cancelled"
+
     id = CustomShortUUIDField(primary_key=True, prefix="ord_")
 
     user = models.ForeignKey(
@@ -26,7 +33,7 @@ class Order(BaseModel, BranchModelMixin):
     status = CustomCharField(
         max_length=20,
         choices=SHOP_ORDER_STATUS_VALUESET.as_django_choices(),
-        default="pending",
+        default=StatusChoices.PENDING,
         rules=[RequiredRule("status")],
     )
     total_amount = CustomDecimalField(

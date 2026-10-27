@@ -20,9 +20,31 @@ from apps.shop.interface.views import (
     ProductCommentViewSet,
     ProductTestimonialViewSet,
     FeedbackSummaryViewSet,
+    CatalogViewSet,
+    CatalogItemViewSet,
+    CatalogCollectionViewSet,
+    CatalogPublicationViewSet,
+    TagDefinitionViewSet,
+    EntityTagViewSet,
 )
 
 urlpatterns = [
+    # Tag Definitions & Polymorphic Entity Tags
+    path("tag-definitions/", TagDefinitionViewSet.as_view(), {"HTTP_METHOD": ["GET", "POST"]}, name="shop-tag-def-list"),
+    path("tag-definitions/<str:pk>/", TagDefinitionViewSet.as_view(), {"HTTP_METHOD": ["GET", "PUT", "DELETE"]}, name="shop-tag-def-detail"),
+    path("entity-tags/", EntityTagViewSet.as_view(), {"HTTP_METHOD": ["GET", "POST"]}, name="shop-entity-tag-list"),
+    path("entity-tags/<str:pk>/", EntityTagViewSet.as_view(), {"HTTP_METHOD": ["GET", "PUT", "DELETE"]}, name="shop-entity-tag-detail"),
+
+    # Catalogs & Collections
+    path("catalogs/", CatalogViewSet.as_view(), {"HTTP_METHOD": ["GET", "POST"]}, name="shop-catalog-list"),
+    path("catalogs/<str:pk>/", CatalogViewSet.as_view(), {"HTTP_METHOD": ["GET", "PUT", "DELETE"]}, name="shop-catalog-detail"),
+    path("catalog-items/", CatalogItemViewSet.as_view(), {"HTTP_METHOD": ["GET", "POST"]}, name="shop-catalog-item-list"),
+    path("catalog-items/<str:pk>/", CatalogItemViewSet.as_view(), {"HTTP_METHOD": ["GET", "PUT", "DELETE"]}, name="shop-catalog-item-detail"),
+    path("catalog-collections/", CatalogCollectionViewSet.as_view(), {"HTTP_METHOD": ["GET", "POST"]}, name="shop-catalog-collection-list"),
+    path("catalog-collections/<str:pk>/", CatalogCollectionViewSet.as_view(), {"HTTP_METHOD": ["GET", "PUT", "DELETE"]}, name="shop-catalog-collection-detail"),
+    path("catalog-publications/", CatalogPublicationViewSet.as_view(), {"HTTP_METHOD": ["GET", "POST"]}, name="shop-catalog-publication-list"),
+    path("catalog-publications/<str:pk>/", CatalogPublicationViewSet.as_view(), {"HTTP_METHOD": ["GET", "PUT", "DELETE"]}, name="shop-catalog-publication-detail"),
+
     # Brands
     path("brands/", BrandViewSet.as_view(), {"HTTP_METHOD": ["GET", "POST"]}, name="shop-brand-list"),
     path("brands/<str:pk>/", BrandViewSet.as_view(), {"HTTP_METHOD": ["GET", "PUT", "DELETE"]}, name="shop-brand-detail"),

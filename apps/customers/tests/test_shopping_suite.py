@@ -128,7 +128,9 @@ class CustomerShoppingSuiteTestCase(TestCase):
             delivery_address_id=self.address.id,
         )
 
+        cart.refresh_from_db()
         self.assertEqual(cart.status, "CHECKED_OUT")
+
         self.assertTrue(sales_order.order_number.startswith("SO-"))
         self.assertTrue(sales_invoice.invoice_number.startswith("INV-"))
         self.assertEqual(sales_invoice.grand_total, Decimal("1200.00"))

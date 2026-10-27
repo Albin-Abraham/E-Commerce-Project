@@ -33,7 +33,7 @@ class ProductViewSet(BaseAPIView):
     paginate = True
     supports_soft_delete = True
 
-    search_fields = ["name", "sku", "description", "slug"]
+    search_fields = ["name", "sku", "slug"]
     filter_fields = [
         ("name", "name"),
         ("sku", "sku"),
