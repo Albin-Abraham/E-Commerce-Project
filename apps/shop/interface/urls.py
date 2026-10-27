@@ -3,10 +3,15 @@ from django.urls import path
 from apps.shop.interface.views import (
     BOMEdgeViewSet,
     BrandViewSet,
+    CatalogCollectionViewSet,
+    CatalogItemViewSet,
+    CatalogPublicationViewSet,
+    CatalogViewSet,
     CategoryEdgeViewSet,
     CategoryViewSet,
     DeliveryPartnerViewSet,
     EntityEdgeViewSet,
+    EntityTagViewSet,
     FacilityInventoryViewSet,
     FacilityPolicyRuleViewSet,
     FacilityViewSet,
@@ -15,11 +20,13 @@ from apps.shop.interface.views import (
     OrderItemViewSet,
     OrderViewSet,
     ProductCommentViewSet,
+    ProductFacetsView,
     ProductTestimonialViewSet,
     ProductVariantViewSet,
     ProductViewSet,
     ReviewViewSet,
     StorageLocationViewSet,
+    TagDefinitionViewSet,
     WarehouseViewSet,
 )
 
@@ -55,6 +62,11 @@ urlpatterns = [
         name="shop-product-list",
     ),
     path(
+        "products/facets/",
+        ProductFacetsView.as_view(),
+        name="shop-product-facets",
+    ),
+    path(
         "products/<str:pk>/",
         ProductViewSet.as_view(),
         {"HTTP_METHOD": ["GET", "PUT", "DELETE"]},
@@ -72,6 +84,79 @@ urlpatterns = [
         ProductVariantViewSet.as_view(),
         {"HTTP_METHOD": ["GET", "PUT", "DELETE"]},
         name="shop-variant-detail",
+    ),
+    # Catalogs & Collections
+    path(
+        "catalogs/",
+        CatalogViewSet.as_view(),
+        {"HTTP_METHOD": ["GET", "POST"]},
+        name="shop-catalog-list",
+    ),
+    path(
+        "catalogs/<str:pk>/",
+        CatalogViewSet.as_view(),
+        {"HTTP_METHOD": ["GET", "PUT", "DELETE"]},
+        name="shop-catalog-detail",
+    ),
+    path(
+        "catalog-items/",
+        CatalogItemViewSet.as_view(),
+        {"HTTP_METHOD": ["GET", "POST"]},
+        name="shop-catalog-item-list",
+    ),
+    path(
+        "catalog-items/<str:pk>/",
+        CatalogItemViewSet.as_view(),
+        {"HTTP_METHOD": ["GET", "PUT", "DELETE"]},
+        name="shop-catalog-item-detail",
+    ),
+    path(
+        "catalog-collections/",
+        CatalogCollectionViewSet.as_view(),
+        {"HTTP_METHOD": ["GET", "POST"]},
+        name="shop-catalog-collection-list",
+    ),
+    path(
+        "catalog-collections/<str:pk>/",
+        CatalogCollectionViewSet.as_view(),
+        {"HTTP_METHOD": ["GET", "PUT", "DELETE"]},
+        name="shop-catalog-collection-detail",
+    ),
+    path(
+        "catalog-publications/",
+        CatalogPublicationViewSet.as_view(),
+        {"HTTP_METHOD": ["GET", "POST"]},
+        name="shop-catalog-publication-list",
+    ),
+    path(
+        "catalog-publications/<str:pk>/",
+        CatalogPublicationViewSet.as_view(),
+        {"HTTP_METHOD": ["GET", "PUT", "DELETE"]},
+        name="shop-catalog-publication-detail",
+    ),
+    path(
+        "tag-definitions/",
+        TagDefinitionViewSet.as_view(),
+        {"HTTP_METHOD": ["GET", "POST"]},
+        name="shop-tag-definition-list",
+    ),
+    path(
+        "tag-definitions/<str:pk>/",
+        TagDefinitionViewSet.as_view(),
+        {"HTTP_METHOD": ["GET", "PUT", "DELETE"]},
+        name="shop-tag-definition-detail",
+    ),
+    path(
+        "entity-tags/",
+        EntityTagViewSet.as_view(),
+        {"HTTP_METHOD": ["GET", "POST"]},
+        name="shop-entity-tag-list",
+    ),
+    path(
+        "entity-tags/<str:pk>/",
+        EntityTagViewSet.as_view(),
+        {"HTTP_METHOD": ["GET", "PUT", "DELETE"]},
+        name="shop-entity-tag-detail",
     ),
     # Warehouses & Inventory
     path(

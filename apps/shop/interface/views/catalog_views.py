@@ -90,6 +90,14 @@ class CatalogItemViewSet(BaseAPIView):
         is_published=FilterField(type=bool),
     )
 
+    def get_base_queryset(self):
+        return CatalogItem.objects.select_related(
+            "catalog", "product__brand", "product__category", "variant"
+        ).prefetch_related(
+            "product__variants__inventory_records",
+            "variant__inventory_records",
+        )
+
 
 class CatalogCollectionViewSet(BaseAPIView):
     model = CatalogCollection

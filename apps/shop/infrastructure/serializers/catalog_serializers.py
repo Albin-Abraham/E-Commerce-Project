@@ -1,3 +1,4 @@
+from django.contrib.contenttypes.models import ContentType
 from rest_framework import serializers
 
 from apps.shop.infrastructure.models.catalog import (
@@ -8,6 +9,8 @@ from apps.shop.infrastructure.models.catalog import (
     EntityTag,
     TagDefinition,
 )
+from apps.shop.infrastructure.models.polymorphic import Media
+from apps.shop.infrastructure.serializers.media_serializers import MediaAssetSerializer
 from apps.shop.infrastructure.serializers.product_serializers import (
     ProductSerializer,
     ProductVariantSerializer,
@@ -79,6 +82,10 @@ class CatalogItemSerializer(BaseModelSerializer):
     variant_details = ProductVariantSerializer(source="variant", read_only=True)
     display_name = serializers.CharField(read_only=True)
     effective_price = serializers.DecimalField(max_digits=12, decimal_places=2, read_only=True)
+    primary_image = serializers.SerializerMethodField()
+    is_in_stock = serializers.SerializerMethodField()
+    available_stock = serializers.SerializerMethodField()
+    badges = serializers.SerializerMethodField()
 
     class Meta:
         model = CatalogItem
@@ -93,6 +100,10 @@ class CatalogItemSerializer(BaseModelSerializer):
             "effective_price",
             "is_new_arrival",
             "is_budget_friendly",
+            "badges",
+            "primary_image",
+            "is_in_stock",
+            "available_stock",
             "tags",
             "is_published",
             "sort_order",
@@ -104,6 +115,65 @@ class CatalogItemSerializer(BaseModelSerializer):
             "updated_at",
         ]
         read_only_fields = ["id", "created_at", "updated_at"]
+
+    def get_badges(self, obj) -> list[str]:
+        badges = []
+        if obj.is_new_arrival:
+            badges.append("New Arrival")
+        if obj.is_budget_friendly:
+            badges.append("Budget Friendly")
+        if isinstance(obj.tags, list):
+            badges.extend([str(t) for t in obj.tags if t])
+        return badges
+
+    def get_primary_image(self, obj) -> dict | None:
+        target = obj.variant if obj.variant is not None else obj.product
+        if target:
+            ct = ContentType.objects.get_for_model(target.__class__)
+            media = (
+                Media.objects.filter(content_type=ct, object_id=str(target.pk))
+                .order_by("sort_order", "-created_at")
+                .first()
+            )
+            if not media and obj.variant and obj.product:
+                prod_ct = ContentType.objects.get_for_model(obj.product.__class__)
+                media = (
+                    Media.objects.filter(content_type=prod_ct, object_id=str(obj.product.pk))
+                    .order_by("sort_order", "-created_at")
+                    .first()
+                )
+            if media:
+                return MediaAssetSerializer(media).data
+        return None
+
+    def get_available_stock(self, obj) -> int:
+        if obj.variant is not None:
+            records = getattr(obj.variant, "inventory_records", None)
+            return (
+                sum(max(0, inv.quantity - inv.reserved_quantity) for inv in records.all())
+                if records
+                else 0
+            )
+        if obj.product is not None:
+            variants = obj.product.variants.all()
+            if variants.exists():
+                return sum(
+                    sum(
+                        max(0, inv.quantity - inv.reserved_quantity)
+                        for inv in v.inventory_records.all()
+                    )
+                    for v in variants
+                )
+            legacy = getattr(obj.product, "legacy_inventory_records", None)
+            return (
+                sum(max(0, inv.quantity - inv.reserved_quantity) for inv in legacy.all())
+                if legacy
+                else 0
+            )
+        return 0
+
+    def get_is_in_stock(self, obj) -> bool:
+        return self.get_available_stock(obj) > 0
 
 
 class CatalogCollectionSerializer(BaseModelSerializer):
