@@ -32,3 +32,4 @@ pytest-cov>=6.0.0
 faker>=36.2.1
 factory-boy>=3.3.3
 croniter>=6.0.0
+django-import-export>=4.3.0
