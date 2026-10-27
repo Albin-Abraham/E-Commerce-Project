@@ -1,9 +1,11 @@
 # core/validators/deferred_validator.py (Pure Python)
 
+
 class DeferredValidatorClass:
     """
     Registry and runner for deferred validation rules.
     """
+
     _registry = {}  # Format: { ModelClass: [RuleInstance, ...] }
 
     @classmethod
@@ -13,7 +15,7 @@ class DeferredValidatorClass:
         """
         if model_class not in cls._registry:
             cls._registry[model_class] = []
-        
+
         if isinstance(rules, list):
             cls._registry[model_class].extend(rules)
         else:
@@ -26,7 +28,7 @@ class DeferredValidatorClass:
         """
         errors = []
         model_class = type(instance)
-        
+
         # Traverse MRO to include inherited rules
         for base in model_class.__mro__:
             rules = cls._registry.get(base, [])
@@ -34,17 +36,13 @@ class DeferredValidatorClass:
                 try:
                     is_valid = rule.check(instance)
                     if not is_valid:
-                        error_data = {
-                            'message': rule.error_message,
-                            'code': rule.error_code
-                        }
-                        if hasattr(rule, 'field_name'):
-                            error_data['field'] = rule.field_name
+                        error_data = {"message": rule.error_message, "code": rule.error_code}
+                        if hasattr(rule, "field_name"):
+                            error_data["field"] = rule.field_name
                         errors.append(error_data)
                 except Exception as e:
-                    errors.append({
-                        'message': f"Rule execution failed: {str(e)}",
-                        'code': 'rule_error'
-                    })
+                    errors.append(
+                        {"message": f"Rule execution failed: {str(e)}", "code": "rule_error"}
+                    )
 
         return errors

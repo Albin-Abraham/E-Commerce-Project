@@ -1,12 +1,11 @@
 from django.db import models
-from core.base_models.validator_model import BaseModel
-from core.base_models.fields.short_ui_fields import CustomShortUUIDField
-from core.base_models.fields.char_fields import CustomCharField
-from core.base_models.fields.numeric_fields import CustomDecimalField
-from core.base_models.validators.rules import RequiredRule, UniqueRule, MinRule
-
 
 from apps.shop.valuesets import VARIANT_STATUS_VALUESET
+from core.base_models.fields.char_fields import CustomCharField
+from core.base_models.fields.numeric_fields import CustomDecimalField
+from core.base_models.fields.short_ui_fields import CustomShortUUIDField
+from core.base_models.validator_model import BaseModel
+from core.base_models.validators.rules import MinRule, RequiredRule, UniqueRule
 
 
 class ProductVariant(BaseModel):

@@ -1,9 +1,10 @@
 from django.db import models
-from core.base_models.validator_model import BaseModel
-from core.base_models.fields.short_ui_fields import CustomShortUUIDField
-from core.base_models.fields.char_fields import CustomCharField
-from core.base_models.validators.rules import RequiredRule, UniqueRule
+
 from apps.accounting.models.chart_of_accounts import Account
+from core.base_models.fields.char_fields import CustomCharField
+from core.base_models.fields.short_ui_fields import CustomShortUUIDField
+from core.base_models.validator_model import BaseModel
+from core.base_models.validators.rules import RequiredRule
 from shared_domain.base.valuesets import ValueSet, ValueSetItem
 
 TAX_CATEGORY_VALUESET = ValueSet(
@@ -18,7 +19,6 @@ TAX_CATEGORY_VALUESET = ValueSet(
         ValueSetItem(code="ZERO_RATED", label="Zero Rated / Exempt", is_active=True),
     ],
 )
-
 
 
 class SalesTaxTemplate(BaseModel):
@@ -71,7 +71,9 @@ class SalesTaxDetail(BaseModel):
         related_name="tax_lines",
     )
     tax_name = CustomCharField(max_length=100, rules=[RequiredRule("tax_name")])
-    rate = models.DecimalField(max_digits=6, decimal_places=3, help_text="Tax percentage rate e.g. 18.000")
+    rate = models.DecimalField(
+        max_digits=6, decimal_places=3, help_text="Tax percentage rate e.g. 18.000"
+    )
     account = models.ForeignKey(
         Account,
         on_delete=models.PROTECT,
@@ -135,7 +137,9 @@ class PurchaseTaxDetail(BaseModel):
         related_name="tax_lines",
     )
     tax_name = CustomCharField(max_length=100, rules=[RequiredRule("tax_name")])
-    rate = models.DecimalField(max_digits=6, decimal_places=3, help_text="Tax percentage rate e.g. 18.000")
+    rate = models.DecimalField(
+        max_digits=6, decimal_places=3, help_text="Tax percentage rate e.g. 18.000"
+    )
     account = models.ForeignKey(
         Account,
         on_delete=models.PROTECT,
@@ -197,7 +201,9 @@ class ItemTaxDetail(BaseModel):
         related_name="tax_lines",
     )
     tax_name = CustomCharField(max_length=100, rules=[RequiredRule("tax_name")])
-    rate = models.DecimalField(max_digits=6, decimal_places=3, help_text="Specific item tax percentage rate")
+    rate = models.DecimalField(
+        max_digits=6, decimal_places=3, help_text="Specific item tax percentage rate"
+    )
     account = models.ForeignKey(
         Account,
         on_delete=models.PROTECT,
@@ -237,9 +243,15 @@ class TaxWithholdingCategory(BaseModel):
         related_name="tax_withholding_categories",
         help_text="GL Withholding Tax Payable / Deducted Account",
     )
-    tax_rate = models.DecimalField(max_digits=6, decimal_places=3, help_text="Withholding tax percentage rate e.g. 10.000")
-    single_threshold = models.DecimalField(max_digits=18, decimal_places=2, default=0.0, help_text="Single transaction threshold")
-    cumulative_threshold = models.DecimalField(max_digits=18, decimal_places=2, default=0.0, help_text="Cumulative annual threshold")
+    tax_rate = models.DecimalField(
+        max_digits=6, decimal_places=3, help_text="Withholding tax percentage rate e.g. 10.000"
+    )
+    single_threshold = models.DecimalField(
+        max_digits=18, decimal_places=2, default=0.0, help_text="Single transaction threshold"
+    )
+    cumulative_threshold = models.DecimalField(
+        max_digits=18, decimal_places=2, default=0.0, help_text="Cumulative annual threshold"
+    )
     is_active = models.BooleanField(default=True)
 
     class Meta(BaseModel.Meta):

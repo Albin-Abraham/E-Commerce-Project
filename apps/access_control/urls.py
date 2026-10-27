@@ -1,11 +1,12 @@
 from django.urls import path
-from apps.access_control.views import FieldAccessPolicyAPIView, PolicyConfigurationAPIView
+
 from apps.access_control.interface.views.approval_views import (
+    ApprovalActionView,
     ApprovalChainViewSet,
     ApprovalRequestViewSet,
     ApprovalSubmitView,
-    ApprovalActionView,
 )
+from apps.access_control.views import FieldAccessPolicyAPIView, PolicyConfigurationAPIView
 
 urlpatterns = [
     # Field Access Policies endpoints

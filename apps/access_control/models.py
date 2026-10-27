@@ -145,8 +145,6 @@ from apps.access_control.valuesets import (
     AUTO_SET_ACTION_VALUESET,
     POLICY_CONFIG_STATUS_VALUESET,
     POLICY_EFFECT_VALUESET,
-    ApprovalActionType,
-    ApprovalRequestStatus,
 )
 
 
@@ -281,9 +279,9 @@ class PolicyConfiguration(BaseModel):
 
         if is_activation:
             # archive other configurations
-            PolicyConfiguration.objects.filter(
-                policy=self.policy, status="active"
-            ).update(status="archived")
+            PolicyConfiguration.objects.filter(policy=self.policy, status="active").update(
+                status="archived"
+            )
             # Store activation trigger for post_save
             self._trigger_snapshot = True
 
@@ -351,6 +349,7 @@ class Department(BaseModel, BranchModelMixin):
     """
     Department model to group users/roles and scope approval chains.
     """
+
     id = CustomShortUUIDField(
         prefix="",
         month=False,
@@ -396,6 +395,7 @@ class Designation(BaseModel, BranchModelMixin):
     """
     Designation model for roles/titles in the organization.
     """
+
     id = CustomShortUUIDField(
         prefix="",
         month=False,

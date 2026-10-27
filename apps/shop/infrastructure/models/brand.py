@@ -1,8 +1,9 @@
 from django.db import models
 from django.utils.text import slugify
-from core.base_models.validator_model import BaseModel
-from core.base_models.fields.short_ui_fields import CustomShortUUIDField
+
 from core.base_models.fields.char_fields import CustomCharField, CustomTextField
+from core.base_models.fields.short_ui_fields import CustomShortUUIDField
+from core.base_models.validator_model import BaseModel
 from core.base_models.validators.rules import RequiredRule, UniqueRule
 
 

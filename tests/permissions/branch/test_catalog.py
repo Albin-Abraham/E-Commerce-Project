@@ -1,8 +1,7 @@
 import pytest
 from django.core.exceptions import ValidationError
 
-from tests.permissions.constants import VALID_YAML_KEYS, INVALID_YAML_KEY, CUSTOM_KEYS
-
+from tests.permissions.constants import INVALID_YAML_KEY
 
 YAML_VALID_PARAMS = [
     pytest.param(["hrms:employee:profile"], id="single_valid_yaml"),
@@ -25,9 +24,11 @@ INVALID_YAML_PARAMS = [
 
 class TestCatalogCreate:
     def test_create_valid(self, catalog_builder):
-        catalog = catalog_builder.with_modules("hrms").with_keys(
-            "hrms:employee:profile", "hrms:leave:leave_request"
-        ).build()
+        catalog = (
+            catalog_builder.with_modules("hrms")
+            .with_keys("hrms:employee:profile", "hrms:leave:leave_request")
+            .build()
+        )
         assert catalog.name is not None
         assert "hrms:employee:profile" in catalog.allowed_permission_keys
 
@@ -57,9 +58,15 @@ class TestCatalogKeyValidation:
         assert "allowed_permission_keys" in exc.value.message_dict
 
     def test_mixed_valid_and_invalid(self, catalog_builder):
-        catalog = catalog_builder.with_modules("hrms").with_keys(
-            "hrms:employee:profile", "company:import", "bogus:module:feature",
-        ).build_instance()
+        catalog = (
+            catalog_builder.with_modules("hrms")
+            .with_keys(
+                "hrms:employee:profile",
+                "company:import",
+                "bogus:module:feature",
+            )
+            .build_instance()
+        )
         with pytest.raises(ValidationError) as exc:
             catalog.full_clean()
         assert "bogus:module:feature" in str(exc.value)
@@ -68,18 +75,22 @@ class TestCatalogKeyValidation:
 
 class TestCatalogModuleDependency:
     def test_satisfied_dependency(self, catalog_builder):
-        catalog = catalog_builder.with_modules("hrms", "operations").with_keys(
-            "operations:inventory:stock_tracking"
-        ).build_instance()
+        catalog = (
+            catalog_builder.with_modules("hrms", "operations")
+            .with_keys("operations:inventory:stock_tracking")
+            .build_instance()
+        )
         try:
             catalog.full_clean()
         except ValidationError:
             pytest.fail("Satisfied dependencies should pass")
 
     def test_missing_dependency_fails(self, catalog_builder):
-        catalog = catalog_builder.with_modules("operations").with_keys(
-            "operations:inventory:stock_tracking"
-        ).build_instance()
+        catalog = (
+            catalog_builder.with_modules("operations")
+            .with_keys("operations:inventory:stock_tracking")
+            .build_instance()
+        )
         with pytest.raises(ValidationError) as exc:
             catalog.full_clean()
         assert "module_keys" in exc.value.message_dict

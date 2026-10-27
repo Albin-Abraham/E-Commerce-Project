@@ -1,21 +1,20 @@
-import importlib
 import os
-import yaml
+
 import pytest
+import yaml
 from django.db import transaction
 from django.utils.module_loading import import_string
-from apps.procurement_pos.models.procurement import Supplier, PurchaseOrder
-from apps.users.models.users import UserModel
+
+from apps.procurement_pos.models.procurement import PurchaseOrder, Supplier
 from apps.shop.infrastructure.models.events import DomainEventOutbox
-
-
+from apps.users.models.users import UserModel
 from core.base_models.validator_model import bypass_mediator_guard
 
 
 class YamlWorkflowTestEngine:
     """
     Development-Level Declarative YAML Workflow Test Execution Engine.
-    
+
     Capabilities:
     1. Loads YAML workflow specs defining setup, step actions, commit A, rollback checks, and DB reversion.
     2. Runs each scenario inside isolated `transaction.atomic()` blocks.
@@ -26,7 +25,7 @@ class YamlWorkflowTestEngine:
     """
 
     def __init__(self, spec_path: str):
-        with open(spec_path, "r") as f:
+        with open(spec_path) as f:
             self.spec = yaml.safe_load(f)
         self.context = {}
 
@@ -76,7 +75,6 @@ class YamlWorkflowTestEngine:
                 finally:
                     # 3. Teardown / Revert DB Actions Phase
                     transaction.savepoint_rollback(sid)
-
 
     def _execute_setup(self, setup_cfg: dict):
         # Create minimal required domain objects for testing

@@ -1,9 +1,9 @@
-from django.test import TestCase
-from rest_framework import serializers
-from core.base_serializers.base_serializers import BaseModelSerializer
-from core.admin.rules import Rule, RequiredRule, ValidationMode
-from django.db import models
 from django.core.exceptions import ValidationError as DjangoValidationError
+from django.db import models
+from django.test import TestCase
+
+from core.admin.rules import RequiredRule, Rule
+from core.base_serializers.base_serializers import BaseModelSerializer
 
 
 # 1. Mocked Rule for Testing
@@ -30,9 +30,7 @@ class ValidationTestModel(ValidatorModelMixin, models.Model):
     status = models.CharField(max_length=20, default="draft")
 
     # GoF Strategy Pattern: Rules Engine
-    _rules = {
-        "name": [ConditionalRequirementRule(), RequiredRule()]
-    }
+    _rules = {"name": [ConditionalRequirementRule(), RequiredRule()]}
 
     class Meta:
         managed = False  # Avoid DB table creation
@@ -69,7 +67,9 @@ class DomainValidationTest(TestCase):
         self.assertTrue(serializer.is_valid())
 
         # Invalid data for SUBMIT (name is empty)
-        serializer_submit = ValidationTestSerializer(data=data, context={"validation_mode": "submit"})
+        serializer_submit = ValidationTestSerializer(
+            data=data, context={"validation_mode": "submit"}
+        )
         self.assertFalse(serializer_submit.is_valid())
         self.assertIn("name", serializer_submit.errors)
         # Use str() to normalize ErrorDetail to string
@@ -80,9 +80,10 @@ class DomainValidationTest(TestCase):
         Verify ModelInstanceBuilder correctly applies partial updates.
         """
         from core.admin.helpers import ModelInstanceBuilder
+
         instance = ValidationTestModel(name="Original", status="draft")
         builder = ModelInstanceBuilder(ValidationTestModel, instance)
-        
+
         updated_instance = builder.build({"status": "active"}, partial=True)
         self.assertEqual(updated_instance.status, "active")
         self.assertEqual(updated_instance.name, "Original")

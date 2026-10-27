@@ -1,13 +1,12 @@
-from decimal import Decimal
-from django.test import TestCase
 from django.contrib.auth import get_user_model
-from rest_framework.test import APIClient
+from django.test import TestCase
 from rest_framework import status
-from apps.customers.models.customer import Customer, CustomerAddress, CustomerPreference, SocialAccount
-from apps.customers.services.registration_service import CustomerRegistrationService
+from rest_framework.test import APIClient
+
 from apps.customers.services.oauth_service import SocialOAuthAuthService
-from core.base_models.system_models import SystemConfig
+from apps.customers.services.registration_service import CustomerRegistrationService
 from core.admin.models.company import Company
+from core.base_models.system_models import SystemConfig
 
 User = get_user_model()
 
@@ -20,7 +19,9 @@ class CustomerRegistrationTDDTestCase(TestCase):
 
     def setUp(self):
         self.client = APIClient()
-        SystemConfig.objects.create(key="GOOGLE_STORAGE_BUCKET_NAME", value="yafei-platform-avatars")
+        SystemConfig.objects.create(
+            key="GOOGLE_STORAGE_BUCKET_NAME", value="yafei-platform-avatars"
+        )
         SystemConfig.objects.create(key="GOOGLE_API_KEY", value="AIzaSyTestApiKey12345")
         self.company = Company.objects.create(name="Acme Corp", code="ACME-01")
 
@@ -124,12 +125,14 @@ class CustomerRegistrationTDDTestCase(TestCase):
     # -------------------------------------------------------------------------
     def test_social_oauth_new_user_registration(self):
         """TDD: Verifies Google/GitHub OAuth sign-up creates User + Customer + SocialAccount."""
-        user, customer, social_acc, created = SocialOAuthAuthService.authenticate_or_register_social_user(
-            provider="GOOGLE",
-            provider_uid="google_id_102030",
-            email="social_new@example.com",
-            full_name="Social Newbie",
-            avatar_url="https://lh3.googleusercontent.com/avatar.jpg",
+        user, customer, social_acc, created = (
+            SocialOAuthAuthService.authenticate_or_register_social_user(
+                provider="GOOGLE",
+                provider_uid="google_id_102030",
+                email="social_new@example.com",
+                full_name="Social Newbie",
+                avatar_url="https://lh3.googleusercontent.com/avatar.jpg",
+            )
         )
 
         self.assertTrue(created)
@@ -149,11 +152,13 @@ class CustomerRegistrationTDDTestCase(TestCase):
         )
 
         # 2. Login via GitHub OAuth with same email
-        user, customer, social_acc, created = SocialOAuthAuthService.authenticate_or_register_social_user(
-            provider="GITHUB",
-            provider_uid="github_uid_445566",
-            email="common@example.com",
-            full_name="Common User GitHub",
+        user, customer, social_acc, created = (
+            SocialOAuthAuthService.authenticate_or_register_social_user(
+                provider="GITHUB",
+                provider_uid="github_uid_445566",
+                email="common@example.com",
+                full_name="Common User GitHub",
+            )
         )
 
         self.assertFalse(created)

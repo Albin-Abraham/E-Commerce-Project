@@ -5,15 +5,15 @@ Runs in-memory with zero framework or database dependencies.
 """
 
 import pytest
-from typing import Optional, Dict
+
+from apps.users.application.use_cases.register_user import (
+    RegisterUserInputDTO,
+    RegisterUserUseCase,
+)
 from apps.users.domain.entities import UserEntity
 from apps.users.domain.repository import IUserRepository
-from apps.users.application.use_cases.register_user import (
-    RegisterUserUseCase,
-    RegisterUserInputDTO,
-)
-from shared_domain.base.unit_of_work import IUnitOfWork
 from shared_domain.base.event import DomainEvent
+from shared_domain.base.unit_of_work import IUnitOfWork
 from shared_domain.validation.exceptions import DomainValidationError
 
 
@@ -38,25 +38,25 @@ class InMemoryUnitOfWork(IUnitOfWork):
 
 class InMemoryUserRepository(IUserRepository):
     def __init__(self):
-        self._storage: Dict[str, UserEntity] = {}
+        self._storage: dict[str, UserEntity] = {}
         self._id_counter = 1
 
-    def get_by_id(self, user_id: str) -> Optional[UserEntity]:
+    def get_by_id(self, user_id: str) -> UserEntity | None:
         return self._storage.get(user_id)
 
-    def get_by_email(self, email: str) -> Optional[UserEntity]:
+    def get_by_email(self, email: str) -> UserEntity | None:
         for u in self._storage.values():
             if u.email == email.lower():
                 return u
         return None
 
-    def get_by_username(self, username: str) -> Optional[UserEntity]:
+    def get_by_username(self, username: str) -> UserEntity | None:
         for u in self._storage.values():
             if u.username == username:
                 return u
         return None
 
-    def save(self, user: UserEntity, raw_password: Optional[str] = None) -> UserEntity:
+    def save(self, user: UserEntity, raw_password: str | None = None) -> UserEntity:
         if not user.id:
             user.id = f"usr_{self._id_counter}"
             self._id_counter += 1

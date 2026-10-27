@@ -4,16 +4,16 @@ Circuit Breaker Pattern for payment gateway resilience.
 Protects application workflows from cascading failures when upstream gateways experience downtime.
 """
 
-import time
 import logging
 import threading
+import time
 
 logger = logging.getLogger(__name__)
 
 
 class CircuitState:
-    CLOSED = "CLOSED"      # Normal operation: requests pass through
-    OPEN = "OPEN"          # Outage tripped: fast fail without calling gateway
+    CLOSED = "CLOSED"  # Normal operation: requests pass through
+    OPEN = "OPEN"  # Outage tripped: fast fail without calling gateway
     HALF_OPEN = "HALF_OPEN"  # Testing recovery: limited probe requests allowed
 
 
@@ -29,9 +29,9 @@ class GatewayCircuitBreaker:
     _success_counts: dict[str, int] = {}
     _last_state_change: dict[str, float] = {}
 
-    FAILURE_THRESHOLD = 5       # Consecutive failures to trip circuit
-    RECOVERY_TIMEOUT = 60.0    # Seconds to remain in OPEN before probing
-    SUCCESS_THRESHOLD = 2       # Successes required in HALF_OPEN to close circuit
+    FAILURE_THRESHOLD = 5  # Consecutive failures to trip circuit
+    RECOVERY_TIMEOUT = 60.0  # Seconds to remain in OPEN before probing
+    SUCCESS_THRESHOLD = 2  # Successes required in HALF_OPEN to close circuit
 
     @classmethod
     def get_state(cls, gateway_type: str) -> str:
@@ -44,7 +44,9 @@ class GatewayCircuitBreaker:
                 if (time.time() - last_change) >= cls.RECOVERY_TIMEOUT:
                     cls._states[cleaned] = CircuitState.HALF_OPEN
                     cls._success_counts[cleaned] = 0
-                    logger.info(f"Circuit for '{cleaned}' transitioned to HALF_OPEN (probing recovery)")
+                    logger.info(
+                        f"Circuit for '{cleaned}' transitioned to HALF_OPEN (probing recovery)"
+                    )
                     return CircuitState.HALF_OPEN
             return state
 
@@ -90,7 +92,9 @@ class GatewayCircuitBreaker:
                 if count >= cls.FAILURE_THRESHOLD:
                     cls._states[cleaned] = CircuitState.OPEN
                     cls._last_state_change[cleaned] = time.time()
-                    logger.error(f"Circuit for '{cleaned}' tripped to OPEN after {count} consecutive failures")
+                    logger.error(
+                        f"Circuit for '{cleaned}' tripped to OPEN after {count} consecutive failures"
+                    )
 
     @classmethod
     def reset(cls, gateway_type: str | None = None):

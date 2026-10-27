@@ -6,7 +6,6 @@ from decimal import Decimal
 
 from django.test import TestCase
 
-from core.admin.models.company import Company
 from apps.accounting.models.chart_of_accounts import Account
 from apps.accounting.models.currency import Currency
 from apps.accounting.models.journal_entry import GLEntry, JournalEntry, JournalEntryLine
@@ -28,6 +27,7 @@ from apps.shop.infrastructure.models.inventory import Batch, Inventory
 from apps.shop.infrastructure.models.product import Product
 from apps.shop.infrastructure.models.variant import ProductVariant
 from apps.shop.infrastructure.models.warehouse import Warehouse
+from core.admin.models.company import Company
 
 
 class ProcurementAccountingLifecycleTestCase(TestCase):
@@ -54,6 +54,7 @@ class ProcurementAccountingLifecycleTestCase(TestCase):
 
     def _user(self, username):
         from django.contrib.auth import get_user_model
+
         return get_user_model().objects.create_user(
             username=username, email=f"{username}@example.com", password="password123"
         )
@@ -113,7 +114,11 @@ class ProcurementAccountingLifecycleTestCase(TestCase):
         self.assertEqual(product.price, Decimal("100.00"))
         self.assertEqual(product.status, "ACTIVE")
         self.assertTrue(product.is_active)
-        self.assertEqual(product.item_tax_template_id, item_tax.id, "product knowledge links its item tax template")
+        self.assertEqual(
+            product.item_tax_template_id,
+            item_tax.id,
+            "product knowledge links its item tax template",
+        )
 
         self.assertEqual(variant.product_id, product.id)
         self.assertEqual(product.variants.count(), 1)
@@ -169,7 +174,10 @@ class ProcurementAccountingLifecycleTestCase(TestCase):
 
         po = PurchaseOrder.objects.create(supplier=supplier, total_amount=Decimal("250.00"))
         PurchaseOrderItem.objects.create(
-            purchase_order=po, variant=variant, quantity_ordered=10, unit_cost=Decimal("25.00"),
+            purchase_order=po,
+            variant=variant,
+            quantity_ordered=10,
+            unit_cost=Decimal("25.00"),
         )
 
         grn = GoodsReceivedNote.objects.create(purchase_order=po, warehouse=warehouse)
@@ -197,7 +205,10 @@ class ProcurementAccountingLifecycleTestCase(TestCase):
 
         po = PurchaseOrder.objects.create(supplier=supplier, total_amount=Decimal("250.00"))
         PurchaseOrderItem.objects.create(
-            purchase_order=po, variant=variant, quantity_ordered=10, unit_cost=Decimal("25.00"),
+            purchase_order=po,
+            variant=variant,
+            quantity_ordered=10,
+            unit_cost=Decimal("25.00"),
         )
         grn = GoodsReceivedNote.objects.create(purchase_order=po, warehouse=warehouse)
         GoodsReceivedNote.process_grn_receipt(grn.id)
@@ -233,7 +244,11 @@ class ProcurementAccountingLifecycleTestCase(TestCase):
         self.assertEqual(inv.available_quantity, 6)
 
         duplicate = Batch(batch_number=batch.batch_number, variant=variant)
-        rule = next(r for r in duplicate._rules.get("batch_number", []) if r.__class__.__name__ == "UniqueRule")
+        rule = next(
+            r
+            for r in duplicate._rules.get("batch_number", [])
+            if r.__class__.__name__ == "UniqueRule"
+        )
         self.assertFalse(rule.check(duplicate), "batch numbers must be unique")
 
     # --------------------------------------------------------------- invoice
@@ -246,7 +261,10 @@ class ProcurementAccountingLifecycleTestCase(TestCase):
 
         po = PurchaseOrder.objects.create(supplier=supplier, total_amount=Decimal("250.00"))
         PurchaseOrderItem.objects.create(
-            purchase_order=po, variant=variant, quantity_ordered=10, unit_cost=Decimal("25.00"),
+            purchase_order=po,
+            variant=variant,
+            quantity_ordered=10,
+            unit_cost=Decimal("25.00"),
         )
         grn = GoodsReceivedNote.objects.create(purchase_order=po, warehouse=warehouse)
         GoodsReceivedNote.process_grn_receipt(grn.id)
@@ -312,9 +330,7 @@ class ProcurementAccountingLifecycleTestCase(TestCase):
         self.assertTrue(pe.payment_number.startswith("PE-"))
         self.assertTrue(posted.is_submitted)
 
-        entries = list(
-            GLEntry.objects.filter(voucher_type="Payment Entry", voucher_id=str(pe.id))
-        )
+        entries = list(GLEntry.objects.filter(voucher_type="Payment Entry", voucher_id=str(pe.id)))
         self.assertEqual(len(entries), 2, "payment posts one debit and one credit")
         dr = next(e for e in entries if e.debit)
         cr = next(e for e in entries if e.credit)
@@ -322,10 +338,14 @@ class ProcurementAccountingLifecycleTestCase(TestCase):
         self.assertEqual(dr.debit, Decimal("250.00"))
         self.assertEqual(cr.account_id, cash.id, "Cr Cash/Bank")
         self.assertEqual(cr.credit, Decimal("250.00"))
-        self.assertEqual(sum(e.debit for e in entries), sum(e.credit for e in entries), "GL stays balanced")
+        self.assertEqual(
+            sum(e.debit for e in entries), sum(e.credit for e in entries), "GL stays balanced"
+        )
         self.assertEqual(dr.voucher_no, pe.payment_number)
 
-        ple = PartyLedgerEntry.objects.filter(voucher_type="PAYMENT_ENTRY", voucher_id=str(pe.id)).get()
+        ple = PartyLedgerEntry.objects.filter(
+            voucher_type="PAYMENT_ENTRY", voucher_id=str(pe.id)
+        ).get()
         self.assertEqual(ple.party_id, str(supplier.pk), "party ledger tracks the vendor")
         self.assertEqual(ple.credit, Decimal("250.00"))
 
@@ -338,12 +358,18 @@ class ProcurementAccountingLifecycleTestCase(TestCase):
 
         jv = JournalEntry.objects.create(company=company, posting_date=date.today())
         stock_line = JournalEntryLine.objects.create(
-            journal_entry=jv, account=stock, debit=Decimal("250.00"), credit=Decimal("0.00"),
-            user_remark="Goods received"
+            journal_entry=jv,
+            account=stock,
+            debit=Decimal("250.00"),
+            credit=Decimal("0.00"),
+            user_remark="Goods received",
         )
         ap_line = JournalEntryLine.objects.create(
-            journal_entry=jv, account=ap, debit=Decimal("0.00"), credit=Decimal("250.00"),
-            user_remark="Vendor accrual"
+            journal_entry=jv,
+            account=ap,
+            debit=Decimal("0.00"),
+            credit=Decimal("250.00"),
+            user_remark="Vendor accrual",
         )
         ap_line.set_party(supplier)
         ap_line.save()
@@ -357,9 +383,7 @@ class ProcurementAccountingLifecycleTestCase(TestCase):
         self.assertTrue(posted.is_posted)
         self.assertTrue(jv.entry_number.startswith("JV-"))
 
-        entries = list(
-            GLEntry.objects.filter(voucher_type="Journal Entry", voucher_id=str(jv.id))
-        )
+        entries = list(GLEntry.objects.filter(voucher_type="Journal Entry", voucher_id=str(jv.id)))
         self.assertEqual(len(entries), 2)
         dr = next(e for e in entries if e.debit)
         cr = next(e for e in entries if e.credit)
@@ -367,7 +391,9 @@ class ProcurementAccountingLifecycleTestCase(TestCase):
         self.assertEqual(cr.account_id, ap.id)
         self.assertEqual(sum(e.debit for e in entries), sum(e.credit for e in entries))
 
-        ple = PartyLedgerEntry.objects.filter(voucher_type="JOURNAL_ENTRY", voucher_id=str(jv.id)).get()
+        ple = PartyLedgerEntry.objects.filter(
+            voucher_type="JOURNAL_ENTRY", voucher_id=str(jv.id)
+        ).get()
         self.assertEqual(ple.party_id, str(supplier.pk))
         self.assertEqual(ple.credit, Decimal("250.00"), "AP accrual credits the vendor ledger")
 
@@ -390,14 +416,19 @@ class ProcurementAccountingLifecycleTestCase(TestCase):
 
         # 2. Purchase Order (traced back to the requisition)
         po = PurchaseOrder.objects.create(
-            supplier=supplier, total_amount=Decimal("250.00"), purchase_request=pr,
+            supplier=supplier,
+            total_amount=Decimal("250.00"),
+            purchase_request=pr,
         )
         pr.mark_po_created()
         pr.refresh_from_db()
         self.assertEqual(pr.status, "PO_CREATED")
         self.assertEqual(po.purchase_request_id, pr.pk)
         PurchaseOrderItem.objects.create(
-            purchase_order=po, variant=variant, quantity_ordered=10, unit_cost=Decimal("25.00"),
+            purchase_order=po,
+            variant=variant,
+            quantity_ordered=10,
+            unit_cost=Decimal("25.00"),
         )
         po.refresh_from_db()
         self.assertTrue(po.po_number.startswith("PO-"))
@@ -422,7 +453,9 @@ class ProcurementAccountingLifecycleTestCase(TestCase):
 
         # 4. Invoice + 3-way match
         pi = PurchaseInvoice.objects.create(
-            purchase_order=po, goods_received_note=grn, supplier=supplier,
+            purchase_order=po,
+            goods_received_note=grn,
+            supplier=supplier,
             billed_amount=Decimal("250.00"),
         )
         self.assertTrue(PurchaseInvoice.execute_three_way_match(pi.id))
@@ -458,8 +491,12 @@ class ProcurementAccountingLifecycleTestCase(TestCase):
         self.assertEqual(sum(e.debit for e in pe_gl), sum(e.credit for e in pe_gl))
 
         # Ledger lives on: account-level GL records + party-level AR/AP trail
-        self.assertEqual(GLEntry.objects.filter(company=company, account=ap, debit__gt=0).count(), 1)
-        self.assertEqual(PartyLedgerEntry.objects.filter(company=company, party_id=str(supplier.pk)).count(), 1)
+        self.assertEqual(
+            GLEntry.objects.filter(company=company, account=ap, debit__gt=0).count(), 1
+        )
+        self.assertEqual(
+            PartyLedgerEntry.objects.filter(company=company, party_id=str(supplier.pk)).count(), 1
+        )
 
     # ------------------------------------------- workflow-gap regressions
 
@@ -477,7 +514,8 @@ class ProcurementAccountingLifecycleTestCase(TestCase):
         self.assertTrue(rfq.rfq_number.startswith("RFQ-"))
 
         vq = VendorQuotation.objects.create(
-            rfq=rfq, supplier=supplier,
+            rfq=rfq,
+            supplier=supplier,
             quotation_number=f"QUO-{self._seq():05}",
             total_quoted_price=Decimal("250.00"),
             is_selected=True,
@@ -538,16 +576,23 @@ class ProcurementAccountingLifecycleTestCase(TestCase):
         pi = self._matched_invoice(company, warehouse, po, supplier, Decimal("250.00"))
 
         pe = PaymentEntry.objects.create(
-            company=company, payment_type="PAY", posting_date=date.today(),
-            paid_from_account=cash, paid_to_account=ap,
-            paid_amount=Decimal("250.00"), received_amount=Decimal("250.00"),
+            company=company,
+            payment_type="PAY",
+            posting_date=date.today(),
+            paid_from_account=cash,
+            paid_to_account=ap,
+            paid_amount=Decimal("250.00"),
+            received_amount=Decimal("250.00"),
         )
         pe.set_party(supplier)
         pe.save()
         ref = PaymentEntryReference.objects.create(
-            payment_entry=pe, voucher_type="Purchase Invoice",
-            voucher_no=pi.invoice_number, voucher_id=str(pi.id),
-            total_amount=Decimal("250.00"), outstanding_amount=Decimal("250.00"),
+            payment_entry=pe,
+            voucher_type="Purchase Invoice",
+            voucher_no=pi.invoice_number,
+            voucher_id=str(pi.id),
+            total_amount=Decimal("250.00"),
+            outstanding_amount=Decimal("250.00"),
             allocated_amount=Decimal("0.00"),
         )
         GLPostingService.post_payment_entry(pe.id)
@@ -571,16 +616,23 @@ class ProcurementAccountingLifecycleTestCase(TestCase):
 
         def pay(amount, outstanding):
             pe = PaymentEntry.objects.create(
-                company=company, payment_type="PAY", posting_date=date.today(),
-                paid_from_account=cash, paid_to_account=ap,
-                paid_amount=amount, received_amount=amount,
+                company=company,
+                payment_type="PAY",
+                posting_date=date.today(),
+                paid_from_account=cash,
+                paid_to_account=ap,
+                paid_amount=amount,
+                received_amount=amount,
             )
             pe.set_party(supplier)
             pe.save()
             return PaymentEntryReference.objects.create(
-                payment_entry=pe, voucher_type="Purchase Invoice",
-                voucher_no=pi.invoice_number, voucher_id=str(pi.id),
-                total_amount=Decimal("250.00"), outstanding_amount=outstanding,
+                payment_entry=pe,
+                voucher_type="Purchase Invoice",
+                voucher_no=pi.invoice_number,
+                voucher_id=str(pi.id),
+                total_amount=Decimal("250.00"),
+                outstanding_amount=outstanding,
                 allocated_amount=Decimal("0.00"),
             )
 
@@ -605,9 +657,13 @@ class ProcurementAccountingLifecycleTestCase(TestCase):
         supplier = self._supplier("Zero Supplier Co")
 
         pe = PaymentEntry.objects.create(
-            company=company, payment_type="PAY", posting_date=date.today(),
-            paid_from_account=cash, paid_to_account=ap,
-            paid_amount=Decimal("0.00"), received_amount=Decimal("0.00"),
+            company=company,
+            payment_type="PAY",
+            posting_date=date.today(),
+            paid_from_account=cash,
+            paid_to_account=ap,
+            paid_amount=Decimal("0.00"),
+            received_amount=Decimal("0.00"),
         )
         pe.set_party(supplier)
         pe.save()
@@ -617,7 +673,10 @@ class ProcurementAccountingLifecycleTestCase(TestCase):
     def _buy(self, company, warehouse, variant, supplier):
         po = PurchaseOrder.objects.create(supplier=supplier, total_amount=Decimal("250.00"))
         item = PurchaseOrderItem.objects.create(
-            purchase_order=po, variant=variant, quantity_ordered=10, unit_cost=Decimal("25.00"),
+            purchase_order=po,
+            variant=variant,
+            quantity_ordered=10,
+            unit_cost=Decimal("25.00"),
         )
         grn = GoodsReceivedNote.objects.create(purchase_order=po, warehouse=warehouse)
         GoodsReceivedNote.process_grn_receipt(grn.id)

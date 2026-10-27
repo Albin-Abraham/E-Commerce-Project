@@ -1,10 +1,13 @@
-from core.base_views.api_views import BaseAPIView
-from core.admin.helpers.query_helpers import FilterSchema, FilterField, LOOKUP_OPERATORS
+from apps.shop.infrastructure.models.brand import Brand
 from apps.shop.infrastructure.models.product import Product
 from apps.shop.infrastructure.models.variant import ProductVariant
-from apps.shop.infrastructure.models.brand import Brand
-from apps.shop.infrastructure.serializers.product_serializers import ProductSerializer, ProductVariantSerializer
+from apps.shop.infrastructure.serializers.product_serializers import (
+    ProductSerializer,
+    ProductVariantSerializer,
+)
 from apps.shop.infrastructure.serializers.shop_serializers import BrandSerializer
+from core.admin.helpers.query_helpers import LOOKUP_OPERATORS, FilterField, FilterSchema
+from core.base_views.api_views import BaseAPIView
 
 
 class BrandViewSet(BaseAPIView):
@@ -25,6 +28,7 @@ class ProductViewSet(BaseAPIView):
     and metadata filter queries.
     GET requests route through PrimaryReplicaRouter automatically.
     """
+
     model = Product
     serializer_class = ProductSerializer
     entity_name = "Product"
@@ -64,6 +68,7 @@ class ProductVariantViewSet(BaseAPIView):
     Product Variants API ViewSet.
     Integrated with FilterSchema for attribute and specifications filtering.
     """
+
     model = ProductVariant
     serializer_class = ProductVariantSerializer
     entity_name = "ProductVariant"

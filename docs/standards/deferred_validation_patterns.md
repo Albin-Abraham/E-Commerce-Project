@@ -19,15 +19,15 @@ The Serializer's `validate()` method is the best place for **Object-level** and 
 class CompanySerializer(SmartSerializerMixin, serializers.ModelSerializer):
     def validate(self, data):
         # 1. Structural checks handled by field_rules (Fast-Fail)
-        
+
         # 2. Deferred Check: Expensive DB Lookup
-        if not check_external_credit_registry(data.get('tax_id')):
-             raise serializers.ValidationError({"tax_id": "Invalid tax registration."})
-             
+        if not check_external_credit_registry(data.get("tax_id")):
+            raise serializers.ValidationError({"tax_id": "Invalid tax registration."})
+
         # 3. Cross-Field Logic
-        if data.get('plan') == 'gold' and not data.get('is_premium'):
-             raise serializers.ValidationError("Gold plan requires premium status.")
-             
+        if data.get("plan") == "gold" and not data.get("is_premium"):
+            raise serializers.ValidationError("Gold plan requires premium status.")
+
         return data
 ```
 

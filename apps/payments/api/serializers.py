@@ -1,6 +1,7 @@
 from rest_framework import serializers
-from apps.payments.models import PaymentTransaction, PaymentGatewayConfig, PaymentRefund
+
 from apps.payments.health.models import PaymentGatewayHealth
+from apps.payments.models import PaymentGatewayConfig, PaymentTransaction
 
 
 class PaymentGatewayHealthSerializer(serializers.ModelSerializer):

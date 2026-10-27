@@ -100,10 +100,9 @@ Modules across the application (`apps/users`, `apps/hrms`, `core/admin`) import 
 from core.base_models.fields import CustomCharField, CustomEmailField
 from core.base_models.validators.rules import RequiredRule, UniqueRule
 
+
 class UserModel(AbstractBaseUser, PermissionsMixin):
-    username = CustomCharField(
-        rules=[RequiredRule("username"), UniqueRule("username")]
-    )
+    username = CustomCharField(rules=[RequiredRule("username"), UniqueRule("username")])
 ```
 
 > [!NOTE]

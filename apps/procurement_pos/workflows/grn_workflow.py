@@ -1,8 +1,10 @@
 import logging
-from django.db import models, transaction
+
 from django.core.exceptions import ValidationError
+from django.db import transaction
+
 from apps.procurement_pos.models.procurement import GoodsReceivedNote, PurchaseOrder
-from apps.shop.infrastructure.models.inventory import Inventory, Batch, StockMovement
+from apps.shop.infrastructure.models.inventory import Inventory, StockMovement
 
 logger = logging.getLogger(__name__)
 
@@ -18,7 +20,11 @@ class GRNWorkflow:
         """
         Executes physical inventory stock increments, creates batches if applicable, and updates PO state.
         """
-        grn = GoodsReceivedNote.objects.select_for_update().select_related("purchase_order", "warehouse").get(pk=grn_id)
+        grn = (
+            GoodsReceivedNote.objects.select_for_update()
+            .select_related("purchase_order", "warehouse")
+            .get(pk=grn_id)
+        )
         if grn.status == GoodsReceivedNote.GRNStatus.COMPLETED:
             raise ValidationError(f"GRN #{grn.grn_number} is already COMPLETED.")
 

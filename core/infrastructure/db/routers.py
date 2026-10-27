@@ -1,5 +1,6 @@
 # core/infrastructure/db/routers.py
 import logging
+
 from django.conf import settings
 
 logger = logging.getLogger(__name__)

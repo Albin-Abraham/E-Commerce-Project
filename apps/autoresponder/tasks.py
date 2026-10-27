@@ -1,5 +1,7 @@
 import logging
+
 from celery import shared_task
+
 from apps.autoresponder.services.autoresponder_service import AutoResponderEngine
 
 logger = logging.getLogger(__name__)
@@ -10,7 +12,9 @@ def trigger_autoresponder_event_task(self, event_key: str, recipient_email: str,
     """
     Celery Background Task: Asynchronously processes and dispatches AutoResponder template emails & notifications.
     """
-    logger.info(f"[Celery AutoResponder Worker] Processing event '{event_key}' for {recipient_email}")
+    logger.info(
+        f"[Celery AutoResponder Worker] Processing event '{event_key}' for {recipient_email}"
+    )
     try:
         log = AutoResponderEngine.dispatch_event(
             event_key=event_key,

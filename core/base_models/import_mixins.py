@@ -1,6 +1,5 @@
 from django.utils import timezone
-from import_export import resources, fields, widgets
-from import_export.results import RowResult
+from import_export import resources
 
 
 class DynamicHeaderResolver:
@@ -35,14 +34,32 @@ class DynamicHeaderResolver:
         if len(parts) == 3:
             tier, model_alias, field = parts[0].lower(), parts[1].lower(), parts[2]
             model = cls.MODEL_ALIAS_MAP.get(model_alias, model_alias)
-            clean_field = f"{model}_{field}" if model_alias not in ("item", "product", "variant", "catalogitem", "catalog_item") else field
-            aliases = [model, clean_field, f"{model_alias}_{field}", field, model_alias]
-            return {"raw": raw, "clean_field": clean_field, "model": model, "tier": tier, "aliases": aliases}
+            clean_field = (
+                f"{model}_{field}"
+                if model_alias not in ("item", "product", "variant", "catalogitem", "catalog_item")
+                else field
+            )
+            aliases = [clean_field, f"{model_alias}_{field}", field]
+            if field in ("code", "slug", "sku", "id"):
+                aliases.append(model)
+            return {
+                "raw": raw,
+                "clean_field": clean_field,
+                "model": model,
+                "tier": tier,
+                "aliases": aliases,
+            }
         elif len(parts) == 2:
             model_alias, field = parts[0].lower(), parts[1]
             model = cls.MODEL_ALIAS_MAP.get(model_alias, model_alias)
-            clean_field = f"{model}_{field}" if model_alias not in ("item", "product", "variant", "catalogitem", "catalog_item") else field
-            aliases = [model, clean_field, f"{model_alias}_{field}", field, model_alias]
+            clean_field = (
+                f"{model}_{field}"
+                if model_alias not in ("item", "product", "variant", "catalogitem", "catalog_item")
+                else field
+            )
+            aliases = [clean_field, f"{model_alias}_{field}", field]
+            if field in ("code", "slug", "sku", "id"):
+                aliases.append(model)
             return {"raw": raw, "clean_field": clean_field, "model": model, "aliases": aliases}
         else:
             raw_lower = raw.lower()
@@ -149,7 +166,9 @@ class AuditLineageResourceMixin:
                 "source_file": source_file or "unknown.csv",
                 "source_row": row_number,
                 "imported_at": timezone.now().isoformat(),
-                "imported_by": str(request.user.id) if request and hasattr(request, "user") and request.user else "system",
+                "imported_by": str(request.user.id)
+                if request and hasattr(request, "user") and request.user
+                else "system",
             }
 
 

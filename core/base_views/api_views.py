@@ -1,22 +1,11 @@
 import logging
-from typing import Any, Optional, Type, Dict, List
-from django.db.models import Q
+from typing import Any
 
 from django.db import transaction
 from django.db.models import Model
-from drf_spectacular.utils import OpenApiResponse, extend_schema
 from rest_framework.views import APIView
 
-
-from core.admin.helpers.model_helpers import build_tenant_filter, get_object_with_scoping
-from core.admin.helpers.display_helpers import get_display_name
-from core.admin.helpers.pagination_helpers import StandardResultsSetPagination, paginate_queryset
-from core.admin.helpers.query_helpers import filter_queryset
-from core.admin.helpers.response_helpers import ResponseFactory
-from core.admin.helpers.serializer_helpers import (
-    get_related_fields_from_serializer,
-    optimize_queryset_with_serializer,
-)
+from core.admin.decorators.openai_swagger import PlatformOpenAISchema  # noqa  # DAG: used as class attr schema = PlatformOpenAISchema()
 from core.admin.helpers.bulk_helpers import (
     BulkHooks,
     BulkResult,
@@ -25,31 +14,38 @@ from core.admin.helpers.bulk_helpers import (
     should_offload,
 )
 from core.admin.helpers.cache_helpers import (
-    get_serializer_cache_key,
     get_cached_serializer_data,
-    set_cached_serializer_data,
+    get_serializer_cache_key,
     invalidate_serializer_cache,
+    set_cached_serializer_data,
 )
-from core.admin.throttling import TenantDynamicThrottle  # noqa: DAG — used as class attr throttle_classes = [...]
-from core.admin.decorators.openai_swagger import PlatformOpenAISchema  # noqa: DAG — used as class attr schema = PlatformOpenAISchema()
-from core.admin.permissions.drf_permissions import CustomPermissionClass  # noqa: DAG — used as class attr permission_classes = [...]
+from core.admin.helpers.display_helpers import get_display_name
+from core.admin.helpers.model_helpers import build_tenant_filter, get_object_with_scoping
+from core.admin.helpers.pagination_helpers import StandardResultsSetPagination, paginate_queryset
+from core.admin.helpers.query_helpers import filter_queryset
+from core.admin.helpers.response_helpers import ResponseFactory
+from core.admin.helpers.serializer_helpers import (
+    get_related_fields_from_serializer,
+)
+from core.admin.permissions.drf_permissions import CustomPermissionClass  # noqa  # DAG: used as class attr permission_classes = [...]
+from core.admin.throttling import TenantDynamicThrottle  # noqa  # DAG: used as class attr throttle_classes = [...]
 from core.admin.utils.integrity.log_mixin import LogMixin as SystemLogMixin
-
-
 from core.base_views.contracts import IPublicContract
-from core.base_views.mixins import NumberSeriesInjectionMixin, CurrencyInjectionMixin
+from core.base_views.mixins import CurrencyInjectionMixin, NumberSeriesInjectionMixin
 
 # --------------------------
 # Architectural Contracts
 # --------------------------
+
 
 class ViewContractMixin(IPublicContract):
     """
     Implementation of the View Public Contract.
     Safe-wraps the Django request and user for use in mixins.
     """
+
     @property
-    def platform_request(self) -> Optional[Any]:
+    def platform_request(self) -> Any | None:
         return getattr(self, "request", None)
 
     @property
@@ -61,6 +57,7 @@ class ViewContractMixin(IPublicContract):
 # --------------------------
 # Mixins for Base API
 # --------------------------
+
 
 class SerializerMixin(ViewContractMixin):
     serializer_class = None
@@ -89,12 +86,12 @@ class SerializerMixin(ViewContractMixin):
                 return self.create_serializer_class
             if action in ["update", "patch"] and getattr(self, "update_serializer_class", None):
                 return self.update_serializer_class
-            
+
             # Fallback for mutation
             return (
-                getattr(self, "create_update_serializer_class", None) or 
-                getattr(self, "create_serializer_class", None) or 
-                self.serializer_class
+                getattr(self, "create_update_serializer_class", None)
+                or getattr(self, "create_serializer_class", None)
+                or self.serializer_class
             )
 
         # 3. Handle Retrieval Context (List/Detail)
@@ -102,12 +99,12 @@ class SerializerMixin(ViewContractMixin):
             return self.list_serializer_class
         if action == "detail" and getattr(self, "detail_serializer_class", None):
             return self.detail_serializer_class
-        
+
         # Fallback for retrieval
         return (
-            getattr(self, "list_detail_serializer_class", None) or 
-            getattr(self, "detail_serializer_class", None) or 
-            self.serializer_class
+            getattr(self, "list_detail_serializer_class", None)
+            or getattr(self, "detail_serializer_class", None)
+            or self.serializer_class
         )
 
     def get_serializer_context(self) -> dict[str, Any]:
@@ -143,7 +140,7 @@ class SerializerMixin(ViewContractMixin):
         """
         is_create_update = kwargs.pop("is_create_update", False)
         action = kwargs.pop("action", None)
-        
+
         serializer_class = self.get_serializer_class(
             is_create_update=is_create_update, action=action
         )
@@ -175,7 +172,7 @@ class ObjectMixin(ViewContractMixin):
             pk=pk,
             user=self.platform_user,
             include_deleted=include_deleted,
-            supports_soft_delete=self.supports_soft_delete
+            supports_soft_delete=self.supports_soft_delete,
         )
 
 
@@ -207,18 +204,14 @@ class QueryMixin(SerializerMixin):
         request = self.platform_request
         query_params = getattr(request, "query_params", {}) if request else {}
         queryset = self.get_base_queryset()
-        
+
         # 1. Multi-Tenant Scoping (Bypass for Superusers)
         tenant_q = build_tenant_filter(self.model, self.platform_user)
         if tenant_q:
             queryset = queryset.filter(tenant_q)
 
         # 2. Performance: Soft Delete & Pre-fetch
-        if (
-            hasattr(self.model, "is_deleted")
-            and not include_deleted
-            and self.supports_soft_delete
-        ):
+        if hasattr(self.model, "is_deleted") and not include_deleted and self.supports_soft_delete:
             queryset = queryset.filter(is_deleted=False)
 
         serializer_class = self.get_serializer_class(
@@ -254,26 +247,31 @@ class QueryMixin(SerializerMixin):
 
 logger = logging.getLogger(__name__)
 
+
 class AuditLogMixin(ViewContractMixin):
     """
     Industrialized Audit Trail for Views:
     Automatically logs mutations (Create, Update, Delete) using the Model's AuditMixin.
     """
+
     audit_enabled = True
 
     def _log_audit_entry(self, instance, action, changes=None, reason=None):
-        if not self.audit_enabled or not hasattr(instance, 'create_audit_log'):
+        if not self.audit_enabled or not hasattr(instance, "create_audit_log"):
             return
-        
+
         request = self.platform_request
         query_params = getattr(request, "query_params", {}) if request else {}
         method = getattr(request, "method", "UNKNOWN") if request else "UNKNOWN"
 
         # Capture reason only if ?explain=true is present
         explain_mode = query_params.get("explain", "false").lower() == "true"
-        trigger_reason = reason or f"API {method} via {self.__class__.__name__}" if explain_mode else None
-            
+        trigger_reason = (
+            reason or f"API {method} via {self.__class__.__name__}" if explain_mode else None
+        )
+
         instance.create_audit_log(action, reason=trigger_reason)
+
 
 class BaseAPIView(
     NumberSeriesInjectionMixin,
@@ -300,9 +298,7 @@ class BaseAPIView(
         """
         # If the URL pattern provides explicit method hints, respect them absolutely
         if "HTTP_METHOD" in initkwargs:
-            initkwargs["http_method_names"] = [
-                m.lower() for m in initkwargs["HTTP_METHOD"]
-            ]
+            initkwargs["http_method_names"] = [m.lower() for m in initkwargs["HTTP_METHOD"]]
 
         return super().as_view(**initkwargs)
 
@@ -317,7 +313,7 @@ class BaseAPIView(
 
         # 1. Get IDs from Session
         session_company = self.request.session.get("company_id")
-        
+
         # 2. Get IDs from JWT Claims (if available)
         # DRF-SimpleJWT puts the token in request.auth
         jwt_company = None
@@ -335,13 +331,14 @@ class BaseAPIView(
                 f"JWT: {jwt_company} | Session: {session_company}. Terminating request."
             )
             from rest_framework.exceptions import PermissionDenied
-            raise PermissionDenied("Security Integrity Failure: Tenant mismatch between Token and Session.")
+
+            raise PermissionDenied(
+                "Security Integrity Failure: Tenant mismatch between Token and Session."
+            )
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        app_name = (
-            self.__module__.split(".")[0] if "." in self.__module__ else "base_api"
-        )
+        app_name = self.__module__.split(".")[0] if "." in self.__module__ else "base_api"
         self.logger = logging.getLogger(f"api.{app_name}")
         self._pagination_class = None
 
@@ -352,12 +349,13 @@ class BaseAPIView(
         """
         super().__init_subclass__(**kwargs)
         from core.admin.decorators.openai_swagger import auto_extend_schema
+
         auto_extend_schema(cls)
 
     @property
     def _bulk_hooks(self) -> BulkHooks:
         """Build BulkHooks from the view's hook methods with request bound."""
-        request = getattr(self, 'request', None)
+        request = getattr(self, "request", None)
         return BulkHooks(
             pre_create=(lambda data: self.pre_create(request, data)) if request else None,
             post_create=self.post_create,
@@ -380,11 +378,13 @@ class BaseAPIView(
         """Industrialized Lazy Loader: Provides IAuthenticationClassService."""
         if not hasattr(self, "_cached_auth_service"):
             from core.registry.provider_registry import ProviderRegistry
+
             provider = ProviderRegistry.get_auth_provider()
             if provider is not None:
                 self._cached_auth_service = provider
             else:
                 from apps.users.services.auth_service import AuthService
+
                 self._cached_auth_service = AuthService()
         return self._cached_auth_service
 
@@ -402,14 +402,17 @@ class BaseAPIView(
         """
         if "cursor" in self.request.query_params:
             from core.admin.helpers.pagination_helpers import IndustrialCursorPagination
+
             return IndustrialCursorPagination
-        
+
         # Default to Standard PageNumber pagination with dynamic page_size
         if not self._pagination_class:
+
             class CustomPagination(self.pagination_class):
                 page_size = self.page_size
+
             self._pagination_class = CustomPagination
-            
+
         return self._pagination_class
 
     def paginate_queryset(self, queryset, request):
@@ -427,17 +430,19 @@ class BaseAPIView(
         return serializer.save()
 
     def _build_operation_context(
-        self, action: str, *,
+        self,
+        action: str,
+        *,
         extra_serializer_context: dict | None = None,
     ) -> OperationContext:
-        request = getattr(self, 'request', None)
+        request = getattr(self, "request", None)
         ser_ctx = self.get_serializer_context()
         if extra_serializer_context:
             ser_ctx.update(extra_serializer_context)
 
         company_id = None
         branch_id = None
-        if request and hasattr(request, 'session'):
+        if request and hasattr(request, "session"):
             company_id = request.session.get("company_id")
             branch_id = request.session.get("branch_id")
 
@@ -446,7 +451,9 @@ class BaseAPIView(
             serializer_class=self.get_serializer_class(is_create_update=True, action=action),
             serializer_context=ser_ctx,
             hooks=self._bulk_hooks,
-            get_object_fn=(lambda pk: self.get_object(pk)) if action in ("update", "delete") else None,
+            get_object_fn=(lambda pk: self.get_object(pk))
+            if action in ("update", "delete")
+            else None,
             supports_soft_delete=self.supports_soft_delete,
             company_id=company_id,
             branch_id=branch_id,
@@ -501,9 +508,7 @@ class BaseAPIView(
     # -------------------
     def get(self, request, *args, pk=None, **kwargs):
         self._validate_tenant_integrity()
-        use_create_serializer = (
-            request.query_params.get("update", "false").lower() == "true"
-        )
+        use_create_serializer = request.query_params.get("update", "false").lower() == "true"
         is_select = request.headers.get("Is-Select-Option", "").lower() == "true"
         action = "detail" if pk else "list"
 
@@ -522,11 +527,13 @@ class BaseAPIView(
             obj = self.get_object(pk, use_create_serializer=use_create_serializer)
             if not obj:
                 return ResponseFactory.not_found(f"{self.entity_name or 'Record'} not found")
-            
-            serializer = self.get_serializer(obj, action="detail", is_create_update=use_create_serializer)
+
+            serializer = self.get_serializer(
+                obj, action="detail", is_create_update=use_create_serializer
+            )
             data = serializer.data
             set_cached_serializer_data(cache_key, data)
-            
+
             return ResponseFactory.success(message="Fetched successfully", data=data)
 
         queryset = self._get_queryset(
@@ -536,10 +543,25 @@ class BaseAPIView(
             field_search={
                 k: v
                 for k, v in request.query_params.items()
-                if k not in {
-                    "search", "deleted", "update", "page", "page_size", "cursor",
-                    "sort", "fields", "query", "select_limit", "ids", "selected_ids",
-                    "include_ids", "export", "export_format", "export_mode", "explain",
+                if k
+                not in {
+                    "search",
+                    "deleted",
+                    "update",
+                    "page",
+                    "page_size",
+                    "cursor",
+                    "sort",
+                    "fields",
+                    "query",
+                    "select_limit",
+                    "ids",
+                    "selected_ids",
+                    "include_ids",
+                    "export",
+                    "export_format",
+                    "export_mode",
+                    "explain",
                 }
             },
             use_create_serializer=use_create_serializer,
@@ -557,10 +579,7 @@ class BaseAPIView(
             return ResponseFactory.no_content()
 
         serializer = self.get_serializer(
-            queryset, 
-            many=True, 
-            action="list", 
-            is_create_update=use_create_serializer
+            queryset, many=True, action="list", is_create_update=use_create_serializer
         )
         return ResponseFactory.success(
             message="Fetched successfully",
@@ -580,6 +599,7 @@ class BaseAPIView(
         if is_many and should_offload(request.data):
             context = self._build_operation_context("create")
             from core.admin.tasks.bulk_tasks import bulk_create_task
+
             task = bulk_create_task.delay(request.data, context.to_dict())
             return ResponseFactory.accepted(
                 message=f"Bulk create queued ({len(request.data)} records)",
@@ -636,6 +656,7 @@ class BaseAPIView(
             # Bulk Update — always async (multi-object mutation)
             context = self._build_operation_context("update")
             from core.admin.tasks.bulk_tasks import bulk_update_task
+
             task = bulk_update_task.delay(request.data, context.to_dict())
             return ResponseFactory.accepted(
                 message=f"Bulk update queued ({len(request.data)} records)",
@@ -646,7 +667,7 @@ class BaseAPIView(
             )
 
         return ResponseFactory.error("Invalid request for update. Provide a PK or a list of items.")
-    
+
     def patch(self, request, *args, pk=None, **kwargs):
         """Standard PATCH delegating to PUT (which uses partial=True)."""
         return self.put(request, *args, pk=pk, **kwargs)
@@ -672,6 +693,7 @@ class BaseAPIView(
             # Bulk Delete — always async
             context = self._build_operation_context("delete")
             from core.admin.tasks.bulk_tasks import bulk_delete_task
+
             task = bulk_delete_task.delay(request.data, context.to_dict())
             return ResponseFactory.accepted(
                 message=f"Bulk delete queued ({len(request.data)} records)",

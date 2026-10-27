@@ -1,30 +1,29 @@
+from .catalog_views import (
+    CatalogCollectionViewSet,
+    CatalogItemViewSet,
+    CatalogPublicationViewSet,
+    CatalogViewSet,
+    EntityTagViewSet,
+    TagDefinitionViewSet,
+)
 from .category_views import CategoryViewSet
-from .order_views import OrderViewSet, OrderItemViewSet
-from .product_views import ProductViewSet, ProductVariantViewSet, BrandViewSet
-from .inventory_views import WarehouseViewSet, InventoryViewSet
-from .graph_views import EntityEdgeViewSet, CategoryEdgeViewSet, BOMEdgeViewSet
 from .facility_views import (
+    DeliveryPartnerViewSet,
+    FacilityInventoryViewSet,
+    FacilityPolicyRuleViewSet,
     FacilityViewSet,
     StorageLocationViewSet,
-    FacilityInventoryViewSet,
-    DeliveryPartnerViewSet,
-    FacilityPolicyRuleViewSet,
 )
 from .feedback_views import (
-    ReviewViewSet,
+    FeedbackSummaryViewSet,
     ProductCommentViewSet,
     ProductTestimonialViewSet,
-    FeedbackSummaryViewSet,
+    ReviewViewSet,
 )
-
-from .catalog_views import (
-    CatalogViewSet,
-    CatalogItemViewSet,
-    CatalogCollectionViewSet,
-    CatalogPublicationViewSet,
-    TagDefinitionViewSet,
-    EntityTagViewSet,
-)
+from .graph_views import BOMEdgeViewSet, CategoryEdgeViewSet, EntityEdgeViewSet
+from .inventory_views import InventoryViewSet, WarehouseViewSet
+from .order_views import OrderItemViewSet, OrderViewSet
+from .product_views import BrandViewSet, ProductVariantViewSet, ProductViewSet
 
 __all__ = [
     "CategoryViewSet",

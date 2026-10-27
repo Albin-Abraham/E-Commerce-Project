@@ -11,9 +11,11 @@ def register_hook(name: str):
     Registered hooks can be referenced by name in ``OperationContext.hook_names``
     and survive serialisation through Celery's JSON transport.
     """
+
     def decorator(fn: Callable) -> Callable:
         _hook_registry[name] = fn
         return fn
+
     return decorator
 
 

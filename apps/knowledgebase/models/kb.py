@@ -1,10 +1,11 @@
-from django.db import models
-from django.contrib.contenttypes.models import ContentType
 from django.contrib.contenttypes.fields import GenericForeignKey
-from core.base_models.validator_model import BaseModel
+from django.contrib.contenttypes.models import ContentType
+from django.db import models
+
 from core.base_models.constants import USER_MODEL
-from core.base_models.fields.short_ui_fields import CustomShortUUIDField
 from core.base_models.fields.char_fields import CustomCharField, CustomTextField
+from core.base_models.fields.short_ui_fields import CustomShortUUIDField
+from core.base_models.validator_model import BaseModel
 from core.base_models.validators.rules import RequiredRule, UniqueRule
 
 
@@ -220,10 +221,26 @@ class ProductKnowledgeLink(BaseModel):
         if entity:
             self.content_type = ContentType.objects.get_for_model(entity)
             self.object_id = str(entity.pk)
-            self.target_identifier = str(getattr(entity, "facility_code", getattr(entity, "location_code", getattr(entity, "sku", getattr(entity, "name", entity.pk)))))
+            self.target_identifier = str(
+                getattr(
+                    entity,
+                    "facility_code",
+                    getattr(
+                        entity,
+                        "location_code",
+                        getattr(entity, "sku", getattr(entity, "name", entity.pk)),
+                    ),
+                )
+            )
 
     def __str__(self):
-        target = self.target_object or self.target_identifier or (
-            self.variant.sku if self.variant else (self.product.name if self.product else "Entity/Inventory")
+        target = (
+            self.target_object
+            or self.target_identifier
+            or (
+                self.variant.sku
+                if self.variant
+                else (self.product.name if self.product else "Entity/Inventory")
+            )
         )
         return f"{self.link_type} for {target} -> {self.article.title}"

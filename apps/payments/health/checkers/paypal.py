@@ -5,11 +5,12 @@ Provider-specific health checker for PayPal Express Checkout.
 
 import base64
 import json
-import urllib.parse
 import logging
+import urllib.parse
 from typing import TYPE_CHECKING
-from apps.payments.health.interfaces import CheckStatus, HealthCheckResult
+
 from apps.payments.health.checkers.base import BaseHealthChecker
+from apps.payments.health.interfaces import CheckStatus, HealthCheckResult
 
 if TYPE_CHECKING:
     from apps.payments.configuration.schemas import ResolvedPaymentGatewayConfig
@@ -70,7 +71,9 @@ class PayPalHealthChecker(BaseHealthChecker):
         base_url = self._get_base_url(config.is_sandbox)
         url = f"{base_url}/v1/oauth2/token"
 
-        auth_str = base64.b64encode(f"{config.api_key}:{config.api_secret}".encode()).decode("utf-8")
+        auth_str = base64.b64encode(f"{config.api_key}:{config.api_secret}".encode()).decode(
+            "utf-8"
+        )
         headers = {
             "Authorization": f"Basic {auth_str}",
             "Content-Type": "application/x-www-form-urlencoded",

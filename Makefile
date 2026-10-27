@@ -116,7 +116,10 @@ ping:
 lint-imports:
 	$(COMPOSE) --env-file $(ENV_FILE) run --rm web python scripts/check_import_dag.py
 
-lint: lint-imports
+lint-ruff:
+	$(COMPOSE) --env-file $(ENV_FILE) run --rm web ruff check .
+
+lint: lint-imports lint-ruff
 
 test:
 	$(COMPOSE) --env-file $(ENV_FILE) run --rm web python -m pytest

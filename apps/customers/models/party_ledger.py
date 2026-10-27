@@ -1,7 +1,8 @@
 from django.db import models
-from core.base_models.validator_model import BaseModel
-from core.base_models.fields.short_ui_fields import CustomShortUUIDField
+
 from core.base_models.fields.party_mixin import PartyReferenceMixin
+from core.base_models.fields.short_ui_fields import CustomShortUUIDField
+from core.base_models.validator_model import BaseModel
 from shared_domain.base.valuesets import ValueSet, ValueSetItem
 
 VOUCHER_TYPE_VALUESET = ValueSet(
@@ -15,7 +16,6 @@ VOUCHER_TYPE_VALUESET = ValueSet(
         ValueSetItem(code="JOURNAL_ENTRY", label="Journal Entry", is_active=True),
     ],
 )
-
 
 
 class PartyLedgerEntry(BaseModel, PartyReferenceMixin):
@@ -44,7 +44,9 @@ class PartyLedgerEntry(BaseModel, PartyReferenceMixin):
         default="SALES_INVOICE",
     )
     voucher_id = models.CharField(max_length=50, help_text="ID of source invoice or payment entry")
-    voucher_no = models.CharField(max_length=100, help_text="Human-readable code e.g. INV-2026-0001")
+    voucher_no = models.CharField(
+        max_length=100, help_text="Human-readable code e.g. INV-2026-0001"
+    )
     posting_date = models.DateField(db_index=True)
     due_date = models.DateField(null=True, blank=True)
     currency = models.CharField(max_length=5, default="USD")

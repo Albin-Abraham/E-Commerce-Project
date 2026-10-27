@@ -8,8 +8,9 @@ class ProcurementPOSConfig(AppConfig):
 
     def ready(self):
         try:
+            from apps.procurement_pos.constants import POSKeys, ProcurementKeys
             from core.registry.variable_registry import DomainVariableRegistry
-            from apps.procurement_pos.constants import ProcurementKeys, POSKeys
+
             DomainVariableRegistry.register_app_variables("procurement", ProcurementKeys)
             DomainVariableRegistry.register_app_variables("pos", POSKeys)
         except Exception:

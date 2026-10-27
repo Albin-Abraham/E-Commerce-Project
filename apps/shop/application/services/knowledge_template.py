@@ -46,10 +46,16 @@ class KnowledgeTemplateEngine:
         AvailableVariable("product.price", "Product price", "Unit price of the product"),
         AvailableVariable("variant.sku", "Variant SKU", "SKU of the matched variant"),
         AvailableVariable("variant.price", "Variant price", "Unit price of the matched variant"),
-        AvailableVariable("variant.attributes", "Variant options", "Key/value map of variant options, e.g. color, size"),
+        AvailableVariable(
+            "variant.attributes",
+            "Variant options",
+            "Key/value map of variant options, e.g. color, size",
+        ),
         AvailableVariable("category.name", "Category name", "First assigned shop category"),
         AvailableVariable("company.name", "Company name", "Owning tenant company"),
-        AvailableVariable("company.base_currency", "Base currency", "Company reporting currency code"),
+        AvailableVariable(
+            "company.base_currency", "Base currency", "Company reporting currency code"
+        ),
         AvailableVariable("context.date", "Current date", "Today's local date (ISO)"),
     ]
 
@@ -136,6 +142,7 @@ class KnowledgeTemplateEngine:
                 return match.group(0)
             if isinstance(value, (dict, list)):
                 import json
+
                 return json.dumps(value)
             return str(value)
 
@@ -181,8 +188,6 @@ class KnowledgeTemplateEngine:
         """Renders the payload and reports unresolved variables for audit/QA."""
         resolved = cls.render(payload, context)
         unresolved = [
-            path
-            for path in cls.variables_used(payload)
-            if cls._lookup(context, path) is None
+            path for path in cls.variables_used(payload) if cls._lookup(context, path) is None
         ]
         return {"payload": resolved, "unresolved": unresolved}

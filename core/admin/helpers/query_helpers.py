@@ -1,9 +1,10 @@
-from django.db.models import Q, F
-from django.utils.dateparse import parse_datetime, parse_date
-from datetime import datetime, date, time
-from decimal import Decimal, InvalidOperation
 import json
 import logging
+from datetime import date, datetime, time
+from decimal import Decimal, InvalidOperation
+
+from django.db.models import F, Q
+from django.utils.dateparse import parse_date, parse_datetime
 
 logger = logging.getLogger(__name__)
 
@@ -11,15 +12,25 @@ logger = logging.getLogger(__name__)
 # FilterSchema: Declarative filter metadata for ViewSets
 # -------------------------------------------------------
 
-LOOKUP_OPERATORS = frozenset([
-    "exact", "iexact",
-    "contains", "icontains",
-    "startswith", "istartswith",
-    "endswith", "iendswith",
-    "gt", "gte", "lt", "lte",
-    "in", "range",
-    "isnull",
-])
+LOOKUP_OPERATORS = frozenset(
+    [
+        "exact",
+        "iexact",
+        "contains",
+        "icontains",
+        "startswith",
+        "istartswith",
+        "endswith",
+        "iendswith",
+        "gt",
+        "gte",
+        "lt",
+        "lte",
+        "in",
+        "range",
+        "isnull",
+    ]
+)
 
 
 class FilterField:
@@ -65,6 +76,7 @@ class FilterField:
         if self.type is time:
             if isinstance(value, str):
                 from django.utils.dateparse import parse_time
+
                 return parse_time(value)
             return value
 
@@ -141,6 +153,7 @@ class FilterSchema:
 # JSON Query Engine (module-level, registered once)
 # -------------------------------------------------------
 
+
 class OperatorRegistry:
     _registry = {}
 
@@ -158,6 +171,7 @@ class OperatorRegistry:
 
 def _handle_or(engine, value):
     from rest_framework.exceptions import ValidationError
+
     if not isinstance(value, list):
         raise ValidationError({"query": "OR value must be a list"})
     or_q = Q()
@@ -168,6 +182,7 @@ def _handle_or(engine, value):
 
 def _handle_and(engine, value):
     from rest_framework.exceptions import ValidationError
+
     if not isinstance(value, list):
         raise ValidationError({"query": "AND value must be a list"})
     and_q = Q()
@@ -178,6 +193,7 @@ def _handle_and(engine, value):
 
 def _handle_f(engine, value):
     from rest_framework.exceptions import ValidationError
+
     if not isinstance(value, dict):
         raise ValidationError({"query": "F value must be an object"})
     q_obj = Q()
@@ -195,6 +211,7 @@ OperatorRegistry.register(["F"], _handle_f)
 # -------------------------------------------------------
 # Enhanced filter_queryset
 # -------------------------------------------------------
+
 
 def filter_queryset(
     queryset,
@@ -247,7 +264,7 @@ def filter_queryset(
         allowed_legacy = dict(filter_fields) if filter_fields else {}
 
         for raw_key, raw_value in field_search.items():
-            if not raw_value and raw_value != False:
+            if not raw_value and raw_value is not False:
                 continue
 
             model_field = raw_key
@@ -263,11 +280,15 @@ def filter_queryset(
                         model_field = allowed_legacy[raw_key]
                     else:
                         if _log:
-                            _log.warning(f"Filter field '{raw_key}' not in schema or legacy mappings. Skipping.")
+                            _log.warning(
+                                f"Filter field '{raw_key}' not in schema or legacy mappings. Skipping."
+                            )
                         continue
                 else:
                     # Schema matched — build lookup
-                    model_field = resolved_field if lookup == "exact" else f"{resolved_field}__{lookup}"
+                    model_field = (
+                        resolved_field if lookup == "exact" else f"{resolved_field}__{lookup}"
+                    )
                     # Handle __in lookups — split before coercion
                     if lookup == "in" and isinstance(raw_value, str) and "," in raw_value:
                         items = [v.strip() for v in raw_value.split(",")]
@@ -277,7 +298,9 @@ def filter_queryset(
                                 coerced_value.append(field_meta.coerce(item))
                             except (ValueError, TypeError, InvalidOperation) as e:
                                 if _log:
-                                    _log.warning(f"Coercion failed for {raw_key} item '{item}': {e}")
+                                    _log.warning(
+                                        f"Coercion failed for {raw_key} item '{item}': {e}"
+                                    )
                                 continue
                     else:
                         try:
@@ -315,8 +338,8 @@ def filter_queryset(
 
     # 4. JSON-based Dynamic Q/F filtering
     if query:
-        from rest_framework.exceptions import ValidationError
         from django.core.exceptions import FieldError
+        from rest_framework.exceptions import ValidationError
 
         class QueryEngine:
             def __init__(self, filter_fields=None, filter_schema=None):
@@ -352,9 +375,11 @@ def filter_queryset(
                         return Q(**{model_field: coerced})
                     # Not in schema — check if it's a legacy mapping
                     if base_key in self.allowed_legacy:
-                        model_field = self.allowed_legacy.get(key) or self.allowed_legacy.get(base_key)
+                        model_field = self.allowed_legacy.get(key) or self.allowed_legacy.get(
+                            base_key
+                        )
                         if model_field and base_key != model_field:
-                            key = model_field + key[len(base_key):]
+                            key = model_field + key[len(base_key) :]
                         return Q(**{key: value})
                     raise ValidationError({key: f"Filtering on '{base_key}' is not permitted."})
 
@@ -364,7 +389,7 @@ def filter_queryset(
                         raise ValidationError({key: f"Filtering on '{base_key}' is not permitted."})
                     model_field = self.allowed_legacy.get(key) or self.allowed_legacy.get(base_key)
                     if model_field and base_key != model_field:
-                        key = model_field + key[len(base_key):]
+                        key = model_field + key[len(base_key) :]
 
                 return Q(**{key: value})
 

@@ -1,14 +1,17 @@
 # apps/users/models/permissions.py
 from django.db import models
-from core.base_models.validator_model import BaseModel
+
 from core.base_models.fields.char_fields import CustomCharField
 from core.base_models.fields.short_ui_fields import CustomShortUUIDField
+from core.base_models.validator_model import BaseModel
+
 
 class RolePermissions(BaseModel):
     """
     GoF Strategy Pattern: Collection of Permission Keys for a named Role.
     Example: 'Company Admin' -> ['company:view', 'company:edit']
     """
+
     permission_prefix = "admin:role"
     permission_map = {
         "list": "view",
@@ -22,12 +25,12 @@ class RolePermissions(BaseModel):
     id = CustomShortUUIDField(primary_key=True)
     name = CustomCharField(max_length=100, unique=True, verbose_name="Role Name")
     description = models.TextField(blank=True)
-    
+
     # PermissionKeys: List of strings like 'resource:action'
     permission_keys = models.JSONField(
-        default=list, 
+        default=list,
         blank=True,
-        help_text="List of technical permission keys (e.g., resource:action)"
+        help_text="List of technical permission keys (e.g., resource:action)",
     )
 
     class Meta:
@@ -38,11 +41,13 @@ class RolePermissions(BaseModel):
     def __str__(self):
         return self.name
 
+
 class RoleGroupPermissions(BaseModel):
     """
     GoF Composite Pattern: Groups multiple Roles and bulk Permission Keys.
     Allows for hierarchy-like structures or functional groupings.
     """
+
     permission_prefix = "admin:group"
     permission_map = {
         "list": "view",
@@ -55,18 +60,12 @@ class RoleGroupPermissions(BaseModel):
 
     id = CustomShortUUIDField(primary_key=True)
     name = CustomCharField(max_length=100, unique=True, verbose_name="Group Name")
-    
-    roles = models.ManyToManyField(
-        RolePermissions, 
-        related_name="role_groups",
-        blank=True
-    )
-    
+
+    roles = models.ManyToManyField(RolePermissions, related_name="role_groups", blank=True)
+
     # Bulk assignment: Direct keys for this group
     permission_keys = models.JSONField(
-        default=list, 
-        blank=True,
-        help_text="Bulk permission keys assigned directly to this group"
+        default=list, blank=True, help_text="Bulk permission keys assigned directly to this group"
     )
 
     class Meta:
@@ -77,10 +76,12 @@ class RoleGroupPermissions(BaseModel):
     def __str__(self):
         return self.name
 
+
 class UserPermissionModel(BaseModel):
     """
     The Assignment table connecting Users to Roles, Groups, and Overrides.
     """
+
     permission_prefix = "admin:permission"
     permission_map = {
         "list": "view",
@@ -92,28 +93,18 @@ class UserPermissionModel(BaseModel):
     }
 
     user = models.OneToOneField(
-        "users.UserModel", 
-        on_delete=models.CASCADE, 
-        related_name="rbac_assignment"
+        "users.UserModel", on_delete=models.CASCADE, related_name="rbac_assignment"
     )
-    
-    roles = models.ManyToManyField(
-        RolePermissions, 
-        related_name="user_assignments",
-        blank=True
-    )
-    
+
+    roles = models.ManyToManyField(RolePermissions, related_name="user_assignments", blank=True)
+
     groups = models.ManyToManyField(
-        RoleGroupPermissions, 
-        related_name="user_assignments",
-        blank=True
+        RoleGroupPermissions, related_name="user_assignments", blank=True
     )
-    
+
     # Specific per-user overrides
     direct_permissions = models.JSONField(
-        default=list, 
-        blank=True,
-        help_text="Direct permission key overrides for this specific user"
+        default=list, blank=True, help_text="Direct permission key overrides for this specific user"
     )
 
     class Meta:

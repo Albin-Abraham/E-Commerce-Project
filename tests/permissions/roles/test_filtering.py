@@ -1,11 +1,7 @@
 import pytest
-
-
-import pytest
 from django.db import IntegrityError
 
 from apps.users.models.permissions import RolePermissions
-
 
 PARAM_SETS = [
     pytest.param([], id="empty"),

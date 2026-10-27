@@ -1,4 +1,7 @@
+import json
+import logging
 import os
+
 from core.configuration.resolver import CoreConfigurationResolver
 
 logger = logging.getLogger(__name__)
@@ -28,6 +31,7 @@ class FirebaseNotificationService:
         try:
             import firebase_admin
             from firebase_admin import credentials, messaging  # noqa: F401 (re-exposed via _firebase_admin)
+
             cls._firebase_admin = {
                 "app": firebase_admin,
                 "credentials": credentials,
@@ -36,7 +40,9 @@ class FirebaseNotificationService:
             return cls._firebase_admin
         except Exception as exc:  # ModuleNotFoundError or init failure
             cls._firebase_import_error = str(exc)
-            logger.warning(f"firebase_admin unavailable; FCM push disabled: {cls._firebase_import_error}")
+            logger.warning(
+                f"firebase_admin unavailable; FCM push disabled: {cls._firebase_import_error}"
+            )
             return None
 
     @classmethod
@@ -51,21 +57,31 @@ class FirebaseNotificationService:
             cred_path = CoreConfigurationResolver.get("FIREBASE_CREDENTIALS_PATH")
 
             if not cred_json_str and not cred_path:
-                logger.warning("Neither FIREBASE_CREDENTIALS_JSON nor FIREBASE_CREDENTIALS_PATH configured. FCM push disabled.")
+                logger.warning(
+                    "Neither FIREBASE_CREDENTIALS_JSON nor FIREBASE_CREDENTIALS_PATH configured. FCM push disabled."
+                )
                 return False
 
             try:
                 if cred_json_str:
-                    cred_dict = json.loads(cred_json_str) if isinstance(cred_json_str, str) else cred_json_str
+                    cred_dict = (
+                        json.loads(cred_json_str)
+                        if isinstance(cred_json_str, str)
+                        else cred_json_str
+                    )
                     cred = credentials.Certificate(cred_dict)
                 elif cred_path and os.path.exists(cred_path):
                     cred = credentials.Certificate(cred_path)
                 else:
-                    logger.error(f"Configured FIREBASE_CREDENTIALS_PATH '{cred_path}' does not exist.")
+                    logger.error(
+                        f"Configured FIREBASE_CREDENTIALS_PATH '{cred_path}' does not exist."
+                    )
                     return False
 
                 firebase_admin.initialize_app(cred)
-                logger.info("Successfully initialized Firebase Admin SDK via CoreConfigurationResolver")
+                logger.info(
+                    "Successfully initialized Firebase Admin SDK via CoreConfigurationResolver"
+                )
                 return True
             except Exception as exc:
                 logger.error(f"Failed to initialize Firebase Admin SDK: {exc}")
@@ -73,7 +89,9 @@ class FirebaseNotificationService:
         return True
 
     @classmethod
-    def send_push_to_tokens(cls, tokens: list[str], title: str, body: str, data_payload: dict | None = None) -> dict:
+    def send_push_to_tokens(
+        cls, tokens: list[str], title: str, body: str, data_payload: dict | None = None
+    ) -> dict:
         """
         Dispatches FCM push notification to a list of device tokens using send_each_for_multicast.
         Cleans up invalid tokens automatically.
@@ -106,15 +124,23 @@ class FirebaseNotificationService:
             for idx, resp in enumerate(response.responses):
                 if not resp.success:
                     err_str = str(resp.exception)
-                    if "registration-token-not-registered" in err_str or "invalid-registration-token" in err_str:
+                    if (
+                        "registration-token-not-registered" in err_str
+                        or "invalid-registration-token" in err_str
+                    ):
                         invalid_tokens.append(tokens[idx])
 
             if invalid_tokens:
                 from apps.autoresponder.models import UserDeviceToken
-                UserDeviceToken.objects.filter(device_token__in=invalid_tokens).update(is_active=False)
+
+                UserDeviceToken.objects.filter(device_token__in=invalid_tokens).update(
+                    is_active=False
+                )
                 logger.info(f"Deactivated {len(invalid_tokens)} expired FCM device tokens.")
 
-            logger.info(f"FCM Push dispatch: {response.success_count} success, {response.failure_count} failure")
+            logger.info(
+                f"FCM Push dispatch: {response.success_count} success, {response.failure_count} failure"
+            )
             return {
                 "success": response.success_count,
                 "failure": response.failure_count,

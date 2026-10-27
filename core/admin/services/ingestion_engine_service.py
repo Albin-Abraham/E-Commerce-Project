@@ -1,15 +1,17 @@
 # core/admin/services/ingestion_engine_service.py
 import time
-from typing import Dict, Any, List, Optional, Type
+from typing import Any
+
 from django.db import transaction
 from django.utils import timezone
 
-from core.admin.models.import_engine import ImportPackage, ImportPackageItem, ImportJob, StagingRecord
 from core.admin.adapters.source_adapters import BaseSourceAdapter, NormalizedDomainRecord
-from apps.shop.infrastructure.models.category import Category
-from apps.shop.infrastructure.models.brand import Brand
-from apps.shop.infrastructure.models.product import Product
-from apps.shop.infrastructure.models.variant import ProductVariant
+from core.admin.models.import_engine import (
+    ImportJob,
+    ImportPackage,
+    ImportPackageItem,
+    StagingRecord,
+)
 
 
 class EnterpriseIngestionService:
@@ -19,12 +21,23 @@ class EnterpriseIngestionService:
     Domain model reconciliation, and state machine lifecycle metrics via canonical ImportJob instances.
     """
 
-    MODEL_MAP = {
-        "category": Category,
-        "brand": Brand,
-        "product": Product,
-        "variant": ProductVariant,
-    }
+    @classmethod
+    def get_domain_model(cls, target_model_key: str) -> type | None:
+        from django.apps import apps
+
+        mapping = {
+            "category": ("shop", "Category"),
+            "brand": ("shop", "Brand"),
+            "product": ("shop", "Product"),
+            "variant": ("shop", "ProductVariant"),
+        }
+        target = mapping.get(target_model_key.lower())
+        if target:
+            try:
+                return apps.get_model(target[0], target[1])
+            except LookupError:
+                pass
+        return None
 
     @classmethod
     def ingest_job_stream(
@@ -35,7 +48,7 @@ class EnterpriseIngestionService:
         batch_size: int = 1000,
         dry_run: bool = True,
         user: Any = None,
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """
         Executes bounded batch streaming ingestion for a single ImportJob using a Source Adapter.
         """
@@ -46,10 +59,10 @@ class EnterpriseIngestionService:
         job.save()
 
         target_model_key = job.target_model.lower()
-        domain_model_cls = cls.MODEL_MAP.get(target_model_key)
+        domain_model_cls = cls.get_domain_model(target_model_key)
 
-        records_chunk: List[NormalizedDomainRecord] = []
-        
+        records_chunk: list[NormalizedDomainRecord] = []
+
         processed_count = 0
         accepted_count = 0
         rejected_count = 0
@@ -59,7 +72,9 @@ class EnterpriseIngestionService:
         # Generator iterator from Source Adapter
         record_stream = adapter.read_records(raw_content)
 
-        job.status = ImportJob.ImportStatus.VALIDATING if dry_run else ImportJob.ImportStatus.PERSISTING
+        job.status = (
+            ImportJob.ImportStatus.VALIDATING if dry_run else ImportJob.ImportStatus.PERSISTING
+        )
         job.save()
 
         with transaction.atomic():
@@ -113,7 +128,11 @@ class EnterpriseIngestionService:
         job.duration_seconds = elapsed
 
         if dry_run:
-            job.status = ImportJob.ImportStatus.VALIDATION_FAILED if error_count > 0 else ImportJob.ImportStatus.STAGED
+            job.status = (
+                ImportJob.ImportStatus.VALIDATION_FAILED
+                if error_count > 0
+                else ImportJob.ImportStatus.STAGED
+            )
         else:
             if error_count == 0:
                 job.status = ImportJob.ImportStatus.COMPLETED
@@ -147,7 +166,7 @@ class EnterpriseIngestionService:
         batch_size: int = 1000,
         dry_run: bool = True,
         user: Any = None,
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """
         Package wrapper executing streaming ingestion by binding to a child ImportJob.
         """
@@ -173,7 +192,11 @@ class EnterpriseIngestionService:
         package_item.row_count = job.processed_rows
         package_item.valid_rows = job.accepted_rows
         package_item.error_count = job.error_rows
-        package_item.status = "VALIDATED" if (dry_run and job.error_rows == 0) else ("PUBLISHED" if not dry_run and job.error_rows == 0 else "FAILED")
+        package_item.status = (
+            "VALIDATED"
+            if (dry_run and job.error_rows == 0)
+            else ("PUBLISHED" if not dry_run and job.error_rows == 0 else "FAILED")
+        )
         package_item.save()
 
         package.source_type = adapter.source_type
@@ -187,7 +210,11 @@ class EnterpriseIngestionService:
         package.duration_seconds += job.duration_seconds
 
         if dry_run:
-            package.status = ImportPackage.ImportStatus.VALIDATION_FAILED if job.error_rows > 0 else ImportPackage.ImportStatus.STAGED
+            package.status = (
+                ImportPackage.ImportStatus.VALIDATION_FAILED
+                if job.error_rows > 0
+                else ImportPackage.ImportStatus.STAGED
+            )
         else:
             if job.error_rows == 0:
                 package.status = ImportPackage.ImportStatus.COMPLETED
@@ -205,12 +232,12 @@ class EnterpriseIngestionService:
     def _process_batch_chunk(
         cls,
         job: ImportJob,
-        package: Optional[ImportPackage],
-        chunk: List[NormalizedDomainRecord],
-        domain_model_cls: Optional[Type],
+        package: ImportPackage | None,
+        chunk: list[NormalizedDomainRecord],
+        domain_model_cls: type | None,
         dry_run: bool,
         user: Any,
-    ) -> Dict[str, int]:
+    ) -> dict[str, int]:
         accepted = 0
         rejected = 0
         duplicate = 0
@@ -239,10 +266,14 @@ class EnterpriseIngestionService:
         # Process each staging record for idempotency check & domain validation
         for stg, rec in zip(staging_objs, chunk):
             # 1. Idempotency & Deduplication Check
-            existing_committed = StagingRecord.objects.filter(
-                idempotency_hash=stg.idempotency_hash,
-                status=StagingRecord.RecordStatus.COMMITTED,
-            ).exclude(pk=stg.pk).exists()
+            existing_committed = (
+                StagingRecord.objects.filter(
+                    idempotency_hash=stg.idempotency_hash,
+                    status=StagingRecord.RecordStatus.COMMITTED,
+                )
+                .exclude(pk=stg.pk)
+                .exists()
+            )
 
             if existing_committed:
                 stg.status = StagingRecord.RecordStatus.REJECTED
@@ -264,7 +295,7 @@ class EnterpriseIngestionService:
             try:
                 # Instantiate domain entity from normalized fields
                 instance = cls._instantiate_domain_model(domain_model_cls, rec.normalized_fields)
-                
+
                 if hasattr(instance, "full_clean"):
                     instance.full_clean()
 
@@ -302,7 +333,7 @@ class EnterpriseIngestionService:
         }
 
     @classmethod
-    def _instantiate_domain_model(cls, model_cls: Type, fields_dict: Dict[str, Any]):
+    def _instantiate_domain_model(cls, model_cls: type, fields_dict: dict[str, Any]):
         """Helper to instantiate domain model by matching fields and handling ForeignKeys."""
         kwargs = {}
         model_fields = {f.name: f for f in model_cls._meta.get_fields()}

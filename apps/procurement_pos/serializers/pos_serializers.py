@@ -1,6 +1,12 @@
 from rest_framework import serializers
+
+from apps.procurement_pos.models.pos import (
+    POSRegister,
+    POSSession,
+    POSTransaction,
+    POSTransactionItem,
+)
 from core.base_serializers.base_serializers import BaseModelSerializer
-from apps.procurement_pos.models.pos import POSRegister, POSSession, POSTransaction, POSTransactionItem
 
 
 class POSRegisterSerializer(BaseModelSerializer):
@@ -8,7 +14,16 @@ class POSRegisterSerializer(BaseModelSerializer):
 
     class Meta:
         model = POSRegister
-        fields = ["id", "name", "code", "warehouse", "warehouse_name", "branch", "is_active", "created_at"]
+        fields = [
+            "id",
+            "name",
+            "code",
+            "warehouse",
+            "warehouse_name",
+            "branch",
+            "is_active",
+            "created_at",
+        ]
         read_only_fields = ["id", "created_at"]
 
 
@@ -19,9 +34,18 @@ class POSSessionSerializer(BaseModelSerializer):
     class Meta:
         model = POSSession
         fields = [
-            "id", "register", "register_name", "cashier", "cashier_username",
-            "opened_at", "closed_at", "opening_balance", "closing_balance",
-            "total_sales", "status", "created_at",
+            "id",
+            "register",
+            "register_name",
+            "cashier",
+            "cashier_username",
+            "opened_at",
+            "closed_at",
+            "opening_balance",
+            "closing_balance",
+            "total_sales",
+            "status",
+            "created_at",
         ]
         read_only_fields = ["id", "created_at"]
 
@@ -31,7 +55,16 @@ class POSTransactionItemSerializer(BaseModelSerializer):
 
     class Meta:
         model = POSTransactionItem
-        fields = ["id", "transaction", "variant", "variant_sku", "quantity", "unit_price", "discount", "total_price"]
+        fields = [
+            "id",
+            "transaction",
+            "variant",
+            "variant_sku",
+            "quantity",
+            "unit_price",
+            "discount",
+            "total_price",
+        ]
         read_only_fields = ["id", "total_price"]
 
 
@@ -45,15 +78,28 @@ class POSTransactionItemInputSerializer(serializers.Serializer):
 class POSTransactionSerializer(BaseModelSerializer):
     items = POSTransactionItemSerializer(many=True, read_only=True)
     cart_items = POSTransactionItemInputSerializer(many=True, write_only=True, required=False)
-    idempotency_key = serializers.CharField(max_length=120, required=False, allow_null=True, allow_blank=True)
+    idempotency_key = serializers.CharField(
+        max_length=120, required=False, allow_null=True, allow_blank=True
+    )
     payment_status = serializers.CharField(max_length=30, required=False, default="PAID")
 
     class Meta:
         model = POSTransaction
         fields = [
-            "id", "session", "transaction_number", "customer",
-            "payment_method", "total_amount", "tax_amount", "discount_amount",
-            "status", "payment_status", "idempotency_key", "items", "cart_items", "created_at",
+            "id",
+            "session",
+            "transaction_number",
+            "customer",
+            "payment_method",
+            "total_amount",
+            "tax_amount",
+            "discount_amount",
+            "status",
+            "payment_status",
+            "idempotency_key",
+            "items",
+            "cart_items",
+            "created_at",
         ]
         read_only_fields = ["id", "created_at"]
 
@@ -65,6 +111,7 @@ class POSTransactionSerializer(BaseModelSerializer):
         )
         if cart_items:
             from apps.procurement_pos.workflows.pos_checkout_workflow import POSCheckoutWorkflow
+
             request = self.context.get("request")
             user = request.user if request else None
             return POSCheckoutWorkflow.process_checkout(

@@ -7,7 +7,7 @@ class AccountingConfig(AppConfig):
     verbose_name = "Financial Accounting & General Ledger"
 
     def ready(self):
-        from core.registry.provider_registry import ProviderRegistry
         from apps.accounting.providers import AccountingCurrencyProvider
-        ProviderRegistry.register_currency_provider(AccountingCurrencyProvider())
+        from core.registry.provider_registry import ProviderRegistry
 
+        ProviderRegistry.register_currency_provider(AccountingCurrencyProvider())

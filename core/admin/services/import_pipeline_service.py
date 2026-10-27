@@ -1,21 +1,10 @@
+from typing import Any
+
 import tablib
-from typing import Dict, Any, List
 from django.db import transaction
 from django.utils import timezone
 
 from core.admin.models.import_engine import ImportPackage, ImportPackageItem
-from apps.shop.infrastructure.resources.shop_resources import (
-    CategoryResource,
-    BrandResource,
-    ProductResource,
-    ProductVariantResource,
-    CatalogResource,
-    TagDefinitionResource,
-    CatalogItemResource,
-    CatalogCollectionResource,
-    CombinedItemCatalogResource,
-)
-from apps.customers.resources.customer_resources import CustomerResource
 
 
 class ImportPipelineService:
@@ -25,18 +14,34 @@ class ImportPipelineService:
     Enforces strict DAG sequence: DEFINITION -> POLICY -> MASTER -> CATALOG -> OPERATIONAL.
     """
 
-    RESOURCE_MAP = {
-        "category": CategoryResource,
-        "brand": BrandResource,
-        "product": ProductResource,
-        "variant": ProductVariantResource,
-        "customer": CustomerResource,
-        "catalog": CatalogResource,
-        "tag_definition": TagDefinitionResource,
-        "catalog_item": CatalogItemResource,
-        "catalog_collection": CatalogCollectionResource,
-        "combined_item_catalog": CombinedItemCatalogResource,
-    }
+    @classmethod
+    def get_resource_class(cls, model_key: str):
+        from apps.customers.resources.customer_resources import CustomerResource
+        from apps.shop.infrastructure.resources.shop_resources import (
+            BrandResource,
+            CatalogCollectionResource,
+            CatalogItemResource,
+            CatalogResource,
+            CategoryResource,
+            CombinedItemCatalogResource,
+            ProductResource,
+            ProductVariantResource,
+            TagDefinitionResource,
+        )
+
+        resource_map = {
+            "category": CategoryResource,
+            "brand": BrandResource,
+            "product": ProductResource,
+            "variant": ProductVariantResource,
+            "customer": CustomerResource,
+            "catalog": CatalogResource,
+            "tag_definition": TagDefinitionResource,
+            "catalog_item": CatalogItemResource,
+            "catalog_collection": CatalogCollectionResource,
+            "combined_item_catalog": CombinedItemCatalogResource,
+        }
+        return resource_map.get(model_key.lower())
 
     TIER_SEQUENCE = [
         ImportPackageItem.Tier.DEFINITION,
@@ -53,15 +58,20 @@ class ImportPipelineService:
     def process_package(
         cls,
         package: ImportPackage,
-        package_files: Dict[str, str], # file_key -> raw_csv_or_json_content
+        package_files: dict[str, str],  # file_key -> raw_csv_or_json_content
         dry_run: bool = True,
-        user = None,
-    ) -> Dict[str, Any]:
+        user=None,
+    ) -> dict[str, Any]:
         """
         Processes a multi-file ImportPackage in DAG tier sequence.
         """
+
         def _execute_ingestion():
-            package.status = ImportPackage.ImportStatus.VALIDATING if dry_run else ImportPackage.ImportStatus.PUBLISHING
+            package.status = (
+                ImportPackage.ImportStatus.VALIDATING
+                if dry_run
+                else ImportPackage.ImportStatus.PUBLISHING
+            )
             package.save()
 
             total_rows = 0
@@ -79,7 +89,7 @@ class ImportPipelineService:
                         item.save()
                         continue
 
-                    resource_cls = cls.RESOURCE_MAP.get(item.target_model.lower())
+                    resource_cls = cls.get_resource_class(item.target_model)
                     if not resource_cls:
                         item.status = "UNSUPPORTED_MODEL"
                         item.save()
@@ -107,10 +117,12 @@ class ImportPipelineService:
                         if row_res.errors:
                             item_errors += 1
                             for err in row_res.errors:
-                                item_error_details.append({
-                                    "row": row_number,
-                                    "error": str(err.error),
-                                })
+                                item_error_details.append(
+                                    {
+                                        "row": row_number,
+                                        "error": str(err.error),
+                                    }
+                                )
                         else:
                             item_valid += 1
 
@@ -118,29 +130,43 @@ class ImportPipelineService:
                     item.valid_rows = item_valid
                     item.error_count = item_errors
                     item.error_details = item_error_details
-                    item.status = "VALIDATED" if (dry_run and item_errors == 0) else ("PUBLISHED" if not dry_run and item_errors == 0 else "FAILED")
+                    item.status = (
+                        "VALIDATED"
+                        if (dry_run and item_errors == 0)
+                        else ("PUBLISHED" if not dry_run and item_errors == 0 else "FAILED")
+                    )
                     item.save()
 
                     total_rows += len(dataset)
                     valid_rows += item_valid
                     error_count += item_errors
 
-                    item_reports.append({
-                        "file_name": item.file_name,
-                        "target_model": item.target_model,
-                        "rows": len(dataset),
-                        "valid": item_valid,
-                        "errors": item_errors,
-                    })
+                    item_reports.append(
+                        {
+                            "file_name": item.file_name,
+                            "target_model": item.target_model,
+                            "rows": len(dataset),
+                            "valid": item_valid,
+                            "errors": item_errors,
+                        }
+                    )
 
             package.total_rows = total_rows
             package.valid_rows = valid_rows
             package.error_count = error_count
 
             if error_count > 0:
-                package.status = ImportPackage.ImportStatus.VALIDATION_FAILED if dry_run else ImportPackage.ImportStatus.IMPORT_FAILED
+                package.status = (
+                    ImportPackage.ImportStatus.VALIDATION_FAILED
+                    if dry_run
+                    else ImportPackage.ImportStatus.IMPORT_FAILED
+                )
             else:
-                package.status = ImportPackage.ImportStatus.STAGED if dry_run else ImportPackage.ImportStatus.PUBLISHED
+                package.status = (
+                    ImportPackage.ImportStatus.STAGED
+                    if dry_run
+                    else ImportPackage.ImportStatus.PUBLISHED
+                )
                 if not dry_run:
                     package.executed_at = timezone.now()
 

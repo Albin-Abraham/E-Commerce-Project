@@ -4,8 +4,9 @@ Health checker for Cash on Delivery (COD) payment method.
 """
 
 from typing import TYPE_CHECKING
-from apps.payments.health.interfaces import CheckStatus, HealthCheckResult
+
 from apps.payments.health.checkers.base import BaseHealthChecker
+from apps.payments.health.interfaces import CheckStatus, HealthCheckResult
 
 if TYPE_CHECKING:
     from apps.payments.configuration.schemas import ResolvedPaymentGatewayConfig

@@ -1,12 +1,14 @@
 import logging
 import time
-from django.db import connections
-from django.core.cache import cache
-from django.utils import timezone
+
 from celery import current_app
-from core.base_models.system_models import SystemHealth, SystemConfig
+from django.core.cache import cache
+from django.db import connections
+
+from core.base_models.system_models import SystemHealth
 
 logger = logging.getLogger(__name__)
+
 
 class OrchestrationService:
     """
@@ -32,7 +34,8 @@ class OrchestrationService:
         :param persist: If True, writes results to the SystemHealth database table.
         """
         from django.conf import settings
-        if getattr(settings, 'TESTING', False):
+
+        if getattr(settings, "TESTING", False):
             return
 
         cls._check_database(persist=persist)
@@ -43,7 +46,7 @@ class OrchestrationService:
     def _check_database(cls, persist=True):
         start = time.time()
         try:
-            connections['default'].cursor()
+            connections["default"].cursor()
             latency = (time.time() - start) * 1000
             cls._update_health("PostgreSQL", "healthy", latency, persist=persist)
         except Exception as e:
@@ -68,11 +71,23 @@ class OrchestrationService:
             inspect = current_app.control.inspect()
             stats = inspect.stats()
             latency = (time.time() - start) * 1000
-            
+
             if stats:
-                cls._update_health("Celery", "healthy", latency, details={"workers": list(stats.keys())}, persist=persist)
+                cls._update_health(
+                    "Celery",
+                    "healthy",
+                    latency,
+                    details={"workers": list(stats.keys())},
+                    persist=persist,
+                )
             else:
-                cls._update_health("Celery", "degraded", latency, details={"error": "No active workers found."}, persist=persist)
+                cls._update_health(
+                    "Celery",
+                    "degraded",
+                    latency,
+                    details={"error": "No active workers found."},
+                    persist=persist,
+                )
         except Exception as e:
             cls._update_health("Celery", "critical", details={"error": str(e)}, persist=persist)
 
@@ -83,7 +98,7 @@ class OrchestrationService:
         """
         latency_str = f"{latency:.2f}" if latency is not None else "?"
         logger.debug(f"Health check for {component}: {status} ({latency_str}ms)")
-        
+
         if not persist:
             logger.info(f"Bootstrap verified {component} connectivity: {status}")
             return
@@ -95,7 +110,7 @@ class OrchestrationService:
                     "status": status,
                     "latency_ms": latency,
                     "details": details or {},
-                }
+                },
             )
         except Exception as e:
             logger.error(f"Failed to update health record for {component}: {e}")

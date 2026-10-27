@@ -1,4 +1,4 @@
-from .auth_serializers import UserLoginSerializer, LogoutSerializer, UserRegistrationSerializer
+from .auth_serializers import LogoutSerializer, UserLoginSerializer, UserRegistrationSerializer
 
 __all__ = [
     "UserLoginSerializer",

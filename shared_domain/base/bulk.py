@@ -124,8 +124,7 @@ class BulkOperation(Operation[list[dict], BulkOperationResult]):
     mode: str = "best_effort"  # 'all_or_nothing' | 'best_effort'
 
     @abstractmethod
-    def _process_one(self, index: int, item: dict) -> BulkItemResult:
-        ...
+    def _process_one(self, index: int, item: dict) -> BulkItemResult: ...
 
     def execute(self, input: list[dict]) -> OperationResult[BulkOperationResult]:
         result = BulkOperationResult(total=len(input), mode=self.mode)

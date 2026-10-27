@@ -5,15 +5,14 @@ Runs in-memory with zero framework or database dependencies (under 0.1s).
 """
 
 import pytest
-from typing import Optional, Dict
-from apps.shop.domain.entities import InventoryAggregate, ProductEntity
-from apps.shop.domain.repository import IInventoryRepository
+
 from apps.shop.application.use_cases.inventory_use_cases import (
-    ReserveInventoryUseCase,
-    ReleaseInventoryUseCase,
     CommitInventoryUseCase,
+    ReserveInventoryUseCase,
     StockActionInputDTO,
 )
+from apps.shop.domain.entities import InventoryAggregate
+from apps.shop.domain.repository import IInventoryRepository
 from shared_domain.base.unit_of_work import IUnitOfWork
 from shared_domain.validation.exceptions import DomainValidationError
 
@@ -39,15 +38,15 @@ class InMemoryUnitOfWork(IUnitOfWork):
 
 class InMemoryInventoryRepository(IInventoryRepository):
     def __init__(self):
-        self._storage: Dict[str, InventoryAggregate] = {}
+        self._storage: dict[str, InventoryAggregate] = {}
         self._id_counter = 1
 
-    def get_by_id(self, inventory_id: str, for_update: bool = False) -> Optional[InventoryAggregate]:
+    def get_by_id(self, inventory_id: str, for_update: bool = False) -> InventoryAggregate | None:
         return self._storage.get(inventory_id)
 
     def get_by_variant_and_warehouse(
-        self, variant_id: str, warehouse_id: Optional[str] = None, for_update: bool = False
-    ) -> Optional[InventoryAggregate]:
+        self, variant_id: str, warehouse_id: str | None = None, for_update: bool = False
+    ) -> InventoryAggregate | None:
         for inv in self._storage.values():
             if inv.variant_id == variant_id:
                 if warehouse_id is None or inv.warehouse_id == warehouse_id:
@@ -55,8 +54,8 @@ class InMemoryInventoryRepository(IInventoryRepository):
         return None
 
     def get_by_product_and_branch(
-        self, product_id: str, branch_id: Optional[str] = None, for_update: bool = False
-    ) -> Optional[InventoryAggregate]:
+        self, product_id: str, branch_id: str | None = None, for_update: bool = False
+    ) -> InventoryAggregate | None:
         for inv in self._storage.values():
             if inv.product_id == product_id:
                 if branch_id is None or inv.branch_id == branch_id:
@@ -78,7 +77,9 @@ class TestInventoryAggregateDomain:
     """Domain Invariant Enforcement Tests (Zero DB)."""
 
     def test_initial_state_and_available_quantity(self):
-        inv = InventoryAggregate(id="inv_1", product_id="prod_1", quantity=100, reserved_quantity=20)
+        inv = InventoryAggregate(
+            id="inv_1", product_id="prod_1", quantity=100, reserved_quantity=20
+        )
         assert inv.available_quantity == 80
         assert inv.is_low_stock is False
 
@@ -125,7 +126,9 @@ class TestInventoryAggregateDomain:
         assert "Cannot release" in str(exc.value)
 
     def test_commit_stock_deducts_physical_and_reserved_stock(self):
-        inv = InventoryAggregate(id="inv_1", product_id="prod_1", quantity=100, reserved_quantity=40)
+        inv = InventoryAggregate(
+            id="inv_1", product_id="prod_1", quantity=100, reserved_quantity=40
+        )
         inv.commit(30)
         assert inv.quantity == 70
         assert inv.reserved_quantity == 10
@@ -136,7 +139,9 @@ class TestInventoryAggregateDomain:
         assert events[0].event_name == "shop.inventory.stock_committed"
 
     def test_commit_unreserved_units_raises_invariant_error(self):
-        inv = InventoryAggregate(id="inv_1", product_id="prod_1", quantity=100, reserved_quantity=10)
+        inv = InventoryAggregate(
+            id="inv_1", product_id="prod_1", quantity=100, reserved_quantity=10
+        )
         with pytest.raises(DomainValidationError) as exc:
             inv.commit(25)
         assert "Cannot commit" in str(exc.value)

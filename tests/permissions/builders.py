@@ -1,9 +1,9 @@
 import uuid
-from typing import List
 
 from django.contrib.auth import get_user_model
-from apps.users.models.permissions import RolePermissions, RoleGroupPermissions, UserPermissionModel
+
 from apps.users.models.catalog import BranchCatalog
+from apps.users.models.permissions import RoleGroupPermissions, RolePermissions, UserPermissionModel
 from core.admin.models import Company
 
 User = get_user_model()
@@ -17,7 +17,7 @@ class RoleBuilder:
     def __init__(self):
         self.name = _unique_name("role")
         self.description = ""
-        self.permission_keys: List[str] = []
+        self.permission_keys: list[str] = []
 
     def with_keys(self, *keys: str) -> "RoleBuilder":
         self.permission_keys = list(keys)
@@ -38,8 +38,8 @@ class RoleBuilder:
 class GroupBuilder:
     def __init__(self):
         self.name = _unique_name("group")
-        self.permission_keys: List[str] = []
-        self._roles: List[RolePermissions] = []
+        self.permission_keys: list[str] = []
+        self._roles: list[RolePermissions] = []
 
     def with_keys(self, *keys: str) -> "GroupBuilder":
         self.permission_keys = list(keys)
@@ -66,9 +66,9 @@ class GroupBuilder:
 class AssignmentBuilder:
     def __init__(self, user):
         self.user = user
-        self.direct_permissions: List[str] = []
-        self._roles: List[RolePermissions] = []
-        self._groups: List[RoleGroupPermissions] = []
+        self.direct_permissions: list[str] = []
+        self._roles: list[RolePermissions] = []
+        self._groups: list[RoleGroupPermissions] = []
 
     def with_direct(self, *keys: str) -> "AssignmentBuilder":
         self.direct_permissions = list(keys)
@@ -97,8 +97,8 @@ class AssignmentBuilder:
 class CatalogBuilder:
     def __init__(self):
         self.name = _unique_name("catalog")
-        self.module_keys: List[str] = []
-        self.allowed_permission_keys: List[str] = []
+        self.module_keys: list[str] = []
+        self.allowed_permission_keys: list[str] = []
 
     def named(self, name: str) -> "CatalogBuilder":
         self.name = name

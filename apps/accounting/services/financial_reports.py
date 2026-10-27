@@ -1,6 +1,8 @@
 from decimal import Decimal
+
 from django.db.models import Sum
 from django.utils import timezone
+
 from apps.accounting.models.chart_of_accounts import Account
 from apps.accounting.models.journal_entry import GLEntry
 from apps.customers.models.party_ledger import PartyLedgerEntry
@@ -23,7 +25,9 @@ class FinancialReportService:
         Generates Trial Balance per account showing Opening, Debit, Credit, and Closing balances.
         """
         company_id = getattr(company, "pk", company)
-        accounts = Account.objects.filter(company_id=company_id, is_active=True).order_by("account_code")
+        accounts = Account.objects.filter(company_id=company_id, is_active=True).order_by(
+            "account_code"
+        )
 
         report = []
         for acc in accounts:
@@ -58,16 +62,18 @@ class FinancialReportService:
                 closing_balance = total_credit - total_debit
 
             if period_debit != 0 or period_credit != 0 or closing_balance != 0:
-                report.append({
-                    "account_id": str(acc.id),
-                    "account_code": acc.account_code,
-                    "account_name": acc.account_name,
-                    "root_type": acc.root_type,
-                    "account_type": acc.account_type,
-                    "period_debit": period_debit,
-                    "period_credit": period_credit,
-                    "closing_balance": closing_balance,
-                })
+                report.append(
+                    {
+                        "account_id": str(acc.id),
+                        "account_code": acc.account_code,
+                        "account_name": acc.account_name,
+                        "root_type": acc.root_type,
+                        "account_type": acc.account_type,
+                        "period_debit": period_debit,
+                        "period_credit": period_credit,
+                        "closing_balance": closing_balance,
+                    }
+                )
 
         return report
 
@@ -93,10 +99,14 @@ class FinancialReportService:
         expense_entries = qs.filter(account__root_type="EXPENSE")
 
         total_income_sums = income_entries.aggregate(d=Sum("debit"), c=Sum("credit"))
-        total_income = (total_income_sums["c"] or Decimal("0.00")) - (total_income_sums["d"] or Decimal("0.00"))
+        total_income = (total_income_sums["c"] or Decimal("0.00")) - (
+            total_income_sums["d"] or Decimal("0.00")
+        )
 
         total_expense_sums = expense_entries.aggregate(d=Sum("debit"), c=Sum("credit"))
-        total_expense = (total_expense_sums["d"] or Decimal("0.00")) - (total_expense_sums["c"] or Decimal("0.00"))
+        total_expense = (total_expense_sums["d"] or Decimal("0.00")) - (
+            total_expense_sums["c"] or Decimal("0.00")
+        )
 
         net_profit = total_income - total_expense
 
@@ -129,13 +139,21 @@ class FinancialReportService:
             is_cancelled=False,
         )
 
-        assets_sums = qs.filter(account__root_type="ASSET").aggregate(d=Sum("debit"), c=Sum("credit"))
+        assets_sums = qs.filter(account__root_type="ASSET").aggregate(
+            d=Sum("debit"), c=Sum("credit")
+        )
         total_assets = (assets_sums["d"] or Decimal("0.00")) - (assets_sums["c"] or Decimal("0.00"))
 
-        liabilities_sums = qs.filter(account__root_type="LIABILITY").aggregate(d=Sum("debit"), c=Sum("credit"))
-        total_liabilities = (liabilities_sums["c"] or Decimal("0.00")) - (liabilities_sums["d"] or Decimal("0.00"))
+        liabilities_sums = qs.filter(account__root_type="LIABILITY").aggregate(
+            d=Sum("debit"), c=Sum("credit")
+        )
+        total_liabilities = (liabilities_sums["c"] or Decimal("0.00")) - (
+            liabilities_sums["d"] or Decimal("0.00")
+        )
 
-        equity_sums = qs.filter(account__root_type="EQUITY").aggregate(d=Sum("debit"), c=Sum("credit"))
+        equity_sums = qs.filter(account__root_type="EQUITY").aggregate(
+            d=Sum("debit"), c=Sum("credit")
+        )
         total_equity = (equity_sums["c"] or Decimal("0.00")) - (equity_sums["d"] or Decimal("0.00"))
 
         pnl = cls.get_profit_and_loss(company, end_date=as_of_date)

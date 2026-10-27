@@ -10,9 +10,12 @@ Order of Precedence:
 import json
 import logging
 import os
-from typing import Any, Callable
+from collections.abc import Callable
+from typing import Any
+
 from django.conf import settings
-from .exceptions import MissingConfigurationError, InvalidConfigurationError
+
+from .exceptions import InvalidConfigurationError, MissingConfigurationError
 
 logger = logging.getLogger(__name__)
 
@@ -43,6 +46,7 @@ class CoreConfigurationResolver:
         # 1. SystemConfig (DB)
         try:
             from core.base_models.system_models import SystemConfig
+
             db_val = SystemConfig.load_val(key)
             if db_val is not None and db_val != "":
                 val = db_val

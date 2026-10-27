@@ -1,7 +1,8 @@
 from django.db import models
-from core.base_models.validator_model import BaseModel
+
+from core.base_models.fields.char_fields import CustomCharField
 from core.base_models.fields.short_ui_fields import CustomShortUUIDField
-from core.base_models.fields.char_fields import CustomCharField, CustomTextField
+from core.base_models.validator_model import BaseModel
 from core.base_models.validators.rules import RequiredRule, UniqueRule
 from shared_domain.base.valuesets import ValueSet, ValueSetItem
 
@@ -48,8 +49,12 @@ class DeliveryPartner(BaseModel):
     max_weight_capacity_kg = models.DecimalField(max_digits=8, decimal_places=2, default=50.0)
     requires_cold_chain = models.BooleanField(default=False)
     supported_pincodes = models.JSONField(default=list, blank=True)
-    cutoff_time = models.TimeField(null=True, blank=True, help_text="Daily order dispatch cutoff time e.g. 17:00")
-    api_config = models.JSONField(default=dict, blank=True, help_text="Tracking & Booking API Credentials")
+    cutoff_time = models.TimeField(
+        null=True, blank=True, help_text="Daily order dispatch cutoff time e.g. 17:00"
+    )
+    api_config = models.JSONField(
+        default=dict, blank=True, help_text="Tracking & Booking API Credentials"
+    )
     is_active = models.BooleanField(default=True)
 
     class Meta(BaseModel.Meta):

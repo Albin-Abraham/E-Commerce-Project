@@ -1,9 +1,11 @@
-from decimal import Decimal
 import logging
+from decimal import Decimal
+
 from django.contrib.contenttypes.models import ContentType
 from django.db.models import Avg, Count
 from django.utils import timezone
-from apps.shop.infrastructure.models.polymorphic import Review, ProductComment, ProductTestimonial
+
+from apps.shop.infrastructure.models.polymorphic import ProductComment, ProductTestimonial, Review
 from apps.shop.infrastructure.models.product import Product
 
 logger = logging.getLogger(__name__)
@@ -50,7 +52,9 @@ class ProductFeedbackService:
             content_type=ct,
             object_id=str(target.pk),
         )
-        logger.info(f"Submitting {rating_dec}-star review for '{target}' by customer {customer_user}")
+        logger.info(
+            f"Submitting {rating_dec}-star review for '{target}' by customer {customer_user}"
+        )
         return review
 
     @classmethod
@@ -74,7 +78,9 @@ class ProductFeedbackService:
             target = Product.objects.get(pk=target_entity_or_id)
 
         ct = ContentType.objects.get_for_model(target)
-        parent_comment = ProductComment.objects.get(pk=parent_comment_id) if parent_comment_id else None
+        parent_comment = (
+            ProductComment.objects.get(pk=parent_comment_id) if parent_comment_id else None
+        )
 
         comment = ProductComment.objects.create(
             author=author_user,
@@ -138,13 +144,26 @@ class ProductFeedbackService:
             target = Product.objects.get(pk=target_entity_or_id)
 
         ct = ContentType.objects.get_for_model(target)
-        reviews_qs = Review.objects.filter(content_type=ct, object_id=str(target.pk), is_approved=True)
+        reviews_qs = Review.objects.filter(
+            content_type=ct, object_id=str(target.pk), is_approved=True
+        )
 
         avg_rating_val = reviews_qs.aggregate(avg=Avg("rating"))["avg"] or 0.0
         total_reviews = reviews_qs.count()
 
         # Star breakdown counters supporting 0.5 steps
-        star_counts = {"5.0": 0, "4.5": 0, "4.0": 0, "3.5": 0, "3.0": 0, "2.5": 0, "2.0": 0, "1.5": 0, "1.0": 0, "0.5": 0}
+        star_counts = {
+            "5.0": 0,
+            "4.5": 0,
+            "4.0": 0,
+            "3.5": 0,
+            "3.0": 0,
+            "2.5": 0,
+            "2.0": 0,
+            "1.5": 0,
+            "1.0": 0,
+            "0.5": 0,
+        }
         counts_qs = reviews_qs.values("rating").annotate(cnt=Count("id"))
         for item in counts_qs:
             r_str = f"{float(item['rating']):.1f}"
@@ -152,34 +171,42 @@ class ProductFeedbackService:
                 star_counts[r_str] = item["cnt"]
 
         # Fetch top root comments (parent=None) with their nested replies
-        root_comments = ProductComment.objects.filter(
-            content_type=ct, object_id=str(target.pk), parent=None, is_approved=True
-        ).select_related("author").prefetch_related("replies")
+        root_comments = (
+            ProductComment.objects.filter(
+                content_type=ct, object_id=str(target.pk), parent=None, is_approved=True
+            )
+            .select_related("author")
+            .prefetch_related("replies")
+        )
 
         comment_threads = []
         for parent in root_comments:
-            comment_threads.append({
-                "comment_id": str(parent.id),
-                "author": str(parent.author) if parent.author else "Anonymous",
-                "content": parent.content,
-                "created_at": parent.created_at.isoformat(),
-                "is_seller_reply": parent.is_seller_reply,
-                "likes_count": parent.like_count,
-                "replies": [
-                    {
-                        "comment_id": str(reply.id),
-                        "author": str(reply.author) if reply.author else "Anonymous",
-                        "content": reply.content,
-                        "created_at": reply.created_at.isoformat(),
-                        "is_seller_reply": reply.is_seller_reply,
-                        "likes_count": reply.like_count,
-                    }
-                    for reply in parent.replies.filter(is_approved=True)
-                ],
-            })
+            comment_threads.append(
+                {
+                    "comment_id": str(parent.id),
+                    "author": str(parent.author) if parent.author else "Anonymous",
+                    "content": parent.content,
+                    "created_at": parent.created_at.isoformat(),
+                    "is_seller_reply": parent.is_seller_reply,
+                    "likes_count": parent.like_count,
+                    "replies": [
+                        {
+                            "comment_id": str(reply.id),
+                            "author": str(reply.author) if reply.author else "Anonymous",
+                            "content": reply.content,
+                            "created_at": reply.created_at.isoformat(),
+                            "is_seller_reply": reply.is_seller_reply,
+                            "likes_count": reply.like_count,
+                        }
+                        for reply in parent.replies.filter(is_approved=True)
+                    ],
+                }
+            )
 
         # Fetch featured testimonials
-        testimonials = ProductTestimonial.objects.filter(content_type=ct, object_id=str(target.pk), is_featured=True)
+        testimonials = ProductTestimonial.objects.filter(
+            content_type=ct, object_id=str(target.pk), is_featured=True
+        )
         testimonial_list = [
             {
                 "id": str(t.id),

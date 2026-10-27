@@ -24,6 +24,7 @@ def handle_order_status_change(sender, instance, created, **kwargs):
 def log_order_confirmation(sender, order, **kwargs):
     """Observer: Log order confirmation."""
     from core.base_models.system_log import SystemLogEntry
+
     SystemLogEntry.objects.create(
         level="INFO",
         module="shop.orders",

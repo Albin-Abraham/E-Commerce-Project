@@ -1,6 +1,8 @@
 # tests/factories/user.py
 import factory
+
 from apps.users.models.users import UserModel
+
 
 class UserFactory(factory.django.DjangoModelFactory):
     class Meta:

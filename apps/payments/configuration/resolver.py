@@ -9,18 +9,17 @@ Implements the 4-state lifecycle machine:
 """
 
 import logging
-from typing import Optional
-from core.configuration.resolver import CoreConfigurationResolver
+
 from apps.payments.configuration.exceptions import (
     GatewayDisabledError,
     GatewayNotConfiguredError,
-    GatewayConfigurationError,
 )
 from apps.payments.configuration.schemas import (
-    ResolvedPaymentGatewayConfig,
-    RazorpayConfigSchema,
     PayPalConfigSchema,
+    RazorpayConfigSchema,
+    ResolvedPaymentGatewayConfig,
 )
+from core.configuration.resolver import CoreConfigurationResolver
 
 logger = logging.getLogger(__name__)
 
@@ -34,7 +33,7 @@ class PaymentGatewayConfigResolver:
     def resolve_gateway(
         cls,
         gateway_type: str,
-        tenant_id: Optional[str] = None,
+        tenant_id: str | None = None,
     ) -> ResolvedPaymentGatewayConfig:
         """
         Resolves gateway configuration for the given gateway_type and optional tenant_id.
@@ -61,13 +60,14 @@ class PaymentGatewayConfigResolver:
         return cls._resolve_legacy_fallback(gateway_clean)
 
     @classmethod
-    def _find_domain_config(cls, gateway_clean: str, tenant_id: Optional[str] = None):
+    def _find_domain_config(cls, gateway_clean: str, tenant_id: str | None = None):
         """
         Queries the database for PaymentGatewayConfig.
         Tenant-ready parameter is accepted for future multi-tenant routing.
         """
         try:
             from apps.payments.models import PaymentGatewayConfig
+
             # If tenant_id is used in the future, filter by tenant here.
             return PaymentGatewayConfig.objects.filter(gateway_type=gateway_clean).first()
         except Exception as exc:

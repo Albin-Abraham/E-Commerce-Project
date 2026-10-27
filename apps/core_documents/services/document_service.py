@@ -72,7 +72,7 @@ class DocumentService:
             elif not document.expiry_date:
                 logger.warning(
                     "DocumentDefinition '%s' requires expiration, but no expiry_date was provided.",
-                    definition_key
+                    definition_key,
                 )
 
         document.save()
@@ -121,9 +121,7 @@ class DocumentService:
         expiring_docs = []
 
         documents = Document.objects.filter(
-            is_archived=False,
-            expiry_date__isnull=False,
-            alert_sent=False
+            is_archived=False, expiry_date__isnull=False, alert_sent=False
         ).select_related("definition")
 
         for doc in documents:
@@ -133,7 +131,10 @@ class DocumentService:
                 status = "EXPIRED" if today >= doc.expiry_date else "EXPIRING_SOON"
                 logger.warning(
                     "ALERT: Document '%s' (ID: %s) is %s. Expiry date: %s",
-                    doc.definition.label, doc.id, status, doc.expiry_date
+                    doc.definition.label,
+                    doc.id,
+                    status,
+                    doc.expiry_date,
                 )
                 doc.alert_sent = True
                 doc.save()

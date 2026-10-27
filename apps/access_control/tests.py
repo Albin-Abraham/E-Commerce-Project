@@ -1,14 +1,17 @@
 import pytest
 from django.contrib.contenttypes.models import ContentType
+
 from apps.access_control.models import (
+    ApprovalAction,
     ApprovalChain,
     ApprovalLevel,
     ApprovalRequest,
-    ApprovalAction,
-    ApprovalRequestStatus,
-    ApprovalActionType,
 )
 from apps.access_control.services.approval_engine import ApprovalEngine
+from apps.access_control.valuesets import (
+    ApprovalActionType,
+    ApprovalRequestStatus,
+)
 from tests.factories.user import UserFactory
 
 
@@ -94,8 +97,18 @@ class TestApprovalEngine:
 
     def test_approve_multi_level(self):
         self.level.delete()
-        ApprovalLevel.objects.create(chain=self.chain, level=1, approver_by_type="specific_user", fallback_approver_by_type="specific_user")
-        ApprovalLevel.objects.create(chain=self.chain, level=2, approver_by_type="specific_user", fallback_approver_by_type="specific_user")
+        ApprovalLevel.objects.create(
+            chain=self.chain,
+            level=1,
+            approver_by_type="specific_user",
+            fallback_approver_by_type="specific_user",
+        )
+        ApprovalLevel.objects.create(
+            chain=self.chain,
+            level=2,
+            approver_by_type="specific_user",
+            fallback_approver_by_type="specific_user",
+        )
 
         req = ApprovalEngine.submit(
             approval_type="test_request",
@@ -124,8 +137,18 @@ class TestApprovalEngine:
 
     def test_escalate(self):
         self.level.delete()
-        ApprovalLevel.objects.create(chain=self.chain, level=1, approver_by_type="specific_user", fallback_approver_by_type="specific_user")
-        ApprovalLevel.objects.create(chain=self.chain, level=2, approver_by_type="specific_user", fallback_approver_by_type="specific_user")
+        ApprovalLevel.objects.create(
+            chain=self.chain,
+            level=1,
+            approver_by_type="specific_user",
+            fallback_approver_by_type="specific_user",
+        )
+        ApprovalLevel.objects.create(
+            chain=self.chain,
+            level=2,
+            approver_by_type="specific_user",
+            fallback_approver_by_type="specific_user",
+        )
 
         req = ApprovalEngine.submit(
             approval_type="test_request",
@@ -198,7 +221,8 @@ class TestApprovalModels:
     def test_level_str(self):
         chain = ApprovalChain.objects.create(name="IT Leave", approval_type="leave")
         level = ApprovalLevel.objects.create(
-            chain=chain, level=1,
+            chain=chain,
+            level=1,
             approver_by_type="specific_user",
             fallback_approver_by_type="specific_user",
         )
@@ -208,7 +232,8 @@ class TestApprovalModels:
         user = UserFactory()
         chain = ApprovalChain.objects.create(name="Purchase", approval_type="po")
         req = ApprovalRequest.objects.create(
-            chain=chain, submitter=user,
+            chain=chain,
+            submitter=user,
             content_type=ContentType.objects.get_for_model(chain),
             object_id=str(chain.pk),
         )
@@ -218,12 +243,15 @@ class TestApprovalModels:
         user = UserFactory()
         chain = ApprovalChain.objects.create(name="Purchase", approval_type="po")
         req = ApprovalRequest.objects.create(
-            chain=chain, submitter=user,
+            chain=chain,
+            submitter=user,
             content_type=ContentType.objects.get_for_model(chain),
             object_id=str(chain.pk),
         )
         action = ApprovalAction.objects.create(
-            request=req, approver=user,
-            action_type="approve", level=1,
+            request=req,
+            approver=user,
+            action_type="approve",
+            level=1,
         )
         assert "approve" in str(action)

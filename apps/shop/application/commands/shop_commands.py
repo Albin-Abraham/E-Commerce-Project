@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
-from dataclasses import dataclass, field
-from typing import Dict, Any, List, Optional
+from dataclasses import dataclass
+from typing import Any
 from uuid import UUID
 
 
@@ -10,7 +10,7 @@ class ShopCommand(ABC):
     user_id: UUID
 
     @abstractmethod
-    def execute(self, context: Optional[Dict[str, Any]] = None) -> Dict[str, Any]:
+    def execute(self, context: dict[str, Any] | None = None) -> dict[str, Any]:
         pass
 
 
@@ -23,6 +23,7 @@ class ActivateProductCommand(ShopCommand):
 
     def execute(self, context=None):
         from apps.shop.application.services.product_service import ProductService
+
         product = ProductService.get_object(self.product_id)
         if not product:
             return {"success": False, "error": "Product not found"}
@@ -40,6 +41,7 @@ class DeactivateProductCommand(ShopCommand):
 
     def execute(self, context=None):
         from apps.shop.application.services.product_service import ProductService
+
         product = ProductService.get_object(self.product_id)
         if not product:
             return {"success": False, "error": "Product not found"}
@@ -52,15 +54,17 @@ class ShopCommandInvoker:
     """Invoker: Executes commands and tracks history."""
 
     def __init__(self):
-        self._history: List[Dict[str, Any]] = []
+        self._history: list[dict[str, Any]] = []
 
-    def execute(self, command: ShopCommand, context: Dict[str, Any] = None) -> Dict[str, Any]:
+    def execute(self, command: ShopCommand, context: dict[str, Any] = None) -> dict[str, Any]:
         result = command.execute(context)
-        self._history.append({
-            "command": type(command).__name__,
-            "result": result,
-        })
+        self._history.append(
+            {
+                "command": type(command).__name__,
+                "result": result,
+            }
+        )
         return result
 
-    def get_history(self) -> List[Dict[str, Any]]:
+    def get_history(self) -> list[dict[str, Any]]:
         return self._history.copy()

@@ -1,11 +1,11 @@
 import pytest
 from django.db.utils import IntegrityError
-from core.admin.models.company import Company, CompanyExtension
-from core.admin.models.subscriptions import Subscription
 
+from core.admin.models.company import CompanyExtension
 from tests.base import BaseTest
-from tests.mixins.core_mixins import CreationMixin, ValidationMixin, AssertionMixin
-from tests.factories.admin_factories import CompanyFactory, SubscriptionFactory
+from tests.factories.admin_factories import CompanyFactory
+from tests.mixins.core_mixins import AssertionMixin, CreationMixin, ValidationMixin
+
 
 @pytest.mark.django_db
 class TestCompanyModel(BaseTest, CreationMixin, ValidationMixin, AssertionMixin):
@@ -35,10 +35,10 @@ class TestCompanyModel(BaseTest, CreationMixin, ValidationMixin, AssertionMixin)
         """Test one-to-one relationship with CompanyExtension."""
         company = self.create()
         from core.base_models.validator_model import bypass_mediator_guard
+
         with bypass_mediator_guard():
             extension = CompanyExtension.objects.create(
-                company=company,
-                extra_attributes={"custom": "value"}
+                company=company, extra_attributes={"custom": "value"}
             )
         assert company.extensions == extension
         self.assert_json_attr(extension, "extra_attributes", "custom", "value")

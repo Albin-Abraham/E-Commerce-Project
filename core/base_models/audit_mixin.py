@@ -1,9 +1,8 @@
 # core/base_models/audit_mixin.py
-import json
 import logging
 
-from django.forms.models import model_to_dict
 from django.contrib.contenttypes.models import ContentType
+from django.forms.models import model_to_dict
 
 logger = logging.getLogger(__name__)
 

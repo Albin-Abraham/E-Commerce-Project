@@ -1,6 +1,9 @@
 from decimal import Decimal
-from typing import Optional, Dict, Any
+from typing import Any
+
+from django.db import models
 from django.utils import timezone
+
 from apps.shop.infrastructure.models.pricing import PricingRule
 from apps.shop.infrastructure.models.variant import ProductVariant
 
@@ -15,10 +18,10 @@ class PricingEngineService:
     def evaluate_price(
         cls,
         variant: ProductVariant,
-        customer_group: Optional[str] = None,
+        customer_group: str | None = None,
         quantity: int = 1,
         evaluation_date=None,
-    ) -> Dict[str, Any]:
+    ) -> dict[str, Any]:
         """
         Evaluates the best net unit price for a given ProductVariant.
         Returns detailed price calculation breakdown.
@@ -36,7 +39,10 @@ class PricingEngineService:
         )
 
         if customer_group:
-            rules = rules.filter(models.Q(customer_group__isnull=True) | models.Q(customer_group__iexact=customer_group))
+            rules = rules.filter(
+                models.Q(customer_group__isnull=True)
+                | models.Q(customer_group__iexact=customer_group)
+            )
         else:
             rules = rules.filter(customer_group__isnull=True)
 

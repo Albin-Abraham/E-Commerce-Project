@@ -1,25 +1,27 @@
-import pytest
 from decimal import Decimal
-from rest_framework.test import APIRequestFactory, force_authenticate
 
-from apps.shop.infrastructure.models.category import Category
+import pytest
+
 from apps.shop.infrastructure.models.brand import Brand
+from apps.shop.infrastructure.models.category import Category
 from apps.shop.infrastructure.models.product import Product
 from apps.shop.infrastructure.resources.shop_resources import (
-    CategoryResource,
     BrandResource,
+    CategoryResource,
     ProductResource,
 )
 from core.admin.models.import_engine import ImportPackage, ImportPackageItem
 from core.admin.services.import_pipeline_service import ImportPipelineService
-from tests.factories.user import UserFactory
 
 
 @pytest.mark.django_db
 class TestImportEngineResources:
     def test_category_import_resource(self):
-        csv_data = "name,slug,parent_slug\nElectronics,electronics,\nSmartphones,smartphones,electronics"
+        csv_data = (
+            "name,slug,parent_slug\nElectronics,electronics,\nSmartphones,smartphones,electronics"
+        )
         import tablib
+
         dataset = tablib.Dataset().load(csv_data, format="csv")
 
         resource = CategoryResource()
@@ -39,10 +41,13 @@ class TestImportEngineResources:
             "WH1000XM4,Noise Canceling Headphones,349.99,audio,Sony,ACTIVE"
         )
         import tablib
+
         dataset = tablib.Dataset().load(csv_data, format="csv")
 
         resource = ProductResource()
-        result = resource.import_data(dataset, dry_run=False, source_import_id="TEST-001", source_file="products.csv")
+        result = resource.import_data(
+            dataset, dry_run=False, source_import_id="TEST-001", source_file="products.csv"
+        )
 
         assert not result.has_errors()
         prod = Product.objects.get(sku="WH1000XM4")
@@ -58,6 +63,7 @@ class TestImportEngineResources:
 
         csv_data = "name,slug,website\nApple,apple,https://apple.com"
         import tablib
+
         dataset = tablib.Dataset().load(csv_data, format="csv")
 
         resource = BrandResource()
@@ -68,7 +74,6 @@ class TestImportEngineResources:
         brand = Brand.objects.get(name="Apple")
         assert brand.website == "https://apple.com"
 
-
     def test_namespaced_headers_import(self):
         Category.objects.create(name="Footwear", slug="footwear")
 
@@ -77,6 +82,7 @@ class TestImportEngineResources:
             "RUN-SHOE-001,Pro Running Shoes,129.99,footwear,ACTIVE"
         )
         import tablib
+
         dataset = tablib.Dataset().load(csv_data, format="csv")
 
         resource = ProductResource()
@@ -92,13 +98,16 @@ class TestImportEngineResources:
         from apps.shop.infrastructure.resources.shop_resources import CatalogItemResource
 
         cat = Catalog.objects.create(code="SUMMER_2026", name="Summer 2026 Storefront")
-        prod = Product.objects.create(sku="SUN-GLASSES-01", name="Polarized Sunglasses", price=50.00)
+        prod = Product.objects.create(
+            sku="SUN-GLASSES-01", name="Polarized Sunglasses", price=50.00
+        )
 
         csv_data = (
             "catalog_code,product_sku,override_name,override_price,is_new_arrival,is_budget_friendly\n"
             "SUMMER_2026,SUN-GLASSES-01,Summer Polarized Shades,39.99,True,True"
         )
         import tablib
+
         dataset = tablib.Dataset().load(csv_data, format="csv")
 
         resource = CatalogItemResource()
@@ -120,6 +129,7 @@ class TestImportEngineResources:
             "apparel,Apparel & Fashion,Nike,NK-TEE-01,Nike Air Tee,35.00,MAIN_STORE,Nike Air Graphic Tee,True,True"
         )
         import tablib
+
         dataset = tablib.Dataset().load(csv_data, format="csv")
 
         resource = CombinedItemCatalogResource()
@@ -171,7 +181,9 @@ class TestImportPipelineService:
         assert res_dry["error_count"] == 0
 
         # 2. Publish import
-        res_publish = ImportPipelineService.process_package(package, package_files=files, dry_run=False)
+        res_publish = ImportPipelineService.process_package(
+            package, package_files=files, dry_run=False
+        )
         assert res_publish["status"] == ImportPackage.ImportStatus.PUBLISHED
         assert Product.objects.filter(sku="PS5").exists()
         prod = Product.objects.get(sku="PS5")

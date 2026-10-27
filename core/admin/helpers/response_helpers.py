@@ -40,18 +40,24 @@ class ResponseFactory:
 
     @staticmethod
     def created(
-        data: Any = None, 
+        data: Any = None,
         message: str = "Resource created successfully",
         meta: dict | None = None,
         context: dict | None = None,
     ) -> Response:
         return ResponseFactory.success(
-            data=data, message=message, status_code=status.HTTP_201_CREATED, meta=meta, context=context
+            data=data,
+            message=message,
+            status_code=status.HTTP_201_CREATED,
+            meta=meta,
+            context=context,
         )
 
     @staticmethod
     def accepted(
-        data: Any = None, message: str = "Request accepted for processing", context: dict | None = None
+        data: Any = None,
+        message: str = "Request accepted for processing",
+        context: dict | None = None,
     ) -> Response:
         return ResponseFactory.success(
             data=data, message=message, status_code=status.HTTP_202_ACCEPTED, context=context
@@ -91,21 +97,15 @@ class ResponseFactory:
 
     @staticmethod
     def unauthorized(message: str = "Unauthorized") -> Response:
-        return ResponseFactory.error(
-            message=message, status_code=status.HTTP_401_UNAUTHORIZED
-        )
+        return ResponseFactory.error(message=message, status_code=status.HTTP_401_UNAUTHORIZED)
 
     @staticmethod
     def forbidden(message: str = "Forbidden") -> Response:
-        return ResponseFactory.error(
-            message=message, status_code=status.HTTP_403_FORBIDDEN
-        )
+        return ResponseFactory.error(message=message, status_code=status.HTTP_403_FORBIDDEN)
 
     @staticmethod
     def not_found(message: str = "Resource not found") -> Response:
-        return ResponseFactory.error(
-            message=message, status_code=status.HTTP_404_NOT_FOUND
-        )
+        return ResponseFactory.error(message=message, status_code=status.HTTP_404_NOT_FOUND)
 
     @staticmethod
     def method_not_allowed(message: str = "Method not allowed") -> Response:
@@ -115,9 +115,7 @@ class ResponseFactory:
 
     @staticmethod
     def conflict(message: str = "Conflict detected") -> Response:
-        return ResponseFactory.error(
-            message=message, status_code=status.HTTP_409_CONFLICT
-        )
+        return ResponseFactory.error(message=message, status_code=status.HTTP_409_CONFLICT)
 
     @staticmethod
     def unsupported_media_type(message: str = "Unsupported media type") -> Response:

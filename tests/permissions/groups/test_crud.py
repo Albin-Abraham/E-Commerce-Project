@@ -1,5 +1,3 @@
-import pytest
-
 from tests.permissions.constants import GROUP_SETS
 
 

@@ -1,14 +1,16 @@
 import itertools
 import logging
+
 from django.db import models
 from django.db.models import Case, IntegerField, Value, When
-from shared_domain.base.valuesets import ValueSetRegistry
-from apps.knowledgebase.models.kb import ProductKnowledgeLink, KnowledgeArticle
+
+from apps.knowledgebase.models.kb import KnowledgeArticle, ProductKnowledgeLink
 from apps.shop.application.services.knowledge_template import KnowledgeTemplateEngine
+from apps.shop.infrastructure.models.category import Category
+from apps.shop.infrastructure.models.inventory import Inventory
 from apps.shop.infrastructure.models.product import Product
 from apps.shop.infrastructure.models.variant import ProductVariant
-from apps.shop.infrastructure.models.inventory import Inventory
-from apps.shop.infrastructure.models.category import Category
+from shared_domain.base.valuesets import ValueSetRegistry
 
 logger = logging.getLogger(__name__)
 
@@ -131,12 +133,11 @@ class ProductKnowledgeService:
                     | models.Q(target_identifier=target.product.sku)
                 )
         elif isinstance(target, Inventory):
-            match |= (
-                models.Q(inventory=target)
-                | models.Q(target_identifier=target.id)
-            )
+            match |= models.Q(inventory=target) | models.Q(target_identifier=target.id)
             if target.variant:
-                match |= models.Q(variant=target.variant) | models.Q(target_identifier=target.variant.sku)
+                match |= models.Q(variant=target.variant) | models.Q(
+                    target_identifier=target.variant.sku
+                )
         elif isinstance(target, Category):
             match |= (
                 models.Q(shop_category=target)

@@ -1,5 +1,7 @@
+from typing import Any
+
 from rest_framework import permissions
-from typing import Any, Optional
+
 from core.admin.utils.auth_utils import evaluate_policy
 
 
@@ -37,7 +39,9 @@ class CustomPermissionClass(permissions.BasePermission):
         if not action:
             # For non-ViewSet views, map HTTP methods to actions
             method_map = {
-                "GET": "list" if not hasattr(view, "kwargs") or "pk" not in view.kwargs else "retrieve",
+                "GET": "list"
+                if not hasattr(view, "kwargs") or "pk" not in view.kwargs
+                else "retrieve",
                 "POST": "create",
                 "PUT": "update",
                 "PATCH": "partial_update",
@@ -58,7 +62,7 @@ class CustomPermissionClass(permissions.BasePermission):
         # 5. Final Evaluation via Policy Engine
         return evaluate_policy(request.user, required_perm)
 
-    def _get_model_from_view(self, view: Any) -> Optional[Any]:
+    def _get_model_from_view(self, view: Any) -> Any | None:
         """
         Heuristic to find the Model associated with a view.
         """

@@ -6,8 +6,8 @@ Payment gateway health monitoring, connectivity probes, and operational readines
 from apps.payments.health.interfaces import (
     CheckStatus,
     GatewayHealthStatus,
-    HealthCheckResult,
     GatewayOverallHealthResult,
+    HealthCheckResult,
     IPaymentGatewayHealthChecker,
 )
 from apps.payments.health.models import PaymentGatewayHealth

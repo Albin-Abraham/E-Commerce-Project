@@ -1,13 +1,13 @@
 import logging
-from decimal import Decimal
+
 from django.db import transaction
-from django.utils import timezone
-from apps.customers.models.shopping import Cart
-from apps.customers.models.customer import CustomerAddress
-from apps.procurement_pos.models.selling import SalesOrder, SalesInvoice, SalesInvoiceItem
-from apps.shop.services.facility_router import DynamicFacilityRouter
-from apps.shop.infrastructure.models.facility import FacilityInventory
+
 from apps.accounting.services.tax_engine import TaxEngineService
+from apps.customers.models.customer import CustomerAddress
+from apps.customers.models.shopping import Cart
+from apps.procurement_pos.models.selling import SalesInvoice, SalesInvoiceItem, SalesOrder
+from apps.shop.infrastructure.models.facility import FacilityInventory
+from apps.shop.services.facility_router import DynamicFacilityRouter
 
 logger = logging.getLogger(__name__)
 
@@ -68,10 +68,11 @@ class CustomerCheckoutService:
             delivery_partner=delivery_partner,
         )
 
-
         if not allocation_result.is_fully_allocated:
             unallocated_names = [i["product_id"] for i in allocation_result.unallocated_items]
-            raise ValueError(f"Insufficient inventory or facility serviceability for items: {unallocated_names}")
+            raise ValueError(
+                f"Insufficient inventory or facility serviceability for items: {unallocated_names}"
+            )
 
         # 3. Reserve Stock in FacilityInventory
         for alloc in allocation_result.allocations:
@@ -81,7 +82,7 @@ class CustomerCheckoutService:
             )
             if alloc.variant_id:
                 finv = finv.filter(variant_id=alloc.variant_id)
-            
+
             record = finv.first()
             if record:
                 record.quantity_reserved += alloc.allocated_qty
@@ -139,11 +140,14 @@ class CustomerCheckoutService:
         cart.status = "CHECKED_OUT"
         cart.save(update_fields=["status", "updated_at"])
 
-        logger.info(f"Successfully processed checkout for Cart #{cart.id}. Sales Order: #{sales_order.order_number}")
+        logger.info(
+            f"Successfully processed checkout for Cart #{cart.id}. Sales Order: #{sales_order.order_number}"
+        )
 
         # Trigger Asynchronous Celery + Redis Background Notifications
         try:
             from apps.customers.tasks import dispatch_welcome_customer_email_task
+
             dispatch_welcome_customer_email_task.delay(str(cart.customer_id))
         except Exception as task_exc:
             logger.warning(f"Failed to queue Celery checkout notification task: {task_exc}")

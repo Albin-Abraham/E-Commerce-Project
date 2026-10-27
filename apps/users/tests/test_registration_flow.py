@@ -1,9 +1,10 @@
-from apps.users.models.users import UserModel
 import pytest
-from django.test import TestCase
-from core.base_models.validators.rules import PasswordValidatorRule
 from rest_framework.exceptions import ValidationError
+
+from apps.users.models.users import UserModel
 from apps.users.services.auth_service import AuthService
+from core.base_models.validators.rules import PasswordValidatorRule
+
 
 @pytest.mark.feature
 @pytest.mark.module
@@ -17,7 +18,7 @@ class TestRegistrationFlow:
     def test_password_validator_rule(self):
         """Test the PasswordValidatorRule directly."""
         rule = PasswordValidatorRule()
-        
+
         # Valid password
         user = UserModel(password="ProperPass123!@#")
         assert rule.check(user) is True
@@ -33,7 +34,7 @@ class TestRegistrationFlow:
             "email": "new_user@example.com",
             "username": "new_user",
             "password": "ComplexPassword123!",
-            "full_name": "New User"
+            "full_name": "New User",
         }
         user = AuthService.register_user(data)
         assert user.email == data["email"]
@@ -44,14 +45,10 @@ class TestRegistrationFlow:
     def test_auth_service_registration_validation_error(self):
         """Test that ValidationMediator catches errors in AuthService."""
         # Short password
-        data = {
-            "email": "invalid@example.com",
-            "username": "invalid_user",
-            "password": "short"
-        }
+        data = {"email": "invalid@example.com", "username": "invalid_user", "password": "short"}
         with pytest.raises(ValidationError) as excinfo:
             AuthService.register_user(data)
-        
+
         assert "password" in excinfo.value.detail
         assert "short" in str(excinfo.value.detail["password"]).lower()
 
@@ -60,12 +57,12 @@ class TestRegistrationFlow:
         data = {
             "email": "duplicate@example.com",
             "username": "user1",
-            "password": "ComplexPassword123!"
+            "password": "ComplexPassword123!",
         }
         AuthService.register_user(data)
-        
-        data["username"] = "user2" # Different username, same email
+
+        data["username"] = "user2"  # Different username, same email
         with pytest.raises(ValidationError) as excinfo:
             AuthService.register_user(data)
-        
+
         assert "email" in excinfo.value.detail

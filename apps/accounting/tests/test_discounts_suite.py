@@ -3,17 +3,16 @@ from decimal import Decimal
 from django.core.exceptions import ValidationError
 from django.test import TestCase
 
-from core.admin.models.company import Company
 from apps.accounting.models.charges import ChargeDefinition, ChargeItem
 from apps.accounting.models.chart_of_accounts import Account
 from apps.accounting.models.discounts import (
     DiscountConditionItem,
     DiscountConfiguration,
-    DiscountTaxItem,
 )
 from apps.accounting.models.tax import ItemTaxDetail, ItemTaxTemplate
 from apps.procurement_pos.models.selling import SalesOrder
 from apps.shop.infrastructure.models.brand import Brand
+from core.admin.models.company import Company
 
 
 class DiscountsTestCase(TestCase):
@@ -58,9 +57,20 @@ class DiscountsTestCase(TestCase):
             code="LADIES_10",
             title="Ladies 10% Weekday",
             conditions=[
-                {"field_key": "gender", "operator": "EQUAL_TO", "value": "Female", "percentage": 10},
+                {
+                    "field_key": "gender",
+                    "operator": "EQUAL_TO",
+                    "value": "Female",
+                    "percentage": 10,
+                },
                 {"field_key": "age", "operator": "GREATER_THAN", "value": "60", "percentage": 15},
-                {"field_key": "age", "operator": "BETWEEN", "value": "21", "value_to": "30", "percentage": 5},
+                {
+                    "field_key": "age",
+                    "operator": "BETWEEN",
+                    "value": "21",
+                    "value_to": "30",
+                    "percentage": 5,
+                },
             ],
             taxes=[str(tax_5.pk), str(tax_28.pk)],
         )
@@ -122,7 +132,9 @@ class DiscountsTestCase(TestCase):
         )
 
         condition = DiscountConditionItem.objects.get(configuration=config)
-        self.assertEqual(condition.target_document, brand, "condition carries GFK to its source entity")
+        self.assertEqual(
+            condition.target_document, brand, "condition carries GFK to its source entity"
+        )
         self.assertIsNotNone(condition.content_type)
         self.assertEqual(condition.object_id, str(brand.pk))
 
@@ -131,7 +143,10 @@ class DiscountsTestCase(TestCase):
         company_b = self._company("Scope B Co")
         tax = self._item_tax(company_a, self._account(company_a))
         DiscountConfiguration.manual_configure(
-            company=company_a, code="SAME", title="A", conditions=[{"field_key": "age", "value": "21", "percentage": 5}],
+            company=company_a,
+            code="SAME",
+            title="A",
+            conditions=[{"field_key": "age", "value": "21", "percentage": 5}],
             taxes=[str(tax.pk)],
         )
         rules = DiscountConfiguration(company=company_a, code="SAME")._rules.get("code", [])
@@ -150,10 +165,21 @@ class DiscountsTestCase(TestCase):
             title="Operators",
             conditions=[
                 {"field_key": "gender", "operator": "EQUAL_TO", "value": "Female", "percentage": 5},
-                {"field_key": "gender", "operator": "NOT_EQUAL_TO", "value": "Male", "percentage": 3},
+                {
+                    "field_key": "gender",
+                    "operator": "NOT_EQUAL_TO",
+                    "value": "Male",
+                    "percentage": 3,
+                },
                 {"field_key": "age", "operator": "GREATER_THAN", "value": "60", "percentage": 15},
                 {"field_key": "age", "operator": "LESS_THAN", "value": "18", "percentage": 20},
-                {"field_key": "age", "operator": "BETWEEN", "value": "21", "value_to": "30", "percentage": 7},
+                {
+                    "field_key": "age",
+                    "operator": "BETWEEN",
+                    "value": "21",
+                    "value_to": "30",
+                    "percentage": 7,
+                },
             ],
             taxes=[str(self._item_tax(company, self._account(company)).pk)],
         )
@@ -183,7 +209,12 @@ class DiscountsTestCase(TestCase):
             title="Amount",
             conditions=[
                 {"field_key": "age", "operator": "GREATER_THAN", "value": "60", "percentage": 10},
-                {"field_key": "membership", "operator": "EQUAL_TO", "value": "VIP", "percentage": 25},
+                {
+                    "field_key": "membership",
+                    "operator": "EQUAL_TO",
+                    "value": "VIP",
+                    "percentage": 25,
+                },
             ],
             taxes=[str(self._item_tax(company, self._account(company)).pk)],
         )
@@ -203,7 +234,12 @@ class DiscountsTestCase(TestCase):
             title="Fixed amount",
             discount_type="FIXED_AMOUNT",
             conditions=[
-                {"field_key": "gender", "operator": "EQUAL_TO", "value": "Female", "fixed_amount": 15},
+                {
+                    "field_key": "gender",
+                    "operator": "EQUAL_TO",
+                    "value": "Female",
+                    "fixed_amount": 15,
+                },
             ],
             taxes=[str(self._item_tax(company, self._account(company)).pk)],
         )
@@ -249,7 +285,12 @@ class DiscountsTestCase(TestCase):
             title="Senior Discount",
             conditions=[
                 {"field_key": "age", "operator": "GREATER_THAN", "value": "60", "percentage": 15},
-                {"field_key": "gender", "operator": "EQUAL_TO", "value": "Female", "percentage": 10},
+                {
+                    "field_key": "gender",
+                    "operator": "EQUAL_TO",
+                    "value": "Female",
+                    "percentage": 10,
+                },
             ],
             taxes=[str(tax.pk)],
         )
@@ -272,7 +313,9 @@ class DiscountsTestCase(TestCase):
         result = config.evaluate({"age": 65, "gender": "Female"})
         self.assertTrue(result["matched"])
         self.assertEqual(result["percentage"], Decimal("15.00"), "age gt-60 beats gender equal-to")
-        self.assertIn(tax.pk, result["tax_template_ids"], "evaluation surfaces the linked item tax keys")
+        self.assertIn(
+            tax.pk, result["tax_template_ids"], "evaluation surfaces the linked item tax keys"
+        )
 
         charge_definition.refresh_from_db()
         self.assertEqual(charge_definition.discount_configuration_id, config.id)

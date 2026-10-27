@@ -1,5 +1,7 @@
 from typing import Any
+
 from django.db.models import Model, Q
+
 from core.admin.utils.context import RequestContext
 
 
@@ -47,11 +49,7 @@ def get_object_with_scoping(
     if tenant_q:
         queryset = queryset.filter(tenant_q)
 
-    if (
-        hasattr(model, "is_deleted")
-        and not include_deleted
-        and supports_soft_delete
-    ):
+    if hasattr(model, "is_deleted") and not include_deleted and supports_soft_delete:
         queryset = queryset.filter(is_deleted=False)
 
     return queryset.filter(pk=pk).first()

@@ -11,7 +11,6 @@ from apps.shop.infrastructure.models.variant import ProductVariant
 
 
 class KnowledgeTemplateEngineTestCase(TestCase):
-
     def _seq(self):
         seq = getattr(self, "_seq_counter", 0) + 1
         self._seq_counter = seq
@@ -30,7 +29,8 @@ class KnowledgeTemplateEngineTestCase(TestCase):
         self.assertTrue(variables)
         for var in variables:
             self.assertEqual(
-                set(var.keys()), {"path", "label", "description"},
+                set(var.keys()),
+                {"path", "label", "description"},
                 "editors get a discoverable token schema",
             )
         self.assertIn("product.sku", [var["path"] for var in variables])
@@ -64,7 +64,9 @@ class KnowledgeTemplateEngineTestCase(TestCase):
     def test_variant_context_holds_attributes_and_inherits_product(self):
         product = self._product()
         variant = ProductVariant.objects.create(
-            product=product, sku=f"{product.sku}-XL", price="110.00",
+            product=product,
+            sku=f"{product.sku}-XL",
+            price="110.00",
             attributes={"color": "Black", "size": "XL"},
         )
         context = KnowledgeTemplateEngine.build_context(variant)
@@ -106,22 +108,30 @@ class KnowledgeTemplateEngineTestCase(TestCase):
                         "fit": "{{ variant.attributes.fit }} standard",
                     },
                     "by_attributes": {
-                        "color:Black|size:XL": {"dimension": "{{ variant.attributes.size }} inches"},
+                        "color:Black|size:XL": {
+                            "dimension": "{{ variant.attributes.size }} inches"
+                        },
                     },
                 }
             },
         )
         ProductKnowledgeLink.objects.create(
-            article=article, product=product, link_type="SPEC_SHEET",
+            article=article,
+            product=product,
+            link_type="SPEC_SHEET",
         )
 
         variant = ProductVariant.objects.create(
-            product=product, sku=f"{product.sku}-V", price="105.00",
+            product=product,
+            sku=f"{product.sku}-V",
+            price="105.00",
             attributes={"color": "Black", "size": "XL"},
         )
 
         product_result = ProductKnowledgeService.resolve_knowledge_with_templates(product)
-        self.assertEqual(product_result["payload"]["specifications"]["label"], f"{product.name} ({product.sku})")
+        self.assertEqual(
+            product_result["payload"]["specifications"]["label"], f"{product.name} ({product.sku})"
+        )
         self.assertEqual(
             product_result["payload"]["specifications"]["fit"],
             "{{ variant.attributes.fit }} standard",
@@ -149,7 +159,9 @@ class KnowledgeTemplateEngineTestCase(TestCase):
             metadata={"specs": {"label": "{{ product.sku }} ready"}},
         )
         ProductKnowledgeLink.objects.create(
-            article=article, product=product, link_type="SPEC_SHEET",
+            article=article,
+            product=product,
+            link_type="SPEC_SHEET",
         )
 
         rendered = ProductKnowledgeService.resolve_knowledge_content(product)
@@ -171,13 +183,16 @@ class KnowledgeTemplateEngineTestCase(TestCase):
             metadata={"knowledge_section": "hazmat_warnings"},
         )
         ProductKnowledgeLink.objects.create(
-            article=article, product=product, link_type="SPEC_SHEET",
+            article=article,
+            product=product,
+            link_type="SPEC_SHEET",
         )
 
         result = ProductKnowledgeService.resolve_knowledge_content(product)
 
         self.assertIn(
-            "hazmat_warnings", result,
+            "hazmat_warnings",
+            result,
             "custom sections are returned top-level instead of being dropped",
         )
         self.assertEqual(len(result["hazmat_warnings"]), 1)
@@ -197,26 +212,34 @@ class KnowledgeTemplateEngineTestCase(TestCase):
             },
         )
         ProductKnowledgeLink.objects.create(
-            article=article, product=product, link_type="SPEC_SHEET",
+            article=article,
+            product=product,
+            link_type="SPEC_SHEET",
         )
 
         two_dim = ProductVariant.objects.create(
-            product=product, sku=f"{product.sku}-R", price="110.00",
+            product=product,
+            sku=f"{product.sku}-R",
+            price="110.00",
             attributes={"color": "Red", "size": "XL"},
         )
         missing_attr = ProductVariant.objects.create(
-            product=product, sku=f"{product.sku}-M", price="95.00",
+            product=product,
+            sku=f"{product.sku}-M",
+            price="95.00",
             attributes={"size": "M"},
         )
 
         result = ProductKnowledgeService.resolve_knowledge_content(two_dim)
         self.assertEqual(
-            result["specifications"]["finish"], "matte red",
+            result["specifications"]["finish"],
+            "matte red",
             "single-attribute editor key drives a two-attribute variant",
         )
 
         fallback = ProductKnowledgeService.resolve_knowledge_content(missing_attr)
         self.assertEqual(
-            fallback["specifications"]["finish"], "standard",
+            fallback["specifications"]["finish"],
+            "standard",
             "no partial match degrades to the author's default, never drops",
         )

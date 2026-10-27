@@ -7,7 +7,6 @@ from decimal import Decimal
 from django.core.exceptions import ValidationError
 from django.test import TestCase
 
-from core.base_models.validators.rules import UniqueRule
 from apps.procurement_pos.models.procurement import (
     GoodsReceivedNote,
     GoodsReceivedNoteLine,
@@ -24,10 +23,10 @@ from apps.shop.infrastructure.models.inventory import Inventory
 from apps.shop.infrastructure.models.product import Product
 from apps.shop.infrastructure.models.variant import ProductVariant
 from apps.shop.infrastructure.models.warehouse import Warehouse
+from core.base_models.validators.rules import UniqueRule
 
 
 class PurchaseOrderTrackingTestCase(TestCase):
-
     def _seq(self):
         seq = getattr(self, "_seq_counter", 0) + 1
         self._seq_counter = seq
@@ -35,6 +34,7 @@ class PurchaseOrderTrackingTestCase(TestCase):
 
     def _user(self, username):
         from django.contrib.auth import get_user_model
+
         return get_user_model().objects.create_user(
             username=username, email=f"{username}@example.com", password="password123"
         )
@@ -50,23 +50,29 @@ class PurchaseOrderTrackingTestCase(TestCase):
     def _variant(self):
         seq = self._seq()
         product = Product.objects.create(
-            name=f"Track Product {seq}", sku=f"TRK-{seq:04}", price="100.00",
+            name=f"Track Product {seq}",
+            sku=f"TRK-{seq:04}",
+            price="100.00",
         )
         return ProductVariant.objects.create(
-            product=product, sku=f"TRK-{seq:04}-A", price="100.00",
+            product=product,
+            sku=f"TRK-{seq:04}-A",
+            price="100.00",
         )
 
     def _po_with_item(self, quantity=10, total=250.00):
         po = PurchaseOrder.objects.create(supplier=self._supplier(), total_amount=str(total))
         item = PurchaseOrderItem.objects.create(
-            purchase_order=po, variant=self._variant(),
-            quantity_ordered=quantity, unit_cost=Decimal("25.00"),
+            purchase_order=po,
+            variant=self._variant(),
+            quantity_ordered=quantity,
+            unit_cost=Decimal("25.00"),
         )
         return po, item
 
     def _grn(self, po, warehouse, lines=None):
         grn = GoodsReceivedNote.objects.create(purchase_order=po, warehouse=warehouse)
-        for item, qty in (lines or []):
+        for item, qty in lines or []:
             GoodsReceivedNoteLine.objects.create(
                 goods_received_note=grn,
                 purchase_order_item=item,
@@ -126,7 +132,8 @@ class PurchaseOrderTrackingTestCase(TestCase):
         self.assertTrue(item.is_fully_received)
         self.assertEqual(po.status, "COMPLETED")
         self.assertEqual(
-            po.tracking_events.filter(status="COMPLETED").count(), 1,
+            po.tracking_events.filter(status="COMPLETED").count(),
+            1,
             "completion is tracked on the PO timeline",
         )
 
@@ -145,9 +152,7 @@ class PurchaseOrderTrackingTestCase(TestCase):
         self.assertTrue(item.is_partially_received)
         self.assertEqual(po.status, "PARTIALLY_RECEIVED")
         self.assertEqual(Inventory.objects.filter(variant=item.variant).first().quantity, 4)
-        self.assertEqual(
-            po.tracking_events.filter(status="PARTIALLY_RECEIVED").count(), 1
-        )
+        self.assertEqual(po.tracking_events.filter(status="PARTIALLY_RECEIVED").count(), 1)
 
         grn2 = self._grn(po, warehouse, [(item, 6)])
         GoodsReceivedNote.process_grn_receipt(grn2.id)
@@ -164,8 +169,10 @@ class PurchaseOrderTrackingTestCase(TestCase):
     def test_multiple_lines_track_independently(self):
         po, item_a = self._po_with_item(quantity=5, total=125.00)
         item_b = PurchaseOrderItem.objects.create(
-            purchase_order=po, variant=self._variant(),
-            quantity_ordered=8, unit_cost=Decimal("10.00"),
+            purchase_order=po,
+            variant=self._variant(),
+            quantity_ordered=8,
+            unit_cost=Decimal("10.00"),
         )
         warehouse = self._warehouse()
 
@@ -229,7 +236,9 @@ class PurchaseOrderTrackingTestCase(TestCase):
         tracking.status = "IN_TRANSIT"
         tracking.shipped_at = tracking.created_at
         tracking.expected_delivery_date = date.today() - timedelta(days=1)
-        tracking.save(update_fields=["status", "shipped_at", "expected_delivery_date", "updated_at"])
+        tracking.save(
+            update_fields=["status", "shipped_at", "expected_delivery_date", "updated_at"]
+        )
         tracking.refresh_from_db()
 
         self.assertFalse(tracking.is_delivered)
@@ -245,10 +254,14 @@ class PurchaseOrderTrackingTestCase(TestCase):
     def test_tracking_number_must_be_unique(self):
         po, item = self._po_with_item(quantity=10)
         PurchaseOrderLineTracking.objects.create(
-            purchase_order_item=item, carrier_name="DHL", tracking_number="SHIP-0001",
+            purchase_order_item=item,
+            carrier_name="DHL",
+            tracking_number="SHIP-0001",
         )
         duplicate = PurchaseOrderLineTracking(
-            purchase_order_item=item, carrier_name="DHL", tracking_number="SHIP-0001",
+            purchase_order_item=item,
+            carrier_name="DHL",
+            tracking_number="SHIP-0001",
         )
         rules = duplicate._rules.get("tracking_number", [])
         unique = next(r for r in rules if isinstance(r, UniqueRule))

@@ -1,12 +1,12 @@
-from core.base_views.api_views import BaseAPIView
-from core.admin.helpers.query_helpers import FilterSchema, FilterField
-from apps.shop.infrastructure.models.graph import EntityEdge, BOMEdge
 from apps.shop.infrastructure.models.category import CategoryEdge
+from apps.shop.infrastructure.models.graph import BOMEdge, EntityEdge
 from apps.shop.infrastructure.serializers.shop_serializers import (
-    EntityEdgeSerializer,
-    CategoryEdgeSerializer,
     BOMEdgeSerializer,
+    CategoryEdgeSerializer,
+    EntityEdgeSerializer,
 )
+from core.admin.helpers.query_helpers import FilterField, FilterSchema
+from core.base_views.api_views import BaseAPIView
 
 
 class EntityEdgeViewSet(BaseAPIView):
@@ -14,6 +14,7 @@ class EntityEdgeViewSet(BaseAPIView):
     Knowledge Graph Ontology API ViewSet.
     Managed strict hard relations (belongs_to, supplied_by, listed_by) and soft relations (bought_with, similar_to).
     """
+
     model = EntityEdge
     serializer_class = EntityEdgeSerializer
     entity_name = "EntityEdge"
@@ -43,6 +44,7 @@ class BOMEdgeViewSet(BaseAPIView):
     """
     Bill of Materials (BOM) DAG Graph API ViewSet.
     """
+
     model = BOMEdge
     serializer_class = BOMEdgeSerializer
     entity_name = "BOMEdge"

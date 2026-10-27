@@ -1,7 +1,9 @@
 import logging
+
 from django.contrib.auth import get_user_model
 from django.db import transaction
-from apps.customers.models.customer import Customer, CustomerPreference, CustomerAddress
+
+from apps.customers.models.customer import Customer, CustomerAddress, CustomerPreference
 from core.base_models.services.number_series import NumberSeriesService
 
 User = get_user_model()
@@ -48,10 +50,13 @@ class CustomerRegistrationService:
         )
 
         # 2. Auto-generate Customer Code
-        customer_code = NumberSeriesService.next(
-            document_type="customer",
-            company=company_id,
-        ) or f"CUST-{user.id[:6].upper()}"
+        customer_code = (
+            NumberSeriesService.next(
+                document_type="customer",
+                company=company_id,
+            )
+            or f"CUST-{user.id[:6].upper()}"
+        )
 
         # 3. Create Customer Entity
         customer_kwargs = {
@@ -72,8 +77,6 @@ class CustomerRegistrationService:
 
         customer = Customer.objects.create(**customer_kwargs)
 
-
-
         # 4. Create Customer Preferences Default Profile
         preferred_currency = None
         if company_id:
@@ -88,7 +91,6 @@ class CustomerRegistrationService:
             email_notifications=True,
             sms_notifications=bool(phone),
         )
-
 
         # 5. Create Default Delivery Address (If provided during signup)
         if address_data and isinstance(address_data, dict):
@@ -108,11 +110,14 @@ class CustomerRegistrationService:
                 is_default_billing=True,
             )
 
-        logger.info(f"Successfully registered customer '{customer.name}' ({customer.customer_code}) for user {user.username}")
+        logger.info(
+            f"Successfully registered customer '{customer.name}' ({customer.customer_code}) for user {user.username}"
+        )
 
         # Trigger Asynchronous Welcome Task via Celery & Redis
         try:
             from apps.customers.tasks import dispatch_welcome_customer_email_task
+
             dispatch_welcome_customer_email_task.delay(str(customer.id))
         except Exception as task_exc:
             logger.warning(f"Failed to queue Celery welcome email task: {task_exc}")

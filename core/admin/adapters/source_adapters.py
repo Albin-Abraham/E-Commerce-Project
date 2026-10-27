@@ -1,11 +1,12 @@
 # core/admin/adapters/source_adapters.py
 import csv
+import hashlib
 import io
 import json
-import hashlib
 from abc import ABC, abstractmethod
+from collections.abc import Iterator
 from dataclasses import dataclass, field
-from typing import Dict, Any, List, Iterator, Optional
+from typing import Any
 
 
 @dataclass
@@ -14,12 +15,13 @@ class NormalizedDomainRecord:
     Standardized payload record produced by Source Adapters.
     Decouples raw vendor/file formats from canonical E-Commerce domain models.
     """
+
     row_number: int
     target_model: str
-    raw_data: Dict[str, Any]
-    normalized_fields: Dict[str, Any] = field(default_factory=dict)
+    raw_data: dict[str, Any]
+    normalized_fields: dict[str, Any] = field(default_factory=dict)
     idempotency_key: str = ""
-    errors: List[str] = field(default_factory=list)
+    errors: list[str] = field(default_factory=list)
 
     @property
     def is_valid(self) -> bool:
@@ -33,12 +35,25 @@ class BaseSourceAdapter(ABC):
     """
 
     KNOWN_PREFIXES = (
-        "definition:category:", "definition:brand:", "definition:tag:", "definition:",
-        "policy:pricing:", "policy:",
-        "master:product:", "master:variant:", "master:",
-        "item:", "product:", "variant:",
-        "catalog:catalog:", "catalog:item:", "catalog:", "catalog_item:",
-        "operational:order:", "operational:customer:", "operational:",
+        "definition:category:",
+        "definition:brand:",
+        "definition:tag:",
+        "definition:",
+        "policy:pricing:",
+        "policy:",
+        "master:product:",
+        "master:variant:",
+        "master:",
+        "item:",
+        "product:",
+        "variant:",
+        "catalog:catalog:",
+        "catalog:item:",
+        "catalog:",
+        "catalog_item:",
+        "operational:order:",
+        "operational:customer:",
+        "operational:",
     )
 
     def __init__(self, source_type: str = "GENERIC", target_model: str = "product"):
@@ -49,7 +64,7 @@ class BaseSourceAdapter(ABC):
         clean = col_name.strip()
         for prefix in self.KNOWN_PREFIXES:
             if clean.lower().startswith(prefix):
-                return clean[len(prefix):]
+                return clean[len(prefix) :]
         return clean
 
     @abstractmethod
@@ -76,18 +91,18 @@ class CSVStreamingAdapter(BaseSourceAdapter):
     Processes CSV streams row by row with bounded memory footprint.
     """
 
-    def __init__(self, target_model: str = "product", field_mappings: Optional[Dict[str, str]] = None):
+    def __init__(self, target_model: str = "product", field_mappings: dict[str, str] | None = None):
         super().__init__(source_type="CSV", target_model=target_model)
         self.field_mappings = field_mappings or {}
 
     def read_records(self, raw_csv_content: str) -> Iterator[NormalizedDomainRecord]:
         stream = io.StringIO(raw_csv_content)
         reader = csv.DictReader(stream)
-        
+
         for row_idx, row in enumerate(reader, start=1):
             raw_data = dict(row)
             normalized = {}
-            
+
             # Map raw CSV column headers to canonical domain field names
             for col_name, val in raw_data.items():
                 if not col_name:
@@ -114,11 +129,11 @@ class XLSXReadOnlyAdapter(BaseSourceAdapter):
     Iterates over tabular rows with minimal RAM accumulation.
     """
 
-    def __init__(self, target_model: str = "product", field_mappings: Optional[Dict[str, str]] = None):
+    def __init__(self, target_model: str = "product", field_mappings: dict[str, str] | None = None):
         super().__init__(source_type="XLSX", target_model=target_model)
         self.field_mappings = field_mappings or {}
 
-    def read_records(self, rows_list: List[Dict[str, Any]]) -> Iterator[NormalizedDomainRecord]:
+    def read_records(self, rows_list: list[dict[str, Any]]) -> Iterator[NormalizedDomainRecord]:
         for row_idx, raw_data in enumerate(rows_list, start=1):
             normalized = {}
             for col_name, val in raw_data.items():
@@ -149,7 +164,7 @@ class JSONStreamingAdapter(BaseSourceAdapter):
     def __init__(self, target_model: str = "product"):
         super().__init__(source_type="JSON", target_model=target_model)
 
-    def read_records(self, payload_list: List[Dict[str, Any]]) -> Iterator[NormalizedDomainRecord]:
+    def read_records(self, payload_list: list[dict[str, Any]]) -> Iterator[NormalizedDomainRecord]:
         for row_idx, raw_data in enumerate(payload_list, start=1):
             rec = NormalizedDomainRecord(
                 row_number=row_idx,
@@ -170,7 +185,7 @@ class ERPInventorySyncAdapter(BaseSourceAdapter):
     def __init__(self):
         super().__init__(source_type="ERP_SYNC", target_model="inventory")
 
-    def read_records(self, erp_payloads: List[Dict[str, Any]]) -> Iterator[NormalizedDomainRecord]:
+    def read_records(self, erp_payloads: list[dict[str, Any]]) -> Iterator[NormalizedDomainRecord]:
         for row_idx, raw in enumerate(erp_payloads, start=1):
             normalized = {
                 "sku": raw.get("item_sku") or raw.get("sku"),

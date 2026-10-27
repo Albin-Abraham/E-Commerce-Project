@@ -1,6 +1,5 @@
-from enum import StrEnum
-from typing import Any
 import logging
+from enum import StrEnum
 
 from shared_domain.base.valuesets import ValueSet, ValueSetItem, ValueSetRegistry
 
@@ -12,6 +11,7 @@ class DomainVariableRegistry:
     App-Scoped Variable Registry preventing key collision across distinct domain modules.
     Each app (accounting, procurement_pos, shop, etc.) registers its own namespaced enum.
     """
+
     _app_registries: dict[str, type[StrEnum]] = {}
 
     @classmethod
@@ -33,7 +33,9 @@ class DomainVariableRegistry:
             items=items,
         )
         ValueSetRegistry.register(valueset)
-        logger.debug(f"[DomainVariableRegistry] Registered domain '{domain}' with {len(items)} variables.")
+        logger.debug(
+            f"[DomainVariableRegistry] Registered domain '{domain}' with {len(items)} variables."
+        )
         return valueset
 
     @classmethod
@@ -67,10 +69,13 @@ class DomainVariableRegistry:
                 if item.code == key:
                     return str(item.label)
         return key
+
+
 class SystemFinancialVariableKeys(StrEnum):
     """
     System-Critical Financial Calculation & Voucher Totals Keys.
     """
+
     GROSS_AMOUNT = "gross_amount"
     NET_AMOUNT = "net_amount"
     TAX_AMOUNT = "tax_amount"

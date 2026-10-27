@@ -1,11 +1,11 @@
 import uuid
+
 from django.db import models
 from django.utils import timezone
-from core.base_models.validator_model import BaseModel
-from core.base_models.fields.short_ui_fields import CustomShortUUIDField
-
 
 from apps.shop.valuesets import EVENT_STATUS_VALUESET
+from core.base_models.fields.short_ui_fields import CustomShortUUIDField
+from core.base_models.validator_model import BaseModel
 
 
 class DomainEventOutbox(BaseModel):
@@ -28,7 +28,7 @@ class DomainEventOutbox(BaseModel):
         max_length=128,
         unique=True,
         default=uuid.uuid4,
-        help_text="Unique key to enforce event deduplication and replay safety"
+        help_text="Unique key to enforce event deduplication and replay safety",
     )
     status = models.CharField(
         max_length=20,

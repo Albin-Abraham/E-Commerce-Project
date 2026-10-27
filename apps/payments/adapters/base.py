@@ -46,7 +46,9 @@ class IPaymentGatewayAdapter(ABC):
     """
 
     @abstractmethod
-    def create_order(self, amount: Decimal, currency: str, reference_id: str, **kwargs) -> PaymentOrderResult:
+    def create_order(
+        self, amount: Decimal, currency: str, reference_id: str, **kwargs
+    ) -> PaymentOrderResult:
         """Creates a payment order with the gateway."""
         pass
 
@@ -61,6 +63,8 @@ class IPaymentGatewayAdapter(ABC):
         pass
 
     @abstractmethod
-    def refund_payment(self, payment_id: str, amount: Decimal, reason: str = "") -> PaymentRefundResult:
+    def refund_payment(
+        self, payment_id: str, amount: Decimal, reason: str = ""
+    ) -> PaymentRefundResult:
         """Processes partial or full refund."""
         pass

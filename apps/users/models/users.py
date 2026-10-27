@@ -1,25 +1,27 @@
 # apps/users/models/users.py
-from django.db import models
+from functools import cached_property
+
 from django.contrib.auth.models import (
     AbstractBaseUser,
-    PermissionsMixin,
     BaseUserManager,
     Group,
-    Permission
+    Permission,
+    PermissionsMixin,
 )
+from django.db import models
 from django.db.models.signals import post_save
 from django.dispatch import receiver
-from functools import cached_property
+
+from apps.users.valuesets import USER_TYPE_VALUESET
+from core.base_models.fields.boolean_fields import CustomBooleanField
+from core.base_models.fields.char_fields import CustomCharField, CustomEmailField
+from core.base_models.fields.date_fields import CustomDateTimeField
 
 # Core Fields
 from core.base_models.fields.short_ui_fields import CustomShortUUIDField
-from core.base_models.fields.char_fields import CustomCharField, CustomEmailField
-from core.base_models.fields.boolean_fields import CustomBooleanField
-from core.base_models.fields.date_fields import CustomDateTimeField
-from core.base_models.scoping_models import TenantModelMixin, BranchModelMixin
 from core.base_models.validator_model import ValidatorModelMixin
 from core.base_models.validators.rules import PasswordValidatorRule, UniqueRule
-from apps.users.valuesets import USER_TYPE_VALUESET
+
 
 # ------------------------------------------------------------
 # User Manager
@@ -40,6 +42,7 @@ class UserManager(BaseUserManager):
             extra_fields["full_name"] = f"{first_name or ''} {last_name or ''}".strip()
 
         from django.db import transaction
+
         with transaction.atomic(using=self._db):
             email = self.normalize_email(email)
             user = self.model(email=email, username=username, **extra_fields)
@@ -47,8 +50,11 @@ class UserManager(BaseUserManager):
             user.save(using=self._db)
             return user
 
-    def make_random_password(self, length=10, allowed_chars="abcdefghjkmnpqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ23456789"):
+    def make_random_password(
+        self, length=10, allowed_chars="abcdefghjkmnpqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ23456789"
+    ):
         from django.utils.crypto import get_random_string
+
         return get_random_string(length, allowed_chars)
 
     def create_superuser(self, email, username, password=None, **extra_fields):
@@ -64,9 +70,9 @@ class UserManager(BaseUserManager):
             raise ValueError("Superuser must have is_superuser=True.")
 
         from django.db import transaction
+
         with transaction.atomic(using=self._db):
             return self.create_user(email, username, password, **extra_fields)
-
 
 
 # ------------------------------------------------------------
@@ -92,24 +98,18 @@ class UserModel(AbstractBaseUser, PermissionsMixin, ValidatorModelMixin):
     )
 
     username = CustomCharField(
-        max_length=150, 
+        max_length=150,
         unique=True,
         verbose_name="Username",
         help_text="Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.",
     )
 
-    full_name = CustomCharField(
-        blank=True, 
-        verbose_name="Full Name"
-    )
+    full_name = CustomCharField(blank=True, verbose_name="Full Name")
 
-    is_active = CustomBooleanField(default=True) 
+    is_active = CustomBooleanField(default=True)
     is_staff = CustomBooleanField(default=False)
 
-    date_joined = CustomDateTimeField(
-        auto_now_add=True, 
-        verbose_name="Date Joined"
-    )
+    date_joined = CustomDateTimeField(auto_now_add=True, verbose_name="Date Joined")
 
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = ["username"]
@@ -154,11 +154,11 @@ class UserModel(AbstractBaseUser, PermissionsMixin, ValidatorModelMixin):
         Considers the user's active branch for SaaS module scoping.
         """
         from apps.users.utils.rbac_manifest import ManifestOrchestrator
-        
+
         branch_id = None
-        if hasattr(self, 'profile'):
+        if hasattr(self, "profile"):
             branch_id = self.profile.branch_id
-            
+
         return ManifestOrchestrator.build_for_user(self.id, branch_id=branch_id)
 
     _manual_rules = {
@@ -194,14 +194,14 @@ class UserProfileModel(models.Model):
         on_delete=models.SET_NULL,
         null=True,
         blank=True,
-        related_name="user_profiles"
+        related_name="user_profiles",
     )
     branch = models.ForeignKey(
         "core_admin.Branch",
         on_delete=models.SET_NULL,
         null=True,
         blank=True,
-        related_name="user_profiles"
+        related_name="user_profiles",
     )
 
     class Meta:
@@ -237,13 +237,16 @@ class UserProfileModel(models.Model):
 def create_user_profile(sender, instance, created, **kwargs):
     if created:
         from django.db import transaction
+
         with transaction.atomic():
-            initial_user_type = "STAFF" if (instance.is_staff or instance.is_superuser) else "CUSTOMER_B2C"
+            initial_user_type = (
+                "STAFF" if (instance.is_staff or instance.is_superuser) else "CUSTOMER_B2C"
+            )
             if instance.is_superuser:
-                from core.admin.models.company import Company
+                from core.admin.constants import SYSTEM_BRANCH_CODE, SYSTEM_COMPANY_CODE
                 from core.admin.models.branch import Branch
-                from core.admin.constants import SYSTEM_COMPANY_CODE, SYSTEM_BRANCH_CODE
-                
+                from core.admin.models.company import Company
+
                 try:
                     # Fetch pre-existing defaults created by migrations
                     company = Company.objects.get(code=SYSTEM_COMPANY_CODE)
@@ -260,6 +263,7 @@ def create_user_profile(sender, instance, created, **kwargs):
             else:
                 UserProfileModel.objects.create(user=instance, user_type=initial_user_type)
 
-# Removed: UserCompanyAccess and UserBranchAccess 
-# They have been replaced by the industrialized GenericForeignKey EntityAccessControl table 
+
+# Removed: UserCompanyAccess and UserBranchAccess
+# They have been replaced by the industrialized GenericForeignKey EntityAccessControl table
 # located in apps.access_control.models

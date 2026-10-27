@@ -8,14 +8,14 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 from decimal import Decimal
-from typing import Optional
+
+from apps.shop.domain.events import (
+    InventoryStockCommitted,
+    InventoryStockReleased,
+    InventoryStockReserved,
+)
 from shared_domain.base.aggregate import AggregateRoot
 from shared_domain.validation.exceptions import DomainValidationError
-from apps.shop.domain.events import (
-    InventoryStockReserved,
-    InventoryStockReleased,
-    InventoryStockCommitted,
-)
 
 
 @dataclass
@@ -24,10 +24,11 @@ class InventoryAggregate(AggregateRoot):
     Aggregate Root for Inventory stock tracking across variants and warehouses.
     Guarantees stock integrity and manages reservations.
     """
+
     product_id: str = ""
-    variant_id: Optional[str] = None
-    warehouse_id: Optional[str] = None
-    branch_id: Optional[str] = None
+    variant_id: str | None = None
+    warehouse_id: str | None = None
+    branch_id: str | None = None
     quantity: int = 0
     reserved_quantity: int = 0
     reorder_point: int = 10
@@ -49,11 +50,13 @@ class InventoryAggregate(AggregateRoot):
         Enforces invariant: qty must be positive and available_quantity >= qty.
         """
         if qty <= 0:
-            raise DomainValidationError("Reservation quantity must be positive.", errors={"quantity": "Must be > 0"})
+            raise DomainValidationError(
+                "Reservation quantity must be positive.", errors={"quantity": "Must be > 0"}
+            )
         if self.available_quantity < qty:
             raise DomainValidationError(
                 f"Insufficient stock for inventory {self.id}. Requested: {qty}, Available: {self.available_quantity}",
-                errors={"quantity": f"Requested {qty} exceeds available {self.available_quantity}"}
+                errors={"quantity": f"Requested {qty} exceeds available {self.available_quantity}"},
             )
 
         self.reserved_quantity += qty
@@ -75,7 +78,7 @@ class InventoryAggregate(AggregateRoot):
         if self.reserved_quantity < qty:
             raise DomainValidationError(
                 f"Cannot release {qty} units: only {self.reserved_quantity} units are reserved.",
-                errors={"quantity": f"Release {qty} exceeds reserved {self.reserved_quantity}"}
+                errors={"quantity": f"Release {qty} exceeds reserved {self.reserved_quantity}"},
             )
 
         self.reserved_quantity -= qty
@@ -97,7 +100,7 @@ class InventoryAggregate(AggregateRoot):
         if self.reserved_quantity < qty or self.quantity < qty:
             raise DomainValidationError(
                 f"Cannot commit {qty} units: insufficient physical ({self.quantity}) or reserved ({self.reserved_quantity}) stock.",
-                errors={"quantity": "Commit exceeds physical or reserved stock"}
+                errors={"quantity": "Commit exceeds physical or reserved stock"},
             )
 
         self.quantity -= qty
@@ -116,7 +119,7 @@ class InventoryAggregate(AggregateRoot):
         if new_quantity < self.reserved_quantity:
             raise DomainValidationError(
                 f"Adjusted quantity {new_quantity} cannot be lower than already reserved units {self.reserved_quantity}.",
-                errors={"quantity": "Cannot be lower than reserved units"}
+                errors={"quantity": "Cannot be lower than reserved units"},
             )
         self.quantity = new_quantity
 
@@ -126,13 +129,16 @@ class ProductEntity(AggregateRoot):
     """
     Domain entity for Product in the catalog.
     """
+
     name: str = ""
     sku: str = ""
     price: Decimal = field(default_factory=lambda: Decimal("0.00"))
     is_active: bool = True
-    category_id: Optional[str] = None
-    brand_id: Optional[str] = None
+    category_id: str | None = None
+    brand_id: str | None = None
 
     def validate_price(self) -> None:
         if self.price < Decimal("0.00"):
-            raise DomainValidationError("Product price cannot be negative.", errors={"price": "Must be >= 0"})
+            raise DomainValidationError(
+                "Product price cannot be negative.", errors={"price": "Must be >= 0"}
+            )

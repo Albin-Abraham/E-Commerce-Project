@@ -5,10 +5,10 @@ Verifies the persistence adapter correctly synchronizes InventoryAggregate with 
 """
 
 import pytest
-from apps.shop.domain.entities import InventoryAggregate
+
+from apps.shop.infrastructure.models.inventory import Inventory
 from apps.shop.infrastructure.repository import DjangoInventoryRepository
 from apps.shop.workflows.inventory_reservation_workflow import InventoryReservationWorkflow
-from apps.shop.infrastructure.models.inventory import Inventory
 
 
 @pytest.mark.django_db

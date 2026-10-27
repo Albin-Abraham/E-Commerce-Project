@@ -14,7 +14,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ('contenttypes', '0002_remove_content_type_name'),
-        ('core_admin', '0004_company_default_currency_numberseries'),
+        ('core_admin', '0002_initial'),
         ('shop', '0007_catalogitem_tags'),
     ]
 

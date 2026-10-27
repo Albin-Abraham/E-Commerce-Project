@@ -66,11 +66,7 @@ class NumberSeriesBase(BaseModel):
 
     @property
     def scope_specificity(self) -> int:
-        return sum(
-            1
-            for value in (self.company_id, self.business_unit_id, self.branch_id)
-            if value
-        )
+        return sum(1 for value in (self.company_id, self.business_unit_id, self.branch_id) if value)
 
     def clean_scope(self) -> None:
         errors: dict[str, str] = {}
@@ -81,16 +77,12 @@ class NumberSeriesBase(BaseModel):
             )
 
         if self.business_unit_id and not self.company_id:
-            errors["company"] = _(
-                "Company is required when business unit scope is configured."
-            )
+            errors["company"] = _("Company is required when business unit scope is configured.")
 
         if self.business_unit_id and self.company_id:
             bu_company_id = getattr(self.business_unit, "company_id", None)
             if bu_company_id and str(bu_company_id) != str(self.company_id):
-                errors["business_unit"] = _(
-                    "Business unit must belong to the selected company."
-                )
+                errors["business_unit"] = _("Business unit must belong to the selected company.")
 
         if self.branch_id:
             branch_bu_id = getattr(self.branch, "business_unit_id", None)
@@ -102,9 +94,7 @@ class NumberSeriesBase(BaseModel):
                 and self.business_unit_id
                 and str(branch_bu_id) != str(self.business_unit_id)
             ):
-                errors["branch"] = _(
-                    "Branch must belong to the selected business unit."
-                )
+                errors["branch"] = _("Branch must belong to the selected business unit.")
             if (
                 branch_company_id
                 and self.company_id
@@ -160,9 +150,7 @@ class NumberSeries(NumberSeriesBase):
 
     number_length = models.PositiveIntegerField(
         default=5,
-        help_text=_(
-            "Default zero-padding length for {SEQ} when no explicit length is given."
-        ),
+        help_text=_("Default zero-padding length for {SEQ} when no explicit length is given."),
     )
 
     reset_policy = models.CharField(
@@ -204,9 +192,7 @@ class NumberSeries(NumberSeriesBase):
         "{YY}": _("Current year in 2-digit format (e.g., 24)."),
         "{MM}": _("Current month in 2-digit format (01-12)."),
         "{DD}": _("Current day in 2-digit format (01-31)."),
-        "{SEQ}": _(
-            "The sequence number. Will be padded based on the 'Number Length' setting."
-        ),
+        "{SEQ}": _("The sequence number. Will be padded based on the 'Number Length' setting."),
         "{SEQ:n}": _(
             "Sequence number with specific padding of length 'n' (e.g., {SEQ:3} for 001)."
         ),
@@ -233,9 +219,7 @@ class NumberSeries(NumberSeriesBase):
             models.Index(fields=["document_type"]),
             models.Index(fields=["document_type", "company"]),
             models.Index(fields=["document_type", "company", "business_unit"]),
-            models.Index(
-                fields=["document_type", "company", "business_unit", "branch"]
-            ),
+            models.Index(fields=["document_type", "company", "business_unit", "branch"]),
         ]
 
     def __str__(self) -> str:
@@ -251,9 +235,7 @@ class NumberSeries(NumberSeriesBase):
     def clean_pattern_logic(self) -> None:
         """Validates that the pattern is valid and sufficient for the reset policy."""
         if not self.pattern:
-            raise ValidationError(
-                {"pattern": _("Pattern is required for number series.")}
-            )
+            raise ValidationError({"pattern": _("Pattern is required for number series.")})
 
         for match in self.TOKEN_PATTERN.finditer(self.pattern):
             token = match.group(1)
@@ -331,9 +313,7 @@ class NumberSeries(NumberSeriesBase):
                     )
                 }
             )
-        elif self.reset_policy == ResetPolicy.DAILY and not (
-            has_year and has_month and has_day
-        ):
+        elif self.reset_policy == ResetPolicy.DAILY and not (has_year and has_month and has_day):
             raise ValidationError(
                 {
                     "pattern": _(
@@ -366,4 +346,3 @@ class NumberSeries(NumberSeriesBase):
 
     def _override_pre_save(self, is_creating: bool):
         self.full_clean()
-

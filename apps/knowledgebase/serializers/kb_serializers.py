@@ -1,6 +1,7 @@
 from rest_framework import serializers
+
+from apps.knowledgebase.models.kb import KnowledgeArticle, KnowledgeCategory, ProductKnowledgeLink
 from core.base_serializers.base_serializers import BaseModelSerializer
-from apps.knowledgebase.models.kb import KnowledgeCategory, KnowledgeArticle, ProductKnowledgeLink
 
 
 class KnowledgeCategorySerializer(BaseModelSerializer):
@@ -16,9 +17,19 @@ class KnowledgeArticleSerializer(BaseModelSerializer):
     class Meta:
         model = KnowledgeArticle
         fields = [
-            "id", "title", "slug", "summary", "content", "category",
-            "author", "author_username", "status", "is_internal_only",
-            "tags", "metadata", "created_at",
+            "id",
+            "title",
+            "slug",
+            "summary",
+            "content",
+            "category",
+            "author",
+            "author_username",
+            "status",
+            "is_internal_only",
+            "tags",
+            "metadata",
+            "created_at",
         ]
         read_only_fields = ["id", "created_at"]
 
@@ -32,8 +43,20 @@ class ProductKnowledgeLinkSerializer(BaseModelSerializer):
     class Meta:
         model = ProductKnowledgeLink
         fields = [
-            "id", "article", "article_title", "article_slug", "product", "product_name",
-            "variant", "variant_sku", "inventory", "shop_category",
-            "target_identifier", "link_type", "is_active", "notes", "created_at",
+            "id",
+            "article",
+            "article_title",
+            "article_slug",
+            "product",
+            "product_name",
+            "variant",
+            "variant_sku",
+            "inventory",
+            "shop_category",
+            "target_identifier",
+            "link_type",
+            "is_active",
+            "notes",
+            "created_at",
         ]
         read_only_fields = ["id", "created_at"]

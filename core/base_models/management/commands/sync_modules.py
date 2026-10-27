@@ -1,6 +1,8 @@
 # core/base_models/management/commands/sync_modules.py
 from django.core.management.base import BaseCommand
+
 from core.base_models.services.module_sync import ModuleSyncService
+
 
 class Command(BaseCommand):
     help = "Synchronizes the module_config.yaml with SystemModule and SystemFeature models."

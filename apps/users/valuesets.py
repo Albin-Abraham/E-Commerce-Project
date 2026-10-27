@@ -12,4 +12,3 @@ USER_TYPE_VALUESET = ValueSet(
         ValueSetItem(code="PARTNER_B2B", label="Vendor / Supplier / B2B Partner", is_active=True),
     ],
 )
-

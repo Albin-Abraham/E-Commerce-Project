@@ -5,13 +5,14 @@ Data model for tracking gateway health, connectivity, authentication, and readin
 
 from django.db import models
 from django.utils import timezone
-from core.base_models.validator_model import BaseModel
-from core.base_models.fields.char_fields import CustomCharField
+
 from apps.payments.health.interfaces import (
-    GatewayHealthStatus,
     CheckStatus,
+    GatewayHealthStatus,
     GatewayOverallHealthResult,
 )
+from core.base_models.fields.char_fields import CustomCharField
+from core.base_models.validator_model import BaseModel
 
 
 class PaymentGatewayHealth(BaseModel):
@@ -19,6 +20,7 @@ class PaymentGatewayHealth(BaseModel):
     Stores operational health assessments, latencies, failure counters,
     and diagnostic breakdowns for payment gateways.
     """
+
     gateway_config = models.OneToOneField(
         "payments.PaymentGatewayConfig",
         on_delete=models.CASCADE,

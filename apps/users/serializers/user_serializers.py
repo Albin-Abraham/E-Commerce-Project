@@ -1,8 +1,9 @@
-from rest_framework import serializers
 from django.contrib.auth import get_user_model
-from core.base_serializers.base_serializers import BaseModelSerializer
+from rest_framework import serializers
+
+from apps.users.models.permissions import UserPermissionModel
 from apps.users.models.users import UserProfileModel
-from apps.users.models.permissions import RolePermissions, RoleGroupPermissions, UserPermissionModel
+from core.base_serializers.base_serializers import BaseModelSerializer
 
 User = get_user_model()
 
@@ -19,8 +20,14 @@ class UserListSerializer(BaseModelSerializer):
     class Meta:
         model = User
         fields = [
-            "id", "email", "username", "full_name",
-            "is_active", "is_staff", "date_joined", "profile",
+            "id",
+            "email",
+            "username",
+            "full_name",
+            "is_active",
+            "is_staff",
+            "date_joined",
+            "profile",
         ]
         read_only_fields = ["id", "date_joined"]
 
@@ -34,9 +41,17 @@ class UserDetailSerializer(BaseModelSerializer):
     class Meta:
         model = User
         fields = [
-            "id", "email", "username", "full_name",
-            "is_active", "is_staff", "date_joined",
-            "profile", "roles", "groups", "direct_permissions",
+            "id",
+            "email",
+            "username",
+            "full_name",
+            "is_active",
+            "is_staff",
+            "date_joined",
+            "profile",
+            "roles",
+            "groups",
+            "direct_permissions",
         ]
         read_only_fields = ["id", "date_joined"]
 
@@ -72,6 +87,7 @@ class UserCreateSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         from apps.users.services.auth_service import AuthService
+
         return AuthService.register_user(validated_data)
 
 

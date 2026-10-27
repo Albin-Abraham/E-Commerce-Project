@@ -5,7 +5,7 @@ from django.db import transaction
 from django.utils import timezone
 
 from apps.core_documents.models.documents import Document
-from apps.core_documents.models.workflows import ApprovalLevel, ApprovalWorkflow, ApprovalHistory
+from apps.core_documents.models.workflows import ApprovalHistory, ApprovalLevel, ApprovalWorkflow
 
 logger = logging.getLogger(__name__)
 
@@ -66,19 +66,17 @@ class DocumentWorkflowEngine:
             score = 0
 
             if chain.department_id:
-                if (
-                    str(chain.department_id) == str(dept_id)
-                    or getattr(chain.department, "code", None) == str(dept_id)
-                ):
+                if str(chain.department_id) == str(dept_id) or getattr(
+                    chain.department, "code", None
+                ) == str(dept_id):
                     score += 1000
                 else:
                     continue
 
             if chain.designation_id:
-                if (
-                    str(chain.designation_id) == str(desig_id)
-                    or getattr(chain.designation, "code", None) == str(desig_id)
-                ):
+                if str(chain.designation_id) == str(desig_id) or getattr(
+                    chain.designation, "code", None
+                ) == str(desig_id):
                     score += 100
                 else:
                     continue
@@ -92,7 +90,12 @@ class DocumentWorkflowEngine:
         levels_to_create = []
 
         if best_chain:
-            logger.info("Resolved dynamic ApprovalChain '%s' (Score: %d) for Document '%s'", best_chain.name, best_score, document.id)
+            logger.info(
+                "Resolved dynamic ApprovalChain '%s' (Score: %d) for Document '%s'",
+                best_chain.name,
+                best_score,
+                document.id,
+            )
             template_levels = best_chain.levels.all().order_by("level")
             for t_lvl in template_levels:
                 level_num = t_lvl.level
@@ -118,12 +121,14 @@ class DocumentWorkflowEngine:
                 else:
                     req_perm = f"core_documents.approve_lvl_{level_num}"
 
-                levels_to_create.append({
-                    "level": level_num,
-                    "label": label,
-                    "required_permission": req_perm,
-                    "priority": getattr(t_lvl, "priority", 0),
-                })
+                levels_to_create.append(
+                    {
+                        "level": level_num,
+                        "label": label,
+                        "required_permission": req_perm,
+                        "priority": getattr(t_lvl, "priority", 0),
+                    }
+                )
         else:
             config = document.definition.approval_chain_config
             if not config:
@@ -136,16 +141,17 @@ class DocumentWorkflowEngine:
                     raise ValidationError(
                         "Invalid approval_chain_config entry. 'level' and 'required_permission' are required."
                     )
-                levels_to_create.append({
-                    "level": level_num,
-                    "label": label,
-                    "required_permission": req_perm,
-                    "priority": entry.get("priority", 0),
-                })
+                levels_to_create.append(
+                    {
+                        "level": level_num,
+                        "label": label,
+                        "required_permission": req_perm,
+                        "priority": entry.get("priority", 0),
+                    }
+                )
 
         ApprovalWorkflow.objects.filter(
-            document=document,
-            status=ApprovalWorkflow.WorkflowStatus.PENDING
+            document=document, status=ApprovalWorkflow.WorkflowStatus.PENDING
         ).update(status=ApprovalWorkflow.WorkflowStatus.REJECTED)
 
         workflow = ApprovalWorkflow.objects.create(
@@ -185,10 +191,14 @@ class DocumentWorkflowEngine:
             if doc_company:
                 actor_profile = getattr(actor, "profile", None)
                 if not actor_profile:
-                    raise PermissionDenied("Access Denied: Actor profile context is required for company-scoped documents.")
+                    raise PermissionDenied(
+                        "Access Denied: Actor profile context is required for company-scoped documents."
+                    )
                 actor_company = getattr(actor_profile, "company", None)
                 if not actor_company or doc_company != actor_company:
-                    raise PermissionDenied("Access Denied: Actor company context does not match document company.")
+                    raise PermissionDenied(
+                        "Access Denied: Actor company context does not match document company."
+                    )
 
         try:
             workflow = ApprovalWorkflow.objects.get(
@@ -198,6 +208,7 @@ class DocumentWorkflowEngine:
             raise ValidationError("No active pending workflow found for this document.") from err
 
         from apps.access_control.models import ApprovalChain
+
         chain = ApprovalChain.objects.filter(
             approval_type=document.definition.key,
             is_active=True,
@@ -249,7 +260,9 @@ class DocumentWorkflowEngine:
                 lvl.status = ApprovalLevel.LevelStatus.APPROVED
                 lvl.actioned_by = actor
                 lvl.actioned_at = timezone.now()
-                lvl.comments = f"Skipped by higher-level override (Level {current_level.level_number})"
+                lvl.comments = (
+                    f"Skipped by higher-level override (Level {current_level.level_number})"
+                )
                 lvl.save()
 
                 ApprovalHistory.objects.create(
@@ -264,7 +277,7 @@ class DocumentWorkflowEngine:
                         "max_file_size": document.definition.max_file_size,
                         "allowed_extensions": document.definition.allowed_extensions,
                         "allowed_mime_types": document.definition.allowed_mime_types,
-                    }
+                    },
                 )
 
         current_level.status = ApprovalLevel.LevelStatus.APPROVED
@@ -285,20 +298,22 @@ class DocumentWorkflowEngine:
                 "max_file_size": document.definition.max_file_size,
                 "allowed_extensions": document.definition.allowed_extensions,
                 "allowed_mime_types": document.definition.allowed_mime_types,
-            }
+            },
         )
 
         metadata = document.metadata or {}
 
         approved_before = metadata.setdefault("approved_before", [])
-        approved_before.append({
-            "user_id": str(actor.id),
-            "email": actor.email,
-            "level": current_level.level_number,
-            "label": current_level.label,
-            "actioned_at": timezone.now().isoformat(),
-            "comments": comments,
-        })
+        approved_before.append(
+            {
+                "user_id": str(actor.id),
+                "email": actor.email,
+                "level": current_level.level_number,
+                "label": current_level.label,
+                "actioned_at": timezone.now().isoformat(),
+                "comments": comments,
+            }
+        )
 
         dating_procedure = metadata.setdefault("dating_procedure", {})
         dating_procedure[f"level_{current_level.level_number}_{current_level.id}"] = {
@@ -325,11 +340,15 @@ class DocumentWorkflowEngine:
         )
 
         if not pending_current_levels.exists():
-            next_level = ApprovalLevel.objects.filter(
-                workflow=workflow,
-                level_number__gt=current_level.level_number,
-                status=ApprovalLevel.LevelStatus.PENDING,
-            ).order_by("level_number").first()
+            next_level = (
+                ApprovalLevel.objects.filter(
+                    workflow=workflow,
+                    level_number__gt=current_level.level_number,
+                    status=ApprovalLevel.LevelStatus.PENDING,
+                )
+                .order_by("level_number")
+                .first()
+            )
 
             if next_level:
                 workflow.current_level = next_level.level_number
@@ -368,10 +387,14 @@ class DocumentWorkflowEngine:
             if doc_company:
                 actor_profile = getattr(actor, "profile", None)
                 if not actor_profile:
-                    raise PermissionDenied("Access Denied: Actor profile context is required for company-scoped documents.")
+                    raise PermissionDenied(
+                        "Access Denied: Actor profile context is required for company-scoped documents."
+                    )
                 actor_company = getattr(actor_profile, "company", None)
                 if not actor_company or doc_company != actor_company:
-                    raise PermissionDenied("Access Denied: Actor company context does not match document company.")
+                    raise PermissionDenied(
+                        "Access Denied: Actor company context does not match document company."
+                    )
 
         try:
             workflow = ApprovalWorkflow.objects.get(
@@ -381,6 +404,7 @@ class DocumentWorkflowEngine:
             raise ValidationError("No active pending workflow found for this document.") from err
 
         from apps.access_control.models import ApprovalChain
+
         chain = ApprovalChain.objects.filter(
             approval_type=document.definition.key,
             is_active=True,
@@ -440,21 +464,23 @@ class DocumentWorkflowEngine:
                 "max_file_size": document.definition.max_file_size,
                 "allowed_extensions": document.definition.allowed_extensions,
                 "allowed_mime_types": document.definition.allowed_mime_types,
-            }
+            },
         )
 
         metadata = document.metadata or {}
 
         approved_before = metadata.setdefault("approved_before", [])
-        approved_before.append({
-            "user_id": str(actor.id),
-            "email": actor.email,
-            "level": current_level.level_number,
-            "label": current_level.label,
-            "actioned_at": timezone.now().isoformat(),
-            "comments": reason,
-            "rejected": True,
-        })
+        approved_before.append(
+            {
+                "user_id": str(actor.id),
+                "email": actor.email,
+                "level": current_level.level_number,
+                "label": current_level.label,
+                "actioned_at": timezone.now().isoformat(),
+                "comments": reason,
+                "rejected": True,
+            }
+        )
 
         dating_procedure = metadata.setdefault("dating_procedure", {})
         dating_procedure[f"level_{current_level.level_number}_{current_level.id}"] = {

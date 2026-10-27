@@ -1,4 +1,3 @@
-from typing import Any, Optional, Type
 from django.db.models import Model
 
 
@@ -6,7 +5,8 @@ class ModelInstanceBuilder:
     """
     GoF Builder Pattern: Centralizes instance construction and partial updates.
     """
-    def __init__(self, model_class: Type[Model], instance: Optional[Model] = None):
+
+    def __init__(self, model_class: type[Model], instance: Model | None = None):
         self.model_class = model_class
         self.instance = instance
 

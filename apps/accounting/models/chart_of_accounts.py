@@ -1,12 +1,13 @@
 from django.db import models
-from core.base_models.validator_model import BaseModel
-from core.base_models.fields.short_ui_fields import CustomShortUUIDField
-from core.base_models.fields.char_fields import CustomCharField
-from core.base_models.validators.rules import RequiredRule, UniqueRule
+
 from apps.accounting.valuesets import (
     ACCOUNT_ROOT_TYPE_VALUESET,
     ACCOUNT_TYPE_VALUESET,
 )
+from core.base_models.fields.char_fields import CustomCharField
+from core.base_models.fields.short_ui_fields import CustomShortUUIDField
+from core.base_models.validator_model import BaseModel
+from core.base_models.validators.rules import RequiredRule, UniqueRule
 
 
 class Account(BaseModel):

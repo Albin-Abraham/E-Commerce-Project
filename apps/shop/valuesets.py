@@ -157,4 +157,3 @@ SOFT_RELATION_VALUESET = ValueSet(
     ],
 )
 ValueSetRegistry.register(SOFT_RELATION_VALUESET)
-

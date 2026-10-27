@@ -2,7 +2,7 @@ import pytest
 from django.db import IntegrityError
 
 from apps.users.models.permissions import UserPermissionModel
-from tests.permissions.constants import ROLE_SETS, GROUP_SETS, DIRECT_PERM_SETS
+from tests.permissions.constants import DIRECT_PERM_SETS, GROUP_SETS, ROLE_SETS
 
 
 class TestAssignmentCreate:

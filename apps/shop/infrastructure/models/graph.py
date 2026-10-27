@@ -1,11 +1,9 @@
-from django.db import models
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
-from core.base_models.validator_model import BaseModel
+from django.db import models
+
 from core.base_models.fields.short_ui_fields import CustomShortUUIDField
-
-
-from apps.shop.valuesets import HARD_RELATION_VALUESET, SOFT_RELATION_VALUESET
+from core.base_models.validator_model import BaseModel
 
 
 class EntityEdge(BaseModel):
@@ -32,9 +30,11 @@ class EntityEdge(BaseModel):
 
     relation_type = models.CharField(
         max_length=60,
-        help_text="Controlled relation type e.g., 'bought_with', 'compatible_with', 'supplied_by'"
+        help_text="Controlled relation type e.g., 'bought_with', 'compatible_with', 'supplied_by'",
     )
-    weight = models.FloatField(default=1.0, help_text="Relation strength score between 0.0 and 1.0+")
+    weight = models.FloatField(
+        default=1.0, help_text="Relation strength score between 0.0 and 1.0+"
+    )
     metadata = models.JSONField(default=dict, blank=True)
 
     class Meta(BaseModel.Meta):
@@ -56,6 +56,7 @@ class BOMEdge(BaseModel):
     Bill of Materials (BOM) DAG Graph Model.
     Allows reusable product components (e.g. SSD inside Laptop, PC, and Server).
     """
+
     id = CustomShortUUIDField(primary_key=True, prefix="bom_")
 
     parent_variant = models.ForeignKey(
@@ -71,9 +72,14 @@ class BOMEdge(BaseModel):
         help_text="Component product variant",
     )
     quantity = models.DecimalField(
-        max_digits=10, decimal_places=3, default=1.0, help_text="Quantity of child required per parent"
+        max_digits=10,
+        decimal_places=3,
+        default=1.0,
+        help_text="Quantity of child required per parent",
     )
-    unit = models.CharField(max_length=30, default="pcs", help_text="Unit of measurement, e.g. pcs, kg, ml")
+    unit = models.CharField(
+        max_length=30, default="pcs", help_text="Unit of measurement, e.g. pcs, kg, ml"
+    )
     metadata = models.JSONField(default=dict, blank=True)
 
     class Meta(BaseModel.Meta):

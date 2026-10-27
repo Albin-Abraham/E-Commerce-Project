@@ -1,15 +1,15 @@
+from django.contrib.contenttypes.fields import GenericForeignKey
+from django.contrib.contenttypes.models import ContentType
 from django.db import models
 from django.utils import timezone
 from django.utils.text import slugify
-from django.contrib.contenttypes.models import ContentType
-from django.contrib.contenttypes.fields import GenericForeignKey
 
-from core.base_models.validator_model import BaseModel
-from core.base_models.scoping_models import TenantModelMixin
-from core.base_models.fields.short_ui_fields import CustomShortUUIDField
+from core.base_models.fields.boolean_fields import CustomBooleanField
 from core.base_models.fields.char_fields import CustomCharField, CustomTextField
 from core.base_models.fields.numeric_fields import CustomDecimalField
-from core.base_models.fields.boolean_fields import CustomBooleanField
+from core.base_models.fields.short_ui_fields import CustomShortUUIDField
+from core.base_models.scoping_models import TenantModelMixin
+from core.base_models.validator_model import BaseModel
 from core.base_models.validators.rules import RequiredRule, UniqueRule
 
 
@@ -99,7 +99,11 @@ class CatalogItem(BaseModel, TenantModelMixin):
     # Badges and Curation Flags
     is_new_arrival = CustomBooleanField(default=False)
     is_budget_friendly = CustomBooleanField(default=False)
-    tags = models.JSONField(default=list, blank=True, help_text="Dynamic curation tags e.g. ['NEW_ARRIVALS', 'BUDGET_FRIENDLY', 'TRENDING']")
+    tags = models.JSONField(
+        default=list,
+        blank=True,
+        help_text="Dynamic curation tags e.g. ['NEW_ARRIVALS', 'BUDGET_FRIENDLY', 'TRENDING']",
+    )
     is_published = CustomBooleanField(default=True)
     sort_order = models.IntegerField(default=0)
     metadata = models.JSONField(default=dict, blank=True)
@@ -233,7 +237,9 @@ class CatalogCollection(BaseModel, TenantModelMixin):
             if self.max_budget_price is not None:
                 filter_qs = filter_qs.filter(
                     models.Q(override_price__lte=self.max_budget_price)
-                    | models.Q(override_price__isnull=True, product__price__lte=self.max_budget_price)
+                    | models.Q(
+                        override_price__isnull=True, product__price__lte=self.max_budget_price
+                    )
                 )
             return filter_qs
         return self.items.filter(is_published=True)
@@ -299,6 +305,7 @@ class TagDefinition(BaseModel, TenantModelMixin):
     Catalog & Master Tag Definition Entity.
     Centralized definition of commercial and presentation tags (New Arrivals, Budget Friendly, Trending, etc.).
     """
+
     id = CustomShortUUIDField(primary_key=True, prefix="tagdef_")
     code = CustomCharField(
         max_length=50,
@@ -338,6 +345,7 @@ class EntityTag(BaseModel, TenantModelMixin):
     Polymorphic Tag Assignment.
     Attaches a TagDefinition to any domain entity (CatalogItem, Product, Category, Brand) using GenericForeignKey.
     """
+
     id = CustomShortUUIDField(primary_key=True, prefix="etag_")
     tag_definition = models.ForeignKey(
         TagDefinition,
@@ -379,4 +387,3 @@ class EntityTag(BaseModel, TenantModelMixin):
 
     def __str__(self):
         return f"{self.tag_definition.code} -> {self.content_type.model}:{self.object_id}"
-

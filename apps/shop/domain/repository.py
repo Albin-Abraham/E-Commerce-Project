@@ -5,7 +5,7 @@ Pure Python abstract boundaries.
 """
 
 from abc import ABC, abstractmethod
-from typing import Optional, List
+
 from apps.shop.domain.entities import InventoryAggregate, ProductEntity
 
 
@@ -13,21 +13,21 @@ class IInventoryRepository(ABC):
     """Data persistence port for Inventory aggregates."""
 
     @abstractmethod
-    def get_by_id(self, inventory_id: str, for_update: bool = False) -> Optional[InventoryAggregate]:
+    def get_by_id(self, inventory_id: str, for_update: bool = False) -> InventoryAggregate | None:
         """Fetch inventory aggregate by primary ID."""
         pass
 
     @abstractmethod
     def get_by_variant_and_warehouse(
-        self, variant_id: str, warehouse_id: Optional[str] = None, for_update: bool = False
-    ) -> Optional[InventoryAggregate]:
+        self, variant_id: str, warehouse_id: str | None = None, for_update: bool = False
+    ) -> InventoryAggregate | None:
         """Fetch inventory aggregate by variant and warehouse."""
         pass
 
     @abstractmethod
     def get_by_product_and_branch(
-        self, product_id: str, branch_id: Optional[str] = None, for_update: bool = False
-    ) -> Optional[InventoryAggregate]:
+        self, product_id: str, branch_id: str | None = None, for_update: bool = False
+    ) -> InventoryAggregate | None:
         """Fetch inventory aggregate by product and branch."""
         pass
 
@@ -46,11 +46,11 @@ class IProductRepository(ABC):
     """Data persistence port for Product entities."""
 
     @abstractmethod
-    def get_by_id(self, product_id: str) -> Optional[ProductEntity]:
+    def get_by_id(self, product_id: str) -> ProductEntity | None:
         pass
 
     @abstractmethod
-    def get_by_sku(self, sku: str) -> Optional[ProductEntity]:
+    def get_by_sku(self, sku: str) -> ProductEntity | None:
         pass
 
     @abstractmethod

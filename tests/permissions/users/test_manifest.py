@@ -1,9 +1,8 @@
 import pytest
-
 from django.core.cache import cache
 
 from apps.users.utils.rbac_manifest import ManifestOrchestrator
-from tests.permissions.constants import ROLE_SETS, DIRECT_PERM_SETS
+from tests.permissions.constants import DIRECT_PERM_SETS, ROLE_SETS
 
 
 class TestManifestPipeline:
@@ -61,7 +60,10 @@ class TestManifestDeduplication:
 
 class TestManifestPrePostCondition:
     def test_updating_role_keys_updates_manifest(
-        self, user, role_builder, assignment_builder,
+        self,
+        user,
+        role_builder,
+        assignment_builder,
     ):
         role = role_builder.with_keys("perm:old").build()
         assignment_builder.with_roles(role).build()
@@ -77,7 +79,10 @@ class TestManifestPrePostCondition:
         assert "perm:old" not in manifest_after.effective_permissions
 
     def test_removing_role_from_assignment_removes_keys(
-        self, user, role_builder, assignment_builder,
+        self,
+        user,
+        role_builder,
+        assignment_builder,
     ):
         role = role_builder.with_keys("removed:key").build()
         assignment = assignment_builder.with_roles(role).build()
@@ -106,7 +111,9 @@ class TestManifestPerformance:
 
 
 class TestManifestIsolation:
-    def test_permissions_are_user_scoped(self, user, role_builder, assignment_builder, user_builder):
+    def test_permissions_are_user_scoped(
+        self, user, role_builder, assignment_builder, user_builder
+    ):
         other_user = user_builder.build()
         role = role_builder.with_keys("scoped:perm").build()
         assignment_builder.with_roles(role).build()
@@ -118,7 +125,11 @@ class TestManifestIsolation:
         assert other_manifest.has_perm("scoped:perm") is False
 
     def test_orphaned_role_does_not_crash_manifest(
-        self, user, role_builder, group_builder, assignment_builder,
+        self,
+        user,
+        role_builder,
+        group_builder,
+        assignment_builder,
     ):
         role = role_builder.with_keys("orphaned:key").build()
         group = group_builder.with_keys().with_roles(role).build()

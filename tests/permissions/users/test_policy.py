@@ -1,12 +1,11 @@
 import pytest
-
-from core.admin.utils.auth_utils import check_permission, evaluate_policy
-from core.base_models.permissions import PermissionPolicyMixin
-from core.admin.permissions.drf_permissions import CustomPermissionClass
-from core.admin.models import Company
 from rest_framework.test import APIRequestFactory
 from rest_framework.views import APIView
 
+from core.admin.models import Company
+from core.admin.permissions.drf_permissions import CustomPermissionClass
+from core.admin.utils.auth_utils import check_permission, evaluate_policy
+from core.base_models.permissions import PermissionPolicyMixin
 from tests.permissions.constants import COMPANY_PERMISSION_ACTIONS
 
 
@@ -43,12 +42,8 @@ class TestEvaluatePolicy:
     def test_at_least_operator(self, user, role_builder, assignment_builder):
         role = role_builder.with_keys("perm:a", "perm:b", "perm:c").build()
         assignment_builder.with_roles(role).build()
-        assert evaluate_policy(
-            user, {"at_least": [2, ["perm:a", "perm:b", "perm:z"]]}
-        ) is True
-        assert evaluate_policy(
-            user, {"at_least": [3, ["perm:a", "perm:z", "perm:y"]]}
-        ) is False
+        assert evaluate_policy(user, {"at_least": [2, ["perm:a", "perm:b", "perm:z"]]}) is True
+        assert evaluate_policy(user, {"at_least": [3, ["perm:a", "perm:z", "perm:y"]]}) is False
 
 
 class TestSuperuserBypass:

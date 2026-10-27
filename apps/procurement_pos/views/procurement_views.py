@@ -1,17 +1,17 @@
 from django.core.exceptions import ValidationError
 from rest_framework import status
 
-from core.base_views.api_views import BaseAPIView
-from core.admin.helpers.query_helpers import FilterSchema, FilterField
-from core.admin.helpers.response_helpers import ResponseFactory
-from apps.procurement_pos.models.procurement import Supplier, PurchaseOrder, GoodsReceivedNote
+from apps.procurement_pos.models.procurement import GoodsReceivedNote, PurchaseOrder, Supplier
 from apps.procurement_pos.serializers import (
-    SupplierSerializer,
-    PurchaseOrderSerializer,
     GoodsReceivedNoteSerializer,
+    PurchaseOrderSerializer,
+    SupplierSerializer,
 )
-from apps.procurement_pos.workflows.purchase_order_workflow import PurchaseOrderWorkflow
 from apps.procurement_pos.workflows.grn_workflow import GRNWorkflow
+from apps.procurement_pos.workflows.purchase_order_workflow import PurchaseOrderWorkflow
+from core.admin.helpers.query_helpers import FilterField, FilterSchema
+from core.admin.helpers.response_helpers import ResponseFactory
+from core.base_views.api_views import BaseAPIView
 
 
 class SupplierViewSet(BaseAPIView):
@@ -33,6 +33,7 @@ class PurchaseOrderViewSet(BaseAPIView):
     Purchase Order API ViewSet.
     Supports state machine actions (submit, approve, cancel) via workflows and ResponseFactory.
     """
+
     model = PurchaseOrder
     serializer_class = PurchaseOrderSerializer
     entity_name = "PurchaseOrder"
@@ -48,7 +49,9 @@ class PurchaseOrderViewSet(BaseAPIView):
     )
 
     def get_base_queryset(self):
-        return PurchaseOrder.objects.select_related("supplier", "created_by").prefetch_related("items")
+        return PurchaseOrder.objects.select_related("supplier", "created_by").prefetch_related(
+            "items"
+        )
 
     def post(self, request, *args, **kwargs):
         action = request.data.get("action")
@@ -73,7 +76,9 @@ class PurchaseOrderViewSet(BaseAPIView):
             except ValidationError as e:
                 return ResponseFactory.validation_error(errors={"detail": str(e)})
             except Exception as e:
-                return ResponseFactory.error(message=str(e), status_code=status.HTTP_400_BAD_REQUEST)
+                return ResponseFactory.error(
+                    message=str(e), status_code=status.HTTP_400_BAD_REQUEST
+                )
 
         return super().post(request, *args, **kwargs)
 
@@ -83,6 +88,7 @@ class GoodsReceivedNoteViewSet(BaseAPIView):
     GRN API ViewSet.
     Includes custom action 'finalize' to complete GRN and update Inventory stock dynamically via GRNWorkflow.
     """
+
     model = GoodsReceivedNote
     serializer_class = GoodsReceivedNoteSerializer
     entity_name = "GoodsReceivedNote"
@@ -96,7 +102,9 @@ class GoodsReceivedNoteViewSet(BaseAPIView):
     )
 
     def get_base_queryset(self):
-        return GoodsReceivedNote.objects.select_related("purchase_order", "warehouse", "received_by")
+        return GoodsReceivedNote.objects.select_related(
+            "purchase_order", "warehouse", "received_by"
+        )
 
     def post(self, request, *args, **kwargs):
         action = request.data.get("action")
@@ -108,11 +116,13 @@ class GoodsReceivedNoteViewSet(BaseAPIView):
                 serializer = self.serializer_class(grn)
                 return ResponseFactory.success(
                     data=serializer.data,
-                    message="GRN processed and inventory stock updated successfully."
+                    message="GRN processed and inventory stock updated successfully.",
                 )
             except ValidationError as e:
                 return ResponseFactory.validation_error(errors={"detail": str(e)})
             except Exception as e:
-                return ResponseFactory.error(message=str(e), status_code=status.HTTP_400_BAD_REQUEST)
+                return ResponseFactory.error(
+                    message=str(e), status_code=status.HTTP_400_BAD_REQUEST
+                )
 
         return super().post(request, *args, **kwargs)

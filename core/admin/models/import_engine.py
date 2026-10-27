@@ -1,11 +1,11 @@
 from django.db import models
 from django.utils import timezone
-from core.base_models.validator_model import BaseModel
-from core.base_models.scoping_models import TenantModelMixin
-from core.base_models.fields.short_ui_fields import CustomShortUUIDField
+
 from core.base_models.fields.char_fields import CustomCharField
-from core.base_models.fields.boolean_fields import CustomBooleanField
-from core.base_models.validators.rules import RequiredRule, UniqueRule
+from core.base_models.fields.short_ui_fields import CustomShortUUIDField
+from core.base_models.scoping_models import TenantModelMixin
+from core.base_models.validator_model import BaseModel
+from core.base_models.validators.rules import RequiredRule
 
 
 class ImportPackage(BaseModel, TenantModelMixin):
@@ -207,59 +207,6 @@ class ImportJob(BaseModel, TenantModelMixin):
         return f"Job #{self.id} {self.job_name} [{self.target_model}] -> {self.status}"
 
 
-class ImportPackageItem(BaseModel, TenantModelMixin):
-    """
-    ImportPackageItem Entity.
-    Tracks individual file imports within a package.
-    """
-
-    class Tier(models.TextChoices):
-        DEFINITION = "DEFINITION", "Definitions"
-        POLICY = "POLICY", "Policies & Rules"
-        MASTER = "MASTER", "Master Data"
-        CATALOG = "CATALOG", "Catalog & Context"
-        OPERATIONAL = "OPERATIONAL", "Operational Data"
-
-    id = CustomShortUUIDField(primary_key=True, prefix="impitm_")
-    package = models.ForeignKey(
-        ImportPackage,
-        on_delete=models.CASCADE,
-        related_name="items",
-    )
-    file_name = CustomCharField(max_length=200)
-    target_model = CustomCharField(max_length=100)
-    tier = CustomCharField(
-        max_length=50,
-        choices=Tier.choices,
-        default=Tier.MASTER,
-    )
-    status = CustomCharField(max_length=50, default="PENDING")
-
-    sequence_order = models.IntegerField(default=0)
-    row_count = models.IntegerField(default=0)
-    valid_rows = models.IntegerField(default=0)
-    error_count = models.IntegerField(default=0)
-    error_details = models.JSONField(default=list, blank=True)
-
-    permission_prefix = "admin:import_package_item"
-    permission_map = {
-        "list": "view",
-        "retrieve": "view",
-        "create": "create",
-        "update": "edit",
-        "destroy": "delete",
-    }
-
-    class Meta(BaseModel.Meta):
-        db_table = "admin_import_package_items"
-        ordering = ["sequence_order", "created_at"]
-        verbose_name = "Import Package Item"
-        verbose_name_plural = "Import Package Items"
-
-    def __str__(self):
-        return f"{self.file_name} -> {self.target_model} [{self.status}]"
-
-
 class StagingRecord(BaseModel, TenantModelMixin):
     """
     StagingRecord Domain Entity.
@@ -326,4 +273,3 @@ class StagingRecord(BaseModel, TenantModelMixin):
 
     def __str__(self):
         return f"Staging #{self.row_number} [{self.target_model}] -> {self.status}"
-

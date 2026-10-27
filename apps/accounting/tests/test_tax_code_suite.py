@@ -3,11 +3,11 @@ from decimal import Decimal
 from django.core.exceptions import ValidationError
 from django.test import TestCase
 
-from core.admin.models.company import Company
 from apps.accounting.models.chart_of_accounts import Account
 from apps.accounting.models.tax_code import TaxCode
 from apps.accounting.models.tax_pack import TaxPackCode, TaxRatePack
 from apps.accounting.services.tax_engine import TaxEngineService
+from core.admin.models.company import Company
 
 
 class TaxCodePackTestCase(TestCase):
@@ -23,8 +23,17 @@ class TaxCodePackTestCase(TestCase):
             company=company,
         )
 
-    def _code(self, company, account, code="FED_VAT", rate=5, jurisdiction="FEDERAL",
-              country="AE", tax_type="VAT", is_inclusive=False):
+    def _code(
+        self,
+        company,
+        account,
+        code="FED_VAT",
+        rate=5,
+        jurisdiction="FEDERAL",
+        country="AE",
+        tax_type="VAT",
+        is_inclusive=False,
+    ):
         return TaxCode.objects.create(
             company=company,
             code=code,
@@ -42,8 +51,9 @@ class TaxCodePackTestCase(TestCase):
     def test_tax_code_is_the_chargeable_atom(self):
         company = self._company("Atom Co")
         account = self._account("2100-VAT", company)
-        code = self._code(company, account, code="FED_VAT_AE", rate=18,
-                          jurisdiction="FEDERAL", country="AE")
+        code = self._code(
+            company, account, code="FED_VAT_AE", rate=18, jurisdiction="FEDERAL", country="AE"
+        )
 
         code.refresh_from_db()
         self.assertEqual(code.jurisdiction, "FEDERAL")
@@ -53,11 +63,21 @@ class TaxCodePackTestCase(TestCase):
         self.assertEqual(code.account_id, account.id)
         self.assertFalse(code.is_inclusive)
 
-        state = self._code(company, account, code="STATE_CA_4_5", rate=4.5,
-                           jurisdiction="STATE", country="US", tax_type="SALES_TAX")
-        municipal = self._code(company, account, code="MUNI_1_5", rate=1.5,
-                               jurisdiction="LOCAL", country="US")
-        self.assertEqual(municipal.jurisdiction, "LOCAL", "federal/state/municipal are each their own code")
+        state = self._code(
+            company,
+            account,
+            code="STATE_CA_4_5",
+            rate=4.5,
+            jurisdiction="STATE",
+            country="US",
+            tax_type="SALES_TAX",
+        )
+        municipal = self._code(
+            company, account, code="MUNI_1_5", rate=1.5, jurisdiction="LOCAL", country="US"
+        )
+        self.assertEqual(
+            municipal.jurisdiction, "LOCAL", "federal/state/municipal are each their own code"
+        )
 
     def test_tax_code_unique_per_company(self):
         company_a = self._company("CodeA Co")
@@ -66,7 +86,9 @@ class TaxCodePackTestCase(TestCase):
         self._code(company_a, account, code="FED_VAT")
 
         duplicate = TaxCode(company=company_a, code="FED_VAT", title="Dup")
-        rule = next(r for r in duplicate._rules.get("code", []) if r.__class__.__name__ == "UniqueRule")
+        rule = next(
+            r for r in duplicate._rules.get("code", []) if r.__class__.__name__ == "UniqueRule"
+        )
         self.assertFalse(rule.check(duplicate), "duplicate code rejected within the company")
         self.assertTrue(rule.check(TaxCode(company=company_b, code="FED_VAT", title="Dup")))
 
@@ -76,8 +98,12 @@ class TaxCodePackTestCase(TestCase):
         company = self._company("Structure Co")
         account = self._account("2100-VAT", company)
         federal = self._code(company, account, code="FED_VAT", rate=18)
-        state = self._code(company, account, code="STATE_CA_4_5", rate=4.5, jurisdiction="STATE", country="US")
-        local = self._code(company, account, code="MUNI_1_5", rate=1.5, jurisdiction="LOCAL", country="US")
+        state = self._code(
+            company, account, code="STATE_CA_4_5", rate=4.5, jurisdiction="STATE", country="US"
+        )
+        local = self._code(
+            company, account, code="MUNI_1_5", rate=1.5, jurisdiction="LOCAL", country="US"
+        )
 
         pack = TaxRatePack.from_codes(
             company,
@@ -107,13 +133,20 @@ class TaxCodePackTestCase(TestCase):
         code = self._code(company, account, code="FED_VAT", rate=18)
 
         uae_pack = TaxRatePack.from_codes(
-            company, code="AE_PACK", title="UAE", country_code="AE", direction="SALES",
+            company,
+            code="AE_PACK",
+            title="UAE",
+            country_code="AE",
+            direction="SALES",
             codes=[{"tax_code": code, "group": "FEDERAL", "position": 0}],
         )
         us_pack = TaxRatePack.from_codes(
-            company, code="US_PACK", title="US Override", country_code="US", direction="SALES",
-            codes=[{"tax_code": code, "group": "FEDERAL", "position": 0,
-                    "rate": Decimal("9.500")}],
+            company,
+            code="US_PACK",
+            title="US Override",
+            country_code="US",
+            direction="SALES",
+            codes=[{"tax_code": code, "group": "FEDERAL", "position": 0, "rate": Decimal("9.500")}],
         )
 
         self.assertEqual(
@@ -136,7 +169,10 @@ class TaxCodePackTestCase(TestCase):
         account = self._account("2100-VAT", company)
         code = self._code(company, account, code="FED_VAT", rate=18, is_inclusive=True)
         pack = TaxRatePack.from_codes(
-            company, code="SNAP_PACK", title="Snapshot", direction="SALES",
+            company,
+            code="SNAP_PACK",
+            title="Snapshot",
+            direction="SALES",
             codes=[{"tax_code": code, "position": 0}],
         )
 
@@ -159,11 +195,18 @@ class TaxCodePackTestCase(TestCase):
         company = self._company("Display Co")
         account = self._account("2100-VAT", company)
         federal = self._code(company, account, code="FED_VAT", rate=18)
-        state = self._code(company, account, code="STATE_CA_4_5", rate=4.5, jurisdiction="STATE", country="US")
-        local = self._code(company, account, code="MUNI_1_5", rate=1.5, jurisdiction="LOCAL", country="US")
+        state = self._code(
+            company, account, code="STATE_CA_4_5", rate=4.5, jurisdiction="STATE", country="US"
+        )
+        local = self._code(
+            company, account, code="MUNI_1_5", rate=1.5, jurisdiction="LOCAL", country="US"
+        )
 
         pack = TaxRatePack.from_codes(
-            company, code="US_CA_PACK", title="California Combined", country_code="US",
+            company,
+            code="US_CA_PACK",
+            title="California Combined",
+            country_code="US",
             direction="SALES",
             codes=[
                 {"tax_code": federal, "group": "FEDERAL", "position": 0},
@@ -192,11 +235,18 @@ class TaxCodePackTestCase(TestCase):
         account = self._account("2100-VAT", company)
         federal = self._code(company, account, code="FED_VAT", rate=18)
         pack = TaxRatePack.from_codes(
-            company, code="AE_PACK", title="UAE", country_code="AE", direction="SALES",
+            company,
+            code="AE_PACK",
+            title="UAE",
+            country_code="AE",
+            direction="SALES",
             codes=[{"tax_code": federal, "group": "FEDERAL", "position": 0}],
         )
 
         display = pack.display()
         result = TaxEngineService().calculate_sales_tax(Decimal("100.00"), pack)
-        self.assertEqual(display["total_rate"], result.total_rate_sum if hasattr(result, "total_rate_sum") else Decimal("18.000"))
+        self.assertEqual(
+            display["total_rate"],
+            result.total_rate_sum if hasattr(result, "total_rate_sum") else Decimal("18.000"),
+        )
         self.assertEqual(result.total_tax_amount, Decimal("18.00"))

@@ -1,6 +1,6 @@
-from core.base_views.api_views import BaseAPIView
 from apps.shop.infrastructure.models.category import Category
 from apps.shop.infrastructure.serializers.category_serializers import CategorySerializer
+from core.base_views.api_views import BaseAPIView
 
 
 class CategoryViewSet(BaseAPIView):

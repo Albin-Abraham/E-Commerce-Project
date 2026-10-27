@@ -1,11 +1,12 @@
 from django.db import models
-from core.base_models.validator_model import BaseModel
-from core.base_models.scoping_models import TenantModelMixin
-from core.base_models.fields.short_ui_fields import CustomShortUUIDField
+
+from core.base_models.fields.boolean_fields import CustomBooleanField
 from core.base_models.fields.char_fields import CustomCharField
 from core.base_models.fields.numeric_fields import CustomDecimalField
-from core.base_models.fields.boolean_fields import CustomBooleanField
-from core.base_models.validators.rules import RequiredRule, UniqueRule, MinRule
+from core.base_models.fields.short_ui_fields import CustomShortUUIDField
+from core.base_models.scoping_models import TenantModelMixin
+from core.base_models.validator_model import BaseModel
+from core.base_models.validators.rules import MinRule, RequiredRule, UniqueRule
 
 
 class UOM(BaseModel, TenantModelMixin):

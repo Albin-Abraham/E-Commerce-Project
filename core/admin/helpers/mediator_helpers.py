@@ -1,7 +1,9 @@
-from typing import Any, Optional, Type, Dict, List
-from django.db.models import Model
+from typing import Any
+
 from django.core.exceptions import ValidationError as DjangoValidationError
+from django.db.models import Model
 from rest_framework import serializers
+
 from .builder_helpers import ModelInstanceBuilder
 
 
@@ -9,21 +11,22 @@ class ValidationMediator:
     """
     GoF Mediator Pattern: Orchestrates validation between serializers and models.
     """
-    def __init__(self, model_class: Type[Model]):
+
+    def __init__(self, model_class: type[Model]):
         self.model_class = model_class
 
     def validate(
-        self, 
-        data: dict, 
-        instance: Optional[Model] = None, 
-        partial: bool = False, 
-        context: Optional[dict] = None
+        self,
+        data: dict,
+        instance: Model | None = None,
+        partial: bool = False,
+        context: dict | None = None,
     ) -> tuple[dict, Model]:
         """
         Orchestrate rule execution with support for custom exceptions and tracing.
         """
         context = context or {}
-        
+
         # Metadata Injection: Initialize trace if 'explain' mode is active
         trace = [] if context.get("explain") else None
         context["_trace"] = trace
@@ -34,15 +37,18 @@ class ValidationMediator:
 
         # 2. Extract rules
         from core.base_models.validator_model import ValidatorModelMixin
-        rules_dict: Dict[str, List[Any]] = {}
+
+        rules_dict: dict[str, list[Any]] = {}
         if isinstance(built_instance, ValidatorModelMixin):
             rules_dict = built_instance._rules
-        
+
         errors = {}
-        
+
         # 3. Execute Rules
-        from core.base_models.exceptions import RuleViolation
         import logging
+
+        from core.base_models.exceptions import RuleViolation
+
         logger = logging.getLogger("core.mediator")
 
         for field, rules in rules_dict.items():
@@ -50,12 +56,14 @@ class ValidationMediator:
             for rule in rules:
                 rule_name = rule.__class__.__name__
                 if trace is not None:
-                    trace.append({
-                        "field": field,
-                        "rule": rule_name,
-                        "status": "pending",
-                        "metadata": getattr(rule, "metadata", {})
-                    })
+                    trace.append(
+                        {
+                            "field": field,
+                            "rule": rule_name,
+                            "status": "pending",
+                            "metadata": getattr(rule, "metadata", {}),
+                        }
+                    )
 
                 if rule.applies(built_instance, value, context):
                     try:
@@ -66,21 +74,23 @@ class ValidationMediator:
                         if trace is not None:
                             trace[-1]["status"] = "failed"
                             trace[-1]["error"] = e.message
-                        
+
                         if field not in errors:
                             errors[field] = []
                         errors[field].append(e.message)
                     except (serializers.ValidationError, DjangoValidationError) as e:
                         if trace is not None:
                             trace[-1]["status"] = "failed"
-                        
+
                         if field not in errors:
                             errors[field] = []
-                        
+
                         if hasattr(e, "detail"):
                             msg = e.detail
-                            if isinstance(msg, list): errors[field].extend(msg)
-                            else: errors[field].append(msg)
+                            if isinstance(msg, list):
+                                errors[field].extend(msg)
+                            else:
+                                errors[field].append(msg)
                         elif hasattr(e, "messages"):
                             errors[field].extend(e.messages)
                         else:
@@ -88,7 +98,7 @@ class ValidationMediator:
                 elif trace is not None:
                     trace[-1]["status"] = "skipped"
                     trace[-1]["reason"] = "Applicability check failed"
-        
+
         if errors:
             raise serializers.ValidationError(errors)
 

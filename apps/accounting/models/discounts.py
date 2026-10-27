@@ -5,17 +5,16 @@ from django.contrib.contenttypes.models import ContentType
 from django.core.exceptions import ValidationError
 from django.db import models
 
-from core.base_models.fields.char_fields import CustomCharField
-from core.base_models.fields.numeric_fields import CustomDecimalField
-from core.base_models.fields.short_ui_fields import CustomShortUUIDField
-from core.base_models.validator_model import BaseModel
-from core.base_models.validators.rules import RequiredRule, UniqueRule
-
 from apps.accounting.services.operator_registry import OperatorRegistry
 from apps.accounting.valuesets import (
     DISCOUNT_OPERATOR_VALUESET,
     DISCOUNT_TYPE_VALUESET,
 )
+from core.base_models.fields.char_fields import CustomCharField
+from core.base_models.fields.numeric_fields import CustomDecimalField
+from core.base_models.fields.short_ui_fields import CustomShortUUIDField
+from core.base_models.validator_model import BaseModel
+from core.base_models.validators.rules import RequiredRule, UniqueRule
 
 
 class DiscountConditionItem(BaseModel):
@@ -62,7 +61,7 @@ class DiscountConditionItem(BaseModel):
         max_length=120,
         blank=True,
         default="",
-        help_text="Comparison value 1 (e.g. \"Female\", 21, \"Gold\")",
+        help_text='Comparison value 1 (e.g. "Female", 21, "Gold")',
     )
     value_to = models.CharField(
         max_length=120,
@@ -82,7 +81,9 @@ class DiscountConditionItem(BaseModel):
         default=0,
         help_text="Fixed discount amount awarded when the condition matches (FIXED_AMOUNT configs)",
     )
-    position = models.PositiveIntegerField(default=0, help_text="Order of the condition inside its array")
+    position = models.PositiveIntegerField(
+        default=0, help_text="Order of the condition inside its array"
+    )
     is_active = models.BooleanField(default=True)
 
     class Meta(BaseModel.Meta):
@@ -287,9 +288,7 @@ class DiscountConfiguration(BaseModel):
 
         for index, entry in enumerate(conditions):
             if not isinstance(entry, dict) or "field_key" not in entry:
-                raise ValidationError(
-                    f"Each condition entry requires a 'field_key': {entry}"
-                )
+                raise ValidationError(f"Each condition entry requires a 'field_key': {entry}")
             item = DiscountConditionItem(
                 configuration=configuration,
                 field_key=entry["field_key"],
@@ -325,7 +324,12 @@ class DiscountConfiguration(BaseModel):
             return tax_key
         pk = tax_key
         if isinstance(tax_key, dict):
-            pk = tax_key.get("key") or tax_key.get("template_key") or tax_key.get("id") or tax_key.get("pk")
+            pk = (
+                tax_key.get("key")
+                or tax_key.get("template_key")
+                or tax_key.get("id")
+                or tax_key.get("pk")
+            )
         if not pk:
             raise ValidationError(f"Invalid tax item key: {tax_key}")
         try:
@@ -374,4 +378,6 @@ class DiscountConfiguration(BaseModel):
             return Decimal("0.00")
         if self.discount_type == "FIXED_AMOUNT":
             return result["fixed_amount"]
-        return (Decimal(str(basis)) * result["percentage"] / Decimal("100")).quantize(Decimal("0.01"))
+        return (Decimal(str(basis)) * result["percentage"] / Decimal("100")).quantize(
+            Decimal("0.01")
+        )

@@ -1,7 +1,9 @@
 import logging
-from django.db import transaction
+
 from django.core.exceptions import ValidationError
-from apps.procurement_pos.models.selling import SalesOrder, DeliveryNote
+from django.db import transaction
+
+from apps.procurement_pos.models.selling import DeliveryNote, SalesOrder
 
 logger = logging.getLogger(__name__)
 
@@ -16,7 +18,9 @@ class SalesOrderWorkflow:
     def confirm_order(cls, order_id: str, user) -> SalesOrder:
         order = SalesOrder.objects.select_for_update().get(pk=order_id)
         if order.status != SalesOrder.OrderStatus.DRAFT:
-            raise ValidationError(f"Cannot confirm SalesOrder in state {order.status}. Must be DRAFT.")
+            raise ValidationError(
+                f"Cannot confirm SalesOrder in state {order.status}. Must be DRAFT."
+            )
 
         order.status = SalesOrder.OrderStatus.CONFIRMED
         order.save(update_fields=["status", "updated_at"])
@@ -25,10 +29,17 @@ class SalesOrderWorkflow:
 
     @classmethod
     @transaction.atomic
-    def create_delivery_note(cls, order_id: str, warehouse, tracking_number: str = "", user=None) -> DeliveryNote:
+    def create_delivery_note(
+        cls, order_id: str, warehouse, tracking_number: str = "", user=None
+    ) -> DeliveryNote:
         order = SalesOrder.objects.select_for_update().get(pk=order_id)
-        if order.status not in [SalesOrder.OrderStatus.CONFIRMED, SalesOrder.OrderStatus.DISPATCHED]:
-            raise ValidationError(f"Cannot generate Delivery Note for SalesOrder in state {order.status}.")
+        if order.status not in [
+            SalesOrder.OrderStatus.CONFIRMED,
+            SalesOrder.OrderStatus.DISPATCHED,
+        ]:
+            raise ValidationError(
+                f"Cannot generate Delivery Note for SalesOrder in state {order.status}."
+            )
 
         delivery_note = DeliveryNote.objects.create(
             sales_order=order,
@@ -39,5 +50,7 @@ class SalesOrderWorkflow:
 
         order.status = SalesOrder.OrderStatus.DISPATCHED
         order.save(update_fields=["status", "updated_at"])
-        logger.info(f"DeliveryNote #{delivery_note.delivery_number} generated for SalesOrder #{order.order_number}")
+        logger.info(
+            f"DeliveryNote #{delivery_note.delivery_number} generated for SalesOrder #{order.order_number}"
+        )
         return delivery_note

@@ -1,23 +1,35 @@
 from rest_framework import serializers
-from core.base_serializers.base_serializers import BaseModelSerializer
+
 from apps.shop.infrastructure.models.catalog import (
     Catalog,
-    CatalogItem,
     CatalogCollection,
+    CatalogItem,
     CatalogPublication,
-    TagDefinition,
     EntityTag,
+    TagDefinition,
 )
-from apps.shop.infrastructure.serializers.product_serializers import ProductSerializer, ProductVariantSerializer
+from apps.shop.infrastructure.serializers.product_serializers import (
+    ProductSerializer,
+    ProductVariantSerializer,
+)
+from core.base_serializers.base_serializers import BaseModelSerializer
 
 
 class TagDefinitionSerializer(BaseModelSerializer):
     class Meta:
         model = TagDefinition
         fields = [
-            "id", "code", "name", "badge_label", "badge_color",
-            "icon_url", "is_active", "metadata", "company",
-            "created_at", "updated_at",
+            "id",
+            "code",
+            "name",
+            "badge_label",
+            "badge_color",
+            "icon_url",
+            "is_active",
+            "metadata",
+            "company",
+            "created_at",
+            "updated_at",
         ]
         read_only_fields = ["id", "created_at", "updated_at"]
 
@@ -29,9 +41,17 @@ class EntityTagSerializer(BaseModelSerializer):
     class Meta:
         model = EntityTag
         fields = [
-            "id", "tag_definition", "tag_code", "tag_name",
-            "content_type", "object_id", "start_date", "end_date",
-            "company", "created_at", "updated_at",
+            "id",
+            "tag_definition",
+            "tag_code",
+            "tag_name",
+            "content_type",
+            "object_id",
+            "start_date",
+            "end_date",
+            "company",
+            "created_at",
+            "updated_at",
         ]
         read_only_fields = ["id", "created_at", "updated_at"]
 
@@ -40,9 +60,16 @@ class CatalogSerializer(BaseModelSerializer):
     class Meta:
         model = Catalog
         fields = [
-            "id", "name", "code", "slug", "description",
-            "is_active", "company", "metadata",
-            "created_at", "updated_at",
+            "id",
+            "name",
+            "code",
+            "slug",
+            "description",
+            "is_active",
+            "company",
+            "metadata",
+            "created_at",
+            "updated_at",
         ]
         read_only_fields = ["id", "created_at", "updated_at"]
 
@@ -56,11 +83,25 @@ class CatalogItemSerializer(BaseModelSerializer):
     class Meta:
         model = CatalogItem
         fields = [
-            "id", "catalog", "product", "variant",
-            "override_name", "override_price", "display_name", "effective_price",
-            "is_new_arrival", "is_budget_friendly", "tags", "is_published",
-            "sort_order", "metadata", "company", "product_details", "variant_details",
-            "created_at", "updated_at",
+            "id",
+            "catalog",
+            "product",
+            "variant",
+            "override_name",
+            "override_price",
+            "display_name",
+            "effective_price",
+            "is_new_arrival",
+            "is_budget_friendly",
+            "tags",
+            "is_published",
+            "sort_order",
+            "metadata",
+            "company",
+            "product_details",
+            "variant_details",
+            "created_at",
+            "updated_at",
         ]
         read_only_fields = ["id", "created_at", "updated_at"]
 
@@ -71,10 +112,19 @@ class CatalogCollectionSerializer(BaseModelSerializer):
     class Meta:
         model = CatalogCollection
         fields = [
-            "id", "catalog", "name", "slug", "collection_type",
-            "max_budget_price", "items", "items_count",
-            "is_active", "metadata", "company",
-            "created_at", "updated_at",
+            "id",
+            "catalog",
+            "name",
+            "slug",
+            "collection_type",
+            "max_budget_price",
+            "items",
+            "items_count",
+            "is_active",
+            "metadata",
+            "company",
+            "created_at",
+            "updated_at",
         ]
         read_only_fields = ["id", "created_at", "updated_at"]
 
@@ -88,8 +138,14 @@ class CatalogPublicationSerializer(BaseModelSerializer):
     class Meta:
         model = CatalogPublication
         fields = [
-            "id", "catalog", "channel", "channel_display",
-            "published_at", "is_active", "company",
-            "created_at", "updated_at",
+            "id",
+            "catalog",
+            "channel",
+            "channel_display",
+            "published_at",
+            "is_active",
+            "company",
+            "created_at",
+            "updated_at",
         ]
         read_only_fields = ["id", "created_at", "updated_at"]

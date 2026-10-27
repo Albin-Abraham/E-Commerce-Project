@@ -1,7 +1,8 @@
 import pytest
 from rest_framework.test import APIRequestFactory, force_authenticate
-from apps.shop.interface.views.category_views import CategoryViewSet
+
 from apps.shop.infrastructure.models.category import Category
+from apps.shop.interface.views.category_views import CategoryViewSet
 from tests.factories.user import UserFactory
 
 

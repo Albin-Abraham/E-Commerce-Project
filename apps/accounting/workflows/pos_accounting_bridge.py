@@ -1,7 +1,9 @@
 import logging
 from decimal import Decimal
+
 from django.db import transaction
 from django.utils import timezone
+
 from apps.accounting.models.chart_of_accounts import Account
 from apps.accounting.models.journal_entry import JournalEntry, JournalEntryLine
 from apps.accounting.workflows.posting_service import GLPostingService
@@ -52,39 +54,36 @@ class POSAccountingBridge:
             return None
 
         # 2. Resolve Accounts with deterministic fallbacks
-        cash_account = (
-            Account.objects.filter(company=company, root_type="ASSET", account_type__in=["CASH", "BANK"]).first()
-            or Account.objects.create(
-                account_code=f"1000-CASH-{company.id[:6]}",
-                account_name="Cash on Hand",
-                root_type="ASSET",
-                account_type="CASH",
-                company=company,
-            )
+        cash_account = Account.objects.filter(
+            company=company, root_type="ASSET", account_type__in=["CASH", "BANK"]
+        ).first() or Account.objects.create(
+            account_code=f"1000-CASH-{company.id[:6]}",
+            account_name="Cash on Hand",
+            root_type="ASSET",
+            account_type="CASH",
+            company=company,
         )
 
-        revenue_account = (
-            Account.objects.filter(company=company, root_type="INCOME").first()
-            or Account.objects.create(
-                account_code=f"4000-SALES-{company.id[:6]}",
-                account_name="Sales Revenue",
-                root_type="INCOME",
-                company=company,
-            )
+        revenue_account = Account.objects.filter(
+            company=company, root_type="INCOME"
+        ).first() or Account.objects.create(
+            account_code=f"4000-SALES-{company.id[:6]}",
+            account_name="Sales Revenue",
+            root_type="INCOME",
+            company=company,
         )
 
         tax_account = None
         tax_amount = Decimal(str(pos_transaction.tax_amount or 0.0))
         if tax_amount > Decimal("0.00"):
-            tax_account = (
-                Account.objects.filter(company=company, root_type="LIABILITY", account_type="TAX").first()
-                or Account.objects.create(
-                    account_code=f"2100-VAT-{company.id[:6]}",
-                    account_name="Output VAT Payable",
-                    root_type="LIABILITY",
-                    account_type="TAX",
-                    company=company,
-                )
+            tax_account = Account.objects.filter(
+                company=company, root_type="LIABILITY", account_type="TAX"
+            ).first() or Account.objects.create(
+                account_code=f"2100-VAT-{company.id[:6]}",
+                account_name="Output VAT Payable",
+                root_type="LIABILITY",
+                account_type="TAX",
+                company=company,
             )
 
         # 3. Calculate COGS and resolve inventory asset accounts
@@ -99,25 +98,23 @@ class POSAccountingBridge:
         cogs_account = None
         inventory_account = None
         if total_cogs > Decimal("0.00"):
-            cogs_account = (
-                Account.objects.filter(company=company, root_type="EXPENSE", account_type="COST_OF_GOODS_SOLD").first()
-                or Account.objects.create(
-                    account_code=f"5000-COGS-{company.id[:6]}",
-                    account_name="Cost of Goods Sold",
-                    root_type="EXPENSE",
-                    account_type="COST_OF_GOODS_SOLD",
-                    company=company,
-                )
+            cogs_account = Account.objects.filter(
+                company=company, root_type="EXPENSE", account_type="COST_OF_GOODS_SOLD"
+            ).first() or Account.objects.create(
+                account_code=f"5000-COGS-{company.id[:6]}",
+                account_name="Cost of Goods Sold",
+                root_type="EXPENSE",
+                account_type="COST_OF_GOODS_SOLD",
+                company=company,
             )
-            inventory_account = (
-                Account.objects.filter(company=company, root_type="ASSET", account_type="STOCK_IN_HAND").first()
-                or Account.objects.create(
-                    account_code=f"1400-STOCK-{company.id[:6]}",
-                    account_name="Stock in Hand",
-                    root_type="ASSET",
-                    account_type="STOCK_IN_HAND",
-                    company=company,
-                )
+            inventory_account = Account.objects.filter(
+                company=company, root_type="ASSET", account_type="STOCK_IN_HAND"
+            ).first() or Account.objects.create(
+                account_code=f"1400-STOCK-{company.id[:6]}",
+                account_name="Stock in Hand",
+                root_type="ASSET",
+                account_type="STOCK_IN_HAND",
+                company=company,
             )
 
         # 4. Construct Journal Entry Header
@@ -127,7 +124,11 @@ class POSAccountingBridge:
         total_debit = total_amount + total_cogs
         total_credit = total_amount + total_cogs
 
-        posting_date = pos_transaction.created_at.date() if pos_transaction.created_at else timezone.now().date()
+        posting_date = (
+            pos_transaction.created_at.date()
+            if pos_transaction.created_at
+            else timezone.now().date()
+        )
 
         jv = JournalEntry.objects.create(
             company=company,

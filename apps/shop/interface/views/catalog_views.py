@@ -1,24 +1,24 @@
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
-from core.base_views.api_views import BaseAPIView
-from core.admin.helpers.query_helpers import FilterSchema, FilterField
 from apps.shop.infrastructure.models.catalog import (
     Catalog,
-    CatalogItem,
     CatalogCollection,
+    CatalogItem,
     CatalogPublication,
-    TagDefinition,
     EntityTag,
+    TagDefinition,
 )
 from apps.shop.infrastructure.serializers.catalog_serializers import (
-    CatalogSerializer,
-    CatalogItemSerializer,
     CatalogCollectionSerializer,
+    CatalogItemSerializer,
     CatalogPublicationSerializer,
-    TagDefinitionSerializer,
+    CatalogSerializer,
     EntityTagSerializer,
+    TagDefinitionSerializer,
 )
+from core.admin.helpers.query_helpers import FilterField, FilterSchema
+from core.base_views.api_views import BaseAPIView
 
 
 class TagDefinitionViewSet(BaseAPIView):
@@ -143,4 +143,6 @@ class CatalogPublicationViewSet(BaseAPIView):
         publication = self.get_object()
         publication.publish()
         serializer = self.get_serializer(publication)
-        return Response({"success": True, "message": "Catalog publication updated", "data": serializer.data})
+        return Response(
+            {"success": True, "message": "Catalog publication updated", "data": serializer.data}
+        )

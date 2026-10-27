@@ -4,8 +4,8 @@ from apps.customers.models.customer import (
     CustomerContact,
     CustomerPreference,
 )
-from apps.customers.models.shopping import Cart, CartItem, Wishlist, WishlistItem
 from apps.customers.models.party_ledger import PartyLedgerEntry
+from apps.customers.models.shopping import Cart, CartItem, Wishlist, WishlistItem
 
 __all__ = [
     "Customer",

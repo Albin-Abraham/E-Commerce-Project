@@ -84,6 +84,7 @@ class CurrencyInjectionMixin:
             currency_code = None
 
             from core.registry.provider_registry import ProviderRegistry
+
             provider = ProviderRegistry.get_currency_provider()
             if provider:
                 if company_id:
@@ -98,7 +99,6 @@ class CurrencyInjectionMixin:
             if currency_code:
                 data[field_name] = currency_code
                 logger.debug(f"[CurrencyInjectionMixin] Injected {field_name}={currency_code}")
-
 
         return data
 

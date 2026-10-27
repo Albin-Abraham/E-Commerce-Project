@@ -3,8 +3,10 @@
 DjangoUnitOfWork — Concrete implementation of IUnitOfWork backed by Django database transactions.
 """
 
-from typing import Optional, Any
+from typing import Any
+
 from django.db import transaction
+
 from shared_domain.base.unit_of_work import IUnitOfWork
 
 
@@ -15,7 +17,7 @@ class DjangoUnitOfWork(IUnitOfWork):
 
     def __init__(self, using: str = "default"):
         self.using = using
-        self._atomic: Optional[Any] = None
+        self._atomic: Any | None = None
 
     def __enter__(self) -> "DjangoUnitOfWork":
         self._atomic = transaction.atomic(using=self.using)

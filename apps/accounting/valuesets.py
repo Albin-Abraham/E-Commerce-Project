@@ -27,7 +27,9 @@ ACCOUNT_TYPE_VALUESET = ValueSet(
         ValueSetItem(code="DIRECT_EXPENSE", label="Direct Expense", is_active=True),
         ValueSetItem(code="INDIRECT_EXPENSE", label="Indirect Expense", is_active=True),
         ValueSetItem(code="TAX", label="Tax / Duty Account", is_active=True),
-        ValueSetItem(code="ACCUMULATED_DEPRECIATION", label="Accumulated Depreciation", is_active=True),
+        ValueSetItem(
+            code="ACCUMULATED_DEPRECIATION", label="Accumulated Depreciation", is_active=True
+        ),
         ValueSetItem(code="RETAINED_EARNINGS", label="Retained Earnings", is_active=True),
     ],
 )
@@ -63,7 +65,9 @@ CHARGE_TYPE_VALUESET = ValueSet(
     domain="accounting",
     description="Direction a charge affects a transaction grand total",
     items=[
-        ValueSetItem(code="ADDITIONAL", label="Additional / Surcharge (Adds To Total)", is_active=True),
+        ValueSetItem(
+            code="ADDITIONAL", label="Additional / Surcharge (Adds To Total)", is_active=True
+        ),
         ValueSetItem(code="DISCOUNT", label="Discount (Reduces Total)", is_active=True),
         ValueSetItem(code="TAX_SURCHARGE", label="Tax Surcharge (Levied With Tax)", is_active=True),
     ],
@@ -114,7 +118,9 @@ DISCOUNT_OPERATOR_VALUESET = ValueSet(
         ValueSetItem(code="NOT_EQUAL_TO", label="Not Equal To", is_active=True),
         ValueSetItem(code="GREATER_THAN", label="Greater Than", is_active=True),
         ValueSetItem(code="LESS_THAN", label="Less Than", is_active=True),
-        ValueSetItem(code="GREATER_THAN_OR_EQUAL", label="Greater Than Or Equal To", is_active=True),
+        ValueSetItem(
+            code="GREATER_THAN_OR_EQUAL", label="Greater Than Or Equal To", is_active=True
+        ),
         ValueSetItem(code="LESS_THAN_OR_EQUAL", label="Less Than Or Equal To", is_active=True),
         ValueSetItem(code="BETWEEN", label="Between Value 1 And Value 2", is_active=True),
     ],
@@ -156,4 +162,3 @@ TAX_PACK_GROUP_VALUESET = ValueSet(
         ValueSetItem(code="OTHER", label="Other Group", is_active=True),
     ],
 )
-

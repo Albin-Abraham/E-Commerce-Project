@@ -32,22 +32,43 @@ dynamic = ["version"]
 [tool.ruff]
 target-version = "py311"
 line-length = 100
+exclude = [
+    ".git",
+    "venv",
+    "env",
+    "__pycache__",
+    "**/migrations/*",
+]
 
 [tool.ruff.lint]
+external = ["DAG"]
 select = [
     "E",   # pycodestyle errors
     "F",   # pyflakes
     "W",   # pycodestyle warnings
     "I",   # isort
     "UP",  # pyupgrade
-    "N",   # pep8-naming (optional)
+    "N",   # pep8-naming
+]
+ignore = [
+    "N806", # Non-lowercase variable in function
+    "N802", # Function name should be lowercase
+    "E501", # Line too long
+    "E402", # Module level import not at top of file
+    "F841", # Unused variable
+    "N818", # Error suffix on exception name
+    "N816", # Mixed case variable in global scope
+    "N817", # CamelCase imported as acronym
+    "N813", # Camelcase imported as lowercase
 ]
 
 [tool.ruff.lint.per-file-ignores]
-"tests/*" = ["N"]
-"apps/*/tests/*" = ["N"]
+"__init__.py" = ["F401", "F403"]
+"tests/*" = ["N", "F841", "E501"]
+"apps/*/tests/*" = ["N", "F841", "E501"]
 "**/migrations/*" = ["E"]
-"**/settings/*" = ["E"]
+"**/settings/*" = ["E", "F403", "F405"]
+"**/pytest_settings.py" = ["E", "F403", "F405"]
 
 [tool.pytest.ini_options]
 DJANGO_SETTINGS_MODULE = "backend.settings.test"

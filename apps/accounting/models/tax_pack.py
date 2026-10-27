@@ -20,16 +20,15 @@ from decimal import Decimal
 
 from django.db import models
 
-from core.base_models.fields.char_fields import CustomCharField
-from core.base_models.fields.short_ui_fields import CustomShortUUIDField
-from core.base_models.validator_model import BaseModel
-from core.base_models.validators.rules import RequiredRule, UniqueRule
-
 from apps.accounting.models.tax import TAX_CATEGORY_VALUESET
 from apps.accounting.valuesets import (
     TAX_PACK_DIRECTION_VALUESET,
     TAX_PACK_GROUP_VALUESET,
 )
+from core.base_models.fields.char_fields import CustomCharField
+from core.base_models.fields.short_ui_fields import CustomShortUUIDField
+from core.base_models.validator_model import BaseModel
+from core.base_models.validators.rules import RequiredRule, UniqueRule
 
 
 class TaxRatePack(BaseModel):
@@ -173,6 +172,7 @@ class TaxRatePack(BaseModel):
         """
         if not codes:
             from django.core.exceptions import ValidationError
+
             raise ValidationError("A tax pack requires at least one tax code")
 
         pack = cls.objects.create(
@@ -213,7 +213,7 @@ class TaxRatePack(BaseModel):
             .select_related("account", "code")
             .order_by("position")
         )
-        grouped: "OrderedDict[str, list]" = OrderedDict()
+        grouped: OrderedDict[str, list] = OrderedDict()
         for line in lines:
             grouped.setdefault(line.group, []).append(line)
 

@@ -1,24 +1,23 @@
 from .brand import Brand
-from .category import Category, CategoryEdge
-from .product import Product
-from .variant import ProductVariant
-from .warehouse import Warehouse
-from .facility import Facility, StorageLocation, FacilityInventory
-from .inventory import Inventory, Batch, SerialNumber, StockTransfer, StockMovement
-from .polymorphic import Media, Review, ActivityLog, ProductComment, ProductTestimonial
-from .graph import EntityEdge, BOMEdge
-from .events import DomainEventOutbox
-
-from .uom import UOM, UOMConversion, ItemUOM
-from .pricing import PriceList, PricingRule
 from .catalog import (
     Catalog,
-    CatalogItem,
     CatalogCollection,
+    CatalogItem,
     CatalogPublication,
-    TagDefinition,
     EntityTag,
+    TagDefinition,
 )
+from .category import Category, CategoryEdge
+from .events import DomainEventOutbox
+from .facility import Facility, FacilityInventory, StorageLocation
+from .graph import BOMEdge, EntityEdge
+from .inventory import Batch, Inventory, SerialNumber, StockMovement, StockTransfer
+from .polymorphic import ActivityLog, Media, ProductComment, ProductTestimonial, Review
+from .pricing import PriceList, PricingRule
+from .product import Product
+from .uom import UOM, ItemUOM, UOMConversion
+from .variant import ProductVariant
+from .warehouse import Warehouse
 
 __all__ = [
     "Brand",

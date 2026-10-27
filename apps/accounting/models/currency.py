@@ -1,9 +1,11 @@
 import decimal
+
 from django.db import models
 from django.utils import timezone
-from core.base_models.validator_model import BaseModel
-from core.base_models.fields.short_ui_fields import CustomShortUUIDField
+
 from core.base_models.fields.char_fields import CustomCharField
+from core.base_models.fields.short_ui_fields import CustomShortUUIDField
+from core.base_models.validator_model import BaseModel
 from core.base_models.validators.rules import RequiredRule, UniqueRule
 
 
@@ -65,15 +67,26 @@ class Currency(BaseModel):
         help_text="Insert space between symbol and value e.g. '$ 100' (true) vs '$100' (false)",
     )
     decimal_places = models.PositiveSmallIntegerField(default=2)
-    decimal_separator = models.CharField(max_length=5, default=".", help_text="Fractional separator e.g. '.' or ','")
-    thousand_separator = models.CharField(max_length=5, default=",", help_text="Block separator e.g. ',' or '.' or space ' ' or single quote '\''")
+    decimal_separator = models.CharField(
+        max_length=5, default=".", help_text="Fractional separator e.g. '.' or ','"
+    )
+    thousand_separator = models.CharField(
+        max_length=5,
+        default=",",
+        help_text="Block separator e.g. ',' or '.' or space ' ' or single quote '''",
+    )
     digit_grouping = models.CharField(
         max_length=25,
         choices=DIGIT_GROUPING_CHOICES,
         default="WESTERN",
     )
-    subunit_name = models.CharField(max_length=30, default="Cent", help_text="Fractional unit e.g. Cent, Halala, Paisa, Fils")
-    subunit_to_unit = models.PositiveIntegerField(default=100, help_text="Subunits per main unit e.g. 100 Cents = 1 Dollar, 1000 Fils = 1 Dinar")
+    subunit_name = models.CharField(
+        max_length=30, default="Cent", help_text="Fractional unit e.g. Cent, Halala, Paisa, Fils"
+    )
+    subunit_to_unit = models.PositiveIntegerField(
+        default=100,
+        help_text="Subunits per main unit e.g. 100 Cents = 1 Dollar, 1000 Fils = 1 Dinar",
+    )
     rounding_mode = models.CharField(
         max_length=20,
         choices=ROUNDING_MODE_CHOICES,
@@ -215,7 +228,9 @@ class CurrencyExchangeRate(BaseModel):
         return decimal.Decimal(0.0)
 
     @classmethod
-    def convert_amount(cls, amount: decimal.Decimal, from_code: str, to_code: str, rate_type: str = "SPOT") -> decimal.Decimal:
+    def convert_amount(
+        cls, amount: decimal.Decimal, from_code: str, to_code: str, rate_type: str = "SPOT"
+    ) -> decimal.Decimal:
         """
         Converts an amount from one currency to another using latest available FX exchange rate.
         Supports direct rates, inverse rates, and 1:1 same-currency shortcuts.
@@ -224,21 +239,29 @@ class CurrencyExchangeRate(BaseModel):
             return amount
 
         # Try direct rate
-        direct_rate = cls.objects.filter(
-            from_currency_id=from_code,
-            to_currency_id=to_code,
-            rate_type=rate_type,
-        ).order_by("-effective_date").first()
+        direct_rate = (
+            cls.objects.filter(
+                from_currency_id=from_code,
+                to_currency_id=to_code,
+                rate_type=rate_type,
+            )
+            .order_by("-effective_date")
+            .first()
+        )
 
         if direct_rate:
             return amount * direct_rate.exchange_rate
 
         # Try inverse rate
-        inverse_rate = cls.objects.filter(
-            from_currency_id=to_code,
-            to_currency_id=from_code,
-            rate_type=rate_type,
-        ).order_by("-effective_date").first()
+        inverse_rate = (
+            cls.objects.filter(
+                from_currency_id=to_code,
+                to_currency_id=from_code,
+                rate_type=rate_type,
+            )
+            .order_by("-effective_date")
+            .first()
+        )
 
         if inverse_rate and inverse_rate.exchange_rate > 0:
             return amount / inverse_rate.exchange_rate

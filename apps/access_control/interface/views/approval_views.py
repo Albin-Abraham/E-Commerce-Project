@@ -1,26 +1,28 @@
 from django.contrib.contenttypes.models import ContentType
-from rest_framework import status, permissions
+from rest_framework import permissions, status
 from rest_framework.response import Response
-from core.base_views.api_views import BaseAPIView
-from core.admin.helpers.query_helpers import FilterSchema, FilterField
-from apps.access_control.models import ApprovalChain, ApprovalRequest, ApprovalAction
-from apps.access_control.services.approval_engine import ApprovalEngine
+
+from apps.access_control.models import ApprovalChain, ApprovalRequest
 from apps.access_control.serializers.approval_serializers import (
-    ApprovalChainListSerializer,
-    ApprovalChainDetailSerializer,
-    ApprovalChainCreateSerializer,
-    ApprovalRequestListSerializer,
-    ApprovalRequestDetailSerializer,
-    ApprovalRequestSubmitSerializer,
-    ApprovalActionSerializer,
     ApprovalActionCreateSerializer,
+    ApprovalActionSerializer,
+    ApprovalChainCreateSerializer,
+    ApprovalChainDetailSerializer,
+    ApprovalChainListSerializer,
+    ApprovalRequestDetailSerializer,
+    ApprovalRequestListSerializer,
+    ApprovalRequestSubmitSerializer,
 )
+from apps.access_control.services.approval_engine import ApprovalEngine
+from core.admin.helpers.query_helpers import FilterField, FilterSchema
+from core.base_views.api_views import BaseAPIView
 
 
 class ApprovalChainViewSet(BaseAPIView):
     """
     CRUD for ApprovalChain and ApprovalLevel.
     """
+
     permission_classes = [permissions.IsAdminUser]
     model = ApprovalChain
     list_serializer_class = ApprovalChainListSerializer
@@ -46,6 +48,7 @@ class ApprovalRequestViewSet(BaseAPIView):
     List/retrieve approval requests.
     Actions (approve/reject/escalate/cancel) are separate views.
     """
+
     permission_classes = [permissions.IsAuthenticated]
     model = ApprovalRequest
     list_serializer_class = ApprovalRequestListSerializer
@@ -64,16 +67,21 @@ class ApprovalRequestViewSet(BaseAPIView):
     def get_base_queryset(self):
         user = self.platform_user
         if user.is_superuser:
-            return ApprovalRequest.objects.select_related("chain", "submitter").order_by("-submitted_at")
-        return ApprovalRequest.objects.filter(
-            submitter=user
-        ).select_related("chain", "submitter").order_by("-submitted_at")
+            return ApprovalRequest.objects.select_related("chain", "submitter").order_by(
+                "-submitted_at"
+            )
+        return (
+            ApprovalRequest.objects.filter(submitter=user)
+            .select_related("chain", "submitter")
+            .order_by("-submitted_at")
+        )
 
 
 class ApprovalSubmitView(BaseAPIView):
     """
     Submit a new approval request.
     """
+
     permission_classes = [permissions.IsAuthenticated]
     model = ApprovalRequest
 
@@ -117,6 +125,7 @@ class ApprovalActionView(BaseAPIView):
     Process approve/reject/escalate/cancel actions on an approval request.
     action_type is set via as_view(action_type="...") in URL conf.
     """
+
     permission_classes = [permissions.IsAuthenticated]
     model = ApprovalRequest
     action_type = None

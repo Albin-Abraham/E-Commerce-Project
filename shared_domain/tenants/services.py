@@ -68,13 +68,17 @@ class TenantHierarchyService:
                         errors={"code": "unauthorized_branch_all"},
                     )
             else:
-                if not self.repo.branch_exists_in_hierarchy(branch_id, business_unit_id, company_id):
+                if not self.repo.branch_exists_in_hierarchy(
+                    branch_id, business_unit_id, company_id
+                ):
                     raise DomainValidationError(
                         f"Branch {branch_id} is invalid or does not belong to the selected hierarchy.",
                         errors={"code": "invalid_branch"},
                     )
 
-                if not is_super and not self.auth_service.user_has_access(user, "branch", branch_id):
+                if not is_super and not self.auth_service.user_has_access(
+                    user, "branch", branch_id
+                ):
                     raise DomainValidationError(
                         "You do not have authorization to access this Branch.",
                         errors={"code": "unauthorized_branch"},

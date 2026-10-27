@@ -5,7 +5,7 @@ Handles bidirectional translation between pure Python domain objects and Django 
 """
 
 from decimal import Decimal
-from typing import Optional
+
 from apps.shop.domain.entities import InventoryAggregate, ProductEntity
 from apps.shop.infrastructure.models.inventory import Inventory
 from apps.shop.infrastructure.models.product import Product
@@ -29,7 +29,7 @@ class InventoryDataMapper:
         )
 
     @staticmethod
-    def to_orm(entity: InventoryAggregate, existing_model: Optional[Inventory] = None) -> Inventory:
+    def to_orm(entity: InventoryAggregate, existing_model: Inventory | None = None) -> Inventory:
         model = existing_model or Inventory()
         if entity.id:
             model.id = entity.id
@@ -65,7 +65,7 @@ class ProductDataMapper:
         )
 
     @staticmethod
-    def to_orm(entity: ProductEntity, existing_model: Optional[Product] = None) -> Product:
+    def to_orm(entity: ProductEntity, existing_model: Product | None = None) -> Product:
         model = existing_model or Product()
         if entity.id:
             model.id = entity.id

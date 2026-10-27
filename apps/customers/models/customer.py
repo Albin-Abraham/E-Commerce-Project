@@ -1,21 +1,20 @@
 from django.db import models
-from core.base_models.validator_model import BaseModel
-from core.base_models.scoping_models import TenantModelMixin
-from core.base_models.constants import USER_MODEL
-from core.base_models.fields.short_ui_fields import CustomShortUUIDField
-from core.base_models.fields.char_fields import CustomCharField, CustomEmailField, CustomTextField
-from core.base_models.validators.rules import RequiredRule, UniqueRule
+
 from apps.customers.valuesets import (
     ADDRESS_TYPE_VALUESET,
     CONTACT_TYPE_VALUESET,
     CUSTOMER_TYPE_VALUESET,
 )
-
+from core.base_models.constants import USER_MODEL
+from core.base_models.fields.char_fields import CustomCharField, CustomEmailField
 from core.base_models.fields.party_mixin import PartyReferenceMixin
+from core.base_models.fields.short_ui_fields import CustomShortUUIDField
+from core.base_models.scoping_models import TenantModelMixin
+from core.base_models.validator_model import BaseModel
+from core.base_models.validators.rules import RequiredRule, UniqueRule
 
 
 class Customer(BaseModel, TenantModelMixin, PartyReferenceMixin):
-
     """
     Unified Customer Entity for B2C Retail & B2B Commercial Sales.
     """
@@ -56,7 +55,9 @@ class Customer(BaseModel, TenantModelMixin, PartyReferenceMixin):
     )
     email = CustomEmailField(blank=True, null=True)
     phone = models.CharField(max_length=30, blank=True, null=True)
-    tax_id = models.CharField(max_length=50, blank=True, null=True, help_text="Tax / VAT / GST Registration ID")
+    tax_id = models.CharField(
+        max_length=50, blank=True, null=True, help_text="Tax / VAT / GST Registration ID"
+    )
     credit_limit = models.DecimalField(max_digits=12, decimal_places=2, default=0.0)
     is_active = models.BooleanField(default=True)
     metadata = models.JSONField(default=dict, blank=True)
@@ -118,13 +119,17 @@ class CustomerAddress(BaseModel):
         on_delete=models.CASCADE,
         related_name="address_lines",
     )
-    title = models.CharField(max_length=100, default="Home", help_text="Label e.g. Home, Office, Warehouse 1")
+    title = models.CharField(
+        max_length=100, default="Home", help_text="Label e.g. Home, Office, Warehouse 1"
+    )
     address_type = models.CharField(
         max_length=20,
         choices=ADDRESS_TYPE_VALUESET.as_django_choices(),
         default="DELIVERY",
     )
-    attention_to = models.CharField(max_length=150, blank=True, null=True, help_text="Recipient name")
+    attention_to = models.CharField(
+        max_length=150, blank=True, null=True, help_text="Recipient name"
+    )
     address_line_1 = CustomCharField(
         max_length=255,
         rules=[RequiredRule("address_line_1")],
@@ -134,7 +139,9 @@ class CustomerAddress(BaseModel):
     state = models.CharField(max_length=100, blank=True, null=True)
     postal_code = CustomCharField(max_length=20, rules=[RequiredRule("postal_code")])
     country = CustomCharField(max_length=100, default="USA", rules=[RequiredRule("country")])
-    pincode = models.CharField(max_length=20, blank=True, null=True, help_text="Serviceability pincode")
+    pincode = models.CharField(
+        max_length=20, blank=True, null=True, help_text="Serviceability pincode"
+    )
     latitude = models.DecimalField(max_digits=9, decimal_places=6, null=True, blank=True)
     longitude = models.DecimalField(max_digits=9, decimal_places=6, null=True, blank=True)
     is_default_delivery = models.BooleanField(default=False)
@@ -148,10 +155,13 @@ class CustomerAddress(BaseModel):
 
     def _override_pre_save(self, is_creating: bool):
         if self.is_default_delivery:
-            CustomerAddress.objects.filter(customer=self.customer, is_default_delivery=True).exclude(pk=self.pk).update(is_default_delivery=False)
+            CustomerAddress.objects.filter(
+                customer=self.customer, is_default_delivery=True
+            ).exclude(pk=self.pk).update(is_default_delivery=False)
         if self.is_default_billing:
-            CustomerAddress.objects.filter(customer=self.customer, is_default_billing=True).exclude(pk=self.pk).update(is_default_billing=False)
-
+            CustomerAddress.objects.filter(customer=self.customer, is_default_billing=True).exclude(
+                pk=self.pk
+            ).update(is_default_billing=False)
 
     def __str__(self):
         return f"{self.title}: {self.address_line_1}, {self.city} ({self.postal_code})"
@@ -172,7 +182,9 @@ class CustomerContact(BaseModel):
         max_length=150,
         rules=[RequiredRule("contact_name")],
     )
-    designation = models.CharField(max_length=100, blank=True, null=True, help_text="e.g. Procurement Officer, Manager")
+    designation = models.CharField(
+        max_length=100, blank=True, null=True, help_text="e.g. Procurement Officer, Manager"
+    )
     contact_type = models.CharField(
         max_length=20,
         choices=CONTACT_TYPE_VALUESET.as_django_choices(),
@@ -191,8 +203,9 @@ class CustomerContact(BaseModel):
 
     def _override_pre_save(self, is_creating: bool):
         if self.is_primary:
-            CustomerContact.objects.filter(customer=self.customer, is_primary=True).exclude(pk=self.pk).update(is_primary=False)
-
+            CustomerContact.objects.filter(customer=self.customer, is_primary=True).exclude(
+                pk=self.pk
+            ).update(is_primary=False)
 
     def __str__(self):
         return f"{self.contact_name} ({self.contact_type}) - {self.email or self.phone}"

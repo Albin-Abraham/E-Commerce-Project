@@ -5,7 +5,7 @@ Decoupled from Django ORM, HTTP request cycle, and database engines.
 """
 
 from dataclasses import dataclass
-from typing import Optional
+
 from apps.shop.domain.repository import IInventoryRepository
 from shared_domain.base.unit_of_work import IUnitOfWork
 from shared_domain.validation.exceptions import DomainValidationError
@@ -41,7 +41,7 @@ class ReserveInventoryUseCase:
             if not inventory:
                 raise DomainValidationError(
                     f"Inventory record '{dto.inventory_id}' not found.",
-                    errors={"inventory_id": "Not found"}
+                    errors={"inventory_id": "Not found"},
                 )
 
             inventory.reserve(dto.quantity)
@@ -72,7 +72,7 @@ class ReleaseInventoryUseCase:
             if not inventory:
                 raise DomainValidationError(
                     f"Inventory record '{dto.inventory_id}' not found.",
-                    errors={"inventory_id": "Not found"}
+                    errors={"inventory_id": "Not found"},
                 )
 
             inventory.release(dto.quantity)
@@ -103,7 +103,7 @@ class CommitInventoryUseCase:
             if not inventory:
                 raise DomainValidationError(
                     f"Inventory record '{dto.inventory_id}' not found.",
-                    errors={"inventory_id": "Not found"}
+                    errors={"inventory_id": "Not found"},
                 )
 
             inventory.commit(dto.quantity)

@@ -16,7 +16,7 @@ class IUnitOfWork(ABC):
     """
 
     @abstractmethod
-    def __enter__(self) -> "IUnitOfWork":
+    def __enter__(self) -> IUnitOfWork:
         """Enter the transaction context."""
         ...
 

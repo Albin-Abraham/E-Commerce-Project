@@ -1,8 +1,9 @@
 from django.db import models
-from core.base_models.validator_model import BaseModel
-from core.base_models.fields.short_ui_fields import CustomShortUUIDField
+
 from core.base_models.fields.numeric_fields import CustomDecimalField, CustomIntegerField
-from core.base_models.validators.rules import RequiredRule, MinRule
+from core.base_models.fields.short_ui_fields import CustomShortUUIDField
+from core.base_models.validator_model import BaseModel
+from core.base_models.validators.rules import MinRule, RequiredRule
 
 
 class OrderItem(BaseModel):

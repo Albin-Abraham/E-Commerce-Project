@@ -1,18 +1,20 @@
-from django.db import models, transaction
 from django.core.exceptions import ValidationError
+from django.db import models
 from django.utils import timezone
-from core.base_models.validator_model import BaseModel
-from core.base_models.scoping_models import BranchModelMixin
-from core.base_models.fields.short_ui_fields import CustomShortUUIDField
+
 from core.base_models.fields.char_fields import CustomCharField, CustomTextField
 from core.base_models.fields.numeric_fields import CustomIntegerField
-from core.base_models.validators.rules import RequiredRule, MinRule, UniqueRule
+from core.base_models.fields.short_ui_fields import CustomShortUUIDField
+from core.base_models.scoping_models import BranchModelMixin
+from core.base_models.validator_model import BaseModel
+from core.base_models.validators.rules import MinRule, RequiredRule, UniqueRule
 
 
 class Batch(BaseModel):
     """
     Batch & Lot Tracking for Expiry and Perishable Goods.
     """
+
     id = CustomShortUUIDField(primary_key=True, prefix="btc_")
     batch_number = CustomCharField(
         max_length=60,
@@ -172,7 +174,9 @@ class Inventory(BaseModel, BranchModelMixin):
         unique_together = ["variant", "warehouse", "branch", "batch"]
 
     def __str__(self):
-        target = self.variant.sku if self.variant else (self.product.name if self.product else "Unknown")
+        target = (
+            self.variant.sku if self.variant else (self.product.name if self.product else "Unknown")
+        )
         return f"Inventory ({target}): Qty {self.quantity}, Reserved {self.reserved_quantity}"
 
     @property
@@ -239,7 +243,6 @@ class Inventory(BaseModel, BranchModelMixin):
             return True
         except DomainValidationError:
             return False
-
 
 
 class StockTransfer(BaseModel):
@@ -330,9 +333,13 @@ class StockMovement(BaseModel):
     )
     movement_type = models.CharField(max_length=30, choices=MovementType.choices)
     quantity_delta = models.IntegerField(help_text="Positive for inbound, negative for outbound")
-    balance_after = models.IntegerField(help_text="Snapshot of on-hand inventory immediately following this movement")
+    balance_after = models.IntegerField(
+        help_text="Snapshot of on-hand inventory immediately following this movement"
+    )
     unit_cost = models.DecimalField(max_digits=18, decimal_places=4, default=0.0)
-    reference_type = models.CharField(max_length=50, help_text="e.g. POSTransaction, GoodsReceivedNote")
+    reference_type = models.CharField(
+        max_length=50, help_text="e.g. POSTransaction, GoodsReceivedNote"
+    )
     reference_id = models.CharField(max_length=100)
 
     class Meta(BaseModel.Meta):

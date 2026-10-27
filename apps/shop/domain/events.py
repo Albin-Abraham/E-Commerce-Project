@@ -6,6 +6,7 @@ Pure Python, framework agnostic.
 
 from dataclasses import dataclass
 from typing import ClassVar
+
 from shared_domain.base.event import DomainEvent
 
 

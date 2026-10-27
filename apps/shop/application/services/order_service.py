@@ -1,14 +1,13 @@
-from typing import Dict, Any, Optional
-from uuid import UUID
 from decimal import Decimal
+from typing import Any
+from uuid import UUID
+
 from django.db import transaction
-from django.db.models import F
-from core.admin.services.base_service import BaseService
-from core.admin.utils.integrity.retry import retry_on_conflict
+
+from apps.shop.application.interfaces.order_interface import IOrderService
 from apps.shop.infrastructure.models.order import Order
 from apps.shop.infrastructure.models.order_item import OrderItem
-from apps.shop.infrastructure.models.inventory import Inventory
-from apps.shop.application.interfaces.order_interface import IOrderService
+from core.admin.services.base_service import BaseService
 
 
 class OrderService(BaseService[Order], IOrderService):
@@ -16,7 +15,7 @@ class OrderService(BaseService[Order], IOrderService):
 
     @classmethod
     @transaction.atomic
-    def process_order(cls, order_data: Dict[str, Any], user_id: UUID) -> Dict[str, Any]:
+    def process_order(cls, order_data: dict[str, Any], user_id: UUID) -> dict[str, Any]:
         items_data = order_data.pop("items", [])
         order = cls.create(user_id=user_id, **order_data)
 
@@ -61,7 +60,7 @@ class OrderService(BaseService[Order], IOrderService):
         return True
 
     @classmethod
-    def get_order_summary(cls, order_id: UUID) -> Optional[Dict[str, Any]]:
+    def get_order_summary(cls, order_id: UUID) -> dict[str, Any] | None:
         order = cls.get_object(order_id)
         if not order:
             return None

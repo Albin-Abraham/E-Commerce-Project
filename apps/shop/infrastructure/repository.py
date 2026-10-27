@@ -4,7 +4,6 @@ Django ORM Repository implementations for the Shop domain.
 Encapsulates all SQL and database queries for Inventory and Product aggregates.
 """
 
-from typing import Optional
 from apps.shop.domain.entities import InventoryAggregate, ProductEntity
 from apps.shop.domain.repository import IInventoryRepository, IProductRepository
 from apps.shop.infrastructure.mappers import InventoryDataMapper, ProductDataMapper
@@ -17,14 +16,14 @@ class DjangoInventoryRepository(IInventoryRepository):
     Concrete Django ORM repository for Inventory aggregates.
     """
 
-    def get_by_id(self, inventory_id: str, for_update: bool = False) -> Optional[InventoryAggregate]:
+    def get_by_id(self, inventory_id: str, for_update: bool = False) -> InventoryAggregate | None:
         qs = Inventory.objects.select_for_update() if for_update else Inventory.objects
         model = qs.filter(id=inventory_id).first()
         return InventoryDataMapper.to_domain(model) if model else None
 
     def get_by_variant_and_warehouse(
-        self, variant_id: str, warehouse_id: Optional[str] = None, for_update: bool = False
-    ) -> Optional[InventoryAggregate]:
+        self, variant_id: str, warehouse_id: str | None = None, for_update: bool = False
+    ) -> InventoryAggregate | None:
         qs = Inventory.objects.select_for_update() if for_update else Inventory.objects
         qs = qs.filter(variant_id=variant_id)
         if warehouse_id:
@@ -33,8 +32,8 @@ class DjangoInventoryRepository(IInventoryRepository):
         return InventoryDataMapper.to_domain(model) if model else None
 
     def get_by_product_and_branch(
-        self, product_id: str, branch_id: Optional[str] = None, for_update: bool = False
-    ) -> Optional[InventoryAggregate]:
+        self, product_id: str, branch_id: str | None = None, for_update: bool = False
+    ) -> InventoryAggregate | None:
         qs = Inventory.objects.select_for_update() if for_update else Inventory.objects
         qs = qs.filter(product_id=product_id)
         if branch_id:
@@ -68,11 +67,11 @@ class DjangoProductRepository(IProductRepository):
     Concrete Django ORM repository for Product entities.
     """
 
-    def get_by_id(self, product_id: str) -> Optional[ProductEntity]:
+    def get_by_id(self, product_id: str) -> ProductEntity | None:
         model = Product.objects.filter(id=product_id).first()
         return ProductDataMapper.to_domain(model) if model else None
 
-    def get_by_sku(self, sku: str) -> Optional[ProductEntity]:
+    def get_by_sku(self, sku: str) -> ProductEntity | None:
         model = Product.objects.filter(sku=sku).first()
         return ProductDataMapper.to_domain(model) if model else None
 

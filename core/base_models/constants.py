@@ -1,11 +1,7 @@
 # core/base_models/constants.py
-from django.core.validators import MinValueValidator, MaxValueValidator, RegexValidator
-from django.utils import timezone
 from django.conf import settings
-from core.base_models.validators.email_validator import (
-    EMAIL_REGEX_VALIDATOR,
-    validate_email_domain,
-)
+from django.core.validators import MaxValueValidator, MinValueValidator, RegexValidator
+from django.utils import timezone
 
 # ===============================
 # Default Field Lengths (Policies)
@@ -18,21 +14,18 @@ DEFAULT_TEXT_LENGTH = 1000
 SLUG_MAX_LENGTH = 50
 USERNAME_MAX_LENGTH = 150
 NAME_MAX_LENGTH = 255
-EMAIL_MAX_LENGTH = 254 
+EMAIL_MAX_LENGTH = 254
 
 # ===============================
 # Choice Defaults
 # ===============================
-BOOLEAN_CHOICES = [
-    (True, 'Yes'),
-    (False, 'No')
-]
+BOOLEAN_CHOICES = [(True, "Yes"), (False, "No")]
 
 STATUS_CHOICES = [
-    ('active', 'Active'),
-    ('inactive', 'Inactive'),
-    ('pending', 'Pending'),
-    ('deleted', 'Deleted'),
+    ("active", "Active"),
+    ("inactive", "Inactive"),
+    ("pending", "Pending"),
+    ("deleted", "Deleted"),
 ]
 
 # ===============================
@@ -47,8 +40,8 @@ PERCENT_VALIDATOR = [MinValueValidator(0), MaxValueValidator(100)]
 # Common Validators
 # ===============================
 PHONE_VALIDATOR = RegexValidator(
-    regex=r'^\+?1?\d{9,15}$',
-    message='Phone number must be entered in the format: +999999999. Up to 15 digits allowed.'
+    regex=r"^\+?1?\d{9,15}$",
+    message="Phone number must be entered in the format: +999999999. Up to 15 digits allowed.",
 )
 
 # ===============================
@@ -59,4 +52,4 @@ NOW = timezone.now
 # ===============================
 # User / Auth Constants
 # ===============================
-USER_MODEL = settings.AUTH_USER_MODEL 
+USER_MODEL = settings.AUTH_USER_MODEL

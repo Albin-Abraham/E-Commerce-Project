@@ -1,9 +1,11 @@
 import logging
+
 from django.db import transaction
 from django.utils import timezone
+
+from apps.accounting.constants import AccountingKeys
 from apps.accounting.models.journal_entry import GLEntry, JournalEntry
 from apps.accounting.models.payment_entry import PaymentEntry
-from apps.accounting.constants import AccountingKeys
 from apps.customers.models.party_ledger import PartyLedgerEntry
 
 logger = logging.getLogger(__name__)
@@ -164,8 +166,8 @@ class GLPostingService:
         Automated Financial Ledger posting for Goods Received Notes (GRN).
         Debits Inventory Stock Asset Account and Credits Stock Received Not Billed Accrual Account.
         """
-        from apps.procurement_pos.models.procurement import GoodsReceivedNote
         from apps.accounting.models.chart_of_accounts import Account
+        from apps.procurement_pos.models.procurement import GoodsReceivedNote
 
         grn = GoodsReceivedNote.objects.select_related("purchase_order", "warehouse").get(pk=grn_id)
         po = grn.purchase_order
@@ -174,10 +176,16 @@ class GLPostingService:
         if total_value <= 0:
             return None
 
-        stock_asset_account = Account.objects.filter(account_type="ASSET", name__icontains="Stock").first()
-        accrued_liability_account = Account.objects.filter(account_type="LIABILITY", name__icontains="Accrued").first()
+        stock_asset_account = Account.objects.filter(
+            account_type="ASSET", name__icontains="Stock"
+        ).first()
+        accrued_liability_account = Account.objects.filter(
+            account_type="LIABILITY", name__icontains="Accrued"
+        ).first()
 
-        posting_date = grn.received_at.date() if hasattr(grn.received_at, "date") else timezone.now().date()
+        posting_date = (
+            grn.received_at.date() if hasattr(grn.received_at, "date") else timezone.now().date()
+        )
 
         if stock_asset_account:
             gl_dr = GLEntry.objects.create(
@@ -207,5 +215,7 @@ class GLPostingService:
                 gl_cr.set_party(po.supplier)
                 gl_cr.save()
 
-        logger.info(f"Financial GL Voucher posted for GRN #{grn.grn_number} (Total Value: {total_value})")
+        logger.info(
+            f"Financial GL Voucher posted for GRN #{grn.grn_number} (Total Value: {total_value})"
+        )
         return total_value

@@ -1,7 +1,10 @@
-from core.base_views.api_views import BaseAPIView
 from apps.shop.infrastructure.models.order import Order
 from apps.shop.infrastructure.models.order_item import OrderItem
-from apps.shop.infrastructure.serializers.order_serializers import OrderSerializer, OrderItemSerializer
+from apps.shop.infrastructure.serializers.order_serializers import (
+    OrderItemSerializer,
+    OrderSerializer,
+)
+from core.base_views.api_views import BaseAPIView
 
 
 class OrderViewSet(BaseAPIView):

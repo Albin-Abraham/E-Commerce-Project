@@ -43,9 +43,7 @@ class DocumentDefinition(BaseModel):
         default=30, help_text="Number of days before expiry to send an alert"
     )
     approval_chain_config = models.JSONField(
-        default=list,
-        blank=True,
-        help_text="Configured approval levels for documents of this type"
+        default=list, blank=True, help_text="Configured approval levels for documents of this type"
     )
 
     class Meta:

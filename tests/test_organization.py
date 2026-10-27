@@ -1,11 +1,13 @@
 # tests/test_organization.py
 import pytest
+
 from tests.base import BaseTest
+from tests.factories.company import CompanyFactory
+from tests.mixins.assertions import AssertionMixin
 from tests.mixins.creation import CreationMixin
 from tests.mixins.validation import ValidationMixin
-from tests.mixins.assertions import AssertionMixin
 from tests.mixins.workflows import OrganizationWorkflowMixin
-from tests.factories.company import CompanyFactory
+
 
 @pytest.mark.django_db
 class TestOrganization(
@@ -32,8 +34,7 @@ class TestOrganization(
     def test_workflow_org_with_subscription(self):
         """Test the modular workflow for creating org with subscription."""
         org, sub = self.create_org_with_subscription(
-            org_overrides={"name": "CloudNine"},
-            sub_overrides={"name": "Premium Plan"}
+            org_overrides={"name": "CloudNine"}, sub_overrides={"name": "Premium Plan"}
         )
         self.assert_valid(org)
         self.assert_valid(sub)

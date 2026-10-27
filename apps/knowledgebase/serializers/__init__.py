@@ -1,6 +1,6 @@
 from .kb_serializers import (
-    KnowledgeCategorySerializer,
     KnowledgeArticleSerializer,
+    KnowledgeCategorySerializer,
     ProductKnowledgeLinkSerializer,
 )
 

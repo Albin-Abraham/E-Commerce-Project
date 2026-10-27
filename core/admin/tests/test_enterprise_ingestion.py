@@ -1,17 +1,19 @@
 import pytest
-from rest_framework.test import APIRequestFactory, force_authenticate
 
-from core.admin.models.import_engine import ImportPackage, ImportPackageItem, ImportJob, StagingRecord
+from apps.shop.infrastructure.models.category import Category
+from apps.shop.infrastructure.models.product import Product
 from core.admin.adapters.source_adapters import (
     CSVStreamingAdapter,
-    XLSXReadOnlyAdapter,
-    JSONStreamingAdapter,
     ERPInventorySyncAdapter,
+    XLSXReadOnlyAdapter,
+)
+from core.admin.models.import_engine import (
+    ImportJob,
+    ImportPackage,
+    ImportPackageItem,
+    StagingRecord,
 )
 from core.admin.services.ingestion_engine_service import EnterpriseIngestionService
-from apps.shop.infrastructure.models.category import Category
-from apps.shop.infrastructure.models.brand import Brand
-from apps.shop.infrastructure.models.product import Product
 
 
 @pytest.mark.django_db
@@ -19,10 +21,10 @@ class TestSourceAdapters:
     def test_csv_source_adapter_streaming(self):
         csv_data = "sku,name,price,category_slug\nTECH-001,Laptop Pro,1299.99,electronics\nTECH-002,Tablet Air,699.99,electronics"
         adapter = CSVStreamingAdapter(target_model="product")
-        
+
         records = list(adapter.read_records(csv_data))
         assert len(records) == 2
-        
+
         rec1 = records[0]
         assert rec1.row_number == 1
         assert rec1.target_model == "product"
@@ -37,18 +39,16 @@ class TestSourceAdapters:
         ]
         adapter = XLSXReadOnlyAdapter(target_model="product")
         records = list(adapter.read_records(rows))
-        
+
         assert len(records) == 2
         assert records[0].normalized_fields["sku"] == "VEND-100"
         assert records[1].normalized_fields["name"] == "Vendor Desk"
 
     def test_erp_inventory_sync_adapter(self):
-        payloads = [
-            {"item_sku": "SKU-99", "whs_code": "WHS-MAIN", "stock_qty": 150, "min_qty": 10}
-        ]
+        payloads = [{"item_sku": "SKU-99", "whs_code": "WHS-MAIN", "stock_qty": 150, "min_qty": 10}]
         adapter = ERPInventorySyncAdapter()
         records = list(adapter.read_records(payloads))
-        
+
         assert len(records) == 1
         rec = records[0]
         assert rec.target_model == "inventory"
@@ -73,10 +73,7 @@ class TestEnterpriseIngestionService:
             tier=ImportPackageItem.Tier.MASTER,
         )
 
-        csv_data = (
-            "sku,name,price,category_slug\n"
-            "HEADPHONE-1,Wireless Headphone,149.99,audio"
-        )
+        csv_data = "sku,name,price,category_slug\nHEADPHONE-1,Wireless Headphone,149.99,audio"
         adapter = CSVStreamingAdapter(target_model="product")
 
         # Execute Dry Run Ingestion
@@ -133,8 +130,10 @@ class TestEnterpriseIngestionService:
 
         # 2. Execute duplicate ingestion run to test Idempotency Hash Deduplication
         pkg2 = ImportPackage.objects.create(package_name="Duplicate Run", package_version="1.0")
-        item2 = ImportPackageItem.objects.create(package=pkg2, file_name="consoles.csv", target_model="product")
-        
+        item2 = ImportPackageItem.objects.create(
+            package=pkg2, file_name="consoles.csv", target_model="product"
+        )
+
         res2 = EnterpriseIngestionService.ingest_package_stream(
             package=pkg2,
             package_item=item2,

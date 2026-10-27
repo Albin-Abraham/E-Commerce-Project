@@ -1,9 +1,10 @@
 import logging
 from typing import TYPE_CHECKING
+
 from apps.payments.adapters.base import IPaymentGatewayAdapter
-from apps.payments.adapters.razorpay_adapter import RazorpayPaymentAdapter
-from apps.payments.adapters.paypal_adapter import PayPalPaymentAdapter
 from apps.payments.adapters.cod_adapter import CODPaymentAdapter
+from apps.payments.adapters.paypal_adapter import PayPalPaymentAdapter
+from apps.payments.adapters.razorpay_adapter import RazorpayPaymentAdapter
 
 if TYPE_CHECKING:
     from apps.payments.configuration.schemas import ResolvedPaymentGatewayConfig
@@ -42,14 +43,18 @@ class PaymentGatewayAdapterFactory:
         gateway_clean = gateway_type.strip().upper()
         adapter_cls = cls._registry.get(gateway_clean)
         if not adapter_cls:
-            raise ValueError(f"Unsupported payment gateway '{gateway_type}'. Supported: {list(cls._registry.keys())}")
+            raise ValueError(
+                f"Unsupported payment gateway '{gateway_type}'. Supported: {list(cls._registry.keys())}"
+            )
 
         if config is None:
             from apps.payments.configuration.resolver import PaymentGatewayConfigResolver
-            config = PaymentGatewayConfigResolver.resolve_gateway(gateway_clean, tenant_id=tenant_id)
+
+            config = PaymentGatewayConfigResolver.resolve_gateway(
+                gateway_clean, tenant_id=tenant_id
+            )
 
         try:
             return adapter_cls(config=config)
         except TypeError:
             return adapter_cls()
-

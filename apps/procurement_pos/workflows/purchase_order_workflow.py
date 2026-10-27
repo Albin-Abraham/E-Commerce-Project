@@ -1,6 +1,8 @@
 import logging
-from django.db import transaction
+
 from django.core.exceptions import ValidationError
+from django.db import transaction
+
 from apps.procurement_pos.constants import ProcurementPOSEventType
 from apps.procurement_pos.models.procurement import PurchaseOrder
 from apps.shop.infrastructure.models.events import DomainEventOutbox
@@ -81,7 +83,11 @@ class PurchaseOrderWorkflow:
             event_type=ProcurementPOSEventType.PO_CANCELLED,
             aggregate_id=po.id,
             aggregate_type="PurchaseOrder",
-            payload={"po_number": po.po_number, "reason": reason, "cancelled_by": user.id if user else None},
+            payload={
+                "po_number": po.po_number,
+                "reason": reason,
+                "cancelled_by": user.id if user else None,
+            },
             idempotency_key=f"po_cancel_{po.id}_{po.updated_at.timestamp()}",
         )
 

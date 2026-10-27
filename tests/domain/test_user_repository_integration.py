@@ -5,14 +5,15 @@ Verifies the persistence adapter correctly synchronizes pure domain entities wit
 """
 
 import pytest
+
+from apps.users.application.use_cases.register_user import (
+    RegisterUserInputDTO,
+    RegisterUserUseCase,
+)
 from apps.users.domain.entities import UserEntity
 from apps.users.infrastructure.repository import DjangoUserRepository
-from apps.users.application.use_cases.register_user import (
-    RegisterUserUseCase,
-    RegisterUserInputDTO,
-)
-from core.infrastructure.uow import DjangoUnitOfWork
 from core.admin.models.company import Company
+from core.infrastructure.uow import DjangoUnitOfWork
 
 
 @pytest.mark.django_db

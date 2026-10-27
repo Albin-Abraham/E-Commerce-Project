@@ -1,7 +1,5 @@
-from typing import Dict, Tuple, Set
-
 # YAML-defined keys from modules.yaml
-VALID_YAML_KEYS: Set[str] = {
+VALID_YAML_KEYS: set[str] = {
     "hrms:employee:profile",
     "hrms:employee:documents",
     "hrms:employee:directory",
@@ -36,7 +34,7 @@ VALID_YAML_KEYS: Set[str] = {
 INVALID_YAML_KEY: str = "nonexistent:module:feature"
 
 # Custom verb keys (<3 colon segments, bypass YAML validation)
-CUSTOM_KEYS: Set[str] = {
+CUSTOM_KEYS: set[str] = {
     "company:import",
     "company:view",
     "prefix:can_verb",
@@ -44,7 +42,7 @@ CUSTOM_KEYS: Set[str] = {
 }
 
 # Named permission sets for reusable test scenarios
-ROLE_SETS: Dict[str, Tuple[str, ...]] = {
+ROLE_SETS: dict[str, tuple[str, ...]] = {
     "viewer": ("admin:security:audit_logs", "hrms:employee:profile"),
     "editor": ("admin:identity:can_manage_users",),
     "admin": ("admin:identity:can_configure_roles", "admin:security:audit_logs"),
@@ -56,17 +54,17 @@ ROLE_SETS: Dict[str, Tuple[str, ...]] = {
     ),
 }
 
-GROUP_SETS: Dict[str, Tuple[str, ...]] = {
+GROUP_SETS: dict[str, tuple[str, ...]] = {
     "admin_team": ("admin:identity:role_configuration",),
     "hr_team": ("hrms:employee:profile",),
 }
 
-DIRECT_PERM_SETS: Dict[str, Tuple[str, ...]] = {
+DIRECT_PERM_SETS: dict[str, tuple[str, ...]] = {
     "leave": ("hrms:leave:can_request_leave",),
     "expense": ("finance:accounts:expense_tracking",),
 }
 
-CATALOG_SETS: Dict[str, Dict] = {
+CATALOG_SETS: dict[str, dict] = {
     "hrms_lite": {
         "module_keys": ["hrms"],
         "keys": ["hrms:employee:profile"],
@@ -81,7 +79,7 @@ CATALOG_SETS: Dict[str, Dict] = {
     },
 }
 
-COMPANY_PERMISSION_ACTIONS: Dict[str, str] = {
+COMPANY_PERMISSION_ACTIONS: dict[str, str] = {
     "create": "company:create",
     "list": "company:view",
     "retrieve": "company:view",

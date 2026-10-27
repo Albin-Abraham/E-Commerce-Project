@@ -1,5 +1,6 @@
 from rest_framework import serializers, viewsets
-from apps.shop.infrastructure.models.facility import Facility, StorageLocation, FacilityInventory
+
+from apps.shop.infrastructure.models.facility import Facility, FacilityInventory, StorageLocation
 from apps.shop.models.facility_policy import DeliveryPartner, FacilityPolicyRule
 
 
@@ -32,7 +33,9 @@ class DeliveryPartnerSerializer(serializers.ModelSerializer):
 
 class FacilityPolicyRuleSerializer(serializers.ModelSerializer):
     facility_name = serializers.CharField(source="facility.name", read_only=True, default=None)
-    partner_name = serializers.CharField(source="delivery_partner.name", read_only=True, default=None)
+    partner_name = serializers.CharField(
+        source="delivery_partner.name", read_only=True, default=None
+    )
 
     class Meta:
         model = FacilityPolicyRule
@@ -66,4 +69,10 @@ class DeliveryPartnerViewSet(viewsets.ModelViewSet):
 class FacilityPolicyRuleViewSet(viewsets.ModelViewSet):
     queryset = FacilityPolicyRule.objects.all()
     serializer_class = FacilityPolicyRuleSerializer
-    filterset_fields = ["facility", "delivery_partner", "requires_cold_storage", "allow_hazmat", "is_active"]
+    filterset_fields = [
+        "facility",
+        "delivery_partner",
+        "requires_cold_storage",
+        "allow_hazmat",
+        "is_active",
+    ]

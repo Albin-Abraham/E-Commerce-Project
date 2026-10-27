@@ -17,6 +17,7 @@ class ApprovalActionType:
     APPROVE = "approve"
     REJECT = "reject"
 
+
 POLICY_EFFECT_VALUESET = ValueSet(
     name="policy_effect",
     domain="access_control",

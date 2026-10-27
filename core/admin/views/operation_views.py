@@ -1,8 +1,8 @@
 import logging
 
 from celery.result import AsyncResult
-from rest_framework.views import APIView
 from rest_framework.request import Request
+from rest_framework.views import APIView
 
 from backend import celery_app
 from core.admin.helpers.response_helpers import ResponseFactory

@@ -1,9 +1,10 @@
 import logging
+
 from celery import shared_task
 from django.db import models
 
-from apps.shop.infrastructure.models.inventory import Inventory
 from apps.shop.infrastructure.models.events import DomainEventOutbox
+from apps.shop.infrastructure.models.inventory import Inventory
 
 logger = logging.getLogger(__name__)
 
@@ -21,7 +22,11 @@ def check_low_stock_alerts_task():
     alerts_triggered = 0
     for record in low_stock_records:
         available = record.available_quantity
-        target_name = record.variant.sku if record.variant else (record.product.name if record.product else record.id)
+        target_name = (
+            record.variant.sku
+            if record.variant
+            else (record.product.name if record.product else record.id)
+        )
         logger.warning(
             "LOW STOCK ALERT: Inventory '%s' (ID: %s) has available qty %d (reorder point %d).",
             target_name,
@@ -39,7 +44,7 @@ def check_low_stock_alerts_task():
                 "available_quantity": available,
                 "reorder_point": record.reorder_point,
                 "warehouse_id": str(record.warehouse.id) if record.warehouse else None,
-            }
+            },
         )
         alerts_triggered += 1
 

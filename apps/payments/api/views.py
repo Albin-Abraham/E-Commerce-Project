@@ -1,28 +1,26 @@
-from rest_framework import viewsets, status
+from rest_framework import status, viewsets
 from rest_framework.decorators import action
 from rest_framework.permissions import AllowAny
-from core.base_views.api_views import BaseAPIView
 
-from core.admin.helpers.response_helpers import ResponseFactory
-from apps.payments.models import PaymentTransaction, PaymentGatewayConfig
 from apps.payments.api.serializers import (
-    PaymentTransactionSerializer,
-    PaymentGatewayConfigSerializer,
-    InitiatePaymentRequestSerializer,
-    VerifyRazorpayPaymentSerializer,
     CapturePayPalPaymentSerializer,
+    InitiatePaymentRequestSerializer,
+    PaymentGatewayConfigSerializer,
+    PaymentGatewayHealthSerializer,
+    PaymentTransactionSerializer,
+    VerifyRazorpayPaymentSerializer,
 )
-from apps.payments.services.payment_service import PaymentOrchestrationService
 from apps.payments.configuration.exceptions import (
+    GatewayConfigurationError,
     GatewayDisabledError,
     GatewayNotConfiguredError,
-    GatewayConfigurationError,
 )
-
-
-from apps.payments.health.service import PaymentGatewayHealthMonitorService
 from apps.payments.health.models import PaymentGatewayHealth
-from apps.payments.api.serializers import PaymentGatewayHealthSerializer
+from apps.payments.health.service import PaymentGatewayHealthMonitorService
+from apps.payments.models import PaymentGatewayConfig, PaymentTransaction
+from apps.payments.services.payment_service import PaymentOrchestrationService
+from core.admin.helpers.response_helpers import ResponseFactory
+from core.base_views.api_views import BaseAPIView
 
 
 class PaymentGatewayConfigViewSet(viewsets.ModelViewSet):
@@ -37,7 +35,9 @@ class PaymentGatewayConfigViewSet(viewsets.ModelViewSet):
         Runs full 4-tier health check pipeline and returns diagnostic results.
         """
         config = self.get_object()
-        result = PaymentGatewayHealthMonitorService.check_gateway_health(config.gateway_type, persist=True)
+        result = PaymentGatewayHealthMonitorService.check_gateway_health(
+            config.gateway_type, persist=True
+        )
         return ResponseFactory.success(
             data=result.to_dict(),
             message=f"Health check completed for '{config.gateway_type}': {result.overall_status}",
@@ -54,7 +54,9 @@ class PaymentGatewayConfigViewSet(viewsets.ModelViewSet):
             health = PaymentGatewayHealth.objects.filter(gateway_type=config.gateway_type).first()
 
         if not health:
-            result = PaymentGatewayHealthMonitorService.check_gateway_health(config.gateway_type, persist=True)
+            result = PaymentGatewayHealthMonitorService.check_gateway_health(
+                config.gateway_type, persist=True
+            )
             return ResponseFactory.success(
                 data=result.to_dict(),
                 message=f"Initial health check completed for '{config.gateway_type}'",
@@ -99,6 +101,7 @@ class PaymentInitiateWorkflowAPIView(BaseAPIView):
     Workflow API View inheriting from BaseAPIView.
     Processes payment initiation workflows across Razorpay, PayPal, Stripe, and COD.
     """
+
     model = PaymentTransaction
     serializer_class = PaymentTransactionSerializer
 
@@ -123,7 +126,9 @@ class PaymentInitiateWorkflowAPIView(BaseAPIView):
         except GatewayDisabledError as exc:
             return ResponseFactory.error(message=str(exc), status_code=status.HTTP_409_CONFLICT)
         except (GatewayNotConfiguredError, GatewayConfigurationError) as exc:
-            return ResponseFactory.error(message=str(exc), status_code=status.HTTP_503_SERVICE_UNAVAILABLE)
+            return ResponseFactory.error(
+                message=str(exc), status_code=status.HTTP_503_SERVICE_UNAVAILABLE
+            )
         except ValueError as exc:
             return ResponseFactory.error(message=str(exc), status_code=status.HTTP_400_BAD_REQUEST)
 
@@ -133,6 +138,7 @@ class PaymentRazorpayVerifyWorkflowAPIView(BaseAPIView):
     Workflow API View inheriting from BaseAPIView.
     Verifies Razorpay HMAC signature and captures payment.
     """
+
     model = PaymentTransaction
     serializer_class = PaymentTransactionSerializer
 
@@ -161,6 +167,7 @@ class PaymentPayPalCaptureWorkflowAPIView(BaseAPIView):
     Workflow API View inheriting from BaseAPIView.
     Captures approved PayPal payment transaction.
     """
+
     model = PaymentTransaction
     serializer_class = PaymentTransactionSerializer
 
@@ -191,16 +198,24 @@ class PaymentTransactionViewSet(viewsets.ModelViewSet):
     @action(detail=False, methods=["post"], url_path="initiate", permission_classes=[AllowAny])
     def initiate_payment(self, request):
         resp = PaymentInitiateWorkflowAPIView().post(request)
-        if resp.status_code == status.HTTP_201_CREATED and isinstance(resp.data, dict) and "data" in resp.data:
+        if (
+            resp.status_code == status.HTTP_201_CREATED
+            and isinstance(resp.data, dict)
+            and "data" in resp.data
+        ):
             from rest_framework.response import Response
+
             return Response(resp.data["data"], status=status.HTTP_201_CREATED)
         return resp
 
-
-    @action(detail=False, methods=["post"], url_path="verify-razorpay", permission_classes=[AllowAny])
+    @action(
+        detail=False, methods=["post"], url_path="verify-razorpay", permission_classes=[AllowAny]
+    )
     def verify_razorpay(self, request):
         return PaymentRazorpayVerifyWorkflowAPIView().post(request)
 
-    @action(detail=False, methods=["post"], url_path="capture-paypal", permission_classes=[AllowAny])
+    @action(
+        detail=False, methods=["post"], url_path="capture-paypal", permission_classes=[AllowAny]
+    )
     def capture_paypal(self, request):
         return PaymentPayPalCaptureWorkflowAPIView().post(request)

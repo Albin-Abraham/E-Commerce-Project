@@ -1,17 +1,17 @@
 from .category_serializers import CategorySerializer
-from .order_serializers import OrderSerializer, OrderItemSerializer
+from .order_serializers import OrderItemSerializer, OrderSerializer
 from .product_serializers import ProductSerializer, ProductVariantSerializer
 from .shop_serializers import (
+    ActivityLogSerializer,
+    BOMEdgeSerializer,
     BrandSerializer,
-    WarehouseSerializer,
+    CategoryEdgeSerializer,
+    DomainEventOutboxSerializer,
+    EntityEdgeSerializer,
     InventorySerializer,
     MediaSerializer,
     ReviewSerializer,
-    ActivityLogSerializer,
-    EntityEdgeSerializer,
-    CategoryEdgeSerializer,
-    BOMEdgeSerializer,
-    DomainEventOutboxSerializer,
+    WarehouseSerializer,
 )
 
 __all__ = [

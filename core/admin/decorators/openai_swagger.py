@@ -1,7 +1,7 @@
 from functools import wraps
 
 from django.db import models
-from drf_spectacular.extensions import OpenApiViewExtension
+from drf_spectacular.openapi import AutoSchema
 from drf_spectacular.utils import (
     OpenApiParameter,
     OpenApiResponse,
@@ -12,34 +12,33 @@ from drf_spectacular.utils import (
 from rest_framework import serializers
 
 
-from drf_spectacular.openapi import AutoSchema
-
 class PlatformOpenAISchema(AutoSchema):
     """
     Platform OpenAI Schema Inspector:
-    Strictly filters HTTP methods based on URL hints (HTTP_METHOD) 
+    Strictly filters HTTP methods based on URL hints (HTTP_METHOD)
     and path context (List vs Detail).
     """
+
     def get_operation(self, path, path_regex, path_prefix, method, registry):
         # 1. Get the allowed methods from the URL hints
         # Spectacular stores these in self.view.initkwargs
-        url_hints = getattr(self.view, 'initkwargs', {}).get('HTTP_METHOD', [])
-        
+        url_hints = getattr(self.view, "initkwargs", {}).get("HTTP_METHOD", [])
+
         method_upper = method.upper()
-        
+
         # 2. RULE: Respect URL hints absolutely
         if url_hints and method_upper not in [h.upper() for h in url_hints]:
             return None
-            
+
         # 3. RULE: Contextual Cleanup (List vs Detail)
         # Check if the path has parameters (Detail) or not (List)
-        is_detail = '{' in path or '<' in path
-        
-        if is_detail and method_upper == 'POST':
+        is_detail = "{" in path or "<" in path
+
+        if is_detail and method_upper == "POST":
             return None
-        if not is_detail and method_upper in ['PUT', 'PATCH', 'DELETE']:
+        if not is_detail and method_upper in ["PUT", "PATCH", "DELETE"]:
             return None
-            
+
         return super().get_operation(path, path_regex, path_prefix, method, registry)
 
 
@@ -48,9 +47,7 @@ def auto_extend_schema(cls):
     Automatic OpenAPI schema generation for BaseAPIView subclasses.
     Analyzes class attributes and methods to generate appropriate documentation.
     """
-    entity_name = getattr(cls, "entity_name", None) or cls.__name__.replace(
-        "APIView", ""
-    )
+    entity_name = getattr(cls, "entity_name", None) or cls.__name__.replace("APIView", "")
     display_field = getattr(cls, "entity_display_field", "name")
     tag = [entity_name]
     paginate_enabled = getattr(cls, "paginate", False)
@@ -79,9 +76,7 @@ def auto_extend_schema(cls):
 
     def resolve_response_serializer(instance, default_serializer=None):
         """Resolve a dedicated response serializer when a view declares one."""
-        return (
-            getattr(instance, "response_serializer_class", None) or default_serializer
-        )
+        return getattr(instance, "response_serializer_class", None) or default_serializer
 
     def extract_permission_info(method):
         """Extract permission information from the permission_required decorator."""
@@ -92,9 +87,7 @@ def auto_extend_schema(cls):
 
             if permissions:
                 permission_info["required_permissions"] = permissions
-                permission_info["all_required"] = getattr(
-                    method, "_all_required", False
-                )
+                permission_info["all_required"] = getattr(method, "_all_required", False)
 
         if hasattr(method, "_bypass_permissions"):
             bypass = method._bypass_permissions
@@ -168,20 +161,14 @@ def auto_extend_schema(cls):
                 )
 
         if special_conditions:
-            parts.append(
-                "**Special Conditions:**\n- " + "\n- ".join(special_conditions)
-            )
+            parts.append("**Special Conditions:**\n- " + "\n- ".join(special_conditions))
 
         if "error_message" in permission_info:
-            parts.append(
-                f"**Permission Denied Message:** {permission_info['error_message']}"
-            )
+            parts.append(f"**Permission Denied Message:** {permission_info['error_message']}")
 
         return "\n\n".join(parts)
 
-    def create_response_wrapper_schema(
-        serializer_class, is_list=False, is_paginated=False
-    ):
+    def create_response_wrapper_schema(serializer_class, is_list=False, is_paginated=False):
         """Create response wrapper schema matching ResponseFactory patterns."""
         if not serializer_class:
             return inline_serializer(
@@ -236,9 +223,7 @@ def auto_extend_schema(cls):
 
         if isinstance(field, models.BooleanField):
             return OpenApiTypes.BOOL
-        if isinstance(
-            field, (models.IntegerField, models.AutoField, models.BigIntegerField)
-        ):
+        if isinstance(field, (models.IntegerField, models.AutoField, models.BigIntegerField)):
             return OpenApiTypes.INT
         if isinstance(field, (models.FloatField, models.DecimalField)):
             return OpenApiTypes.FLOAT
@@ -246,9 +231,7 @@ def auto_extend_schema(cls):
             return OpenApiTypes.DATETIME
         if isinstance(field, models.DateField):
             return OpenApiTypes.DATE
-        if isinstance(
-            field, (models.ForeignKey, models.OneToOneField, models.ManyToManyField)
-        ):
+        if isinstance(field, (models.ForeignKey, models.OneToOneField, models.ManyToManyField)):
             return OpenApiTypes.UUID
         return OpenApiTypes.STR
 
@@ -496,12 +479,8 @@ def auto_extend_schema(cls):
                             entry[0],
                             entry[1],
                             {
-                                "multi_csv": bool(
-                                    cfg.get("multi_csv") or cfg.get("csv")
-                                ),
-                                "multi_param": bool(
-                                    cfg.get("multi_param") or cfg.get("multi")
-                                ),
+                                "multi_csv": bool(cfg.get("multi_csv") or cfg.get("csv")),
+                                "multi_param": bool(cfg.get("multi_param") or cfg.get("multi")),
                                 "choices": cfg.get("choices") or cfg.get("enum"),
                             },
                         )
@@ -548,9 +527,7 @@ def auto_extend_schema(cls):
                             ),
                         ):
                             param_type = OpenApiTypes.INT
-                        elif isinstance(
-                            field, (models.FloatField, models.DecimalField)
-                        ):
+                        elif isinstance(field, (models.FloatField, models.DecimalField)):
                             param_type = OpenApiTypes.FLOAT
                         elif isinstance(field, models.UUIDField):
                             param_type = OpenApiTypes.UUID
@@ -580,13 +557,10 @@ def auto_extend_schema(cls):
                     description = f"Filter by {field_name}"
                     if opts.get("multi_csv") and opts.get("multi_param"):
                         description += (
-                            f". Multiple values supported via `{param_name}=a,b` "
-                            "or repeated params"
+                            f". Multiple values supported via `{param_name}=a,b` or repeated params"
                         )
                     elif opts.get("multi_csv"):
-                        description += (
-                            f". Multiple values supported via `{param_name}=a,b`"
-                        )
+                        description += f". Multiple values supported via `{param_name}=a,b`"
                     elif opts.get("multi_param"):
                         description += ". Multiple values supported via repeated params"
 
@@ -637,9 +611,7 @@ def auto_extend_schema(cls):
             parameters.append(
                 OpenApiParameter(
                     name=param["name"],
-                    type=getattr(
-                        OpenApiTypes, param.get("type", "STR").upper(), OpenApiTypes.STR
-                    ),
+                    type=getattr(OpenApiTypes, param.get("type", "STR").upper(), OpenApiTypes.STR),
                     location=OpenApiParameter.QUERY,
                     required=param.get("required", False),
                     description=param.get("description", ""),
@@ -691,9 +663,7 @@ def auto_extend_schema(cls):
                     )
                 else:
                     responses[200] = OpenApiResponse(
-                        response=create_response_wrapper_schema(
-                            serializer, is_list=True
-                        ),
+                        response=create_response_wrapper_schema(serializer, is_list=True),
                         description="Success response with data array",
                     )
             else:
@@ -771,13 +741,13 @@ def auto_extend_schema(cls):
                     description += f"\n\nSupports: {', '.join(param_hints)}."
 
             if permission_description:
-                description += f"\n\n---\n\n## 🔒 Permission Requirements\n\n{permission_description}"
+                description += (
+                    f"\n\n---\n\n## 🔒 Permission Requirements\n\n{permission_description}"
+                )
 
             view_id = getattr(dummy_instance, "view_id", None)
             if view_id:
-                description += (
-                    f"\n\n---\n\n## ⚙️ View Configuration\n\n**View ID:** `{view_id}`"
-                )
+                description += f"\n\n---\n\n## ⚙️ View Configuration\n\n**View ID:** `{view_id}`"
 
             schema_kwargs.update(
                 {
@@ -790,9 +760,7 @@ def auto_extend_schema(cls):
         elif method_name in ["post", "put", "patch"]:
             action_map = {"post": "create", "put": "update", "patch": "patch"}
             action = action_map[method_name]
-            serializer = resolve_serializer(
-                dummy_instance, is_create_update=True, action=action
-            )
+            serializer = resolve_serializer(dummy_instance, is_create_update=True, action=action)
             response_serializer = resolve_response_serializer(
                 dummy_instance, default_serializer=serializer
             )
@@ -804,9 +772,7 @@ def auto_extend_schema(cls):
                 responses[status_code] = OpenApiResponse(
                     response=create_response_wrapper_schema(
                         response_serializer,
-                        is_list=bool(
-                            getattr(dummy_instance, "response_serializer_many", False)
-                        ),
+                        is_list=bool(getattr(dummy_instance, "response_serializer_many", False)),
                     ),
                     description=f"{'Created' if method_name == 'post' else 'Updated'} successfully",
                 )
@@ -926,13 +892,13 @@ def auto_extend_schema(cls):
                 description += f"\n\nValidation: {validation_hooks[method_name]}() hook will be called before processing."
 
             if permission_description:
-                description += f"\n\n---\n\n### 🔒 Permission Requirements\n\n{permission_description}"
+                description += (
+                    f"\n\n---\n\n### 🔒 Permission Requirements\n\n{permission_description}"
+                )
 
             view_id = getattr(dummy_instance, "view_id", None)
             if view_id:
-                description += (
-                    f"\n\n---\n\n## ⚙️ View Configuration\n\n**View ID:** `{view_id}`"
-                )
+                description += f"\n\n---\n\n## ⚙️ View Configuration\n\n**View ID:** `{view_id}`"
             existing_schema = getattr(method, "extend_schema", None)
             schema_kwargs.update(
                 {
@@ -943,9 +909,7 @@ def auto_extend_schema(cls):
             )
 
         elif method_name == "delete":
-            delete_type = (
-                "Soft delete" if supports_soft_delete else "Permanently delete"
-            )
+            delete_type = "Soft delete" if supports_soft_delete else "Permanently delete"
             description = (
                 method_docstring
                 if method_docstring
@@ -953,16 +917,18 @@ def auto_extend_schema(cls):
             )
 
             if not method_docstring:
-                description += "\n\nValidation: validate_delete() hook will be called before deletion."
+                description += (
+                    "\n\nValidation: validate_delete() hook will be called before deletion."
+                )
 
             if permission_description:
-                description += f"\n\n---\n\n### 🔒 Permission Requirements\n\n{permission_description}"
+                description += (
+                    f"\n\n---\n\n### 🔒 Permission Requirements\n\n{permission_description}"
+                )
 
             view_id = getattr(dummy_instance, "view_id", None)
             if view_id:
-                description += (
-                    f"\n\n---\n\n## ⚙️ View Configuration\n\n**View ID:** `{view_id}`"
-                )
+                description += f"\n\n---\n\n## ⚙️ View Configuration\n\n**View ID:** `{view_id}`"
 
             responses = {
                 200: OpenApiResponse(
@@ -1038,7 +1004,7 @@ def auto_extend_schema(cls):
     for method_name in ["get", "post", "put", "patch", "delete"]:
         if hasattr(cls, method_name):
             original_method = getattr(cls, method_name)
-            
+
             # Logic to hide methods based on context to prevent "Swagger Mess"
             def get_method_schema(method_name, is_detail):
                 if is_detail and method_name == "post":
@@ -1057,9 +1023,7 @@ def auto_extend_choice_schema(cls):
     """
     Automatic OpenAPI schema generation for BaseChoicesAPIView subclasses.
     """
-    entity_name = getattr(cls, "entity_name", None) or cls.__name__.replace(
-        "ChoicesAPIView", ""
-    )
+    entity_name = getattr(cls, "entity_name", None) or cls.__name__.replace("ChoicesAPIView", "")
     model = getattr(cls, "model", None)
     field_names = getattr(cls, "field_names", []) or [getattr(cls, "field_name", "")]
     field_names = [f for f in field_names if f]
@@ -1083,16 +1047,13 @@ def auto_extend_choice_schema(cls):
                 name=f"{entity_name}ChoiceResponse",
                 fields={
                     "success": serializers.BooleanField(default=True),
-                    "message": serializers.CharField(
-                        default="Choices fetched successfully"
-                    ),
+                    "message": serializers.CharField(default="Choices fetched successfully"),
                     "data": InternalChoiceSerializer(many=True),
                 },
             )
         else:
             fields = {
-                f"{field}_choices": InternalChoiceSerializer(many=True)
-                for field in field_names
+                f"{field}_choices": InternalChoiceSerializer(many=True) for field in field_names
             }
             nested_data_serializer = inline_serializer(
                 name=f"{entity_name}MultiChoiceData", fields=fields
@@ -1101,9 +1062,7 @@ def auto_extend_choice_schema(cls):
                 name=f"{entity_name}MultiChoiceResponse",
                 fields={
                     "success": serializers.BooleanField(default=True),
-                    "message": serializers.CharField(
-                        default="Choices fetched successfully"
-                    ),
+                    "message": serializers.CharField(default="Choices fetched successfully"),
                     "data": nested_data_serializer,
                 },
             )

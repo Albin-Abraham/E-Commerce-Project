@@ -11,26 +11,26 @@ Validates:
 """
 
 import os
-from decimal import Decimal
 from unittest import mock
-from django.test import TestCase
-from django.contrib.auth import get_user_model
-from rest_framework.test import APIClient
-from rest_framework import status
 
-from core.base_models.system_models import SystemConfig
-from core.admin.models.company import Company
+from django.contrib.auth import get_user_model
+from django.test import TestCase
+from rest_framework import status
+from rest_framework.test import APIClient
+
 from apps.customers.models.customer import Customer
-from apps.payments.models import PaymentGatewayConfig
-from apps.payments.configuration.resolver import PaymentGatewayConfigResolver
+from apps.payments.adapters.factory import PaymentGatewayAdapterFactory
+from apps.payments.adapters.paypal_adapter import PayPalPaymentAdapter
+from apps.payments.adapters.razorpay_adapter import RazorpayPaymentAdapter
 from apps.payments.configuration.exceptions import (
+    GatewayConfigurationError,
     GatewayDisabledError,
     GatewayNotConfiguredError,
-    GatewayConfigurationError,
 )
-from apps.payments.adapters.factory import PaymentGatewayAdapterFactory
-from apps.payments.adapters.razorpay_adapter import RazorpayPaymentAdapter
-from apps.payments.adapters.paypal_adapter import PayPalPaymentAdapter
+from apps.payments.configuration.resolver import PaymentGatewayConfigResolver
+from apps.payments.models import PaymentGatewayConfig
+from core.admin.models.company import Company
+from core.base_models.system_models import SystemConfig
 
 User = get_user_model()
 
@@ -43,7 +43,9 @@ class GatewayResolutionTestSuite(TestCase):
     def setUp(self):
         self.client = APIClient()
         self.company = Company.objects.create(name="Resolution Test Co", code="RES-01")
-        self.user = User.objects.create_user(username="res_user", email="res@example.com", password="Password123!")
+        self.user = User.objects.create_user(
+            username="res_user", email="res@example.com", password="Password123!"
+        )
         self.customer = Customer.objects.create(
             customer_code="CUST-RES-01",
             user=self.user,
@@ -79,12 +81,15 @@ class GatewayResolutionTestSuite(TestCase):
             PaymentGatewayAdapterFactory.get_adapter("RAZORPAY")
 
         # 3. API initiation endpoint must return HTTP 409 CONFLICT
-        res = self.client.post("/api/v1/payments/transactions/initiate/", {
-            "customer_id": str(self.customer.id),
-            "amount": "120.00",
-            "currency": "USD",
-            "gateway_type": "RAZORPAY",
-        })
+        res = self.client.post(
+            "/api/v1/payments/transactions/initiate/",
+            {
+                "customer_id": str(self.customer.id),
+                "amount": "120.00",
+                "currency": "USD",
+                "gateway_type": "RAZORPAY",
+            },
+        )
         self.assertEqual(res.status_code, status.HTTP_409_CONFLICT)
         self.assertIn("disabled", res.data.get("message", "").lower())
 
@@ -157,10 +162,13 @@ class GatewayResolutionTestSuite(TestCase):
         """
         When neither PaymentGatewayConfig nor SystemConfig exist, resolver falls back to os.environ / settings.
         """
-        with mock.patch.dict(os.environ, {
-            "RAZORPAY_KEY_ID": "rzp_env_key_123",
-            "RAZORPAY_KEY_SECRET": "rzp_env_secret_456",
-        }):
+        with mock.patch.dict(
+            os.environ,
+            {
+                "RAZORPAY_KEY_ID": "rzp_env_key_123",
+                "RAZORPAY_KEY_SECRET": "rzp_env_secret_456",
+            },
+        ):
             config = PaymentGatewayConfigResolver.resolve_gateway("RAZORPAY")
             self.assertEqual(config.source, "SETTINGS_ENV")
             self.assertEqual(config.api_key, "rzp_env_key_123")
@@ -174,12 +182,15 @@ class GatewayResolutionTestSuite(TestCase):
         with self.assertRaises(GatewayNotConfiguredError):
             PaymentGatewayConfigResolver.resolve_gateway("RAZORPAY")
 
-        res = self.client.post("/api/v1/payments/transactions/initiate/", {
-            "customer_id": str(self.customer.id),
-            "amount": "50.00",
-            "currency": "USD",
-            "gateway_type": "RAZORPAY",
-        })
+        res = self.client.post(
+            "/api/v1/payments/transactions/initiate/",
+            {
+                "customer_id": str(self.customer.id),
+                "amount": "50.00",
+                "currency": "USD",
+                "gateway_type": "RAZORPAY",
+            },
+        )
         self.assertEqual(res.status_code, status.HTTP_503_SERVICE_UNAVAILABLE)
 
     def test_secret_redaction_in_resolved_config(self):
@@ -224,5 +235,7 @@ class GatewayResolutionTestSuite(TestCase):
         SystemConfig.objects.create(key="RAZORPAY_KEY_ID", value="rzp_tenant_key")
         SystemConfig.objects.create(key="RAZORPAY_KEY_SECRET", value="rzp_tenant_secret")
 
-        config = PaymentGatewayConfigResolver.resolve_gateway("RAZORPAY", tenant_id="tenant_store_01")
+        config = PaymentGatewayConfigResolver.resolve_gateway(
+            "RAZORPAY", tenant_id="tenant_store_01"
+        )
         self.assertEqual(config.api_key, "rzp_tenant_key")

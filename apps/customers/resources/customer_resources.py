@@ -1,6 +1,5 @@
-from import_export import fields, widgets
-from core.base_models.import_mixins import BasePlatformModelResource
 from apps.customers.models.customer import Customer
+from core.base_models.import_mixins import BasePlatformModelResource
 
 
 class CustomerResource(BasePlatformModelResource):
@@ -8,6 +7,11 @@ class CustomerResource(BasePlatformModelResource):
         model = Customer
         import_id_fields = ("email",)
         fields = (
-            "id", "first_name", "last_name", "email",
-            "phone_number", "status", "company",
+            "id",
+            "first_name",
+            "last_name",
+            "email",
+            "phone_number",
+            "status",
+            "company",
         )

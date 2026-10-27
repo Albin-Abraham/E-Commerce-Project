@@ -59,5 +59,5 @@ if evaluate_policy(user, "hrms:payroll:salary_processing"):
 ```python
 # The manifest property on the User model contains the enriched metadata
 metadata = user.permission_manifest.metadata.get("hrms:payroll:salary_processing")
-print(f"Module: {metadata['module_name']}") # Output: "Payroll & Compensation"
+print(f"Module: {metadata['module_name']}")  # Output: "Payroll & Compensation"
 ```

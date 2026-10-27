@@ -1,16 +1,17 @@
 from django.db import models
 from import_export import fields, widgets
-from core.base_models.import_mixins import BasePlatformModelResource
-from apps.shop.infrastructure.models.product import Product
-from apps.shop.infrastructure.models.variant import ProductVariant
-from apps.shop.infrastructure.models.category import Category
+
 from apps.shop.infrastructure.models.brand import Brand
 from apps.shop.infrastructure.models.catalog import (
     Catalog,
-    CatalogItem,
     CatalogCollection,
+    CatalogItem,
     TagDefinition,
 )
+from apps.shop.infrastructure.models.category import Category
+from apps.shop.infrastructure.models.product import Product
+from apps.shop.infrastructure.models.variant import ProductVariant
+from core.base_models.import_mixins import BasePlatformModelResource
 
 
 class CategoryResource(BasePlatformModelResource):
@@ -49,8 +50,15 @@ class ProductResource(BasePlatformModelResource):
         model = Product
         import_id_fields = ("sku",)
         fields = (
-            "id", "sku", "name", "slug", "price",
-            "category", "brand", "status", "is_active",
+            "id",
+            "sku",
+            "name",
+            "slug",
+            "price",
+            "category",
+            "brand",
+            "status",
+            "is_active",
         )
 
 
@@ -65,8 +73,14 @@ class ProductVariantResource(BasePlatformModelResource):
         model = ProductVariant
         import_id_fields = ("sku",)
         fields = (
-            "id", "product", "sku", "price", "compare_at_price",
-            "barcode", "status", "is_active",
+            "id",
+            "product",
+            "sku",
+            "price",
+            "compare_at_price",
+            "barcode",
+            "status",
+            "is_active",
         )
 
 
@@ -124,21 +138,34 @@ class CatalogItemResource(BasePlatformModelResource):
         # 1. Catalog flexible lookup
         catalog_val = row.get("catalog_code") or row.get("catalog_name") or row.get("catalog")
         if catalog_val:
-            cat_obj = Catalog.objects.filter(models.Q(code=catalog_val) | models.Q(name=catalog_val)).first()
+            cat_obj = Catalog.objects.filter(
+                models.Q(code=catalog_val) | models.Q(name=catalog_val)
+            ).first()
             if cat_obj:
                 row["catalog"] = cat_obj.code
 
         # 2. Product flexible lookup (by SKU or Name)
-        prod_val = row.get("product_sku") or row.get("product_name") or row.get("item_sku") or row.get("item_name") or row.get("product") or row.get("item")
+        prod_val = (
+            row.get("product_sku")
+            or row.get("product_name")
+            or row.get("item_sku")
+            or row.get("item_name")
+            or row.get("product")
+            or row.get("item")
+        )
         if prod_val:
-            prod_obj = Product.objects.filter(models.Q(sku=prod_val) | models.Q(name=prod_val)).first()
+            prod_obj = Product.objects.filter(
+                models.Q(sku=prod_val) | models.Q(name=prod_val)
+            ).first()
             if prod_obj:
                 row["product"] = prod_obj.sku
 
         # 3. Variant flexible lookup
         var_val = row.get("variant_sku") or row.get("variant_name") or row.get("variant")
         if var_val:
-            var_obj = ProductVariant.objects.filter(models.Q(sku=var_val) | models.Q(barcode=var_val)).first()
+            var_obj = ProductVariant.objects.filter(
+                models.Q(sku=var_val) | models.Q(barcode=var_val)
+            ).first()
             if var_obj:
                 row["variant"] = var_obj.sku
 
@@ -146,10 +173,17 @@ class CatalogItemResource(BasePlatformModelResource):
         model = CatalogItem
         import_id_fields = ("catalog", "product")
         fields = (
-            "id", "catalog", "product", "variant",
-            "override_name", "override_price",
-            "is_new_arrival", "is_budget_friendly", "tags",
-            "is_published", "sort_order",
+            "id",
+            "catalog",
+            "product",
+            "variant",
+            "override_name",
+            "override_price",
+            "is_new_arrival",
+            "is_budget_friendly",
+            "tags",
+            "is_published",
+            "sort_order",
         )
 
 
@@ -164,8 +198,13 @@ class CatalogCollectionResource(BasePlatformModelResource):
         model = CatalogCollection
         import_id_fields = ("slug",)
         fields = (
-            "id", "catalog", "name", "slug", "collection_type",
-            "max_budget_price", "is_active",
+            "id",
+            "catalog",
+            "name",
+            "slug",
+            "collection_type",
+            "max_budget_price",
+            "is_active",
         )
 
 
@@ -182,7 +221,9 @@ class CombinedItemCatalogResource(CatalogItemResource):
         category_name = row.get("definition:category:name") or row.get("category_name")
         category_obj = None
         if category_slug or category_name:
-            c_slug = category_slug or (category_name.lower().replace(" ", "-") if category_name else "default")
+            c_slug = category_slug or (
+                category_name.lower().replace(" ", "-") if category_name else "default"
+            )
             c_name = category_name or c_slug.replace("-", " ").title()
             category_obj, _ = Category.objects.get_or_create(slug=c_slug, defaults={"name": c_name})
 
@@ -193,9 +234,27 @@ class CombinedItemCatalogResource(CatalogItemResource):
             brand_obj, _ = Brand.objects.get_or_create(name=brand_name)
 
         # 3. On-the-fly Product resolution/creation
-        sku = row.get("product") or row.get("master:product:sku") or row.get("item:sku") or row.get("product_sku") or row.get("sku")
-        name = row.get("item_name") or row.get("master:product:name") or row.get("item:name") or row.get("product_name") or row.get("name")
-        price = row.get("item_price") or row.get("master:product:price") or row.get("item:price") or row.get("price") or 0.0
+        sku = (
+            row.get("product")
+            or row.get("master:product:sku")
+            or row.get("item:sku")
+            or row.get("product_sku")
+            or row.get("sku")
+        )
+        name = (
+            row.get("item_name")
+            or row.get("master:product:name")
+            or row.get("item:name")
+            or row.get("product_name")
+            or row.get("name")
+        )
+        price = (
+            row.get("item_price")
+            or row.get("master:product:price")
+            or row.get("item:price")
+            or row.get("price")
+            or 0.0
+        )
 
         if sku or name:
             p_sku = sku or (name.upper().replace(" ", "-") if name else "PROD-ITEM")
@@ -222,9 +281,20 @@ class CombinedItemCatalogResource(CatalogItemResource):
             row["product"] = product_obj.sku
 
         # 4. On-the-fly Catalog resolution/creation
-        catalog_code = row.get("catalog") or row.get("catalog:catalog:code") or row.get("catalog_code") or "MAIN"
-        catalog_name = row.get("catalog_name") or row.get("catalog:catalog:name") or catalog_code.replace("_", " ").title()
-        catalog_obj, _ = Catalog.objects.get_or_create(code=catalog_code, defaults={"name": catalog_name})
+        catalog_code = (
+            row.get("catalog")
+            or row.get("catalog:catalog:code")
+            or row.get("catalog_code")
+            or "MAIN"
+        )
+        catalog_name = (
+            row.get("catalog_name")
+            or row.get("catalog:catalog:name")
+            or catalog_code.replace("_", " ").title()
+        )
+        catalog_obj, _ = Catalog.objects.get_or_create(
+            code=catalog_code, defaults={"name": catalog_name}
+        )
         row["catalog"] = catalog_obj.code
 
         # 5. Extract CatalogItem presentation overrides

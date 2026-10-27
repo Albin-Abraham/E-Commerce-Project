@@ -1,6 +1,3 @@
-from typing import Dict, List, Optional
-
-
 class PermissionPolicyMixin:
     """
     Developer-declared permission schema.
@@ -16,10 +13,10 @@ class PermissionPolicyMixin:
     """
 
     permission_prefix: str = ""
-    permission_map: Dict[str, str] = {}
+    permission_map: dict[str, str] = {}
 
     @classmethod
-    def get_required_permission_for_action(cls, action: str) -> Optional[str]:
+    def get_required_permission_for_action(cls, action: str) -> str | None:
         verb = cls.permission_map.get(action)
         if verb is None:
             return None
@@ -27,7 +24,7 @@ class PermissionPolicyMixin:
         return f"{prefix}:{verb}"
 
     @classmethod
-    def get_declared_permissions(cls) -> List[tuple]:
+    def get_declared_permissions(cls) -> list[tuple]:
         perms = []
         for verb in cls.permission_map.values():
             prefix = cls.permission_prefix or cls.__name__.lower()

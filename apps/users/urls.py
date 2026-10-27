@@ -3,17 +3,17 @@ from django.urls import path
 from rest_framework_simplejwt.views import TokenRefreshView
 
 from .views.auth_views import (
-    UserLoginAuthView,
-    UserLogoutAuthView,
-    UserRegistrationAuthView,
-    UserProfileAuthView,
     ChangePasswordView,
     ForgotPasswordView,
     ResetPasswordView,
+    UserLoginAuthView,
+    UserLogoutAuthView,
+    UserProfileAuthView,
+    UserRegistrationAuthView,
 )
-from .views.user_management import UserManagementViewSet
-from .views.role_views import RoleViewSet
 from .views.group_views import GroupViewSet
+from .views.role_views import RoleViewSet
+from .views.user_management import UserManagementViewSet
 
 urlpatterns = [
     # Auth endpoints
@@ -22,7 +22,6 @@ urlpatterns = [
     path("token-refresh/", TokenRefreshView.as_view(), name="token_refresh"),
     path("logout/", UserLogoutAuthView.as_view(), name="logout"),
     path("profile/", UserProfileAuthView.as_view(), name="user_profile"),
-
     # Password management
     path("change-password/", ChangePasswordView.as_view(), name="change-password"),
     path("forgot-password/", ForgotPasswordView.as_view(), name="forgot-password"),

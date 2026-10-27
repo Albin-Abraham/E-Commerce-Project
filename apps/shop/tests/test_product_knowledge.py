@@ -10,7 +10,6 @@ from apps.shop.infrastructure.models.variant import ProductVariant
 
 
 class ProductKnowledgeServiceTestCase(TestCase):
-
     def _seq(self):
         seq = getattr(self, "_seq_counter", 0) + 1
         self._seq_counter = seq
@@ -45,12 +44,17 @@ class ProductKnowledgeServiceTestCase(TestCase):
 
     def _link(self, article, product=None, variant=None, link_type="SPEC_SHEET"):
         return ProductKnowledgeLink.objects.create(
-            article=article, product=product, variant=variant, link_type=link_type,
+            article=article,
+            product=product,
+            variant=variant,
+            link_type=link_type,
         )
 
     def test_plain_spec_sheet_resolved_at_product_level(self):
         product = self._product()
-        specs_article = self._article(metadata={"specs": {"material": "Cotton", "weight": "180 gsm"}})
+        specs_article = self._article(
+            metadata={"specs": {"material": "Cotton", "weight": "180 gsm"}}
+        )
         manual = self._article()
         self._link(specs_article, product=product)
         self._link(manual, product=product, link_type="USER_MANUAL")
@@ -96,7 +100,9 @@ class ProductKnowledgeServiceTestCase(TestCase):
         matched = self._variant(product, {"color": "Black", "size": "XL"})
         result = ProductKnowledgeService.resolve_knowledge_content(matched)
         self.assertEqual(result["specifications"]["care"], "Hand wash only")
-        self.assertEqual(result["specifications"]["material"], "Cotton", "override layers atop the base")
+        self.assertEqual(
+            result["specifications"]["material"], "Cotton", "override layers atop the base"
+        )
 
     def test_unmatched_variant_falls_back_to_default_specs(self):
         product = self._product()
@@ -152,7 +158,9 @@ class ProductKnowledgeServiceTestCase(TestCase):
         result = ProductKnowledgeService.resolve_knowledge_content(product)
         self.assertEqual(len(result["cashier_pitches"]), 1, "routed via valueset metadata section")
         self.assertEqual(len(result["compliance_certificates"]), 1)
-        self.assertEqual(result["descriptions"], [], "typed content is not dumped into descriptions")
+        self.assertEqual(
+            result["descriptions"], [], "typed content is not dumped into descriptions"
+        )
         self.assertEqual(len(result["articles"]), 2)
 
     def test_unknown_link_type_falls_back_to_descriptions_not_dropped(self):
@@ -161,5 +169,7 @@ class ProductKnowledgeServiceTestCase(TestCase):
         self._link(article, product=product, link_type="CUSTOM_RESEARCH_NOTE")
 
         result = ProductKnowledgeService.resolve_knowledge_content(product)
-        self.assertEqual(len(result["descriptions"]), 1, "unknown type still surfaces as a description")
+        self.assertEqual(
+            len(result["descriptions"]), 1, "unknown type still surfaces as a description"
+        )
         self.assertEqual(len(result["articles"]), 1)

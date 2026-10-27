@@ -1,6 +1,7 @@
 from rest_framework import serializers
-from core.base_serializers.base_serializers import BaseModelSerializer
+
 from apps.users.models.permissions import RolePermissions
+from core.base_serializers.base_serializers import BaseModelSerializer
 
 
 class RoleListSerializer(BaseModelSerializer):

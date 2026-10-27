@@ -1,5 +1,10 @@
-from .procurement_views import SupplierViewSet, PurchaseOrderViewSet, GoodsReceivedNoteViewSet
-from .pos_views import POSRegisterViewSet, POSSessionViewSet, POSTransactionViewSet, POSProductLookupView
+from .pos_views import (
+    POSProductLookupView,
+    POSRegisterViewSet,
+    POSSessionViewSet,
+    POSTransactionViewSet,
+)
+from .procurement_views import GoodsReceivedNoteViewSet, PurchaseOrderViewSet, SupplierViewSet
 
 __all__ = [
     "SupplierViewSet",

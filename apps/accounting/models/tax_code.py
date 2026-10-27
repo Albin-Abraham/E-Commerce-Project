@@ -9,14 +9,13 @@ compose codes into per-branch/country structures.
 
 from django.db import models
 
+from apps.accounting.models.tax import TAX_CATEGORY_VALUESET
+from apps.accounting.valuesets import TAX_JURISDICTION_VALUESET
 from core.base_models.fields.char_fields import CustomCharField
 from core.base_models.fields.numeric_fields import CustomDecimalField
 from core.base_models.fields.short_ui_fields import CustomShortUUIDField
 from core.base_models.validator_model import BaseModel
 from core.base_models.validators.rules import RequiredRule, UniqueRule
-
-from apps.accounting.models.tax import TAX_CATEGORY_VALUESET
-from apps.accounting.valuesets import TAX_JURISDICTION_VALUESET
 
 
 class TaxCode(BaseModel):

@@ -1,31 +1,32 @@
-from rest_framework import viewsets, status
+from rest_framework import status, viewsets
 from rest_framework.decorators import action
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
-from rest_framework.permissions import AllowAny
 
-
-from apps.customers.models.customer import Customer, CustomerPreference, CustomerAddress, CustomerContact
-from apps.customers.models.shopping import Cart, CartItem, Wishlist, WishlistItem, ProductLike
 from apps.customers.api.serializers import (
-    CustomerSerializer,
-    CustomerPreferenceSerializer,
+    CartItemSerializer,
+    CartSerializer,
     CustomerAddressSerializer,
     CustomerContactSerializer,
-    CartSerializer,
-    CartItemSerializer,
-    WishlistSerializer,
-    WishlistItemSerializer,
+    CustomerPreferenceSerializer,
+    CustomerSerializer,
     ProductLikeSerializer,
+    WishlistItemSerializer,
+    WishlistSerializer,
 )
+from apps.customers.models.customer import (
+    Customer,
+    CustomerAddress,
+    CustomerContact,
+    CustomerPreference,
+)
+from apps.customers.models.shopping import Cart, ProductLike, Wishlist
 from apps.customers.services.cart_service import CustomerCartService
-from apps.customers.services.wishlist_service import CustomerWishlistService
-from apps.customers.services.recommendation_service import CustomerRecommendationService
-from apps.customers.workflows.checkout_workflow import CustomerCheckoutService
-
-
-from apps.customers.services.registration_service import CustomerRegistrationService
 from apps.customers.services.oauth_service import SocialOAuthAuthService
+from apps.customers.services.recommendation_service import CustomerRecommendationService
+from apps.customers.services.registration_service import CustomerRegistrationService
+from apps.customers.services.wishlist_service import CustomerWishlistService
+from apps.customers.workflows.checkout_workflow import CustomerCheckoutService
 
 
 class CustomerViewSet(viewsets.ModelViewSet):
@@ -81,7 +82,6 @@ class CustomerViewSet(viewsets.ModelViewSet):
 
     @action(detail=False, methods=["post"], url_path="social-login", permission_classes=[AllowAny])
     def social_login(self, request):
-
         """
         Social Login & OAuth SSO Endpoint (Google, GitHub, Facebook, Apple, Microsoft).
         """
@@ -99,13 +99,15 @@ class CustomerViewSet(viewsets.ModelViewSet):
             )
 
         try:
-            user, customer, social_acc, created = SocialOAuthAuthService.authenticate_or_register_social_user(
-                provider=provider,
-                provider_uid=provider_uid,
-                email=email,
-                full_name=full_name,
-                avatar_url=avatar_url,
-                extra_data=extra_data,
+            user, customer, social_acc, created = (
+                SocialOAuthAuthService.authenticate_or_register_social_user(
+                    provider=provider,
+                    provider_uid=provider_uid,
+                    email=email,
+                    full_name=full_name,
+                    avatar_url=avatar_url,
+                    extra_data=extra_data,
+                )
             )
             customer_data = CustomerSerializer(customer).data if customer else None
             return Response(
@@ -154,7 +156,10 @@ class CartViewSet(viewsets.ModelViewSet):
         quantity = int(request.data.get("quantity", 1))
 
         if not customer_id or not product_id:
-            return Response({"detail": "customer_id and product_id are required."}, status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {"detail": "customer_id and product_id are required."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
         try:
             cart_item = CustomerCartService.add_item(
@@ -173,7 +178,10 @@ class CartViewSet(viewsets.ModelViewSet):
         customer_id = request.query_params.get("customer_id")
         pincode = request.query_params.get("pincode")
         if not customer_id:
-            return Response({"detail": "customer_id query param is required."}, status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {"detail": "customer_id query param is required."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
         breakdown_data = CustomerCartService.get_cart_breakdown(customer_id, target_pincode=pincode)
         return Response(breakdown_data, status=status.HTTP_200_OK)
@@ -185,7 +193,10 @@ class CartViewSet(viewsets.ModelViewSet):
         payment_method = request.data.get("payment_method", "CARD")
 
         if not cart_id or not delivery_address_id:
-            return Response({"detail": "cart_id and delivery_address_id are required."}, status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {"detail": "cart_id and delivery_address_id are required."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
         try:
             sales_order, sales_invoice = CustomerCheckoutService.process_checkout(
@@ -220,7 +231,10 @@ class WishlistViewSet(viewsets.ModelViewSet):
         variant_id = request.data.get("variant_id")
 
         if not customer_id or not product_id:
-            return Response({"detail": "customer_id and product_id are required."}, status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {"detail": "customer_id and product_id are required."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
         try:
             wish_item = CustomerWishlistService.add_to_wishlist(
@@ -237,7 +251,10 @@ class WishlistViewSet(viewsets.ModelViewSet):
     def breakdown(self, request):
         customer_id = request.query_params.get("customer_id")
         if not customer_id:
-            return Response({"detail": "customer_id query param is required."}, status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {"detail": "customer_id query param is required."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
         breakdown_data = CustomerWishlistService.get_wishlist_breakdown(customer_id)
         return Response(breakdown_data, status=status.HTTP_200_OK)
@@ -249,7 +266,10 @@ class WishlistViewSet(viewsets.ModelViewSet):
         quantity = int(request.data.get("quantity", 1))
 
         if not customer_id or not wishlist_item_id:
-            return Response({"detail": "customer_id and wishlist_item_id are required."}, status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {"detail": "customer_id and wishlist_item_id are required."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
         try:
             cart_item = CustomerWishlistService.move_wishlist_item_to_cart(
@@ -274,7 +294,10 @@ class ProductLikeViewSet(viewsets.ModelViewSet):
         product_id = request.data.get("product_id")
 
         if not customer_id or not product_id:
-            return Response({"detail": "customer_id and product_id are required."}, status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {"detail": "customer_id and product_id are required."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
         is_liked = CustomerWishlistService.toggle_product_like(customer_id, product_id)
         total_likes = CustomerWishlistService.get_product_like_count(product_id)
@@ -290,9 +313,14 @@ class CustomerRecommendationViewSet(viewsets.ViewSet):
         customer_id = request.query_params.get("customer_id")
         limit = int(request.query_params.get("limit", 6))
         if not customer_id:
-            return Response({"detail": "customer_id query param is required."}, status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {"detail": "customer_id query param is required."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
-        suggestions = CustomerRecommendationService.get_suggested_products_for_customer(customer_id, limit=limit)
+        suggestions = CustomerRecommendationService.get_suggested_products_for_customer(
+            customer_id, limit=limit
+        )
         return Response(suggestions, status=status.HTTP_200_OK)
 
     @action(detail=False, methods=["get"], url_path="frequently-bought-together")
@@ -300,7 +328,12 @@ class CustomerRecommendationViewSet(viewsets.ViewSet):
         product_id = request.query_params.get("product_id")
         limit = int(request.query_params.get("limit", 4))
         if not product_id:
-            return Response({"detail": "product_id query param is required."}, status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {"detail": "product_id query param is required."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
-        frequently_bought = CustomerRecommendationService.get_frequently_bought_together(product_id, limit=limit)
+        frequently_bought = CustomerRecommendationService.get_frequently_bought_together(
+            product_id, limit=limit
+        )
         return Response(frequently_bought, status=status.HTTP_200_OK)

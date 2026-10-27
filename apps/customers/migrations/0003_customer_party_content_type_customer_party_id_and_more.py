@@ -8,7 +8,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ('contenttypes', '0002_remove_content_type_name'),
-        ('customers', '0002_alter_cart_options_alter_customer_options_and_more'),
+        ('customers', '0003_initial'),
     ]
 
     operations = [

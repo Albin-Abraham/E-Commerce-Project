@@ -11,18 +11,21 @@ SYSTEM_BRANCH_CODE = "all"
 SYSTEM_COMPANY = SYSTEM_COMPANY_NAME
 ALL_BRANCH = SYSTEM_BRANCH_NAME
 
+
 # --- Industrialized Header Registry ---
 # Centralized source of truth for all platform-aware headers.
 class PlatformHeaders:
-    PLATFORM = "X-Platform"      # web, ios, android
-    TENANT = "X-Tenant-ID"       # Company Scoping
-    TENANT_BUSINESS_UNIT = "X-Business-Unit-ID" # Business Unit Scoping
-    TENANT_BRANCH = "X-Branch-ID" # Branch Scoping
+    PLATFORM = "X-Platform"  # web, ios, android
+    TENANT = "X-Tenant-ID"  # Company Scoping
+    TENANT_BUSINESS_UNIT = "X-Business-Unit-ID"  # Business Unit Scoping
+    TENANT_BRANCH = "X-Branch-ID"  # Branch Scoping
     REQUEST_ID = "X-Request-ID"  # Traceability
     PLATFORM_VERSION = "X-App-Version"
     LOG_LEVEL = "X-Log-Level"
 
+
 # PlatformHeaders = PlatformHeaders()
+
 
 # --- Industrialized Cookie Registry ---
 class PlatformCookies:

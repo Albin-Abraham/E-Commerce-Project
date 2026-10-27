@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import os
 import importlib
 from pathlib import Path
 from typing import Any
@@ -16,8 +15,8 @@ class AppRegistry:
     truth for app metadata (e.g. which YAML module a Django app belongs to).
     """
 
-    _apps: dict[str, Any] = {}       # app_label → module path
-    _modules: dict[str, str] = {}    # YAML module key → Django app label
+    _apps: dict[str, Any] = {}  # app_label → module path
+    _modules: dict[str, str] = {}  # YAML module key → Django app label
 
     # ------------------------------------------------------------------
     # Discovery
@@ -31,9 +30,18 @@ class AppRegistry:
         """
         if exclude is None:
             exclude = [
-                "__pycache__", "venv", "env", "static", "templates",
-                "media", "tests", "common", "config", "migrations",
-                "backend", "apps",
+                "__pycache__",
+                "venv",
+                "env",
+                "static",
+                "templates",
+                "media",
+                "tests",
+                "common",
+                "config",
+                "migrations",
+                "backend",
+                "apps",
             ]
 
         apps: list[str] = []

@@ -1,9 +1,7 @@
-from typing import Dict, Any, Optional
 from uuid import UUID
-from django.db import transaction
-from core.admin.services.base_service import BaseService
-from core.admin.utils.integrity.retry import retry_on_conflict
+
 from apps.shop.infrastructure.models.inventory import Inventory
+from core.admin.services.base_service import BaseService
 
 
 class InventoryService(BaseService[Inventory]):
@@ -49,7 +47,9 @@ class InventoryService(BaseService[Inventory]):
             return False
 
     @classmethod
-    def initialize_stock(cls, product_id: UUID, branch_id: UUID, initial_quantity: int = 0) -> Inventory:
+    def initialize_stock(
+        cls, product_id: UUID, branch_id: UUID, initial_quantity: int = 0
+    ) -> Inventory:
         record, created = cls.model.objects.get_or_create(
             product_id=product_id,
             branch_id=branch_id,
@@ -60,6 +60,7 @@ class InventoryService(BaseService[Inventory]):
     @classmethod
     def get_low_stock_items(cls, branch_id: UUID) -> list:
         from django.db.models import F
+
         records = cls.model.objects.filter(
             branch_id=branch_id,
             quantity__lte=F("reorder_point"),

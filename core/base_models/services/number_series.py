@@ -1,8 +1,8 @@
 from __future__ import annotations
 
+import re
 from dataclasses import dataclass
 from datetime import datetime
-import re
 
 from django.db import transaction
 from django.utils import timezone
@@ -146,6 +146,8 @@ class NumberSeriesRegistry:
         default_pattern: str,
         allowed_reset_policies: list[str] | None = None,
     ):
+        from core.admin.models.number_series import ResetPolicy
+
         cls._registry[document_type] = {
             "label": label,
             "default_pattern": default_pattern,
@@ -169,12 +171,12 @@ class NumberSeriesRegistry:
     @classmethod
     def get_types(cls) -> list[dict]:
         from core.admin.models.number_series import NumberSeries
+
         types: list[dict] = []
         definitions = NumberSeries.VARIABLE_DEFINITIONS
         for key, meta in cls._registry.items():
             variables = [
-                {"variable": var, "description": str(desc)}
-                for var, desc in definitions.items()
+                {"variable": var, "description": str(desc)} for var, desc in definitions.items()
             ]
             types.append(
                 {
@@ -213,8 +215,11 @@ class NumberSeriesService:
         return document_type.upper()[:4]
 
     @classmethod
-    def _should_reset(cls, reset_policy: str, last_reset_at: datetime | None, now: datetime) -> bool:
+    def _should_reset(
+        cls, reset_policy: str, last_reset_at: datetime | None, now: datetime
+    ) -> bool:
         from core.admin.models.number_series import ResetPolicy
+
         if not last_reset_at or reset_policy == ResetPolicy.NEVER:
             return False
 
@@ -226,7 +231,11 @@ class NumberSeriesService:
         elif reset_policy == ResetPolicy.MONTHLY:
             return (last_loc.year, last_loc.month) != (now_loc.year, now_loc.month)
         elif reset_policy == ResetPolicy.DAILY:
-            return (last_loc.year, last_loc.month, last_loc.day) != (now_loc.year, now_loc.month, now_loc.day)
+            return (last_loc.year, last_loc.month, last_loc.day) != (
+                now_loc.year,
+                now_loc.month,
+                now_loc.day,
+            )
         return False
 
     @classmethod
@@ -242,6 +251,7 @@ class NumberSeriesService:
         is_preview: bool = False,
     ) -> str:
         from core.admin.models.number_series import NumberSeries
+
         now_loc = timezone.localtime(now)
         year_str = f"{now_loc.year:04d}"
         yy_str = year_str[-2:]
@@ -279,13 +289,13 @@ class NumberSeriesService:
                     return f"{seq:0{int(length_str)}d}"
             return match.group(0)
 
-        from core.admin.models.number_series import NumberSeries
         result = NumberSeries.TOKEN_PATTERN.sub(replace_seq, result)
         return result
 
     @classmethod
     def _get_models(cls):
         from core.admin.models.number_series import NumberSeries, ResetPolicy
+
         return NumberSeries, ResetPolicy
 
     @classmethod
@@ -305,7 +315,9 @@ class NumberSeriesService:
                 business_unit_id=None,
                 branch_id=None,
                 defaults={
-                    "pattern": meta.get("default_pattern", f"{dtype.upper()[:3]}-{{YYYY}}-{{SEQ:5}}"),
+                    "pattern": meta.get(
+                        "default_pattern", f"{dtype.upper()[:3]}-{{YYYY}}-{{SEQ:5}}"
+                    ),
                     "current_number": 0,
                     "number_length": 5,
                     "reset_policy": ResetPolicy.NEVER,
@@ -409,10 +421,17 @@ class NumberSeriesService:
             if "is_active" in entry:
                 rec.is_active = bool(entry["is_active"])
 
-            rec.save(update_fields=[
-                "pattern", "prefix", "suffix", "reset_policy",
-                "number_length", "is_active", "updated_at",
-            ])
+            rec.save(
+                update_fields=[
+                    "pattern",
+                    "prefix",
+                    "suffix",
+                    "reset_policy",
+                    "number_length",
+                    "is_active",
+                    "updated_at",
+                ]
+            )
 
     @classmethod
     def preview(
@@ -489,7 +508,6 @@ class NumberSeriesService:
 
         now = timezone.now()
 
-
         with transaction.atomic():
             company_id = getattr(company, "pk", company)
             bu_id = getattr(business_unit, "pk", business_unit)
@@ -520,7 +538,9 @@ class NumberSeriesService:
 
             if not series:
                 meta = NumberSeriesRegistry.get(document_type)
-                default_pattern = meta.get("default_pattern", f"{document_type.upper()[:3]}-{{YYYY}}-{{SEQ:5}}")
+                default_pattern = meta.get(
+                    "default_pattern", f"{document_type.upper()[:3]}-{{YYYY}}-{{SEQ:5}}"
+                )
                 series = NumberSeries.objects.create(
                     document_type=document_type,
                     company_id=company_id,

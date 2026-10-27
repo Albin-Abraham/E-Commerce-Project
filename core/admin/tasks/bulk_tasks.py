@@ -1,7 +1,7 @@
 import logging
 
 from backend import celery_app
-
+from core.admin.helpers.batch_helpers import batch_process
 from core.admin.helpers.bulk_helpers import (
     BulkResult,
     OperationContext,
@@ -9,7 +9,6 @@ from core.admin.helpers.bulk_helpers import (
     bulk_delete,
     bulk_update,
 )
-from core.admin.helpers.batch_helpers import batch_process
 
 logger = logging.getLogger(__name__)
 
@@ -27,7 +26,9 @@ def bulk_create_task(self, data, context_dict):
     result: BulkResult = bulk_create(data, ctx)
     logger.info(
         "bulk_create_task %s | success=%s | count=%s",
-        self.request.id, result.success, len(result.instances) if result.instances else 0,
+        self.request.id,
+        result.success,
+        len(result.instances) if result.instances else 0,
     )
     return {
         "success": result.success,
@@ -42,7 +43,9 @@ def bulk_update_task(self, data_list, context_dict):
     result: BulkResult = bulk_update(data_list, ctx)
     logger.info(
         "bulk_update_task %s | success=%s | count=%s",
-        self.request.id, result.success, len(result.instances) if result.instances else 0,
+        self.request.id,
+        result.success,
+        len(result.instances) if result.instances else 0,
     )
     return {
         "success": result.success,
@@ -58,7 +61,9 @@ def bulk_delete_task(self, pk_list, context_dict):
     deleted = result.data.get("deleted_count", 0) if result.data else 0
     logger.info(
         "bulk_delete_task %s | success=%s | count=%s",
-        self.request.id, result.success, deleted,
+        self.request.id,
+        result.success,
+        deleted,
     )
     return {
         "success": result.success,
@@ -74,7 +79,9 @@ def batch_process_task(self, operations, context_dict, mode):
     success_count = sum(1 for r in results if r.success)
     logger.info(
         "batch_process_task %s | ok=%s/%s",
-        self.request.id, success_count, len(results),
+        self.request.id,
+        success_count,
+        len(results),
     )
     return {
         "success": success_count == len(results),

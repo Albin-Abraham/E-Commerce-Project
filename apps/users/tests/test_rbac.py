@@ -1,13 +1,15 @@
 import pytest
-from django.test import TestCase, override_settings
 from django.contrib.auth import get_user_model
-from apps.users.models.permissions import RolePermissions, RoleGroupPermissions, UserPermissionModel
-from apps.users.models.catalog import BranchCatalog
-from core.admin.models import Branch, Company
-from apps.users.utils.rbac_manifest import ManifestOrchestrator
 from django.core.cache import cache
+from django.test import TestCase, override_settings
+
+from apps.users.models.catalog import BranchCatalog
+from apps.users.models.permissions import RoleGroupPermissions, RolePermissions, UserPermissionModel
+from apps.users.utils.rbac_manifest import ManifestOrchestrator
+from core.admin.models import Branch, Company
 
 User = get_user_model()
+
 
 @pytest.mark.system
 @override_settings(BYPASS_VALIDATION_GUARD=True)
@@ -16,32 +18,27 @@ class TestRBACManifest(TestCase):
         cache.clear()
         # 1. Create a Test User
         self.user = User.objects.create_user(
-            username="rbac_user", 
-            email="rbac@example.com", 
-            password="password"
+            username="rbac_user", email="rbac@example.com", password="password"
         )
-        
+
         # 2. Create Roles
         self.role_view = RolePermissions.objects.create(
             name="Viewer",
-            permission_keys=["admin:security:can_view_audit_logs", "hrms:employee:profile"]
+            permission_keys=["admin:security:can_view_audit_logs", "hrms:employee:profile"],
         )
         self.role_edit = RolePermissions.objects.create(
-            name="Editor",
-            permission_keys=["admin:identity:can_manage_users"]
+            name="Editor", permission_keys=["admin:identity:can_manage_users"]
         )
 
         # 3. Create Group
         self.group = RoleGroupPermissions.objects.create(
-            name="Admin Group",
-            permission_keys=["admin:identity:can_configure_roles"]
+            name="Admin Group", permission_keys=["admin:identity:can_configure_roles"]
         )
         self.group.roles.add(self.role_view, self.role_edit)
 
         # 4. Create User Assignment
         self.assignment = UserPermissionModel.objects.create(
-            user=self.user,
-            direct_permissions=["hrms:leave:can_request_leave"]
+            user=self.user, direct_permissions=["hrms:leave:can_request_leave"]
         )
         self.assignment.groups.add(self.group)
 
@@ -98,12 +95,13 @@ class TestRBACManifest(TestCase):
         catalog = BranchCatalog.objects.create(
             name="HRMS Lite",
             module_keys=["hrms"],
-            allowed_permission_keys=["hrms:employee:profile"]
+            allowed_permission_keys=["hrms:employee:profile"],
         )
-        
+
         # 2. Create Branch linked to this Catalog
         company = Company.objects.create(name="SaaS Corp")
         from core.admin.models.business_unit import BusinessUnit
+
         bu = BusinessUnit.objects.create(name="Default BU", company=company)
         branch = Branch.objects.create(
             name="SaaS Branch",
@@ -112,29 +110,31 @@ class TestRBACManifest(TestCase):
             business_unit=bu,
             location="HQ",
             catalog=catalog,
-            opened_date="2024-01-01"
+            opened_date="2024-01-01",
         )
-        
+
         # 3. Create a Role with broad permissions
         role = RolePermissions.objects.create(
-            name="Super HR",
-            permission_keys=["hrms:employee:profile", "finance:accounts:ledger"]
+            name="Super HR", permission_keys=["hrms:employee:profile", "finance:accounts:ledger"]
         )
-        
+
         # 4. Assign to User
         UserPermissionModel.objects.filter(user=self.user).delete()
         assignment = UserPermissionModel.objects.create(user=self.user)
         assignment.roles.add(role)
-        
+
         # 5. Build manifest WITH branch_id
         manifest = ManifestOrchestrator.build_for_user(self.user.id, branch_id=branch.id)
-        
+
         # 6. Verify intersection: 'hrms:employee:profile' is allowed, 'finance:accounts:ledger' is filtered out
         self.assertIn("hrms:employee:profile", manifest.effective_permissions)
         self.assertNotIn("finance:accounts:ledger", manifest.effective_permissions)
 
     from django.test import override_settings
-    @override_settings(CACHES={'default': {'BACKEND': 'django.core.cache.backends.locmem.LocMemCache'}})
+
+    @override_settings(
+        CACHES={"default": {"BACKEND": "django.core.cache.backends.locmem.LocMemCache"}}
+    )
     def test_manifest_caching(self):
         """Verify that the manifest is cached."""
         cache.clear()
@@ -145,8 +145,7 @@ class TestRBACManifest(TestCase):
     def test_manifest_metadata_enrichment(self):
         """Verify that manifest includes metadata from modules.yaml."""
         role = RolePermissions.objects.create(
-            name="HR Viewer",
-            permission_keys=["hrms:employee:profile"]
+            name="HR Viewer", permission_keys=["hrms:employee:profile"]
         )
         UserPermissionModel.objects.filter(user=self.user).delete()
         assignment = UserPermissionModel.objects.create(user=self.user)

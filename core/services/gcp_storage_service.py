@@ -1,8 +1,7 @@
-import os
+import json
 import logging
 import urllib.request
-import json
-from django.conf import settings
+
 from core.configuration.resolver import CoreConfigurationResolver
 
 logger = logging.getLogger(__name__)
@@ -19,7 +18,9 @@ class GCPStorageService:
     def get_bucket_name(cls) -> str:
         bucket_name = CoreConfigurationResolver.get("GOOGLE_STORAGE_BUCKET_NAME")
         if not bucket_name:
-            raise ValueError("GOOGLE_STORAGE_BUCKET_NAME is missing or not configured in SystemConfig or environment.")
+            raise ValueError(
+                "GOOGLE_STORAGE_BUCKET_NAME is missing or not configured in SystemConfig or environment."
+            )
         return bucket_name
 
     @classmethod
@@ -46,7 +47,9 @@ class GCPStorageService:
             with urllib.request.urlopen(req, timeout=10) as resp:
                 if resp.status == 200:
                     payload = json.loads(resp.read().decode("utf-8"))
-                    logger.info(f"Successfully verified Google OAuth token for user {payload.get('email')}")
+                    logger.info(
+                        f"Successfully verified Google OAuth token for user {payload.get('email')}"
+                    )
                     return payload
         except Exception as exc:
             logger.warning(f"Google OAuth tokeninfo verification fallback: {exc}")
@@ -91,15 +94,21 @@ class GCPStorageService:
                 try:
                     with urllib.request.urlopen(upload_req, timeout=10) as upload_resp:
                         if upload_resp.status in (200, 201):
-                            logger.info(f"Successfully uploaded avatar for user {user_id} to Google Bucket {bucket_name}")
+                            logger.info(
+                                f"Successfully uploaded avatar for user {user_id} to Google Bucket {bucket_name}"
+                            )
                             return gcs_public_url
                 except Exception as upload_exc:
-                    logger.warning(f"GCS REST API upload warning (using fallback public URL): {upload_exc}")
+                    logger.warning(
+                        f"GCS REST API upload warning (using fallback public URL): {upload_exc}"
+                    )
 
         except Exception as exc:
             logger.warning(f"Failed to mirror social avatar to Google Bucket: {exc}")
             import os
+
             from django.conf import settings
+
             if os.environ.get("PYTEST_CURRENT_TEST") or getattr(settings, "TESTING", False):
                 return gcs_public_url
 

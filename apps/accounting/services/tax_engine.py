@@ -1,5 +1,6 @@
 from dataclasses import dataclass, field
 from decimal import Decimal
+
 from apps.accounting.models.tax import PurchaseTaxTemplate, SalesTaxTemplate
 
 
@@ -27,7 +28,9 @@ class TaxEngineService:
     """
 
     @classmethod
-    def calculate_sales_tax(cls, net_amount: Decimal, template: SalesTaxTemplate) -> TaxCalculationResult:
+    def calculate_sales_tax(
+        cls, net_amount: Decimal, template: SalesTaxTemplate
+    ) -> TaxCalculationResult:
         """
         Calculates output sales tax for commercial sales transactions.
         """
@@ -84,7 +87,9 @@ class TaxEngineService:
         )
 
     @classmethod
-    def calculate_purchase_tax(cls, net_amount: Decimal, template: PurchaseTaxTemplate) -> TaxCalculationResult:
+    def calculate_purchase_tax(
+        cls, net_amount: Decimal, template: PurchaseTaxTemplate
+    ) -> TaxCalculationResult:
         """
         Calculates input purchase tax (Input Tax Credit) for procurement transactions.
         """

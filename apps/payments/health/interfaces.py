@@ -5,8 +5,8 @@ Domain interfaces, protocols, and data structures for payment gateway health mon
 
 from abc import ABC, abstractmethod
 from dataclasses import dataclass, field
-from datetime import datetime
-from typing import Any, TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
+
 from django.db import models
 
 if TYPE_CHECKING:
@@ -31,8 +31,9 @@ class GatewayHealthStatus(models.TextChoices):
 @dataclass
 class HealthCheckResult:
     """Represents the outcome of a single granular health probe."""
+
     check_type: str  # configuration, connectivity, authentication, readiness
-    status: str      # CheckStatus values
+    status: str  # CheckStatus values
     latency_ms: int = 0
     error_code: str | None = None
     error_message: str | None = None
@@ -52,9 +53,10 @@ class HealthCheckResult:
 @dataclass
 class GatewayOverallHealthResult:
     """Represents the aggregated health and operational readiness of a gateway."""
+
     gateway_type: str
-    overall_status: str       # GatewayHealthStatus values
-    activation_status: str    # ENABLED, DISABLED, NOT_CONFIGURED
+    overall_status: str  # GatewayHealthStatus values
+    activation_status: str  # ENABLED, DISABLED, NOT_CONFIGURED
     checks: dict[str, HealthCheckResult] = field(default_factory=dict)
     total_latency_ms: int = 0
     checked_at: str = ""

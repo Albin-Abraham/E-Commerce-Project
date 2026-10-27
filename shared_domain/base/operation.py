@@ -45,8 +45,7 @@ class Operation(ABC, Generic[T_Input, T_Output]):
     name: str = "UnnamedOperation"
 
     @abstractmethod
-    def execute(self, input: T_Input) -> OperationResult[T_Output]:
-        ...
+    def execute(self, input: T_Input) -> OperationResult[T_Output]: ...
 
     def __call__(self, input: T_Input) -> OperationResult[T_Output]:
         return self.execute(input)

@@ -1,8 +1,10 @@
 import logging
 from decimal import Decimal
+
+from django.core.exceptions import ValidationError
 from django.db import transaction
 from django.utils import timezone
-from django.core.exceptions import ValidationError
+
 from apps.procurement_pos.models.pos import POSSession
 
 logger = logging.getLogger(__name__)
@@ -17,13 +19,13 @@ class POSSessionWorkflow:
     @transaction.atomic
     def open_session(cls, register, cashier, opening_balance: Decimal) -> POSSession:
         active_session = POSSession.objects.filter(
-            register=register,
-            cashier=cashier,
-            status=POSSession.SessionStatus.OPEN
+            register=register, cashier=cashier, status=POSSession.SessionStatus.OPEN
         ).first()
 
         if active_session:
-            raise ValidationError(f"Cashier {cashier.username} already has an OPEN session #{active_session.id} on register {register.name}.")
+            raise ValidationError(
+                f"Cashier {cashier.username} already has an OPEN session #{active_session.id} on register {register.name}."
+            )
 
         session = POSSession.objects.create(
             register=register,

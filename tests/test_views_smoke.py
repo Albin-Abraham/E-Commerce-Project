@@ -50,7 +50,11 @@ class NoModelViewSmokeTests(APITestCase):
     def test_register_endpoint_public(self):
         response = self.client.post(
             "/api/auth/register/",
-            {"username": "new_smoke_user", "email": "new_smoke@example.com", "password": "Password123!"},
+            {
+                "username": "new_smoke_user",
+                "email": "new_smoke@example.com",
+                "password": "Password123!",
+            },
             format="json",
         )
         self.assertNotEqual(response.status_code, 403)

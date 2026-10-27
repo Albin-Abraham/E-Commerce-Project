@@ -3,9 +3,7 @@ from string import Formatter
 from django.db.models import Model
 
 
-def get_display_name(
-    instance: Model, display_field=None, display_format=None, logger=None
-) -> str:
+def get_display_name(instance: Model, display_field=None, display_format=None, logger=None) -> str:
     try:
         if display_format:
             formatter = Formatter()
@@ -27,11 +25,7 @@ def get_display_name(
                 display_str = ""
         else:
             display_str = ""
-        return (
-            f"{display_str} (ID {instance.id})"
-            if display_str
-            else f"(ID {instance.id})"
-        )
+        return f"{display_str} (ID {instance.id})" if display_str else f"(ID {instance.id})"
     except Exception as e:
         if logger:
             logger.warning(f"Error generating display name for {instance}: {e}")

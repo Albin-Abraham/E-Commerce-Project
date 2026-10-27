@@ -1,4 +1,5 @@
 from enum import StrEnum
+
 from core.registry.variable_registry import DomainVariableRegistry
 
 
@@ -6,6 +7,7 @@ class ShopVariableKey(StrEnum):
     """
     App-Scoped Variable Keys for Shop & Catalog Module.
     """
+
     QUANTITY = "quantity"
     RESERVED_QUANTITY = "reserved_quantity"
     AVAILABLE_QUANTITY = "available_quantity"
@@ -21,6 +23,7 @@ class InventoryKeys(StrEnum):
     """
     App-Scoped Variable Keys for Inventory Sub-Domain.
     """
+
     SERIAL_STATUS_IN_STOCK = "IN_STOCK"
     SERIAL_STATUS_SOLD = "SOLD"
     SERIAL_STATUS_DEFECTIVE = "DEFECTIVE"

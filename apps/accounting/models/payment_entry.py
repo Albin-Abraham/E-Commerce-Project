@@ -1,11 +1,12 @@
 from django.db import models
-from core.base_models.validator_model import BaseModel
-from core.base_models.fields.short_ui_fields import CustomShortUUIDField
-from core.base_models.fields.char_fields import CustomCharField
-from core.base_models.fields.party_mixin import PartyReferenceMixin
-from core.base_models.validators.rules import RequiredRule, UniqueRule
+
 from apps.accounting.models.chart_of_accounts import Account
 from apps.accounting.valuesets import PAYMENT_TYPE_VALUESET
+from core.base_models.fields.char_fields import CustomCharField
+from core.base_models.fields.party_mixin import PartyReferenceMixin
+from core.base_models.fields.short_ui_fields import CustomShortUUIDField
+from core.base_models.validator_model import BaseModel
+from core.base_models.validators.rules import UniqueRule
 
 
 class PaymentEntry(BaseModel, PartyReferenceMixin):
@@ -51,7 +52,9 @@ class PaymentEntry(BaseModel, PartyReferenceMixin):
     )
     paid_amount = models.DecimalField(max_digits=18, decimal_places=2, default=0.0)
     received_amount = models.DecimalField(max_digits=18, decimal_places=2, default=0.0)
-    reference_number = models.CharField(max_length=100, blank=True, null=True, help_text="Cheque / UTR / Transaction Ref")
+    reference_number = models.CharField(
+        max_length=100, blank=True, null=True, help_text="Cheque / UTR / Transaction Ref"
+    )
     reference_date = models.DateField(blank=True, null=True)
     is_submitted = models.BooleanField(default=False)
 

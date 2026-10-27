@@ -1,7 +1,8 @@
 import logging
-import re
+
 from django.core.mail import send_mail
 from django.core.mail.backends.smtp import EmailBackend
+
 from core.configuration.resolver import CoreConfigurationResolver
 
 logger = logging.getLogger(__name__)
@@ -27,7 +28,9 @@ class DynamicSMTPEmailService:
         use_tls = CoreConfigurationResolver.get_bool("EMAIL_USE_TLS", default=True)
 
         if not username or not password:
-            logger.warning("EMAIL_HOST_USER or EMAIL_HOST_PASSWORD is missing in configuration. Using default Django backend.")
+            logger.warning(
+                "EMAIL_HOST_USER or EMAIL_HOST_PASSWORD is missing in configuration. Using default Django backend."
+            )
             return None
 
         return EmailBackend(
@@ -40,11 +43,15 @@ class DynamicSMTPEmailService:
         )
 
     @classmethod
-    def send_email(cls, subject: str, body: str, recipient_email: str, html_body: str | None = None) -> bool:
+    def send_email(
+        cls, subject: str, body: str, recipient_email: str, html_body: str | None = None
+    ) -> bool:
         """
         Dispatches an email to recipient using resolved SMTP credentials.
         """
-        from_email = CoreConfigurationResolver.get("DEFAULT_FROM_EMAIL", default="No-Reply <noreply@yafeiplatform.com>")
+        from_email = CoreConfigurationResolver.get(
+            "DEFAULT_FROM_EMAIL", default="No-Reply <noreply@yafeiplatform.com>"
+        )
         connection = cls.get_smtp_connection()
 
         try:
@@ -57,14 +64,18 @@ class DynamicSMTPEmailService:
                 connection=connection,
                 fail_silently=False,
             )
-            logger.info(f"Successfully sent email '{subject}' to {recipient_email} via SystemConfig SMTP credentials")
+            logger.info(
+                f"Successfully sent email '{subject}' to {recipient_email} via SystemConfig SMTP credentials"
+            )
             return True
         except Exception as exc:
             logger.error(f"Failed to send email to {recipient_email} via SystemConfig SMTP: {exc}")
             return False
 
     @classmethod
-    def send_templated_autoresponder_email(cls, event_key: str, recipient_email: str, context: dict) -> bool:
+    def send_templated_autoresponder_email(
+        cls, event_key: str, recipient_email: str, context: dict
+    ) -> bool:
         """
         Fetches the AutoResponderEvent template for event_key, renders context placeholders
         ({{user}}, {{customer_name}}, {{order_number}}, {{amount}}, {{tracking_code}}),

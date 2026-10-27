@@ -1,19 +1,16 @@
-from django.db import models, transaction
+from django.db import models
 from django.utils import timezone
-from core.base_models.validator_model import BaseModel
-from core.base_models.constants import USER_MODEL
-from core.base_models.fields.short_ui_fields import CustomShortUUIDField
-from core.base_models.fields.char_fields import CustomCharField, CustomTextField
-from core.base_models.validators.rules import RequiredRule, UniqueRule
-
-
-from core.base_models.fields.party_mixin import PartyReferenceMixin
 
 from apps.procurement_pos.valuesets import (
     DELIVERY_STATUS_VALUESET,
     SALES_INVOICE_STATUS_VALUESET,
     SALES_ORDER_STATUS_VALUESET,
 )
+from core.base_models.fields.char_fields import CustomCharField
+from core.base_models.fields.party_mixin import PartyReferenceMixin
+from core.base_models.fields.short_ui_fields import CustomShortUUIDField
+from core.base_models.validator_model import BaseModel
+from core.base_models.validators.rules import UniqueRule
 
 
 class SalesOrder(BaseModel, PartyReferenceMixin):
@@ -79,7 +76,11 @@ class SalesOrder(BaseModel, PartyReferenceMixin):
         verbose_name_plural = "Sales Orders"
 
     def __str__(self):
-        curr_str = self.currency.format_amount(self.total_amount) if self.currency else f"${self.total_amount}"
+        curr_str = (
+            self.currency.format_amount(self.total_amount)
+            if self.currency
+            else f"${self.total_amount}"
+        )
         return f"SO #{self.order_number} ({curr_str})"
 
     @property
@@ -88,6 +89,7 @@ class SalesOrder(BaseModel, PartyReferenceMixin):
         Charge items applied to this Sales Order (Shipping, Handling, Discounts, Surcharges).
         """
         from apps.accounting.models.charges import ChargeItem
+
         return ChargeItem.for_document(self)
 
 
@@ -190,7 +192,11 @@ class SalesInvoice(BaseModel, PartyReferenceMixin):
         verbose_name_plural = "Sales Invoices"
 
     def __str__(self):
-        curr_str = self.currency.format_amount(self.grand_total) if self.currency else f"${self.grand_total}"
+        curr_str = (
+            self.currency.format_amount(self.grand_total)
+            if self.currency
+            else f"${self.grand_total}"
+        )
         return f"Sales Invoice #{self.invoice_number} ({curr_str})"
 
     @property
@@ -199,6 +205,7 @@ class SalesInvoice(BaseModel, PartyReferenceMixin):
         Charge items applied to this Sales Invoice (Shipping, Handling, Discounts, Surcharges).
         """
         from apps.accounting.models.charges import ChargeItem
+
         return ChargeItem.for_document(self)
 
 

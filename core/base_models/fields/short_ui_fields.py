@@ -1,11 +1,13 @@
-from datetime import datetime
 import calendar
-import shortuuid
-from django.db import models
-from django.core import exceptions
-from core.base_models.fields.mixins import RulesFieldMixin
-import logging
 import inspect
+import logging
+from datetime import datetime
+
+import shortuuid
+from django.core import exceptions
+from django.db import models
+
+from core.base_models.fields.mixins import RulesFieldMixin
 
 
 class CustomShortUUIDField(RulesFieldMixin, models.CharField):
@@ -42,15 +44,11 @@ class CustomShortUUIDField(RulesFieldMixin, models.CharField):
         if not isinstance(length, int) or length <= 0:
             raise ValueError("`length` must be a positive integer.")
         if not isinstance(alphabet, str) or len(alphabet) < 10:
-            raise ValueError(
-                "`alphabet` must be a string of at least 10 unique characters."
-            )
+            raise ValueError("`alphabet` must be a string of at least 10 unique characters.")
         if not isinstance(separator, str) or len(separator) != 1:
             raise ValueError("`separator` must be a single-character string.")
         if month_format not in {"number", "short", "full"}:
-            raise ValueError(
-                "`month_format` must be one of: 'number', 'short', or 'full'."
-            )
+            raise ValueError("`month_format` must be one of: 'number', 'short', or 'full'.")
 
         # --------------------------
         # Store settings
@@ -121,18 +119,30 @@ class CustomShortUUIDField(RulesFieldMixin, models.CharField):
 
     def deconstruct(self):
         name, path, args, kwargs = super().deconstruct()
-        if self.day: kwargs['day'] = self.day
-        if self.month: kwargs['month'] = self.month
-        if self.year: kwargs['year'] = self.year
-        if self.month_format != 'short': kwargs['month_format'] = self.month_format
-        if self.prefix: kwargs['prefix'] = self.prefix
-        if self.prefix_factory: kwargs['prefix_factory'] = self.prefix_factory
-        if self.prefix_config_key: kwargs['prefix_config_key'] = self.prefix_config_key
-        if self.prefix_config_default: kwargs['prefix_config_default'] = self.prefix_config_default
-        if self.length != 32: kwargs['length'] = self.length
-        if self.alphabet != "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789": kwargs['alphabet'] = self.alphabet
-        if not self.auto: kwargs['auto'] = self.auto
-        if self.separator != "-": kwargs['separator'] = self.separator
+        if self.day:
+            kwargs["day"] = self.day
+        if self.month:
+            kwargs["month"] = self.month
+        if self.year:
+            kwargs["year"] = self.year
+        if self.month_format != "short":
+            kwargs["month_format"] = self.month_format
+        if self.prefix:
+            kwargs["prefix"] = self.prefix
+        if self.prefix_factory:
+            kwargs["prefix_factory"] = self.prefix_factory
+        if self.prefix_config_key:
+            kwargs["prefix_config_key"] = self.prefix_config_key
+        if self.prefix_config_default:
+            kwargs["prefix_config_default"] = self.prefix_config_default
+        if self.length != 32:
+            kwargs["length"] = self.length
+        if self.alphabet != "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789":
+            kwargs["alphabet"] = self.alphabet
+        if not self.auto:
+            kwargs["auto"] = self.auto
+        if self.separator != "-":
+            kwargs["separator"] = self.separator
         return name, path, args, kwargs
 
     # --------------------------
@@ -143,6 +153,7 @@ class CustomShortUUIDField(RulesFieldMixin, models.CharField):
         if self.prefix_config_key:
             try:
                 from django.conf import settings
+
                 p = getattr(settings, self.prefix_config_key, self.prefix_config_default)
                 return str(p)
             except Exception:
@@ -215,9 +226,7 @@ class CustomShortUUIDField(RulesFieldMixin, models.CharField):
                     setattr(model_instance, self.attname, new_value)
                     return new_value
                 retries += 1
-                logging.warning(
-                    f"[CustomShortUUIDField] Collision detected, retry {retries}."
-                )
+                logging.warning(f"[CustomShortUUIDField] Collision detected, retry {retries}.")
 
             raise exceptions.ValidationError(
                 f"Unable to generate a unique UUID after {self.max_retries} attempts."

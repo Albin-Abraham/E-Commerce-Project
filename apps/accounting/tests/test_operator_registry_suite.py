@@ -3,7 +3,6 @@ from decimal import Decimal
 from django.core.exceptions import ValidationError
 from django.test import TestCase
 
-from core.admin.models.company import Company
 from apps.accounting.models.discounts import (
     DiscountConditionItem,
     DiscountConfiguration,
@@ -14,6 +13,7 @@ from apps.accounting.services.operator_registry import (
     synced_operator_choices,
 )
 from apps.accounting.valuesets import DISCOUNT_OPERATOR_VALUESET
+from core.admin.models.company import Company
 
 
 class OperatorRegistryTestCase(TestCase):
@@ -51,7 +51,9 @@ class OperatorRegistryTestCase(TestCase):
             entry = OperatorRegistry.resolve(code)
             self.assertIn("comparator", entry, f"{code} must link to a comparator object")
             self.assertTrue(callable(entry["comparator"]), f"{code} comparator must be callable")
-            self.assertIn("args", entry, f"{code} must declare its linkage objects (value / value_to)")
+            self.assertIn(
+                "args", entry, f"{code} must declare its linkage objects (value / value_to)"
+            )
 
     def test_resolve_unknown_operator_returns_none(self):
         self.assertIsNone(OperatorRegistry.resolve("MAYBE"))
@@ -116,12 +118,16 @@ class OperatorRegistryTestCase(TestCase):
         for operator, value, value_to, attributes, expected in cases:
             condition = self._condition(operator=operator, value=value, value_to=value_to or "")
             condition.save()
-            self.assertEqual(condition.matches(attributes), expected, f"{operator} {value}..{value_to}")
+            self.assertEqual(
+                condition.matches(attributes), expected, f"{operator} {value}..{value_to}"
+            )
 
     def test_string_values_fall_back_to_string_comparison(self):
         condition = self._condition(operator=GREATER_THAN, value="50")
         condition.save()
-        self.assertFalse(condition.matches({"age": "Female"}), "non-numeric raw never matches numeric operators")
+        self.assertFalse(
+            condition.matches({"age": "Female"}), "non-numeric raw never matches numeric operators"
+        )
 
     # -------------------------------------------------------- validations
 

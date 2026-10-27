@@ -1,13 +1,15 @@
 from datetime import datetime
+
 from rest_framework.permissions import IsAdminUser
-from core.base_views.api_views import BaseAPIView
-from core.admin.helpers.query_helpers import FilterSchema, FilterField
+
 from apps.users.models.permissions import RolePermissions
 from apps.users.serializers.role_serializers import (
-    RoleListSerializer,
-    RoleDetailSerializer,
     RoleCreateSerializer,
+    RoleDetailSerializer,
+    RoleListSerializer,
 )
+from core.admin.helpers.query_helpers import FilterField, FilterSchema
+from core.base_views.api_views import BaseAPIView
 
 
 class RoleViewSet(BaseAPIView):

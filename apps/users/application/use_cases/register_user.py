@@ -5,7 +5,7 @@ Strictly decoupled from Django ORM, HTTP framework, and database engines.
 """
 
 from dataclasses import dataclass
-from typing import Optional
+
 from apps.users.domain.entities import UserEntity
 from apps.users.domain.repository import IUserRepository
 from shared_domain.base.unit_of_work import IUnitOfWork
@@ -18,8 +18,8 @@ class RegisterUserInputDTO:
     email: str
     password: str
     full_name: str = ""
-    company_id: Optional[str] = None
-    branch_id: Optional[str] = None
+    company_id: str | None = None
+    branch_id: str | None = None
 
 
 @dataclass(frozen=True)
@@ -43,17 +43,29 @@ class RegisterUserUseCase:
     def execute(self, dto: RegisterUserInputDTO) -> RegisterUserOutputDTO:
         # Technical & Domain invariant validation
         if not dto.email or "@" not in dto.email:
-            raise DomainValidationError("Invalid email address provided.", errors={"email": "Invalid email address format."})
+            raise DomainValidationError(
+                "Invalid email address provided.", errors={"email": "Invalid email address format."}
+            )
         if not dto.username or len(dto.username.strip()) < 3:
-            raise DomainValidationError("Username must be at least 3 characters long.", errors={"username": "Too short."})
+            raise DomainValidationError(
+                "Username must be at least 3 characters long.", errors={"username": "Too short."}
+            )
         if not dto.password or len(dto.password) < 6:
-            raise DomainValidationError("Password must be at least 6 characters long.", errors={"password": "Too short."})
+            raise DomainValidationError(
+                "Password must be at least 6 characters long.", errors={"password": "Too short."}
+            )
 
         # Uniqueness invariants
         if self.user_repo.get_by_email(dto.email):
-            raise DomainValidationError(f"User with email '{dto.email}' already exists.", errors={"email": "Email already in use."})
+            raise DomainValidationError(
+                f"User with email '{dto.email}' already exists.",
+                errors={"email": "Email already in use."},
+            )
         if self.user_repo.get_by_username(dto.username):
-            raise DomainValidationError(f"Username '{dto.username}' is already taken.", errors={"username": "Username already taken."})
+            raise DomainValidationError(
+                f"Username '{dto.username}' is already taken.",
+                errors={"username": "Username already taken."},
+            )
 
         # Transactional domain aggregate creation
         with self.uow:

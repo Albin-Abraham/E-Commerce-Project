@@ -3,8 +3,8 @@ from __future__ import annotations
 import logging
 from collections import defaultdict
 from collections.abc import Callable
-from dataclasses import dataclass, field
-from typing import Any, Type
+from dataclasses import dataclass
+from typing import Any
 
 from django.conf import settings
 from django.db import transaction
@@ -34,6 +34,7 @@ __all__ = [
 # Default hooks – safe to run in both sync and Celery-worker paths.
 # They only fire when the model instance exposes create_audit_log.
 # ---------------------------------------------------------------------------
+
 
 @register_hook("post_create")
 def _post_create_hook(instance):
@@ -67,8 +68,8 @@ class BulkHooks:
 
 @dataclass(frozen=True)
 class OperationContext:
-    model: Type[Model] | None = None
-    serializer_class: Type | None = None
+    model: type[Model] | None = None
+    serializer_class: type | None = None
     serializer_context: dict | None = None
     hooks: BulkHooks | None = None
     get_object_fn: Callable | None = None
@@ -86,7 +87,7 @@ class OperationContext:
             raise ValueError("OperationContext needs model or model_label for serialization")
         ser_ctx = dict(self.serializer_context or {})
         ser_ctx.pop("request", None)
-        
+
         return {
             "model_label": self.model_label or self.model._meta.label,
             "serializer_path": (
@@ -106,8 +107,9 @@ class OperationContext:
 
     @classmethod
     def from_dict(cls, d: dict) -> OperationContext:
-        from django.apps import apps
         from importlib import import_module
+
+        from django.apps import apps
 
         model = apps.get_model(d["model_label"])
         serializer_class = None
@@ -157,7 +159,7 @@ def should_offload(data: Any, threshold: int | None = None) -> bool:
 
 def inject_tenant_context(
     data: Any,
-    model: Type[Model] | None,
+    model: type[Model] | None,
     *,
     is_many: bool = False,
     company_id: str | None = None,
@@ -203,15 +205,20 @@ def bulk_create(
     context: OperationContext,
 ) -> BulkResult:
     if context.serializer_class is None:
-        return BulkResult(success=False, errors=["OperationContext.serializer_class is required for create"])
+        return BulkResult(
+            success=False, errors=["OperationContext.serializer_class is required for create"]
+        )
     if context.serializer_context is None:
-        return BulkResult(success=False, errors=["OperationContext.serializer_context is required for create"])
+        return BulkResult(
+            success=False, errors=["OperationContext.serializer_context is required for create"]
+        )
 
     is_many = isinstance(data, list)
     hooks = context.hooks
 
     data = inject_tenant_context(
-        data, context.model,
+        data,
+        context.model,
         is_many=is_many,
         company_id=context.company_id,
         branch_id=context.branch_id,
@@ -272,9 +279,13 @@ def bulk_update(
     context: OperationContext,
 ) -> BulkResult:
     if context.serializer_class is None:
-        return BulkResult(success=False, errors=["OperationContext.serializer_class is required for update"])
+        return BulkResult(
+            success=False, errors=["OperationContext.serializer_class is required for update"]
+        )
     if context.serializer_context is None:
-        return BulkResult(success=False, errors=["OperationContext.serializer_context is required for update"])
+        return BulkResult(
+            success=False, errors=["OperationContext.serializer_context is required for update"]
+        )
 
     hooks = context.hooks
     get_object_fn = context.get_object_fn
@@ -323,9 +334,7 @@ def bulk_update(
 
     flat_errors: list | None = None
     if errors:
-        flat_errors = [
-            {"type": k, "items": v} for k, v in errors.items()
-        ]
+        flat_errors = [{"type": k, "items": v} for k, v in errors.items()]
 
     return BulkResult(
         success=not errors,
@@ -379,9 +388,7 @@ def bulk_delete(
 
     flat_errors: list | None = None
     if errors:
-        flat_errors = [
-            {"type": k, "items": v} for k, v in errors.items()
-        ]
+        flat_errors = [{"type": k, "items": v} for k, v in errors.items()]
 
     return BulkResult(
         success=not errors,

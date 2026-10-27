@@ -1,14 +1,18 @@
 import logging
 from datetime import timedelta
-from django.utils import timezone
+
 from django.contrib.contenttypes.models import ContentType
+from django.utils import timezone
+
 from apps.access_control.models import (
+    ApprovalAction,
     ApprovalChain,
     ApprovalLevel,
     ApprovalRequest,
-    ApprovalAction,
-    ApprovalRequestStatus,
+)
+from apps.access_control.valuesets import (
     ApprovalActionType,
+    ApprovalRequestStatus,
 )
 
 logger = logging.getLogger(__name__)
@@ -167,7 +171,9 @@ class ApprovalEngine:
             request.current_level += 1
             request.status = ApprovalRequestStatus.PENDING
             request.save()
-            logger.info(f"Request {request.id} approved at level {action.level}, moved to {request.current_level}")
+            logger.info(
+                f"Request {request.id} approved at level {action.level}, moved to {request.current_level}"
+            )
 
         return action
 
@@ -220,7 +226,9 @@ class ApprovalEngine:
         request.status = ApprovalRequestStatus.PENDING
         request.save()
 
-        logger.info(f"Request {request.id} escalated from level {action.level} to {request.current_level}")
+        logger.info(
+            f"Request {request.id} escalated from level {action.level} to {request.current_level}"
+        )
 
         return action
 
@@ -245,20 +253,21 @@ class ApprovalEngine:
         Check all pending requests for timeout conditions.
         Called by Celery task every 5 minutes.
         """
-        from apps.users.models.users import UserModel
 
-        pending_requests = ApprovalRequest.objects.filter(
-            status=ApprovalRequestStatus.PENDING
-        ).select_related("chain").prefetch_related("chain__levels", "actions")
+        pending_requests = (
+            ApprovalRequest.objects.filter(status=ApprovalRequestStatus.PENDING)
+            .select_related("chain")
+            .prefetch_related("chain__levels", "actions")
+        )
 
         for req in pending_requests:
             level = req.chain.levels.filter(level=req.current_level).first()
             if not level or not level.timeout_hours:
                 continue
 
-            last_action = req.actions.filter(
-                level=req.current_level
-            ).order_by("-created_at").first()
+            last_action = (
+                req.actions.filter(level=req.current_level).order_by("-created_at").first()
+            )
 
             reference_time = last_action.created_at if last_action else req.submitted_at
             elapsed = timezone.now() - reference_time
@@ -283,8 +292,14 @@ class ApprovalEngine:
             ApprovalEngine.reject(request, admin_user, comment="Auto-rejected due to timeout")
         elif action == "escalate":
             try:
-                ApprovalEngine.escalate(request, admin_user, comment="Auto-escalated due to timeout")
+                ApprovalEngine.escalate(
+                    request, admin_user, comment="Auto-escalated due to timeout"
+                )
             except ValueError:
-                ApprovalEngine.reject(request, admin_user, comment="Auto-rejected: timeout at highest level")
+                ApprovalEngine.reject(
+                    request, admin_user, comment="Auto-rejected: timeout at highest level"
+                )
 
-        logger.info(f"Request {request.id}: Timeout handled with action '{action}' at level {level.level}")
+        logger.info(
+            f"Request {request.id}: Timeout handled with action '{action}' at level {level.level}"
+        )

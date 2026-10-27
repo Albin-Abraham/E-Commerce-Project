@@ -9,12 +9,8 @@ The `Company` model uses a high density of rules to ensure tenant isolation and 
 
 ```python
 # core/admin/models/company.py
-name = CustomCharField(
-    rules=[RequiredRule("name"), MinRule("name", 3), UniqueRule("name")]
-)
-email = CustomEmailField(
-    rules=[RequiredRule("email"), EmailRule("email"), UniqueRule("email")]
-)
+name = CustomCharField(rules=[RequiredRule("name"), MinRule("name", 3), UniqueRule("name")])
+email = CustomEmailField(rules=[RequiredRule("email"), EmailRule("email"), UniqueRule("email")])
 ```
 - **Audit**: Every failure here is caught by the `AuditMixin` (if configured) or returned as a structured 400 error to the API.
 
@@ -23,11 +19,8 @@ The `User` model leverages shared fields to simplify identity management.
 
 ```python
 # apps/users/models/users.py
-email = CustomEmailField(unique=True) # Uses default EmailRule internally
-username = CustomCharField(
-    max_length=150,
-    rules=[RequiredRule("username"), UniqueRule("username")]
-)
+email = CustomEmailField(unique=True)  # Uses default EmailRule internally
+username = CustomCharField(max_length=150, rules=[RequiredRule("username"), UniqueRule("username")])
 ```
 
 ## 🛠️ 3. Generic Resource Integration

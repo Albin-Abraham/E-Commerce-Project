@@ -1,5 +1,6 @@
-import pytest
 from unittest.mock import patch
+
+import pytest
 
 
 class TestTargetedCacheInvalidation:
@@ -23,9 +24,7 @@ class TestTargetedCacheInvalidation:
         upm2.save()
         user1.rbac_assignment.roles.add(role)
 
-        with patch(
-            "apps.users.tasks.rbac_tasks.rebuild_manifest_task.delay"
-        ) as mock_rebuild:
+        with patch("apps.users.tasks.rbac_tasks.rebuild_manifest_task.delay") as mock_rebuild:
             role.permission_keys = ["company:edit"]
             role._validated_by_mediator = True
             role.save()
@@ -50,17 +49,12 @@ class TestTargetedCacheInvalidation:
         upm2.save()
         user1.rbac_assignment.roles.add(role)
 
-        with patch(
-            "apps.users.tasks.rbac_tasks.rebuild_manifest_task.delay"
-        ) as mock_rebuild:
+        with patch("apps.users.tasks.rbac_tasks.rebuild_manifest_task.delay") as mock_rebuild:
             role.permission_keys = ["company:edit"]
             role._validated_by_mediator = True
             role.save()
 
-            called_user_ids = {
-                call_args[0][0]
-                for call_args in mock_rebuild.call_args_list
-            }
+            called_user_ids = {call_args[0][0] for call_args in mock_rebuild.call_args_list}
             assert user1.id in called_user_ids
             assert user2.id not in called_user_ids
 
@@ -71,11 +65,12 @@ class TestCatalogSubscriptionValidation:
 
     def test_catalog_with_unsubscribed_modules_raises_validation_error(self, db):
         from django.core.exceptions import ValidationError
-        from core.admin.models import Company
-        from core.admin.models.subscriptions import Subscription
-        from core.admin.models.business_unit import BusinessUnit
-        from core.admin.models.branch import Branch
+
         from apps.users.models.catalog import BranchCatalog
+        from core.admin.models import Company
+        from core.admin.models.branch import Branch
+        from core.admin.models.business_unit import BusinessUnit
+        from core.admin.models.subscriptions import Subscription
 
         subscription = Subscription(
             name="HR Only",
@@ -107,17 +102,17 @@ class TestCatalogSubscriptionValidation:
             business_unit=bu,
             catalog=catalog,
             opened_date="2024-01-01",
-            location="HQ"
+            location="HQ",
         )
         with pytest.raises(ValidationError):
             branch.full_clean()
 
     def test_catalog_with_subscribed_modules_passes_validation(self, db):
-        from core.admin.models import Company
-        from core.admin.models.subscriptions import Subscription
-        from core.admin.models.business_unit import BusinessUnit
-        from core.admin.models.branch import Branch
         from apps.users.models.catalog import BranchCatalog
+        from core.admin.models import Company
+        from core.admin.models.branch import Branch
+        from core.admin.models.business_unit import BusinessUnit
+        from core.admin.models.subscriptions import Subscription
 
         subscription = Subscription(
             name="Full Suite",
@@ -149,15 +144,15 @@ class TestCatalogSubscriptionValidation:
             business_unit=bu,
             catalog=catalog,
             opened_date="2024-01-01",
-            location="HQ"
+            location="HQ",
         )
         branch.full_clean()
 
     def test_branch_without_catalog_skips_subscription_check(self, db):
         from core.admin.models import Company
-        from core.admin.models.subscriptions import Subscription
-        from core.admin.models.business_unit import BusinessUnit
         from core.admin.models.branch import Branch
+        from core.admin.models.business_unit import BusinessUnit
+        from core.admin.models.subscriptions import Subscription
 
         subscription = Subscription(
             name="Minimal",
@@ -181,7 +176,7 @@ class TestCatalogSubscriptionValidation:
             business_unit=bu,
             catalog=None,
             opened_date="2024-01-01",
-            location="HQ"
+            location="HQ",
         )
         branch.full_clean()
 
@@ -192,6 +187,7 @@ class TestAutoCreatePermissionAssignment:
 
     def test_user_creation_auto_creates_permission_assignment(self, db):
         from django.contrib.auth import get_user_model
+
         from apps.users.models.permissions import UserPermissionModel
 
         user = get_user_model().objects.create_user(
@@ -203,6 +199,7 @@ class TestAutoCreatePermissionAssignment:
 
     def test_new_user_has_empty_permissions(self, db):
         from django.contrib.auth import get_user_model
+
         from apps.users.models.permissions import UserPermissionModel
 
         user = get_user_model().objects.create_user(

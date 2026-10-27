@@ -1,14 +1,12 @@
-from rest_framework import status
-from rest_framework.response import Response
-
-from core.base_views.api_views import BaseAPIView
-from core.admin.helpers.query_helpers import FilterSchema, FilterField
-from apps.shop.infrastructure.models.warehouse import Warehouse
 from apps.shop.infrastructure.models.inventory import Inventory
-from apps.shop.infrastructure.serializers.shop_serializers import WarehouseSerializer, InventorySerializer
-
-
+from apps.shop.infrastructure.models.warehouse import Warehouse
+from apps.shop.infrastructure.serializers.shop_serializers import (
+    InventorySerializer,
+    WarehouseSerializer,
+)
+from core.admin.helpers.query_helpers import FilterField, FilterSchema
 from core.admin.helpers.response_helpers import ResponseFactory
+from core.base_views.api_views import BaseAPIView
 
 
 class WarehouseViewSet(BaseAPIView):
@@ -30,6 +28,7 @@ class InventoryViewSet(BaseAPIView):
     Inventory Management & Atomic Reservation API ViewSet.
     Provides atomic reserve, release, and commit endpoints for checkout integrity.
     """
+
     model = Inventory
     serializer_class = InventorySerializer
     entity_name = "Inventory"
@@ -58,9 +57,9 @@ class InventoryViewSet(BaseAPIView):
         qty = request.data.get("quantity", 0)
 
         from apps.shop.application.use_cases.inventory_use_cases import (
-            ReserveInventoryUseCase,
-            ReleaseInventoryUseCase,
             CommitInventoryUseCase,
+            ReleaseInventoryUseCase,
+            ReserveInventoryUseCase,
             StockActionInputDTO,
         )
         from apps.shop.infrastructure.repository import DjangoInventoryRepository
@@ -74,7 +73,9 @@ class InventoryViewSet(BaseAPIView):
         if action == "reserve":
             try:
                 use_case = ReserveInventoryUseCase(repo, uow)
-                res = use_case.execute(StockActionInputDTO(inventory_id=str(inventory_id), quantity=int(qty)))
+                res = use_case.execute(
+                    StockActionInputDTO(inventory_id=str(inventory_id), quantity=int(qty))
+                )
                 return ResponseFactory.success(
                     message="Successfully reserved {reserved_unit} units",
                     context={"reserved_unit": int(qty), "inventory_id": inventory_id},
@@ -87,7 +88,9 @@ class InventoryViewSet(BaseAPIView):
         elif action == "release":
             try:
                 use_case = ReleaseInventoryUseCase(repo, uow)
-                res = use_case.execute(StockActionInputDTO(inventory_id=str(inventory_id), quantity=int(qty)))
+                res = use_case.execute(
+                    StockActionInputDTO(inventory_id=str(inventory_id), quantity=int(qty))
+                )
                 if res.success:
                     return ResponseFactory.success(
                         message="Released {released_unit} units",
@@ -102,7 +105,9 @@ class InventoryViewSet(BaseAPIView):
         elif action == "commit":
             try:
                 use_case = CommitInventoryUseCase(repo, uow)
-                res = use_case.execute(StockActionInputDTO(inventory_id=str(inventory_id), quantity=int(qty)))
+                res = use_case.execute(
+                    StockActionInputDTO(inventory_id=str(inventory_id), quantity=int(qty))
+                )
                 if res.success:
                     return ResponseFactory.success(
                         message="Committed {committed_unit} units",
@@ -115,4 +120,3 @@ class InventoryViewSet(BaseAPIView):
             return ResponseFactory.error(message="Failed to commit stock")
 
         return super().post(request, *args, **kwargs)
-

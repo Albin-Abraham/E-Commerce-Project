@@ -10,25 +10,23 @@ logger = logging.getLogger(__name__)
 
 class DocumentLifecycleEngine:
     ALLOWED_TRANSITIONS = {
-        Document.DocumentStatus.DRAFT: [
-            Document.DocumentStatus.SUBMITTED
-        ],
+        Document.DocumentStatus.DRAFT: [Document.DocumentStatus.SUBMITTED],
         Document.DocumentStatus.SUBMITTED: [
             Document.DocumentStatus.UNDER_REVIEW,
             Document.DocumentStatus.APPROVED,
-            Document.DocumentStatus.REJECTED
+            Document.DocumentStatus.REJECTED,
         ],
         Document.DocumentStatus.UNDER_REVIEW: [
             Document.DocumentStatus.APPROVED,
-            Document.DocumentStatus.REJECTED
+            Document.DocumentStatus.REJECTED,
         ],
         Document.DocumentStatus.REJECTED: [
             Document.DocumentStatus.DRAFT,
-            Document.DocumentStatus.SUBMITTED
+            Document.DocumentStatus.SUBMITTED,
         ],
         Document.DocumentStatus.APPROVED: [
             Document.DocumentStatus.DRAFT,
-            Document.DocumentStatus.REJECTED
+            Document.DocumentStatus.REJECTED,
         ],
     }
 
@@ -68,12 +66,14 @@ class DocumentLifecycleEngine:
         is_sub = new_status == Document.DocumentStatus.SUBMITTED
         if is_sub:
             from apps.access_control.models import ApprovalChain
+
             has_db_chain = ApprovalChain.objects.filter(
                 approval_type=document.definition.key,
                 is_active=True,
             ).exists()
             if document.definition.approval_chain_config or has_db_chain:
                 from apps.core_documents.services.workflow_engine import DocumentWorkflowEngine
+
                 DocumentWorkflowEngine.initialize_workflow(document, actor)
                 return document
 
@@ -96,6 +96,6 @@ class DocumentLifecycleEngine:
             document.id,
             current_status,
             new_status,
-            actor
+            actor,
         )
         return document

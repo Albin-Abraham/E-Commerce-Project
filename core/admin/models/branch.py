@@ -1,18 +1,21 @@
 # core/admin/models/branch.py
-from django.db import models
 from django.core.exceptions import ValidationError
-from core.base_models.validator_model import BaseModel
-from core.base_models.scoping_models import BusinessUnitModelMixin
-from core.base_models.validators.rules import RequiredRule, MinRule, UniqueRule, RelationKeyRule
+from django.db import models
+
 from core.base_models.fields import CustomCharField, CustomDateField, CustomShortUUIDField
+from core.base_models.scoping_models import BusinessUnitModelMixin
+from core.base_models.validator_model import BaseModel
+from core.base_models.validators.rules import MinRule, RelationKeyRule, RequiredRule, UniqueRule
+
 
 class Branch(BaseModel, BusinessUnitModelMixin):
     """
     Industrialized Branch Model.
     Represents an operational unit within a Business Unit (which is within a Company).
-    
+
     Scoped to a Business Unit via BusinessUnitModelMixin.
     """
+
     id = CustomShortUUIDField(
         prefix="",
         month=False,
@@ -21,39 +24,49 @@ class Branch(BaseModel, BusinessUnitModelMixin):
         unique=True,
         primary_key=True,
         editable=False,
-        auto=True
+        auto=True,
     )
-    name = CustomCharField(rules=[
-        RequiredRule("name"), 
-        MinRule("name", 3), 
-        UniqueRule("name", extra_filters={"business_unit": "business_unit"})
-    ])
+    name = CustomCharField(
+        rules=[
+            RequiredRule("name"),
+            MinRule("name", 3),
+            UniqueRule("name", extra_filters={"business_unit": "business_unit"}),
+        ]
+    )
     code = CustomCharField(
         max_length=20,
         rules=[
             RequiredRule("code"),
-            UniqueRule("code", extra_filters={"business_unit": "business_unit"})
-        ]
+            UniqueRule("code", extra_filters={"business_unit": "business_unit"}),
+        ],
     )
-    
+
     validation_rules = [
         RequiredRule("business_unit"),
-        RelationKeyRule("business_unit", {"company": "company"}, error_message="Business Unit must belong to the selected Company")
+        RelationKeyRule(
+            "business_unit",
+            {"company": "company"},
+            error_message="Business Unit must belong to the selected Company",
+        ),
     ]
     location = CustomCharField()
     opened_date = CustomDateField(rules=[RequiredRule("opened_date")])
-    is_all_branch = models.BooleanField(default=False, editable=False, help_text="System flag for the global all-encompassing Branch.")
-    
+    is_all_branch = models.BooleanField(
+        default=False,
+        editable=False,
+        help_text="System flag for the global all-encompassing Branch.",
+    )
+
     catalog = models.ForeignKey(
-        'users.BranchCatalog',
+        "users.BranchCatalog",
         on_delete=models.SET_NULL,
         null=True,
         blank=True,
-        related_name='applied_branches',
-        help_text="The subscription tier/catalog applied to this branch"
+        related_name="applied_branches",
+        help_text="The subscription tier/catalog applied to this branch",
     )
-    
-    class Meta: # type: ignore
+
+    class Meta:  # type: ignore
         db_table = "company_branches"
         ordering = ["company", "name"]
         constraints = [
@@ -67,6 +80,7 @@ class Branch(BaseModel, BusinessUnitModelMixin):
 
     def clean(self):
         from core.admin.models import Company
+
         errors = {}
 
         if not self.business_unit_id:
@@ -80,6 +94,7 @@ class Branch(BaseModel, BusinessUnitModelMixin):
                 company = Company.objects.get(id=self.company_id)
                 if company.subscription_id:
                     from core.admin.models.subscriptions import Subscription
+
                     subscription = Subscription.objects.get(id=company.subscription_id)
                     allowed_modules = set(subscription.modules or [])
                     catalog_modules = set(self.catalog.module_keys or [])
@@ -102,6 +117,7 @@ class Branch(BaseModel, BusinessUnitModelMixin):
     def __str__(self):
         return f"{self.name} ({self.code})"
 
+
 class BranchExtension(BaseModel):
     branch = models.OneToOneField(
         "core_admin.Branch",
@@ -110,7 +126,7 @@ class BranchExtension(BaseModel):
     )
     extra_attributes = models.JSONField(default=dict, blank=True)
 
-    class Meta: # type: ignore
+    class Meta:  # type: ignore
         db_table = "branch_extensions"
 
     def __str__(self):

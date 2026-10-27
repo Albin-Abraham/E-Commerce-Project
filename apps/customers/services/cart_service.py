@@ -1,10 +1,12 @@
 import logging
+
 from django.db import transaction
-from apps.customers.models.shopping import Cart, CartItem
+
 from apps.customers.models.customer import Customer
+from apps.customers.models.shopping import Cart, CartItem
+from apps.shop.infrastructure.models.facility import FacilityInventory
 from apps.shop.infrastructure.models.product import Product
 from apps.shop.infrastructure.models.variant import ProductVariant
-from apps.shop.infrastructure.models.facility import FacilityInventory
 
 logger = logging.getLogger(__name__)
 
@@ -27,7 +29,9 @@ class CustomerCartService:
         if product.party_id:
             seller = product.party
             if seller and hasattr(seller, "is_active") and not seller.is_active:
-                raise ValueError(f"Seller '{getattr(seller, 'name', product.party_id)}' is currently suspended. Items cannot be added to cart.")
+                raise ValueError(
+                    f"Seller '{getattr(seller, 'name', product.party_id)}' is currently suspended. Items cannot be added to cart."
+                )
 
     @classmethod
     @transaction.atomic
@@ -43,7 +47,9 @@ class CustomerCartService:
 
     @classmethod
     @transaction.atomic
-    def add_item(cls, customer_id: str, product_id: str, variant_id: str | None = None, quantity: int = 1) -> CartItem:
+    def add_item(
+        cls, customer_id: str, product_id: str, variant_id: str | None = None, quantity: int = 1
+    ) -> CartItem:
         """
         Adds a product to customer cart after seller and product validation.
         """
@@ -145,31 +151,39 @@ class CustomerCartService:
                     item.is_disabled = True
                     item.disable_reason = disable_reason
                     item.save(update_fields=["is_disabled", "disable_reason", "updated_at"])
-                disabled_list.append({
-                    "cart_item_id": str(item.id),
-                    "product_id": str(product.id),
-                    "product_name": product.name,
-                    "variant_name": item.variant.name if item.variant else None,
-                    "quantity": item.quantity,
-                    "unit_price": item.unit_price,
-                    "disable_reason": disable_reason,
-                    "seller_name": str(product.party) if product.party_id else "Platform Direct",
-                })
+                disabled_list.append(
+                    {
+                        "cart_item_id": str(item.id),
+                        "product_id": str(product.id),
+                        "product_name": product.name,
+                        "variant_name": item.variant.name if item.variant else None,
+                        "quantity": item.quantity,
+                        "unit_price": item.unit_price,
+                        "disable_reason": disable_reason,
+                        "seller_name": str(product.party)
+                        if product.party_id
+                        else "Platform Direct",
+                    }
+                )
             else:
                 if item.is_disabled:
                     item.is_disabled = False
                     item.disable_reason = None
                     item.save(update_fields=["is_disabled", "disable_reason", "updated_at"])
-                active_list.append({
-                    "cart_item_id": str(item.id),
-                    "product_id": str(product.id),
-                    "product_name": product.name,
-                    "variant_name": item.variant.name if item.variant else None,
-                    "quantity": item.quantity,
-                    "unit_price": item.unit_price,
-                    "total_price": item.total_price,
-                    "seller_name": str(product.party) if product.party_id else "Platform Direct",
-                })
+                active_list.append(
+                    {
+                        "cart_item_id": str(item.id),
+                        "product_id": str(product.id),
+                        "product_name": product.name,
+                        "variant_name": item.variant.name if item.variant else None,
+                        "quantity": item.quantity,
+                        "unit_price": item.unit_price,
+                        "total_price": item.total_price,
+                        "seller_name": str(product.party)
+                        if product.party_id
+                        else "Platform Direct",
+                    }
+                )
 
         subtotal = cart.recalculate_total()
         return {

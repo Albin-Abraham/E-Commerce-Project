@@ -1,16 +1,14 @@
-from django.db import models
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
-from core.base_models.validator_model import BaseModel
-from core.base_models.constants import USER_MODEL
-from core.base_models.fields.short_ui_fields import CustomShortUUIDField
-
+from django.db import models
 
 from apps.shop.valuesets import MEDIA_TYPE_VALUESET
+from core.base_models.constants import USER_MODEL
+from core.base_models.fields.short_ui_fields import CustomShortUUIDField
+from core.base_models.validator_model import BaseModel
 
 
 class Media(BaseModel):
-
     id = CustomShortUUIDField(primary_key=True, prefix="med_")
     url = models.URLField(max_length=500)
     media_type = models.CharField(
@@ -43,7 +41,9 @@ class Media(BaseModel):
 
 class Review(BaseModel):
     id = CustomShortUUIDField(primary_key=True, prefix="rev_")
-    title = models.CharField(max_length=200, blank=True, null=True, help_text="Review title/headline")
+    title = models.CharField(
+        max_length=200, blank=True, null=True, help_text="Review title/headline"
+    )
     rating = models.DecimalField(
         max_digits=3,
         decimal_places=1,
@@ -60,10 +60,14 @@ class Review(BaseModel):
     is_verified_purchase = models.BooleanField(default=False)
     is_approved = models.BooleanField(default=True)
     helpful_votes = models.IntegerField(default=0, help_text="Number of upvotes for helpful review")
-    media_urls = models.JSONField(default=list, blank=True, help_text="Customer photo/video attachments")
+    media_urls = models.JSONField(
+        default=list, blank=True, help_text="Customer photo/video attachments"
+    )
 
     # Seller / Merchant Official Response
-    seller_reply = models.TextField(blank=True, null=True, help_text="Official response from seller/vendor")
+    seller_reply = models.TextField(
+        blank=True, null=True, help_text="Official response from seller/vendor"
+    )
     seller_replied_at = models.DateTimeField(null=True, blank=True)
 
     # Generic Polymorphic Relation (Product, Variant, Seller, Service, Brand)
@@ -113,7 +117,9 @@ class ProductComment(BaseModel):
         help_text="Parent comment for nested self-referencing reply threads",
     )
     content = models.TextField(help_text="Comment body text")
-    is_seller_reply = models.BooleanField(default=False, help_text="True if response is from verified product seller")
+    is_seller_reply = models.BooleanField(
+        default=False, help_text="True if response is from verified product seller"
+    )
     like_count = models.PositiveIntegerField(default=0)
     is_approved = models.BooleanField(default=True)
 
@@ -150,7 +156,9 @@ class ProductTestimonial(BaseModel):
 
     id = CustomShortUUIDField(primary_key=True, prefix="tstm_")
     customer_name = models.CharField(max_length=150, help_text="Display name of testimonial author")
-    designation_or_company = models.CharField(max_length=150, blank=True, null=True, help_text="e.g. Verified Buyer, CEO at TechCorp")
+    designation_or_company = models.CharField(
+        max_length=150, blank=True, null=True, help_text="e.g. Verified Buyer, CEO at TechCorp"
+    )
     avatar_url = models.URLField(max_length=500, blank=True, null=True)
     testimonial_text = models.TextField(help_text="Testimonial content body")
     rating = models.DecimalField(
@@ -159,7 +167,9 @@ class ProductTestimonial(BaseModel):
         default=5.0,
         help_text="Rating score from 0.5 to 5.0",
     )
-    is_featured = models.BooleanField(default=True, help_text="If true, highlighted in storefront hero/reviews section")
+    is_featured = models.BooleanField(
+        default=True, help_text="If true, highlighted in storefront hero/reviews section"
+    )
     is_verified = models.BooleanField(default=True)
 
     # Generic Polymorphic Relation (Product, Brand, Seller)
@@ -196,7 +206,7 @@ class ActivityLog(BaseModel):
         related_name="shop_activity_logs",
     )
     action = models.CharField(max_length=100, help_text="e.g. PRODUCT_UPDATED, STOCK_RESERVED")
-    
+
     # Generic Target Relation
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
     object_id = models.CharField(max_length=50)

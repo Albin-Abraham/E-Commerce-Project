@@ -1,32 +1,29 @@
-import pytest
 from decimal import Decimal
 from unittest.mock import MagicMock
-from django.test import TestCase
-from django.contrib.auth import get_user_model
 
-from core.base_models.services.number_series import NumberSeriesRegistry, NumberSeriesService
+from django.contrib.auth import get_user_model
+from django.test import TestCase
+
+from apps.customers.models.customer import Customer
 from apps.procurement_pos.models.procurement import (
-    Supplier,
-    PurchaseRequest,
-    RequestForQuotation,
-    PurchaseOrder,
     GoodsReceivedNote,
     PurchaseInvoice,
+    PurchaseOrder,
+    PurchaseRequest,
+    RequestForQuotation,
+    Supplier,
 )
 from apps.procurement_pos.models.selling import (
-    SalesOrder,
     DeliveryNote,
     SalesInvoice,
+    SalesOrder,
 )
+from apps.shop.infrastructure.models.inventory import SerialNumber, StockTransfer
 from apps.shop.infrastructure.models.product import Product
 from apps.shop.infrastructure.models.variant import ProductVariant
-from django.contrib.auth import get_user_model
 from apps.shop.infrastructure.models.warehouse import Warehouse
-from apps.shop.infrastructure.models.inventory import SerialNumber, StockTransfer
-from apps.customers.models.customer import Customer
 from core.admin.models.company import Company
-
-
+from core.base_models.services.number_series import NumberSeriesRegistry, NumberSeriesService
 
 User = get_user_model()
 
@@ -128,8 +125,6 @@ class NumberSeriesIntegrationTestCase(TestCase):
         sinv.save()
         self.assertTrue(sinv.invoice_number.startswith("INV-"))
 
-
-
     def test_inventory_models_auto_generate_numbers(self):
         # Product SKU auto-generation
         product = Product(name="Wireless Mouse", slug="wireless-mouse", price=29.99)
@@ -173,8 +168,8 @@ class NumberSeriesIntegrationTestCase(TestCase):
         self.assertIn("Sales Invoice #INV-2026-00001 ($500.0)", str(sinv))
 
     def test_base_apiview_mixins_injection(self):
-        from core.base_views.mixins import NumberSeriesInjectionMixin, CurrencyInjectionMixin
         from apps.accounting.models.currency import Currency
+        from core.base_views.mixins import CurrencyInjectionMixin, NumberSeriesInjectionMixin
 
         Currency.objects.create(code="USD", name="US Dollar")
 
@@ -189,4 +184,3 @@ class NumberSeriesIntegrationTestCase(TestCase):
         self.assertIn("order_number", data)
         self.assertTrue(data["order_number"].startswith("SO-"))
         self.assertIn("currency", data)
-

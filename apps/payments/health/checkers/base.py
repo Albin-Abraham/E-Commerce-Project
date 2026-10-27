@@ -4,21 +4,23 @@ Base health checker implementing common infrastructure, SSRF protection,
 secret redaction, latency tracking, and check pipeline orchestration.
 """
 
-import time
-import urllib.request
-import urllib.parse
-import urllib.error
 import logging
+import time
+import urllib.error
+import urllib.parse
+import urllib.request
 from typing import TYPE_CHECKING
+
 from django.utils import timezone
-from core.configuration.security.redaction import mask_secret
+
 from apps.payments.health.interfaces import (
     CheckStatus,
     GatewayHealthStatus,
-    HealthCheckResult,
     GatewayOverallHealthResult,
+    HealthCheckResult,
     IPaymentGatewayHealthChecker,
 )
+from core.configuration.security.redaction import mask_secret
 
 if TYPE_CHECKING:
     from apps.payments.configuration.schemas import ResolvedPaymentGatewayConfig
@@ -45,10 +47,14 @@ class BaseHealthChecker(IPaymentGatewayHealthChecker):
         """
         parsed = urllib.parse.urlparse(url)
         if parsed.scheme not in ("https",):
-            raise ValueError(f"SSRF Protection: Insecure scheme '{parsed.scheme}'. Only HTTPS is permitted.")
+            raise ValueError(
+                f"SSRF Protection: Insecure scheme '{parsed.scheme}'. Only HTTPS is permitted."
+            )
         host = parsed.netloc.split(":")[0].lower()
         if host not in self.ALLOWED_HOSTS:
-            raise ValueError(f"SSRF Protection: Host '{host}' is not in the allowed payment provider whitelist.")
+            raise ValueError(
+                f"SSRF Protection: Host '{host}' is not in the allowed payment provider whitelist."
+            )
 
     def _execute_http_probe(
         self,

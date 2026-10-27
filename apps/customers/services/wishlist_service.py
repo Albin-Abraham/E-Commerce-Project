@@ -1,11 +1,13 @@
 import logging
+
 from django.db import transaction
-from apps.customers.models.shopping import Wishlist, WishlistItem, ProductLike
+
 from apps.customers.models.customer import Customer
+from apps.customers.models.shopping import ProductLike, Wishlist, WishlistItem
 from apps.customers.services.cart_service import CustomerCartService
+from apps.shop.infrastructure.models.facility import FacilityInventory
 from apps.shop.infrastructure.models.product import Product
 from apps.shop.infrastructure.models.variant import ProductVariant
-from apps.shop.infrastructure.models.facility import FacilityInventory
 
 logger = logging.getLogger(__name__)
 
@@ -68,12 +70,14 @@ class CustomerWishlistService:
                 inv_qs = FacilityInventory.objects.filter(product=product)
                 if item.variant:
                     inv_qs = inv_qs.filter(variant=item.variant)
-                
+
                 total_stock = sum(inv.quantity_available for inv in inv_qs)
                 if total_stock == 0:
                     reason = "OUT_OF_STOCK"
 
-            current_price = item.variant.price if (item.variant and item.variant.price) else product.price
+            current_price = (
+                item.variant.price if (item.variant and item.variant.price) else product.price
+            )
             payload = {
                 "wishlist_item_id": str(item.id),
                 "product_id": str(product.id),
@@ -113,7 +117,13 @@ class CustomerWishlistService:
 
     @classmethod
     @transaction.atomic
-    def add_to_wishlist(cls, customer_id: str, product_id: str, variant_id: str | None = None, name: str = "My Wishlist") -> WishlistItem:
+    def add_to_wishlist(
+        cls,
+        customer_id: str,
+        product_id: str,
+        variant_id: str | None = None,
+        name: str = "My Wishlist",
+    ) -> WishlistItem:
         """
         Adds a product to customer wishlist after seller validation.
         """
@@ -145,7 +155,7 @@ class CustomerWishlistService:
         Moves item from wishlist directly into active cart and deletes the wishlist item.
         """
         witem = WishlistItem.objects.select_related("product", "variant").get(pk=wishlist_item_id)
-        
+
         # Add to cart via Cart Service (performs seller/vendor checks)
         cart_item = CustomerCartService.add_item(
             customer_id=customer_id,

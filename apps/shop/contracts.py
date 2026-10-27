@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from typing import Dict, Any, List
+from typing import Any
 from uuid import UUID
 
 
@@ -7,7 +7,7 @@ class IShopPublicService(ABC):
     """Public contract: Other modules consume shop data through this interface."""
 
     @abstractmethod
-    def get_product_summary(self, product_id: UUID) -> Dict[str, Any]:
+    def get_product_summary(self, product_id: UUID) -> dict[str, Any]:
         pass
 
     @abstractmethod
@@ -15,9 +15,9 @@ class IShopPublicService(ABC):
         pass
 
     @abstractmethod
-    def get_products_for_branch(self, branch_id: UUID) -> List[Dict[str, Any]]:
+    def get_products_for_branch(self, branch_id: UUID) -> list[dict[str, Any]]:
         pass
 
     @abstractmethod
-    def get_order_summary(self, order_id: UUID) -> Dict[str, Any]:
+    def get_order_summary(self, order_id: UUID) -> dict[str, Any]:
         pass

@@ -2,11 +2,9 @@ from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.db import models
 
+from apps.core_documents.valuesets import DOCUMENT_STATUS_VALUESET
 from core.base_models.constants import USER_MODEL
 from core.base_models.validator_model import BaseModel
-
-
-from apps.core_documents.valuesets import DOCUMENT_STATUS_VALUESET
 
 
 class Document(BaseModel):
@@ -38,17 +36,13 @@ class Document(BaseModel):
         max_length=20,
         choices=DOCUMENT_STATUS_VALUESET.as_django_choices(),
         default="DRAFT",
-        help_text="Current lifecycle state of the document"
+        help_text="Current lifecycle state of the document",
     )
     rejection_reason = models.TextField(
-        blank=True,
-        null=True,
-        help_text="Reason document was rejected, if applicable"
+        blank=True, null=True, help_text="Reason document was rejected, if applicable"
     )
     status_changed_at = models.DateTimeField(
-        null=True,
-        blank=True,
-        help_text="Timestamp of the last state transition"
+        null=True, blank=True, help_text="Timestamp of the last state transition"
     )
     status_changed_by = models.ForeignKey(
         USER_MODEL,
@@ -56,7 +50,7 @@ class Document(BaseModel):
         null=True,
         blank=True,
         related_name="document_transitions",
-        help_text="User who initiated the last state transition"
+        help_text="User who initiated the last state transition",
     )
 
     @property
@@ -80,6 +74,7 @@ class Document(BaseModel):
 
 def get_tenant_storage():
     from apps.core_documents.services.storage_router import DynamicTenantStorage
+
     return DynamicTenantStorage()
 
 
@@ -103,11 +98,7 @@ class DocumentVersion(BaseModel):
         "core_documents.Document", on_delete=models.CASCADE, related_name="versions"
     )
     version = models.PositiveIntegerField()
-    file = models.FileField(
-        upload_to=get_upload_path,
-        storage=get_tenant_storage,
-        max_length=512
-    )
+    file = models.FileField(upload_to=get_upload_path, storage=get_tenant_storage, max_length=512)
     uploaded_by = models.ForeignKey(
         USER_MODEL, on_delete=models.SET_NULL, null=True, related_name="uploaded_documents_v2"
     )

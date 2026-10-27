@@ -1,5 +1,6 @@
 # tests/mixins/attributes.py
 
+
 class AttributeMixin:
     """Mixin for JSON / EAV attribute helpers."""
 

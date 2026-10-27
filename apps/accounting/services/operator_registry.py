@@ -122,24 +122,57 @@ class OperatorRegistry:
 
         if "value_to" in args and not value_to:
             raise ValidationError(
-                f"Operator '{code}' links value 1 ({value!r}) to value 2; "
-                "'value_to' is required"
+                f"Operator '{code}' links value 1 ({value!r}) to value 2; 'value_to' is required"
             )
         if "value" in args and not value:
-            raise ValidationError(
-                f"Operator '{code}' requires an equal-to/range value"
-            )
+            raise ValidationError(f"Operator '{code}' requires an equal-to/range value")
         return True
 
 
 DEFAULT_OPERATORS = (
     (EQUAL_TO, _("Equal To"), _equal_comparator, "field equals the value", ("value",)),
-    (NOT_EQUAL_TO, _("Not Equal To"), _not_equal_comparator, "field differs from the value", ("value",)),
-    (GREATER_THAN, _("Greater Than"), _numeric_range_comparator(lambda a, b: a > b), "field is greater than the value", ("value",)),
-    (LESS_THAN, _("Less Than"), _numeric_range_comparator(lambda a, b: a < b), "field is less than the value", ("value",)),
-    (GREATER_THAN_OR_EQUAL, _("Greater Than Or Equal To"), _numeric_range_comparator(lambda a, b: a >= b), "field is at least the value", ("value",)),
-    (LESS_THAN_OR_EQUAL, _("Less Than Or Equal To"), _numeric_range_comparator(lambda a, b: a <= b), "field is at most the value", ("value",)),
-    (BETWEEN, _("Between Value 1 And Value 2"), _between_comparator, "value 1 < field < value 2", ("value", "value_to")),
+    (
+        NOT_EQUAL_TO,
+        _("Not Equal To"),
+        _not_equal_comparator,
+        "field differs from the value",
+        ("value",),
+    ),
+    (
+        GREATER_THAN,
+        _("Greater Than"),
+        _numeric_range_comparator(lambda a, b: a > b),
+        "field is greater than the value",
+        ("value",),
+    ),
+    (
+        LESS_THAN,
+        _("Less Than"),
+        _numeric_range_comparator(lambda a, b: a < b),
+        "field is less than the value",
+        ("value",),
+    ),
+    (
+        GREATER_THAN_OR_EQUAL,
+        _("Greater Than Or Equal To"),
+        _numeric_range_comparator(lambda a, b: a >= b),
+        "field is at least the value",
+        ("value",),
+    ),
+    (
+        LESS_THAN_OR_EQUAL,
+        _("Less Than Or Equal To"),
+        _numeric_range_comparator(lambda a, b: a <= b),
+        "field is at most the value",
+        ("value",),
+    ),
+    (
+        BETWEEN,
+        _("Between Value 1 And Value 2"),
+        _between_comparator,
+        "value 1 < field < value 2",
+        ("value", "value_to"),
+    ),
 )
 
 

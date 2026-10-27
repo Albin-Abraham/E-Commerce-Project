@@ -23,8 +23,7 @@ class Policy(ABC):
     name: str = "UnnamedPolicy"
 
     @abstractmethod
-    def is_satisfied_by(self, subject: Any) -> bool:
-        ...
+    def is_satisfied_by(self, subject: Any) -> bool: ...
 
     @property
     def violation_message(self) -> str:

@@ -1,9 +1,10 @@
-from django.db import models, transaction
+from django.db import models
 from django.utils import timezone
-from core.base_models.validator_model import BaseModel
+
 from core.base_models.constants import USER_MODEL
-from core.base_models.fields.short_ui_fields import CustomShortUUIDField
 from core.base_models.fields.char_fields import CustomCharField
+from core.base_models.fields.short_ui_fields import CustomShortUUIDField
+from core.base_models.validator_model import BaseModel
 from core.base_models.validators.rules import RequiredRule, UniqueRule
 
 
@@ -11,6 +12,7 @@ class POSRegister(BaseModel):
     """
     Physical POS Register terminal (e.g. Counter 1, Checkout Terminal A).
     """
+
     id = CustomShortUUIDField(primary_key=True, prefix="reg_")
     name = CustomCharField(
         max_length=100,
@@ -169,4 +171,3 @@ class POSTransactionItem(BaseModel):
 
     def _override_pre_save(self, is_creating: bool):
         self.total_price = (self.quantity * self.unit_price) - self.discount
-

@@ -14,7 +14,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('core_admin', '0004_company_default_currency_numberseries'),
+        ('core_admin', '0002_initial'),
         ('shop', '0005_pricelist_pricingrule_uom_itemuom_uomconversion'),
     ]
 

@@ -1,11 +1,14 @@
 import logging
 from datetime import datetime
-from django.utils import timezone
-from croniter import croniter
-from core.base_models.system_models import SystemConfig
+
 from celery import current_app
+from croniter import croniter
+from django.utils import timezone
+
+from core.base_models.system_models import SystemConfig
 
 logger = logging.getLogger(__name__)
+
 
 class SystemConfigSchedulerService:
     """
@@ -45,29 +48,29 @@ class SystemConfigSchedulerService:
         """
         now = timezone.now()
         cron_str = schedule.value
-        
+
         # We store metadata (last_run) in the JSON 'details' field if it exists,
         # otherwise we fetch it from the record's updated_at or similar.
         # For simplicity, let's use a standard metadata key in 'details'.
-        details = schedule.description # Reusing description or we should have a JSON field?
+        details = schedule.description  # Reusing description or we should have a JSON field?
         # Wait, SystemConfig doesn't have a JSON field. I should add one or use description.
         # Actually, let's look at the SystemConfig model again...
         # It doesn't have a JSON field. I'll use the description for now or assume a standard.
         # Wait, I should add a JSON field to SystemConfig for metadata!
-        
+
         last_run_str = cls._get_metadata(schedule, "last_run")
         if not last_run_str:
-            return True # Always run if never run before (or we can be smarter)
+            return True  # Always run if never run before (or we can be smarter)
 
         try:
             last_run = datetime.fromisoformat(last_run_str)
             if timezone.is_aware(last_run):
                 last_run = timezone.localtime(last_run)
-            
+
             # Check if current time is past the 'next' execution date from last_run
             iter = croniter(cron_str, last_run)
             next_run = iter.get_next(datetime)
-            
+
             return now >= next_run
         except Exception as e:
             logger.error(f"Error parsing schedule {schedule.key}: {e}")
@@ -80,7 +83,7 @@ class SystemConfigSchedulerService:
         """
         task_name = schedule.key
         logger.info(f"Dispatching scheduled task: {task_name}")
-        
+
         try:
             current_app.send_task(task_name)
             # Update last run time

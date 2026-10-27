@@ -3,13 +3,11 @@ from __future__ import annotations
 import logging
 from collections import ChainMap
 from collections.abc import Callable
-from dataclasses import dataclass, field
-from typing import Any
+from dataclasses import dataclass
 
 from django.db import transaction
 
 from core.admin.helpers.bulk_helpers import (
-    BulkHooks,
     BulkResult,
     OperationContext,
     inject_tenant_context,
@@ -53,16 +51,17 @@ class BatchOperation:
 
 def _batch_create_one(data: dict, context: OperationContext) -> BulkResult:
     if context.serializer_class is None or context.serializer_context is None:
-        return BulkResult(success=False, errors=["OperationContext.serializer_class and serializer_context required for create"])
+        return BulkResult(
+            success=False,
+            errors=["OperationContext.serializer_class and serializer_context required for create"],
+        )
 
     data = inject_tenant_context(data, context.model, is_many=False)
 
     if context.hooks and context.hooks.pre_create:
         data = context.hooks.pre_create(data)
 
-    serializer = context.serializer_class(
-        data=data, context=context.serializer_context
-    )
+    serializer = context.serializer_class(data=data, context=context.serializer_context)
     if not serializer.is_valid():
         return BulkResult(success=False, errors=serializer.errors)
 
@@ -83,7 +82,10 @@ def _batch_create_one(data: dict, context: OperationContext) -> BulkResult:
 
 def _batch_update_one(data: dict, context: OperationContext) -> BulkResult:
     if context.serializer_class is None or context.serializer_context is None:
-        return BulkResult(success=False, errors=["OperationContext.serializer_class and serializer_context required for update"])
+        return BulkResult(
+            success=False,
+            errors=["OperationContext.serializer_class and serializer_context required for update"],
+        )
 
     pk = data.get("id") or data.get("pk")
     if not pk:
@@ -184,9 +186,7 @@ def batch_process(
 
     for idx, op in enumerate(operations):
         if aborted:
-            results.append(
-                BulkResult(success=False, errors=["Skipped — batch aborted"])
-            )
+            results.append(BulkResult(success=False, errors=["Skipped — batch aborted"]))
             continue
 
         if isinstance(op, dict):
@@ -208,7 +208,9 @@ def batch_process(
             continue
 
         # Merge per-operation context overrides via ChainMap
-        op_context = _merge_context(context, op.context_override) if op.context_override else context
+        op_context = (
+            _merge_context(context, op.context_override) if op.context_override else context
+        )
 
         try:
             with transaction.atomic():
@@ -226,9 +228,7 @@ def batch_process(
     return results
 
 
-def _merge_context(
-    base: OperationContext, overrides: dict
-) -> OperationContext:
+def _merge_context(base: OperationContext, overrides: dict) -> OperationContext:
     """Return a new OperationContext with overrides merged via ChainMap."""
     merged_ser_ctx = ChainMap(
         overrides.get("serializer_context", {}),
@@ -240,9 +240,7 @@ def _merge_context(
         serializer_context=merged_ser_ctx,  # type: ignore[arg-type]
         hooks=overrides.get("hooks", base.hooks),
         get_object_fn=overrides.get("get_object_fn", base.get_object_fn),
-        supports_soft_delete=overrides.get(
-            "supports_soft_delete", base.supports_soft_delete
-        ),
+        supports_soft_delete=overrides.get("supports_soft_delete", base.supports_soft_delete),
     )
 
 

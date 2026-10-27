@@ -5,8 +5,9 @@ Data schemas and immutable profiles for resolved payment gateway configurations.
 
 from dataclasses import dataclass, field
 from typing import Any
-from core.configuration.security.redaction import mask_secret
+
 from apps.payments.configuration.exceptions import GatewayConfigurationError
+from core.configuration.security.redaction import mask_secret
 
 
 @dataclass(frozen=True)
@@ -15,6 +16,7 @@ class ResolvedPaymentGatewayConfig:
     Immutable resolved configuration profile for a payment gateway.
     Passed directly to adapters to avoid ad-hoc database lookups.
     """
+
     gateway_type: str
     is_active: bool
     is_sandbox: bool
@@ -83,7 +85,7 @@ class PayPalConfigSchema:
         extra = extra_config or {}
         client_id = extra.get("client_id") or merchant_id
         client_secret = extra.get("client_secret")
-        
+
         mode = extra.get("mode")
         if mode:
             is_sandbox = str(mode).strip().lower() == "sandbox"

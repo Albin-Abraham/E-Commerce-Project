@@ -1,12 +1,12 @@
 # core/admin/urls/__init__.py
-from django.urls import path, include
+from django.urls import include, path
+
 from core.admin.views.health_views import health_live, health_ready
 
 urlpatterns = [
     # System Health Probes
     path("health/live/", health_live, name="health-live"),
     path("health/ready/", health_ready, name="health-ready"),
-
     # Administrative Entities
     path("companies/", include("core.admin.urls.company")),
     path("business-units/", include("core.admin.urls.business_unit")),
@@ -15,7 +15,6 @@ urlpatterns = [
     path("tests/", include("core.admin.urls.orchestration_urls")),
     # Async Operation Status
     path("", include("core.admin.urls.operations")),
-
     # Shop App
     path("shop/", include("apps.shop.interface.urls")),
 ]
@@ -23,16 +22,17 @@ urlpatterns = [
 
 def _get_user_management_urls():
     from apps.users.views.user_management import (
-        UserManagementViewSet,
-        UserDeactivateView,
         UserActivateView,
-        UserResetPasswordView,
-        UserAssignRoleView,
-        UserRemoveRoleView,
         UserAssignGroupView,
+        UserAssignRoleView,
+        UserDeactivateView,
+        UserManagementViewSet,
         UserRemoveGroupView,
+        UserRemoveRoleView,
+        UserResetPasswordView,
         UserSetPermissionsView,
     )
+
     return [
         path(
             "users/",
@@ -91,6 +91,7 @@ def _get_user_management_urls():
 
 def _get_role_urls():
     from apps.users.views.role_views import RoleViewSet
+
     return [
         path(
             "roles/",
@@ -109,6 +110,7 @@ def _get_role_urls():
 
 def _get_group_urls():
     from apps.users.views.group_views import GroupViewSet
+
     return [
         path(
             "role-groups/",

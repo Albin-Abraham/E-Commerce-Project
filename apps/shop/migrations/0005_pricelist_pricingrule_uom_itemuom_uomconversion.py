@@ -15,8 +15,8 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ('accounting', '0001_initial'),
-        ('core_admin', '0004_company_default_currency_numberseries'),
-        ('shop', '0004_deliverypartner_facilitypolicyrule_orderitem'),
+        ('core_admin', '0002_initial'),
+        ('shop', '0003_stockmovement'),
     ]
 
     operations = [

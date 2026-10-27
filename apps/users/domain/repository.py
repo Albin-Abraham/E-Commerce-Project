@@ -5,7 +5,7 @@ Defines data persistence boundary without framework coupling.
 """
 
 from abc import ABC, abstractmethod
-from typing import Optional
+
 from apps.users.domain.entities import UserEntity
 
 
@@ -15,22 +15,22 @@ class IUserRepository(ABC):
     """
 
     @abstractmethod
-    def get_by_id(self, user_id: str) -> Optional[UserEntity]:
+    def get_by_id(self, user_id: str) -> UserEntity | None:
         """Retrieve user by UUID/ID string."""
         pass
 
     @abstractmethod
-    def get_by_email(self, email: str) -> Optional[UserEntity]:
+    def get_by_email(self, email: str) -> UserEntity | None:
         """Retrieve user by email address."""
         pass
 
     @abstractmethod
-    def get_by_username(self, username: str) -> Optional[UserEntity]:
+    def get_by_username(self, username: str) -> UserEntity | None:
         """Retrieve user by username."""
         pass
 
     @abstractmethod
-    def save(self, user: UserEntity, raw_password: Optional[str] = None) -> UserEntity:
+    def save(self, user: UserEntity, raw_password: str | None = None) -> UserEntity:
         """Persist user entity changes."""
         pass
 

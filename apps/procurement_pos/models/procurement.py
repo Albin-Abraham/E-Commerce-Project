@@ -1,12 +1,12 @@
 from django.db import models, transaction
 from django.utils import timezone
-from core.base_models.validator_model import BaseModel
-from core.base_models.constants import USER_MODEL
-from core.base_models.fields.short_ui_fields import CustomShortUUIDField
-from core.base_models.fields.char_fields import CustomCharField, CustomTextField
-from core.base_models.validators.rules import RequiredRule, UniqueRule, MinRule
 
+from core.base_models.constants import USER_MODEL
+from core.base_models.fields.char_fields import CustomCharField, CustomTextField
 from core.base_models.fields.party_mixin import PartyReferenceMixin
+from core.base_models.fields.short_ui_fields import CustomShortUUIDField
+from core.base_models.validator_model import BaseModel
+from core.base_models.validators.rules import RequiredRule, UniqueRule
 
 
 class Supplier(BaseModel, PartyReferenceMixin):
@@ -142,6 +142,7 @@ class VendorQuotation(BaseModel):
     """
     Quotation submitted by a Supplier in response to an RFQ.
     """
+
     id = CustomShortUUIDField(primary_key=True, prefix="vq_")
     rfq = models.ForeignKey(
         RequestForQuotation,
@@ -243,6 +244,7 @@ class PurchaseOrder(BaseModel):
         Charge items applied to this Purchase Order (Freight, Insurance, Customs, Discounts).
         """
         from apps.accounting.models.charges import ChargeItem
+
         return ChargeItem.for_document(self)
 
     def set_status(self, new_status, user=None, description=None):
@@ -259,6 +261,7 @@ class PurchaseOrder(BaseModel):
 
     def log_event(self, status, user=None, description=None):
         from .tracking import PurchaseOrderEvent
+
         return PurchaseOrderEvent.objects.create(
             purchase_order=self,
             status=status,
@@ -324,7 +327,6 @@ class PurchaseOrderItem(BaseModel):
 
 
 class GoodsReceivedNote(BaseModel):
-
     id = CustomShortUUIDField(primary_key=True, prefix="grn_")
     grn_number = CustomCharField(
         max_length=50,
@@ -364,16 +366,16 @@ class GoodsReceivedNote(BaseModel):
     @transaction.atomic
     def process_grn_receipt(cls, grn_id: str):
         from django.core.exceptions import ValidationError
+
         from apps.shop.infrastructure.models.inventory import Inventory, StockMovement
+
         grn = cls.objects.select_related("purchase_order", "warehouse").get(pk=grn_id)
         if grn.status == "COMPLETED":
             return grn
 
         po = grn.purchase_order
         if po.status in ("CANCELLED", "REJECTED"):
-            raise ValidationError(
-                f"Cannot receive goods against a PO in status '{po.status}'."
-            )
+            raise ValidationError(f"Cannot receive goods against a PO in status '{po.status}'.")
         po_items = po.items.all()
 
         if grn.lines.exists():
@@ -455,6 +457,7 @@ class GoodsReceivedNote(BaseModel):
         # Trigger automated GL posting (Stock Asset vs Stock Received Accrual)
         try:
             from apps.accounting.workflows.posting_service import GLPostingService
+
             GLPostingService.post_grn_financial_entry(str(grn.id))
         except Exception:
             pass
@@ -494,6 +497,7 @@ class GoodsReceivedNoteLine(BaseModel):
 
     def _override_pre_save(self, is_creating: bool):
         from django.core.exceptions import ValidationError
+
         if is_creating and self.quantity_received > self.purchase_order_item.remaining_quantity:
             raise ValidationError(
                 f"Cannot receive {self.quantity_received} for PO item "
@@ -553,6 +557,7 @@ class PurchaseInvoice(BaseModel):
         Charge items applied to this Purchase Invoice (Freight, Insurance, Customs, Discounts).
         """
         from apps.accounting.models.charges import ChargeItem
+
         return ChargeItem.for_document(self)
 
     @classmethod

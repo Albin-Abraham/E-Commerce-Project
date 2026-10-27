@@ -1,11 +1,11 @@
-from core.base_views.api_views import BaseAPIView
-from core.admin.helpers.query_helpers import FilterSchema, FilterField
 from apps.procurement_pos.models.pos import POSRegister, POSSession, POSTransaction
 from apps.procurement_pos.serializers import (
     POSRegisterSerializer,
     POSSessionSerializer,
     POSTransactionSerializer,
 )
+from core.admin.helpers.query_helpers import FilterField, FilterSchema
+from core.base_views.api_views import BaseAPIView
 
 
 class POSRegisterViewSet(BaseAPIView):
@@ -44,6 +44,7 @@ class POSTransactionViewSet(BaseAPIView):
     """
     POS Checkout Transaction API ViewSet.
     """
+
     model = POSTransaction
     serializer_class = POSTransactionSerializer
     entity_name = "POSTransaction"
@@ -60,16 +61,19 @@ class POSTransactionViewSet(BaseAPIView):
     )
 
     def get_base_queryset(self):
-        return POSTransaction.objects.select_related("session", "customer").prefetch_related("items")
+        return POSTransaction.objects.select_related("session", "customer").prefetch_related(
+            "items"
+        )
 
 
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from rest_framework import status
 from django.shortcuts import get_object_or_404
-from apps.shop.infrastructure.models.variant import ProductVariant
-from apps.shop.infrastructure.models.inventory import Inventory
+from rest_framework import status
+from rest_framework.response import Response
+from rest_framework.views import APIView
+
 from apps.shop.application.services.product_knowledge_service import ProductKnowledgeService
+from apps.shop.infrastructure.models.inventory import Inventory
+from apps.shop.infrastructure.models.variant import ProductVariant
 
 
 class POSProductLookupView(APIView):
@@ -83,7 +87,9 @@ class POSProductLookupView(APIView):
     """
 
     def get(self, request, register_id=None, *args, **kwargs):
-        register = get_object_or_404(POSRegister.objects.select_related("warehouse"), pk=register_id)
+        register = get_object_or_404(
+            POSRegister.objects.select_related("warehouse"), pk=register_id
+        )
         barcode = request.query_params.get("barcode")
         sku = request.query_params.get("sku")
 
@@ -95,7 +101,9 @@ class POSProductLookupView(APIView):
 
         variant = None
         if barcode:
-            variant = ProductVariant.objects.select_related("product").filter(barcode=barcode).first()
+            variant = (
+                ProductVariant.objects.select_related("product").filter(barcode=barcode).first()
+            )
         if not variant and sku:
             variant = ProductVariant.objects.select_related("product").filter(sku=sku).first()
 
@@ -134,13 +142,16 @@ class POSProductLookupView(APIView):
             # Graceful degradation if KB service encounters errors
             pass
 
-        return Response({
-            "variant_id": str(variant.id),
-            "sku": variant.sku,
-            "product_name": variant.product.name if variant.product else "",
-            "barcode": variant.barcode or "",
-            "unit_price": str(variant.price),
-            "warehouse_stock": warehouse_data,
-            "cashier_pitches": cashier_pitches,
-            "specifications": specifications,
-        }, status=status.HTTP_200_OK)
+        return Response(
+            {
+                "variant_id": str(variant.id),
+                "sku": variant.sku,
+                "product_name": variant.product.name if variant.product else "",
+                "barcode": variant.barcode or "",
+                "unit_price": str(variant.price),
+                "warehouse_stock": warehouse_data,
+                "cashier_pitches": cashier_pitches,
+                "specifications": specifications,
+            },
+            status=status.HTTP_200_OK,
+        )

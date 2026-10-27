@@ -1,10 +1,12 @@
-from django.http import JsonResponse
-from django.db import connections
-from django.db.utils import OperationalError
-from django_redis import get_redis_connection
 import logging
 
+from django.db import connections
+from django.db.utils import OperationalError
+from django.http import JsonResponse
+from django_redis import get_redis_connection
+
 logger = logging.getLogger(__name__)
+
 
 def health_live(request):
     """
@@ -12,6 +14,7 @@ def health_live(request):
     Bypasses DRF authentication to avoid DB lookups.
     """
     return JsonResponse({"status": "live"}, status=200)
+
 
 def health_ready(request):
     """
@@ -27,7 +30,7 @@ def health_ready(request):
     # Check Database
     try:
         # We use 'default' connection. This won't trigger session lookups.
-        db_conn = connections['default']
+        db_conn = connections["default"]
         db_conn.cursor()
     except OperationalError:
         status["database"] = "unavailable"

@@ -4,17 +4,16 @@ from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.db import models, transaction
 
-from core.base_models.fields.char_fields import CustomCharField
-from core.base_models.fields.numeric_fields import CustomDecimalField
-from core.base_models.fields.short_ui_fields import CustomShortUUIDField
-from core.base_models.validator_model import BaseModel
-from core.base_models.validators.rules import RequiredRule, UniqueRule
-
 from apps.accounting.valuesets import (
     CHARGE_BASED_ON_VALUESET,
     CHARGE_SCOPE_VALUESET,
     CHARGE_TYPE_VALUESET,
 )
+from core.base_models.fields.char_fields import CustomCharField
+from core.base_models.fields.numeric_fields import CustomDecimalField
+from core.base_models.fields.short_ui_fields import CustomShortUUIDField
+from core.base_models.validator_model import BaseModel
+from core.base_models.validators.rules import RequiredRule, UniqueRule
 
 
 class ChargeDefinition(BaseModel):
@@ -316,7 +315,10 @@ class ChargeItem(BaseModel):
 
         template = self._applicable_tax_template()
         engine = TaxEngineService()
-        if self._document_key() in ("procurement_pos.purchaseorder", "procurement_pos.purchaseinvoice"):
+        if self._document_key() in (
+            "procurement_pos.purchaseorder",
+            "procurement_pos.purchaseinvoice",
+        ):
             result = engine.calculate_purchase_tax(self.net_amount, template)
         else:
             result = engine.calculate_sales_tax(self.net_amount, template)

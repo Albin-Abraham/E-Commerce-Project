@@ -1,8 +1,9 @@
 from django.db import models
-from core.base_models.validator_model import BaseModel
-from core.base_models.fields.short_ui_fields import CustomShortUUIDField
+
 from apps.customers.models.customer import Customer
 from apps.customers.valuesets import CART_STATUS_VALUESET
+from core.base_models.fields.short_ui_fields import CustomShortUUIDField
+from core.base_models.validator_model import BaseModel
 
 
 class Wishlist(BaseModel):
@@ -183,7 +184,6 @@ class CartItem(BaseModel):
     def _override_post_save(self, is_creating: bool):
         if self.cart_id:
             self.cart.recalculate_total()
-
 
     def __str__(self):
         return f"{self.quantity}x {self.product.name} (${self.total_price})"

@@ -1,18 +1,17 @@
-from typing import Dict, Any, List
+from typing import Any
 from uuid import UUID
-from django.db import transaction
-from core.admin.services.base_service import BaseService
-from core.admin.helpers.mediator_helpers import ValidationMediator
-from apps.shop.infrastructure.models.product import Product
-from apps.shop.infrastructure.models.inventory import Inventory
+
 from apps.shop.application.interfaces.product_interface import IProductService
+from apps.shop.infrastructure.models.inventory import Inventory
+from apps.shop.infrastructure.models.product import Product
+from core.admin.services.base_service import BaseService
 
 
 class ProductService(BaseService[Product], IProductService):
     """Application service: Product business logic."""
 
     @classmethod
-    def get_product_summary(cls, product_id: UUID) -> Dict[str, Any]:
+    def get_product_summary(cls, product_id: UUID) -> dict[str, Any]:
         product = cls.get_object(product_id)
         if not product:
             return {}
@@ -43,12 +42,11 @@ class ProductService(BaseService[Product], IProductService):
         return inventory.available_quantity >= quantity
 
     @classmethod
-    def get_products_for_branch(cls, branch_id: UUID) -> List[Dict[str, Any]]:
+    def get_products_for_branch(cls, branch_id: UUID) -> list[dict[str, Any]]:
         products = cls.model.objects.filter(
             branch_id=branch_id,
             is_active=True,
         )
         return [
-            {"id": str(p.id), "name": p.name, "sku": p.sku, "price": str(p.price)}
-            for p in products
+            {"id": str(p.id), "name": p.name, "sku": p.sku, "price": str(p.price)} for p in products
         ]

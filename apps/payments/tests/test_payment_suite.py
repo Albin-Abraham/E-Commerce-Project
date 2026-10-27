@@ -1,17 +1,16 @@
 from decimal import Decimal
-from django.test import TestCase
+
 from django.contrib.auth import get_user_model
-from rest_framework.test import APIClient
+from django.test import TestCase
 from rest_framework import status
-from core.base_models.system_models import SystemConfig
-from core.admin.models.company import Company
+from rest_framework.test import APIClient
+
 from apps.customers.models.customer import Customer
-from apps.payments.models import PaymentTransaction
 from apps.payments.services.payment_service import (
-    RazorpayPaymentGateway,
-    PayPalPaymentGateway,
     PaymentOrchestrationService,
 )
+from core.admin.models.company import Company
+from core.base_models.system_models import SystemConfig
 
 User = get_user_model()
 
@@ -31,7 +30,9 @@ class PaymentSuiteTestCase(TestCase):
         SystemConfig.objects.create(key="PAYPAL_MODE", value="sandbox")
 
         self.company = Company.objects.create(name="Acme Payments", code="PMT-01")
-        self.user = User.objects.create_user(username="pay_user", email="pay@example.com", password="Password123!")
+        self.user = User.objects.create_user(
+            username="pay_user", email="pay@example.com", password="Password123!"
+        )
         self.customer = Customer.objects.create(
             customer_code="CUST-PMT-01",
             user=self.user,
@@ -99,7 +100,9 @@ class PaymentSuiteTestCase(TestCase):
             "gateway_type": "RAZORPAY",
         }
 
-        response = self.client.post("/api/v1/payments/transactions/initiate/", data=payload, format="json")
+        response = self.client.post(
+            "/api/v1/payments/transactions/initiate/", data=payload, format="json"
+        )
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(response.data["data"]["gateway_type"], "RAZORPAY")
         self.assertEqual(Decimal(response.data["data"]["amount"]), Decimal("89.50"))

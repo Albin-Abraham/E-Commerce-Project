@@ -5,21 +5,23 @@ persistence, and readiness assessments.
 """
 
 import logging
+
 from django.utils import timezone
-from apps.payments.configuration.resolver import PaymentGatewayConfigResolver
+
 from apps.payments.configuration.exceptions import (
+    GatewayConfigurationError,
     GatewayDisabledError,
     GatewayNotConfiguredError,
-    GatewayConfigurationError,
 )
+from apps.payments.configuration.resolver import PaymentGatewayConfigResolver
+from apps.payments.health.circuit_breaker import GatewayCircuitBreaker
 from apps.payments.health.interfaces import (
-    GatewayHealthStatus,
     CheckStatus,
-    HealthCheckResult,
+    GatewayHealthStatus,
     GatewayOverallHealthResult,
+    HealthCheckResult,
 )
 from apps.payments.health.registry import PaymentGatewayHealthCheckerRegistry
-from apps.payments.health.circuit_breaker import GatewayCircuitBreaker
 
 logger = logging.getLogger(__name__)
 
@@ -168,12 +170,15 @@ class PaymentGatewayHealthMonitorService:
 
         # 1. Circuit breaker must permit execution
         if not GatewayCircuitBreaker.can_execute(cleaned):
-            logger.warning(f"Gateway '{cleaned}' rejected by circuit breaker (state: {GatewayCircuitBreaker.get_state(cleaned)})")
+            logger.warning(
+                f"Gateway '{cleaned}' rejected by circuit breaker (state: {GatewayCircuitBreaker.get_state(cleaned)})"
+            )
             return False
 
         # 2. Persisted health must not be explicitly disabled
         try:
             from apps.payments.health.models import PaymentGatewayHealth
+
             health = PaymentGatewayHealth.objects.filter(gateway_type=cleaned).first()
             if health and health.status == GatewayHealthStatus.DISABLED:
                 return False

@@ -1,7 +1,9 @@
 # tests/mixins/creation.py
 
+
 class CreationMixin:
     """Mixin for factory-based object creation."""
+
     factory_class = None
 
     def create(self, **overrides):

@@ -2,10 +2,11 @@ import logging
 
 logger = logging.getLogger("platform.system_logs")
 
+
 class LogMixin:
     """
     Industrialized Logging Mixin.
-    Provides standardized methods for structured logging to both 
+    Provides standardized methods for structured logging to both
     the database (SystemLogEntry) and the system console/file.
     """
 
@@ -20,10 +21,14 @@ class LogMixin:
 
         # 1. Console Logging (Structured)
         log_msg = f"[{level}] {module_name} | RID: {request_id} | {message}"
-        if level == 'INFO': logger.info(log_msg)
-        elif level == 'WARNING': logger.warning(log_msg)
-        elif level == 'ERROR': logger.error(log_msg)
-        elif level == 'CRITICAL': logger.critical(log_msg)
+        if level == "INFO":
+            logger.info(log_msg)
+        elif level == "WARNING":
+            logger.warning(log_msg)
+        elif level == "ERROR":
+            logger.error(log_msg)
+        elif level == "CRITICAL":
+            logger.critical(log_msg)
 
         # 2. Database Persistence
         try:
@@ -34,22 +39,22 @@ class LogMixin:
                 payload=payload or {},
                 user=user,
                 ip_address=ip,
-                request_id=request_id
+                request_id=request_id,
             )
         except Exception as e:
             # Prevent logging failures from crashing the main logic
             print(f"CRITICAL FAILURE: Could not persist SystemLogEntry: {e}")
 
     def log_info(self, message, payload=None):
-        self._log_system_event('INFO', message, payload=payload)
+        self._log_system_event("INFO", message, payload=payload)
 
     def log_warning(self, message, payload=None):
-        self._log_system_event('WARNING', message, payload=payload)
+        self._log_system_event("WARNING", message, payload=payload)
 
     def log_error(self, message, payload=None, exc=None):
         if exc:
             message = f"{message} | Exception: {str(exc)}"
-        self._log_system_event('ERROR', message, payload=payload)
+        self._log_system_event("ERROR", message, payload=payload)
 
     def log_critical(self, message, payload=None):
-        self._log_system_event('CRITICAL', message, payload=payload)
+        self._log_system_event("CRITICAL", message, payload=payload)

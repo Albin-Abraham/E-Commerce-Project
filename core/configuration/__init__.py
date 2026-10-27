@@ -6,8 +6,8 @@ Provides hierarchical configuration retrieval and secret redaction.
 
 from .exceptions import (
     ConfigurationError,
-    MissingConfigurationError,
     InvalidConfigurationError,
+    MissingConfigurationError,
 )
 from .resolver import CoreConfigurationResolver
 from .security.redaction import mask_secret

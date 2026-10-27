@@ -1,9 +1,10 @@
 # apps/shop/workflows/inventory_reservation_workflow.py
 import logging
+
 from apps.shop.application.use_cases.inventory_use_cases import (
-    ReserveInventoryUseCase,
-    ReleaseInventoryUseCase,
     CommitInventoryUseCase,
+    ReleaseInventoryUseCase,
+    ReserveInventoryUseCase,
     StockActionInputDTO,
 )
 from apps.shop.infrastructure.repository import DjangoInventoryRepository

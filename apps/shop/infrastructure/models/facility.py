@@ -1,12 +1,13 @@
 from django.db import models
-from core.base_models.validator_model import BaseModel
-from core.base_models.fields.short_ui_fields import CustomShortUUIDField
-from core.base_models.fields.char_fields import CustomCharField, CustomTextField
-from core.base_models.validators.rules import RequiredRule, UniqueRule
+
 from apps.shop.valuesets import (
     FACILITY_TYPE_VALUESET,
     LOCATION_TYPE_VALUESET,
 )
+from core.base_models.fields.char_fields import CustomCharField, CustomTextField
+from core.base_models.fields.short_ui_fields import CustomShortUUIDField
+from core.base_models.validator_model import BaseModel
+from core.base_models.validators.rules import RequiredRule, UniqueRule
 
 
 class Facility(BaseModel):
@@ -46,7 +47,9 @@ class Facility(BaseModel):
     address = CustomTextField(nullable=True)
     latitude = models.DecimalField(max_digits=9, decimal_places=6, null=True, blank=True)
     longitude = models.DecimalField(max_digits=9, decimal_places=6, null=True, blank=True)
-    serviceable_pincodes = models.JSONField(default=list, blank=True, help_text="List of pincodes serviced by this facility")
+    serviceable_pincodes = models.JSONField(
+        default=list, blank=True, help_text="List of pincodes serviced by this facility"
+    )
     capabilities = models.JSONField(
         default=dict,
         blank=True,
@@ -143,11 +146,21 @@ class FacilityInventory(BaseModel):
         blank=True,
         related_name="facility_inventory",
     )
-    quantity_on_hand = models.IntegerField(default=0, help_text="Total physical stock count in facility")
-    quantity_reserved = models.IntegerField(default=0, help_text="Stock reserved for active checkout/orders")
-    quantity_in_transit = models.IntegerField(default=0, help_text="Stock currently being transferred")
-    reorder_level = models.IntegerField(default=10, help_text="Minimum stock threshold before reorder trigger")
-    reorder_quantity = models.IntegerField(default=50, help_text="Standard replenishment reorder quantity")
+    quantity_on_hand = models.IntegerField(
+        default=0, help_text="Total physical stock count in facility"
+    )
+    quantity_reserved = models.IntegerField(
+        default=0, help_text="Stock reserved for active checkout/orders"
+    )
+    quantity_in_transit = models.IntegerField(
+        default=0, help_text="Stock currently being transferred"
+    )
+    reorder_level = models.IntegerField(
+        default=10, help_text="Minimum stock threshold before reorder trigger"
+    )
+    reorder_quantity = models.IntegerField(
+        default=50, help_text="Standard replenishment reorder quantity"
+    )
 
     class Meta(BaseModel.Meta):
         db_table = "shop_facility_inventory"

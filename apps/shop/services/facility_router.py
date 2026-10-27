@@ -1,10 +1,10 @@
 import math
 from dataclasses import dataclass, field
-from django.db.models import F
 from decimal import Decimal
+
 from apps.shop.infrastructure.models.facility import Facility, FacilityInventory
-from apps.shop.services.facility_policy_engine import FacilityPolicyEngine
 from apps.shop.models.facility_policy import DeliveryPartner
+from apps.shop.services.facility_policy_engine import FacilityPolicyEngine
 
 
 @dataclass
@@ -33,26 +33,39 @@ class DynamicFacilityRouter:
     """
 
     @classmethod
-    def calculate_haversine_distance(cls, lat1: float, lon1: float, lat2: float, lon2: float) -> float:
+    def calculate_haversine_distance(
+        cls, lat1: float, lon1: float, lat2: float, lon2: float
+    ) -> float:
         """
         Calculates distance in kilometers between two GPS coordinates using Haversine formula.
         """
         R = 6371.0  # Earth radius in KM
         dlat = math.radians(lat2 - lat1)
         dlon = math.radians(lon2 - lon1)
-        a = math.sin(dlat / 2) ** 2 + math.cos(math.radians(lat1)) * math.cos(math.radians(lat2)) * math.sin(dlon / 2) ** 2
+        a = (
+            math.sin(dlat / 2) ** 2
+            + math.cos(math.radians(lat1)) * math.cos(math.radians(lat2)) * math.sin(dlon / 2) ** 2
+        )
         c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a))
         return R * c
 
     @classmethod
-    def get_serviceable_facilities(cls, company_id: str, pincode: str | None = None, lat: float | None = None, lng: float | None = None) -> list[Facility]:
+    def get_serviceable_facilities(
+        cls,
+        company_id: str,
+        pincode: str | None = None,
+        lat: float | None = None,
+        lng: float | None = None,
+    ) -> list[Facility]:
         """
         Retrieves active facilities servicing a given pincode or sorted by proximity (lat/lng).
         """
         qs = Facility.objects.filter(company_id=company_id, is_active=True)
 
         if pincode:
-            facilities = [f for f in qs if not f.serviceable_pincodes or pincode in f.serviceable_pincodes]
+            facilities = [
+                f for f in qs if not f.serviceable_pincodes or pincode in f.serviceable_pincodes
+            ]
         else:
             facilities = list(qs)
 
@@ -60,7 +73,9 @@ class DynamicFacilityRouter:
 
             def distance_key(fac):
                 if fac.latitude is not None and fac.longitude is not None:
-                    return cls.calculate_haversine_distance(float(lat), float(lng), float(fac.latitude), float(fac.longitude))
+                    return cls.calculate_haversine_distance(
+                        float(lat), float(lng), float(fac.latitude), float(fac.longitude)
+                    )
                 return 999999.0
 
             facilities.sort(key=distance_key)
@@ -140,11 +155,13 @@ class DynamicFacilityRouter:
                         break
 
             if remaining_qty > 0:
-                unallocated.append({
-                    "product_id": prod_id,
-                    "variant_id": var_id,
-                    "shortage_qty": remaining_qty,
-                })
+                unallocated.append(
+                    {
+                        "product_id": prod_id,
+                        "variant_id": var_id,
+                        "shortage_qty": remaining_qty,
+                    }
+                )
 
         return FacilityAllocationResult(
             is_fully_allocated=len(unallocated) == 0,

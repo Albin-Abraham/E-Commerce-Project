@@ -1,9 +1,10 @@
 from django.utils.text import slugify
 from rest_framework import serializers
-from core.base_serializers.base_serializers import BaseModelSerializer
+
+from apps.shop.application.services.product_knowledge_service import ProductKnowledgeService
 from apps.shop.infrastructure.models.product import Product
 from apps.shop.infrastructure.models.variant import ProductVariant
-from apps.shop.application.services.product_knowledge_service import ProductKnowledgeService
+from core.base_serializers.base_serializers import BaseModelSerializer
 
 
 def _auto_slug(serializer, data):
@@ -24,9 +25,18 @@ class ProductVariantSerializer(BaseModelSerializer):
     class Meta:
         model = ProductVariant
         fields = [
-            "id", "product", "sku", "price", "compare_at_price",
-            "barcode", "status", "attributes", "is_active",
-            "knowledge_content", "created_at", "updated_at",
+            "id",
+            "product",
+            "sku",
+            "price",
+            "compare_at_price",
+            "barcode",
+            "status",
+            "attributes",
+            "is_active",
+            "knowledge_content",
+            "created_at",
+            "updated_at",
         ]
         read_only_fields = ["id", "created_at", "updated_at"]
 
@@ -43,10 +53,24 @@ class ProductSerializer(BaseModelSerializer):
     class Meta:
         model = Product
         fields = [
-            "id", "sku", "name", "slug", "brand", "brand_name",
-            "category", "category_name", "price", "status",
-            "is_active", "metadata", "extensions", "company",
-            "variants", "knowledge_content", "created_at", "updated_at",
+            "id",
+            "sku",
+            "name",
+            "slug",
+            "brand",
+            "brand_name",
+            "category",
+            "category_name",
+            "price",
+            "status",
+            "is_active",
+            "metadata",
+            "extensions",
+            "company",
+            "variants",
+            "knowledge_content",
+            "created_at",
+            "updated_at",
         ]
         read_only_fields = ["id", "created_at", "updated_at"]
 

@@ -1,17 +1,17 @@
 import logging
 import uuid
 from decimal import Decimal
-from typing import List, Dict, Any, Optional
+from typing import Any
 
-from django.db import models, transaction
-from django.utils import timezone
 from django.core.exceptions import ValidationError
+from django.db import transaction
+from django.utils import timezone
 
+from apps.accounting.workflows.pos_accounting_bridge import POSAccountingBridge
 from apps.procurement_pos.models.pos import POSSession, POSTransaction, POSTransactionItem
+from apps.shop.infrastructure.models.events import DomainEventOutbox
 from apps.shop.infrastructure.models.inventory import Inventory, StockMovement
 from apps.shop.infrastructure.models.variant import ProductVariant
-from apps.shop.infrastructure.models.events import DomainEventOutbox
-from apps.accounting.workflows.pos_accounting_bridge import POSAccountingBridge
 
 logger = logging.getLogger(__name__)
 
@@ -34,19 +34,21 @@ class POSCheckoutWorkflow:
     def process_checkout(
         cls,
         session: POSSession,
-        items_data: List[Dict[str, Any]],
+        items_data: list[dict[str, Any]],
         payment_method: str = "CASH",
         customer=None,
-        idempotency_key: Optional[str] = None,
+        idempotency_key: str | None = None,
         discount_amount: Decimal = Decimal("0.00"),
-        tax_amount: Optional[Decimal] = None,
+        tax_amount: Decimal | None = None,
         user=None,
     ) -> POSTransaction:
         # 1. Idempotency Check
         if idempotency_key:
-            existing_trx = POSTransaction.objects.filter(
-                idempotency_key=idempotency_key
-            ).prefetch_related("items").first()
+            existing_trx = (
+                POSTransaction.objects.filter(idempotency_key=idempotency_key)
+                .prefetch_related("items")
+                .first()
+            )
             if existing_trx:
                 logger.info(
                     "Idempotency hit: Transaction #%s already exists for key %s.",
@@ -80,7 +82,9 @@ class POSCheckoutWorkflow:
             variant_id = item_data.get("variant_id")
             if not variant_obj and variant_id:
                 try:
-                    variant_obj = ProductVariant.objects.select_related("product").get(pk=variant_id)
+                    variant_obj = ProductVariant.objects.select_related("product").get(
+                        pk=variant_id
+                    )
                 except ProductVariant.DoesNotExist:
                     raise ValidationError(f"Product variant '{variant_id}' does not exist.")
             elif not variant_obj:
@@ -99,13 +103,15 @@ class POSCheckoutWorkflow:
             line_discount = Decimal(str(item_data.get("discount", "0.00")))
             line_total = (Decimal(qty) * unit_price) - line_discount
 
-            resolved_items.append({
-                "variant": variant_obj,
-                "quantity": qty,
-                "unit_price": unit_price,
-                "discount": line_discount,
-                "total_price": line_total,
-            })
+            resolved_items.append(
+                {
+                    "variant": variant_obj,
+                    "quantity": qty,
+                    "unit_price": unit_price,
+                    "discount": line_discount,
+                    "total_price": line_total,
+                }
+            )
 
         # Row-level lock on inventory records for this warehouse
         variant_ids = [it["variant"].id for it in resolved_items]

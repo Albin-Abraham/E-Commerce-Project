@@ -2,8 +2,6 @@ from decimal import Decimal
 
 from django.test import TestCase
 
-from core.admin.models.company import Company
-from core.admin.models.number_series import NumberSeries
 from apps.accounting.models.charges import ChargeDefinition, ChargeItem
 from apps.accounting.models.chart_of_accounts import Account
 from apps.accounting.models.currency import Currency
@@ -21,6 +19,7 @@ from apps.procurement_pos.models.procurement import (
     Supplier,
 )
 from apps.procurement_pos.models.selling import SalesInvoice, SalesOrder
+from core.admin.models.company import Company
 
 
 class ChargesTestCase(TestCase):
@@ -42,6 +41,7 @@ class ChargesTestCase(TestCase):
 
     def _user(self, username):
         from django.contrib.auth import get_user_model
+
         return get_user_model().objects.create_user(
             username=username, email=f"{username}@example.com", password="password123"
         )
@@ -109,10 +109,16 @@ class ChargesTestCase(TestCase):
         rules = duplicate._rules.get("code", [])
         unique_rules = [r for r in rules if r.__class__.__name__ == "UniqueRule"]
         self.assertTrue(unique_rules, "code field should declare a UniqueRule")
-        self.assertFalse(unique_rules[0].check(duplicate), "same company duplicate code must be rejected")
+        self.assertFalse(
+            unique_rules[0].check(duplicate), "same company duplicate code must be rejected"
+        )
 
-        other_company = ChargeDefinition(company=company_b, code="SHIP", title="Other Company Shipping")
-        self.assertTrue(unique_rules[0].check(other_company), "same code in a different company must be allowed")
+        other_company = ChargeDefinition(
+            company=company_b, code="SHIP", title="Other Company Shipping"
+        )
+        self.assertTrue(
+            unique_rules[0].check(other_company), "same code in a different company must be allowed"
+        )
 
     def test_charge_definition_snapshots_tax_template_linkage(self):
         company = self._company("Linkage Co")
@@ -235,7 +241,9 @@ class ChargesTestCase(TestCase):
         self.assertEqual(charge.tax_amount, Decimal("6.00"))
         self.assertEqual(charge.total_amount, Decimal("56.00"))
 
-        self.assertIn(charge, list(po.charges), "purchase_order.charges must expose applied charges")
+        self.assertIn(
+            charge, list(po.charges), "purchase_order.charges must expose applied charges"
+        )
 
     def test_attach_charge_to_purchase_invoice(self):
         company = self._company("PurchaseInvoice Co")
@@ -254,7 +262,9 @@ class ChargesTestCase(TestCase):
 
         supplier = self._supplier()
         user = self._user("pi_charger")
-        po = PurchaseOrder.objects.create(supplier=supplier, created_by=user, total_amount=Decimal("1000.00"))
+        po = PurchaseOrder.objects.create(
+            supplier=supplier, created_by=user, total_amount=Decimal("1000.00")
+        )
         pi = PurchaseInvoice.objects.create(
             purchase_order=po,
             supplier=supplier,
@@ -266,7 +276,9 @@ class ChargesTestCase(TestCase):
         self.assertEqual(charge.tax_amount, Decimal("2.40"))
         self.assertEqual(charge.total_amount, Decimal("22.40"))
 
-        self.assertIn(charge, list(pi.charges), "purchase_invoice.charges must expose applied charges")
+        self.assertIn(
+            charge, list(pi.charges), "purchase_invoice.charges must expose applied charges"
+        )
 
     # ------------------------------------------------------------- compute
 
@@ -318,13 +330,17 @@ class ChargesTestCase(TestCase):
         tax_line.save()
 
         reloaded = ChargeItem.objects.get(pk=charge.pk)
-        self.assertEqual(reloaded.tax_rate, Decimal("18.000"), "historical charge must keep its tax snapshot")
+        self.assertEqual(
+            reloaded.tax_rate, Decimal("18.000"), "historical charge must keep its tax snapshot"
+        )
         self.assertEqual(reloaded.tax_amount, Decimal("1.80"))
 
         reloaded.recompute()
         reloaded.save()
         reloaded.refresh_from_db()
-        self.assertEqual(reloaded.tax_rate, Decimal("20.000"), "explicit recompute must apply new tax rate")
+        self.assertEqual(
+            reloaded.tax_rate, Decimal("20.000"), "explicit recompute must apply new tax rate"
+        )
         self.assertEqual(reloaded.tax_amount, Decimal("2.00"))
 
     def test_summary_aggregates_additional_and_discount_charges(self):

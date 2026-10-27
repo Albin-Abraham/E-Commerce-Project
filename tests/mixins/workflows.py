@@ -2,6 +2,7 @@
 from tests.factories.company import CompanyFactory
 from tests.factories.subscription import SubscriptionFactory
 
+
 class OrganizationWorkflowMixin:
     """Modular workflow steps for Organization (Company)."""
 

@@ -1,5 +1,5 @@
-from typing import Any, Union, List, Dict, Optional, Tuple
-from django.core.exceptions import PermissionDenied
+from typing import Any
+
 
 def check_permission(user: Any, perm_string: str) -> bool:
     """
@@ -7,23 +7,24 @@ def check_permission(user: Any, perm_string: str) -> bool:
     """
     if not user or not user.is_authenticated:
         return False
-        
+
     # 1. High-Performance RBAC Lookup (O(1))
-    if hasattr(user, 'permission_manifest'):
+    if hasattr(user, "permission_manifest"):
         return user.permission_manifest.has_perm(perm_string)
-        
+
     # 2. Standard Django check (handles app_label.codename)
     if user.has_perm(perm_string):
         return True
-        
+
     return False
 
-def evaluate_policy(user: Any, policy: Union[str, List[Any], Dict[str, Any]]) -> bool:
+
+def evaluate_policy(user: Any, policy: str | list[Any] | dict[str, Any]) -> bool:
     """
     Recursive engine that processes Bypass -> At-Least -> All -> Any.
     """
     # 1. Bypass Logic (Superuser or System)
-    if user and (user.is_superuser or getattr(user, 'is_system', False)):
+    if user and (user.is_superuser or getattr(user, "is_system", False)):
         return True
 
     # 2. String (Single Permission)
@@ -48,32 +49,33 @@ def evaluate_policy(user: Any, policy: Union[str, List[Any], Dict[str, Any]]) ->
         results = []
         if "all" in policy:
             results.append(all(evaluate_policy(user, p) for p in policy["all"]))
-            
+
         # Handle "any" (OR logic)
         if "any" in policy:
             results.append(any(evaluate_policy(user, p) for p in policy["any"]))
-            
+
         return all(results) if results else True
 
     return False
 
-def _find_user_in_args(args: Tuple[Any, ...], kwargs: Dict[str, Any]) -> Optional[Any]:
+
+def _find_user_in_args(args: tuple[Any, ...], kwargs: dict[str, Any]) -> Any | None:
     """
     Scans arguments to find the 'user' object (Request, User, or kwarg).
     """
     # 1. Look in kwargs['user'] or kwargs['request'].user
-    if 'user' in kwargs:
-        return kwargs['user']
-    if 'request' in kwargs and hasattr(kwargs['request'], 'user'):
-        return kwargs['request'].user
+    if "user" in kwargs:
+        return kwargs["user"]
+    if "request" in kwargs and hasattr(kwargs["request"], "user"):
+        return kwargs["request"].user
 
     # 2. Look in args
     for arg in args:
         # Is it a Request object?
-        if hasattr(arg, 'user'):
+        if hasattr(arg, "user"):
             return arg.user
         # Is it a User object (simplified check)?
-        if hasattr(arg, 'is_authenticated') and hasattr(arg, 'has_perm'):
+        if hasattr(arg, "is_authenticated") and hasattr(arg, "has_perm"):
             return arg
 
     return None

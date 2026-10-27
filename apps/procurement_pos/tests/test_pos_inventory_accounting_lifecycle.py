@@ -4,31 +4,32 @@ Product Master Catalog -> KB Pitch Enrichment -> Procurement GRN -> POS Edge -> 
 """
 
 from decimal import Decimal
-from django.test import TestCase
-from django.core.exceptions import ValidationError
+
 from django.contrib.auth import get_user_model
+from django.core.exceptions import ValidationError
+from django.test import TestCase
 from rest_framework.test import APIClient
 
-from core.admin.models.company import Company
-from core.admin.models.business_unit import BusinessUnit
-from core.admin.models.branch import Branch
 from apps.accounting.models.chart_of_accounts import Account
 from apps.accounting.models.currency import Currency
 from apps.accounting.models.journal_entry import GLEntry, JournalEntry
 from apps.knowledgebase.models.kb import KnowledgeArticle, KnowledgeCategory, ProductKnowledgeLink
+from apps.procurement_pos.models.pos import POSRegister, POSSession
 from apps.procurement_pos.models.procurement import (
     GoodsReceivedNote,
     PurchaseOrder,
     PurchaseOrderItem,
     Supplier,
 )
-from apps.procurement_pos.models.pos import POSRegister, POSSession, POSTransaction
 from apps.procurement_pos.workflows.pos_checkout_workflow import POSCheckoutWorkflow
+from apps.shop.infrastructure.models.events import DomainEventOutbox
 from apps.shop.infrastructure.models.inventory import Inventory, StockMovement
 from apps.shop.infrastructure.models.product import Product
 from apps.shop.infrastructure.models.variant import ProductVariant
 from apps.shop.infrastructure.models.warehouse import Warehouse
-from apps.shop.infrastructure.models.events import DomainEventOutbox
+from core.admin.models.branch import Branch
+from core.admin.models.business_unit import BusinessUnit
+from core.admin.models.company import Company
 
 
 class POSInventoryAccountingLifecycleTestCase(TestCase):

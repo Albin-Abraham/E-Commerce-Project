@@ -1,7 +1,8 @@
 # apps/users/contracts.py
 from abc import ABC, abstractmethod
-from typing import Dict, Any, Optional, List
+from typing import Any
 from uuid import UUID
+
 
 class IUserPublicService(ABC):
     """
@@ -10,22 +11,22 @@ class IUserPublicService(ABC):
     """
 
     @abstractmethod
-    def get_user_manifest(self, user_id: UUID) -> Dict[str, Any]:
+    def get_user_manifest(self, user_id: UUID) -> dict[str, Any]:
         """Returns RBAC and identity manifest for a user."""
         pass
 
     @abstractmethod
-    def validate_session(self, user_id: UUID, company_id: Optional[UUID] = None) -> bool:
+    def validate_session(self, user_id: UUID, company_id: UUID | None = None) -> bool:
         """Verifies if a user's session is valid for the given company context."""
         pass
 
     @abstractmethod
-    def get_user_profile_summary(self, user_id: UUID) -> Dict[str, Any]:
+    def get_user_profile_summary(self, user_id: UUID) -> dict[str, Any]:
         """Returns a non-sensitive summary of the user's profile."""
         pass
 
     @abstractmethod
-    def get_user_permissions(self, user_id: UUID) -> List[str]:
+    def get_user_permissions(self, user_id: UUID) -> list[str]:
         """Returns the list of permission keys for a user."""
         pass
 

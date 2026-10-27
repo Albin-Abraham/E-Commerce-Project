@@ -4,11 +4,11 @@ Provider-specific health checker for Razorpay.
 """
 
 import base64
-import json
 import logging
 from typing import TYPE_CHECKING
-from apps.payments.health.interfaces import CheckStatus, HealthCheckResult
+
 from apps.payments.health.checkers.base import BaseHealthChecker
+from apps.payments.health.interfaces import CheckStatus, HealthCheckResult
 
 if TYPE_CHECKING:
     from apps.payments.configuration.schemas import ResolvedPaymentGatewayConfig
@@ -37,7 +37,9 @@ class RazorpayHealthChecker(BaseHealthChecker):
         expected_prefix = "rzp_test_" if config.is_sandbox else "rzp_live_"
         details = {"is_sandbox": config.is_sandbox, "key_prefix": key[:9]}
 
-        if not (key.startswith("rzp_test_") or key.startswith("rzp_live_") or key.startswith("rzp_")):
+        if not (
+            key.startswith("rzp_test_") or key.startswith("rzp_live_") or key.startswith("rzp_")
+        ):
             return HealthCheckResult(
                 check_type="configuration",
                 status=CheckStatus.FAILED,
@@ -76,7 +78,9 @@ class RazorpayHealthChecker(BaseHealthChecker):
             )
 
     def check_authentication(self, config: "ResolvedPaymentGatewayConfig") -> HealthCheckResult:
-        auth_str = base64.b64encode(f"{config.api_key}:{config.api_secret}".encode()).decode("utf-8")
+        auth_str = base64.b64encode(f"{config.api_key}:{config.api_secret}".encode()).decode(
+            "utf-8"
+        )
         headers = {
             "Authorization": f"Basic {auth_str}",
             "Content-Type": "application/json",

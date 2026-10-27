@@ -1,11 +1,11 @@
 import pytest
 
 from tests.permissions.builders import (
-    RoleBuilder,
-    GroupBuilder,
     AssignmentBuilder,
     CatalogBuilder,
     CompanyBuilder,
+    GroupBuilder,
+    RoleBuilder,
     UserBuilder,
 )
 
@@ -52,41 +52,51 @@ def user_builder():
 
 # ---- Shared role fixtures ----
 
+
 @pytest.fixture
 def viewer_role(role_builder):
-    return role_builder.named("Viewer").with_keys(
-        "admin:security:audit_logs", "hrms:employee:profile"
-    ).build()
+    return (
+        role_builder.named("Viewer")
+        .with_keys("admin:security:audit_logs", "hrms:employee:profile")
+        .build()
+    )
 
 
 @pytest.fixture
 def editor_role(role_builder):
-    return role_builder.named("Editor").with_keys(
-        "admin:identity:can_manage_users"
-    ).build()
+    return role_builder.named("Editor").with_keys("admin:identity:can_manage_users").build()
 
 
 @pytest.fixture
 def admin_role(role_builder):
-    return role_builder.named("Admin").with_keys(
-        "admin:identity:can_configure_roles", "admin:security:audit_logs"
-    ).build()
+    return (
+        role_builder.named("Admin")
+        .with_keys("admin:identity:can_configure_roles", "admin:security:audit_logs")
+        .build()
+    )
 
 
 # ---- Shared group fixtures ----
 
+
 @pytest.fixture
 def hr_group(group_builder, viewer_role):
-    return group_builder.named("HR Team").with_keys(
-        "hrms:employee:profile"
-    ).with_roles(viewer_role).build()
+    return (
+        group_builder.named("HR Team")
+        .with_keys("hrms:employee:profile")
+        .with_roles(viewer_role)
+        .build()
+    )
 
 
 @pytest.fixture
 def admin_group(group_builder, admin_role):
-    return group_builder.named("Admin Team").with_keys(
-        "admin:identity:role_configuration"
-    ).with_roles(admin_role).build()
+    return (
+        group_builder.named("Admin Team")
+        .with_keys("admin:identity:role_configuration")
+        .with_roles(admin_role)
+        .build()
+    )
 
 
 @pytest.fixture

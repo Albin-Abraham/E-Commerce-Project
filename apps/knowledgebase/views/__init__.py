@@ -1,4 +1,4 @@
-from .kb_views import KnowledgeCategoryViewSet, KnowledgeArticleViewSet, ProductKnowledgeLinkViewSet
+from .kb_views import KnowledgeArticleViewSet, KnowledgeCategoryViewSet, ProductKnowledgeLinkViewSet
 
 __all__ = [
     "KnowledgeCategoryViewSet",

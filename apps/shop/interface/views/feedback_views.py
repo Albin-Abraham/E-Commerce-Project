@@ -1,13 +1,17 @@
 from decimal import Decimal
-from rest_framework import serializers, viewsets, status
+
+from rest_framework import serializers, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
-from apps.shop.infrastructure.models.polymorphic import Review, ProductComment, ProductTestimonial
+
+from apps.shop.infrastructure.models.polymorphic import ProductComment, ProductTestimonial, Review
 from apps.shop.services.feedback_service import ProductFeedbackService
 
 
 class ReviewSerializer(serializers.ModelSerializer):
-    customer_name = serializers.CharField(source="customer.username", read_only=True, default="Anonymous")
+    customer_name = serializers.CharField(
+        source="customer.username", read_only=True, default="Anonymous"
+    )
 
     class Meta:
         model = Review
@@ -31,7 +35,9 @@ class ReviewSerializer(serializers.ModelSerializer):
 
 
 class ProductCommentSerializer(serializers.ModelSerializer):
-    author_name = serializers.CharField(source="author.username", read_only=True, default="Anonymous")
+    author_name = serializers.CharField(
+        source="author.username", read_only=True, default="Anonymous"
+    )
     replies_count = serializers.IntegerField(source="replies.count", read_only=True)
 
     class Meta:
@@ -73,7 +79,9 @@ class ReviewViewSet(viewsets.ModelViewSet):
         media_urls = request.data.get("media_urls", [])
 
         if not target_id:
-            return Response({"detail": "target_id is required."}, status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {"detail": "target_id is required."}, status=status.HTTP_400_BAD_REQUEST
+            )
 
         try:
             review = ProductFeedbackService.add_review(
@@ -93,7 +101,9 @@ class ReviewViewSet(viewsets.ModelViewSet):
     def seller_reply(self, request, pk=None):
         reply_text = request.data.get("reply_text")
         if not reply_text:
-            return Response({"detail": "reply_text is required."}, status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {"detail": "reply_text is required."}, status=status.HTTP_400_BAD_REQUEST
+            )
 
         review = ProductFeedbackService.add_seller_reply_to_review(pk, reply_text)
         serializer = ReviewSerializer(review)
@@ -113,7 +123,10 @@ class ProductCommentViewSet(viewsets.ModelViewSet):
         is_seller_reply = bool(request.data.get("is_seller_reply", False))
 
         if not target_id or not content:
-            return Response({"detail": "target_id and content are required."}, status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {"detail": "target_id and content are required."},
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
         try:
             comment = ProductFeedbackService.add_comment(
@@ -140,7 +153,9 @@ class FeedbackSummaryViewSet(viewsets.ViewSet):
     def summary(self, request):
         target_id = request.query_params.get("target_id")
         if not target_id:
-            return Response({"detail": "target_id query param is required."}, status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {"detail": "target_id query param is required."}, status=status.HTTP_400_BAD_REQUEST
+            )
 
         summary_data = ProductFeedbackService.get_product_feedback_summary(target_id)
         return Response(summary_data, status=status.HTTP_200_OK)

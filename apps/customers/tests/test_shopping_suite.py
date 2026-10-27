@@ -1,20 +1,21 @@
 from decimal import Decimal
-from django.test import TestCase
+
 from django.contrib.auth import get_user_model
+from django.test import TestCase
+
 from apps.customers.models.customer import Customer, CustomerAddress
-from apps.customers.models.shopping import Cart, CartItem, Wishlist, WishlistItem, ProductLike
+from apps.customers.models.shopping import Cart, WishlistItem
 from apps.customers.services.cart_service import CustomerCartService
-from apps.customers.services.wishlist_service import CustomerWishlistService
-from apps.customers.services.recommendation_service import CustomerRecommendationService
-from apps.customers.workflows.checkout_workflow import CustomerCheckoutService
-from apps.shop.infrastructure.models.product import Product
-from apps.shop.infrastructure.models.facility import Facility, FacilityInventory
-from apps.shop.infrastructure.models.polymorphic import Review, ProductComment
-from apps.shop.services.feedback_service import ProductFeedbackService
-from apps.customers.services.registration_service import CustomerRegistrationService
 from apps.customers.services.oauth_service import SocialOAuthAuthService
-from core.base_models.system_models import SystemConfig
+from apps.customers.services.recommendation_service import CustomerRecommendationService
+from apps.customers.services.registration_service import CustomerRegistrationService
+from apps.customers.services.wishlist_service import CustomerWishlistService
+from apps.customers.workflows.checkout_workflow import CustomerCheckoutService
+from apps.shop.infrastructure.models.facility import Facility, FacilityInventory
+from apps.shop.infrastructure.models.product import Product
+from apps.shop.services.feedback_service import ProductFeedbackService
 from core.admin.models.company import Company
+from core.base_models.system_models import SystemConfig
 
 User = get_user_model()
 
@@ -26,10 +27,14 @@ class CustomerShoppingSuiteTestCase(TestCase):
     """
 
     def setUp(self):
-        SystemConfig.objects.create(key="GOOGLE_STORAGE_BUCKET_NAME", value="yafei-platform-avatars")
+        SystemConfig.objects.create(
+            key="GOOGLE_STORAGE_BUCKET_NAME", value="yafei-platform-avatars"
+        )
         SystemConfig.objects.create(key="GOOGLE_API_KEY", value="AIzaSyTestApiKey12345")
         self.company = Company.objects.create(name="Test Acme Corp", code="ACME")
-        self.user = User.objects.create_user(username="testcustomer", email="cust@example.com", password="password123")
+        self.user = User.objects.create_user(
+            username="testcustomer", email="cust@example.com", password="password123"
+        )
         self.customer = Customer.objects.create(
             customer_code="CUST-001",
             user=self.user,
@@ -112,7 +117,9 @@ class CustomerShoppingSuiteTestCase(TestCase):
         self.assertEqual(breakdown["available_items"][0]["product_name"], "High Performance Laptop")
 
         # Move to cart
-        cart_item = CustomerWishlistService.move_wishlist_item_to_cart(self.customer.id, wish_item.id, quantity=2)
+        cart_item = CustomerWishlistService.move_wishlist_item_to_cart(
+            self.customer.id, wish_item.id, quantity=2
+        )
         self.assertEqual(cart_item.quantity, 2)
         self.assertFalse(WishlistItem.objects.filter(pk=wish_item.id).exists())
 
@@ -173,7 +180,9 @@ class CustomerShoppingSuiteTestCase(TestCase):
         self.assertEqual(summary["total_reviews_count"], 1)
         self.assertEqual(summary["star_breakdown"]["4.5"], 1)
         self.assertEqual(len(summary["comment_threads"]), 1)
-        self.assertEqual(summary["comment_threads"][0]["replies"][0]["content"], "Yes, supports up to 64GB DDR5.")
+        self.assertEqual(
+            summary["comment_threads"][0]["replies"][0]["content"], "Yes, supports up to 64GB DDR5."
+        )
 
     def test_recommendation_service(self):
         """
@@ -182,7 +191,9 @@ class CustomerShoppingSuiteTestCase(TestCase):
         CustomerWishlistService.toggle_product_like(self.customer.id, self.product1.id)
         self.assertEqual(CustomerWishlistService.get_product_like_count(self.product1.id), 1)
 
-        suggestions = CustomerRecommendationService.get_suggested_products_for_customer(self.customer.id, limit=5)
+        suggestions = CustomerRecommendationService.get_suggested_products_for_customer(
+            self.customer.id, limit=5
+        )
         self.assertTrue(len(suggestions) > 0)
 
     def test_customer_self_registration(self):
@@ -212,12 +223,14 @@ class CustomerShoppingSuiteTestCase(TestCase):
         """
         Tests Social OAuth sign-in and auto-account creation with Google / GitHub / Apple.
         """
-        user, customer, social_acc, created = SocialOAuthAuthService.authenticate_or_register_social_user(
-            provider="GOOGLE",
-            provider_uid="google_uid_98765",
-            email="google_user@example.com",
-            full_name="Google Social User",
-            avatar_url="https://lh3.googleusercontent.com/photo.jpg",
+        user, customer, social_acc, created = (
+            SocialOAuthAuthService.authenticate_or_register_social_user(
+                provider="GOOGLE",
+                provider_uid="google_uid_98765",
+                email="google_user@example.com",
+                full_name="Google Social User",
+                avatar_url="https://lh3.googleusercontent.com/photo.jpg",
+            )
         )
 
         self.assertTrue(created)
@@ -226,11 +239,13 @@ class CustomerShoppingSuiteTestCase(TestCase):
         self.assertEqual(customer.name, "Google Social User")
 
         # Second login should match existing social account
-        user2, customer2, social_acc2, created2 = SocialOAuthAuthService.authenticate_or_register_social_user(
-            provider="GOOGLE",
-            provider_uid="google_uid_98765",
-            email="google_user@example.com",
-            full_name="Google Social User",
+        user2, customer2, social_acc2, created2 = (
+            SocialOAuthAuthService.authenticate_or_register_social_user(
+                provider="GOOGLE",
+                provider_uid="google_uid_98765",
+                email="google_user@example.com",
+                full_name="Google Social User",
+            )
         )
 
         self.assertFalse(created2)

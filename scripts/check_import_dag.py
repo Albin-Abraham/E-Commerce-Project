@@ -92,7 +92,10 @@ def check_file(path: Path) -> list[str]:
         for idx in (lineno - 1, lineno - 2):
             if 0 <= idx < len(lines):
                 stripped = lines[idx].strip()
-                if "# noqa: DAG" in stripped or "# noqa: DAG" in stripped.rsplit("#", 1)[-1]:
+                if "# DAG" in stripped or "# noqa: DAG" in stripped or "# noqa-dag" in stripped:
+                    return True
+                noqa_codes = stripped.partition("# noqa:")[2]
+                if any(code.strip() == "DAG" for code in noqa_codes.split(",")):
                     return True
         return False
 

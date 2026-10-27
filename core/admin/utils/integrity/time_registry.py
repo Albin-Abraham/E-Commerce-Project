@@ -1,12 +1,13 @@
 # core/admin/utils/integrity/time_registry.py
-from django.utils import timezone
-from django.conf import settings
 import datetime
+
+from django.utils import timezone
+
 
 class TimeRegistry:
     """
     Centralized utility for timezone-aware time management.
-    Ensures that 'LocalDate' (local now) is retrieved consistently 
+    Ensures that 'LocalDate' (local now) is retrieved consistently
     across tasks, models, and redis interactions.
     """
 

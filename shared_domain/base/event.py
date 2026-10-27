@@ -49,16 +49,13 @@ class DomainEvent:
 
 class IEventBus(ABC):
     @abstractmethod
-    def publish(self, event: DomainEvent) -> None:
-        ...
+    def publish(self, event: DomainEvent) -> None: ...
 
     @abstractmethod
-    def publish_many(self, events: list[DomainEvent]) -> None:
-        ...
+    def publish_many(self, events: list[DomainEvent]) -> None: ...
 
     @abstractmethod
-    def subscribe(self, event_name: str, handler: Callable[[DomainEvent], None]) -> None:
-        ...
+    def subscribe(self, event_name: str, handler: Callable[[DomainEvent], None]) -> None: ...
 
 
 class NullEventBus(IEventBus):

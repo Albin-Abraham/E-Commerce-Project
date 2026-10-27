@@ -1,12 +1,30 @@
 from rest_framework import serializers
+
+from apps.procurement_pos.models.procurement import (
+    GoodsReceivedNote,
+    PurchaseOrder,
+    PurchaseOrderItem,
+    Supplier,
+)
 from core.base_serializers.base_serializers import BaseModelSerializer
-from apps.procurement_pos.models.procurement import Supplier, PurchaseOrder, PurchaseOrderItem, GoodsReceivedNote
 
 
 class SupplierSerializer(BaseModelSerializer):
     class Meta:
         model = Supplier
-        fields = ["id", "name", "code", "contact_person", "email", "phone", "address", "tax_id", "is_active", "metadata", "created_at"]
+        fields = [
+            "id",
+            "name",
+            "code",
+            "contact_person",
+            "email",
+            "phone",
+            "address",
+            "tax_id",
+            "is_active",
+            "metadata",
+            "created_at",
+        ]
         read_only_fields = ["id", "created_at"]
         extra_kwargs = {"code": {"required": False, "allow_blank": True}}
 
@@ -16,7 +34,16 @@ class PurchaseOrderItemSerializer(BaseModelSerializer):
 
     class Meta:
         model = PurchaseOrderItem
-        fields = ["id", "purchase_order", "variant", "variant_sku", "quantity_ordered", "quantity_received", "unit_cost", "total_cost"]
+        fields = [
+            "id",
+            "purchase_order",
+            "variant",
+            "variant_sku",
+            "quantity_ordered",
+            "quantity_received",
+            "unit_cost",
+            "total_cost",
+        ]
         read_only_fields = ["id", "total_cost"]
 
 
@@ -26,7 +53,18 @@ class PurchaseOrderSerializer(BaseModelSerializer):
 
     class Meta:
         model = PurchaseOrder
-        fields = ["id", "po_number", "supplier", "supplier_name", "status", "total_amount", "expected_delivery_date", "created_by", "items", "created_at"]
+        fields = [
+            "id",
+            "po_number",
+            "supplier",
+            "supplier_name",
+            "status",
+            "total_amount",
+            "expected_delivery_date",
+            "created_by",
+            "items",
+            "created_at",
+        ]
         read_only_fields = ["id", "created_at"]
         extra_kwargs = {"po_number": {"required": False, "allow_blank": True}}
 
@@ -37,6 +75,17 @@ class GoodsReceivedNoteSerializer(BaseModelSerializer):
 
     class Meta:
         model = GoodsReceivedNote
-        fields = ["id", "grn_number", "purchase_order", "po_number", "warehouse", "warehouse_name", "received_by", "status", "received_at", "created_at"]
+        fields = [
+            "id",
+            "grn_number",
+            "purchase_order",
+            "po_number",
+            "warehouse",
+            "warehouse_name",
+            "received_by",
+            "status",
+            "received_at",
+            "created_at",
+        ]
         read_only_fields = ["id", "created_at"]
         extra_kwargs = {"grn_number": {"required": False, "allow_blank": True}}

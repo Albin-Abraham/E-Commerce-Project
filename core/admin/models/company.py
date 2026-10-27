@@ -1,14 +1,17 @@
 from django.db import models
-from django.utils import timezone
-from django.db import transaction
-from django.core.exceptions import ValidationError
+
 from core.admin.models.subscriptions import Subscription
-from core.base_models.validators.rules import RequiredRule, MinRule, EmailRule, UniqueRule, RelationKeyRule
-from core.base_models.fields import CustomCharField, CustomEmailField, RulesForeignKey, CustomShortUUIDField
+from core.base_models.fields import (
+    CustomCharField,
+    CustomEmailField,
+    CustomShortUUIDField,
+)
 from core.base_models.validator_model import BaseModel
-from core.base_models.constants import (
-    USER_MODEL,
-    NAME_MAX_LENGTH,
+from core.base_models.validators.rules import (
+    EmailRule,
+    MinRule,
+    RequiredRule,
+    UniqueRule,
 )
 
 
@@ -18,10 +21,11 @@ from core.base_models.constants import (
 class Company(BaseModel):
     """
     The top-level tenant entity.
-    
+
     All system data (except global configuration) is partitioned by Company.
     Enforces business-level uniqueness for name and email via rule-based validation.
     """
+
     id = CustomShortUUIDField(
         prefix="",
         month=False,
@@ -30,22 +34,19 @@ class Company(BaseModel):
         unique=True,
         primary_key=True,
         editable=False,
-        auto=True
+        auto=True,
     )
     name = CustomCharField(
-        unique=True, 
-        rules=[RequiredRule("name"), MinRule("name", 3), UniqueRule("name")]
+        unique=True, rules=[RequiredRule("name"), MinRule("name", 3), UniqueRule("name")]
     )
     email = CustomEmailField(
         unique=True,
         null=True,
         blank=True,
-        rules=[RequiredRule("email"), EmailRule("email"), UniqueRule("email")]
+        rules=[RequiredRule("email"), EmailRule("email"), UniqueRule("email")],
     )
     code = CustomCharField(
-        max_length=20,
-        unique=True,
-        rules=[RequiredRule("code"), UniqueRule("code")]
+        max_length=20, unique=True, rules=[RequiredRule("code"), UniqueRule("code")]
     )
     subscription = models.ForeignKey(
         Subscription,
@@ -66,18 +67,18 @@ class Company(BaseModel):
     permission_prefix = "company"
 
     permission_map = {
-        "list":            "view",
-        "retrieve":        "view",
-        "create":          "create",
-        "update":          "edit",
-        "partial_update":  "edit",
-        "destroy":         "delete",
-        "bulk_upload":     "import",
+        "list": "view",
+        "retrieve": "view",
+        "create": "create",
+        "update": "edit",
+        "partial_update": "edit",
+        "destroy": "delete",
+        "bulk_upload": "import",
         "download_report": "export",
-        "audit":           "audit",
-        "manage":          "manage",
-        "get_analytics":   "can_get_analytics",
-        "manage_ledger":   "can_manage_ledger",
+        "audit": "audit",
+        "manage": "manage",
+        "get_analytics": "can_get_analytics",
+        "manage_ledger": "can_manage_ledger",
     }
 
     class Meta(BaseModel.Meta):
@@ -106,6 +107,7 @@ class CompanyExtension(BaseModel):
     """
     EAV-like extension for Company-specific metadata and flags.
     """
+
     company = models.OneToOneField(
         Company,
         on_delete=models.CASCADE,

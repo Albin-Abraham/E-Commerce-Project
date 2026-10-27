@@ -12,25 +12,24 @@ Validates:
 """
 
 from unittest import mock
-from django.test import TestCase
-from django.contrib.auth import get_user_model
-from rest_framework.test import APIClient
-from rest_framework import status
 
-from core.base_models.system_models import SystemConfig
-from core.admin.models.company import Company
+from django.contrib.auth import get_user_model
+from django.test import TestCase
+from rest_framework import status
+from rest_framework.test import APIClient
+
 from apps.customers.models.customer import Customer
-from apps.payments.models import PaymentGatewayConfig
-from apps.payments.health.models import PaymentGatewayHealth
+from apps.payments.health.checkers.paypal import PayPalHealthChecker
+from apps.payments.health.checkers.razorpay import RazorpayHealthChecker
+from apps.payments.health.circuit_breaker import CircuitState, GatewayCircuitBreaker
 from apps.payments.health.interfaces import (
     CheckStatus,
     GatewayHealthStatus,
 )
+from apps.payments.health.models import PaymentGatewayHealth
 from apps.payments.health.service import PaymentGatewayHealthMonitorService
-from apps.payments.health.circuit_breaker import GatewayCircuitBreaker, CircuitState
-from apps.payments.health.checkers.razorpay import RazorpayHealthChecker
-from apps.payments.health.checkers.paypal import PayPalHealthChecker
-from apps.payments.health.checkers.cod import CODHealthChecker
+from apps.payments.models import PaymentGatewayConfig
+from core.admin.models.company import Company
 
 User = get_user_model()
 
@@ -44,7 +43,9 @@ class PaymentGatewayHealthMonitoringTestCase(TestCase):
         self.client = APIClient()
         GatewayCircuitBreaker.reset()
         self.company = Company.objects.create(name="Health Test Co", code="HLT-01")
-        self.user = User.objects.create_user(username="health_user", email="health@example.com", password="Password123!")
+        self.user = User.objects.create_user(
+            username="health_user", email="health@example.com", password="Password123!"
+        )
         self.customer = Customer.objects.create(
             customer_code="CUST-HLT-01",
             user=self.user,
@@ -70,7 +71,11 @@ class PaymentGatewayHealthMonitoringTestCase(TestCase):
             is_active=True,
             is_sandbox=True,
             supported_currencies=["USD", "EUR"],
-            extra_config={"client_id": "pp_client_id_123", "client_secret": "pp_secret_456", "mode": "sandbox"},
+            extra_config={
+                "client_id": "pp_client_id_123",
+                "client_secret": "pp_secret_456",
+                "mode": "sandbox",
+            },
         )
 
         # Create COD configuration
@@ -116,7 +121,11 @@ class PaymentGatewayHealthMonitoringTestCase(TestCase):
         # First call (connectivity) returns 200, second call (auth) returns 401
         mock_probe.side_effect = [
             (200, b'{"status": "ok"}', 100),
-            (401, b'{"error": {"code": "BAD_REQUEST_ERROR", "description": "The id provided does not exist"}}', 150),
+            (
+                401,
+                b'{"error": {"code": "BAD_REQUEST_ERROR", "description": "The id provided does not exist"}}',
+                150,
+            ),
         ]
 
         result = PaymentGatewayHealthMonitorService.check_gateway_health("RAZORPAY", persist=True)
@@ -209,6 +218,7 @@ class PaymentGatewayHealthMonitoringTestCase(TestCase):
 
         # Initiating payment while OPEN must fail fast with descriptive error
         from apps.payments.services.payment_service import PaymentOrchestrationService
+
         with self.assertRaises(ValueError) as exc:
             PaymentOrchestrationService.initiate_payment(
                 customer_id=self.customer.id,

@@ -1,7 +1,8 @@
 import hashlib
 import json
-from django.core.cache import cache
 from typing import Any
+
+from django.core.cache import cache
 
 
 def _tenant_scope_token() -> str:
@@ -71,6 +72,7 @@ def invalidate_serializer_cache(user_id: Any, model_name: str, pk: Any):
 
 
 # --- Metadata (Rules) Caching ---
+
 
 def get_metadata_cache_key(model_name: str, context: str = "default") -> str:
     """

@@ -4,9 +4,8 @@ UserDataMapper — Translates between pure UserEntity and Django UserModel.
 Maintains bidirectional mapping while isolating domain logic from the ORM.
 """
 
-from typing import Optional
 from apps.users.domain.entities import UserEntity
-from apps.users.models.users import UserModel, UserProfileModel
+from apps.users.models.users import UserModel
 
 
 class UserDataMapper:
@@ -37,7 +36,7 @@ class UserDataMapper:
         return entity
 
     @staticmethod
-    def to_orm(entity: UserEntity, existing_model: Optional[UserModel] = None) -> UserModel:
+    def to_orm(entity: UserEntity, existing_model: UserModel | None = None) -> UserModel:
         """Map pure UserEntity to Django UserModel."""
         model = existing_model or UserModel()
         if entity.id:

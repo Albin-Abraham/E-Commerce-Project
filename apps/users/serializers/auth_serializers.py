@@ -1,9 +1,11 @@
-from django.contrib.auth import get_user_model, authenticate
+from django.contrib.auth import authenticate, get_user_model
 from rest_framework import serializers
 from rest_framework_simplejwt.tokens import RefreshToken
+
 from ..services.auth_service import AuthService
 
 User = get_user_model()  # resolves USER_MODEL safely
+
 
 # ----------------------------
 # Login Serializer
@@ -16,24 +18,31 @@ class UserLoginSerializer(serializers.Serializer):
     password = serializers.CharField(write_only=True)
 
     def validate(self, attrs):
-        login = attrs.get("login") or attrs.get("user") or attrs.get("username") or attrs.get("email")
+        login = (
+            attrs.get("login") or attrs.get("user") or attrs.get("username") or attrs.get("email")
+        )
         password = attrs.get("password")
 
         if not login:
-            raise serializers.ValidationError({"login": "This field, 'username', 'user', or 'email' is required."})
+            raise serializers.ValidationError(
+                {"login": "This field, 'username', 'user', or 'email' is required."}
+            )
 
         # Leverage custom MultiFieldAuthBackend via authenticate()
         request = self.context.get("request")
         user = authenticate(request=request, username=login, password=password)
 
         if not user:
-            raise serializers.ValidationError("Invalid credentials. Please check your username/email and password.")
+            raise serializers.ValidationError(
+                "Invalid credentials. Please check your username/email and password."
+            )
 
         if not user.is_active:
             raise serializers.ValidationError("User account is disabled.")
 
         attrs["user"] = user
         return attrs
+
 
 # ----------------------------
 # Logout Serializer
@@ -44,14 +53,17 @@ class LogoutSerializer(serializers.Serializer):
     def validate(self, attrs):
         request = self.context.get("request")
         self.token = attrs.get("refresh")
-        
+
         # Fallback to Hybrid Cookies for web platform
         if not self.token and request:
             from core.admin.constants import PlatformCookies
+
             self.token = request.COOKIES.get(PlatformCookies.REFRESH_TOKEN)
 
         if not self.token:
-            raise serializers.ValidationError("Refresh token is required (either in payload or cookies).")
+            raise serializers.ValidationError(
+                "Refresh token is required (either in payload or cookies)."
+            )
         return attrs
 
     def save(self, **kwargs):
@@ -70,6 +82,7 @@ class UserRegistrationSerializer(serializers.ModelSerializer):
     Serializer for User Registration.
     Delegates validation and creation to AuthService/ValidationMediator.
     """
+
     password = serializers.CharField(write_only=True, required=True)
     full_name = serializers.CharField(required=False, allow_blank=True)
 
@@ -102,13 +115,17 @@ class ChangePasswordSerializer(serializers.Serializer):
         user = request.user
 
         if not user.check_password(attrs["current_password"]):
-            raise serializers.ValidationError({"current_password": "Current password is incorrect."})
+            raise serializers.ValidationError(
+                {"current_password": "Current password is incorrect."}
+            )
 
         if attrs["new_password"] != attrs["confirm_password"]:
             raise serializers.ValidationError({"confirm_password": "Passwords do not match."})
 
         if attrs["current_password"] == attrs["new_password"]:
-            raise serializers.ValidationError({"new_password": "New password must differ from current password."})
+            raise serializers.ValidationError(
+                {"new_password": "New password must differ from current password."}
+            )
 
         return attrs
 

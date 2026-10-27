@@ -37,9 +37,7 @@ def optimize_queryset_with_serializer(queryset, serializer_class):
     """
     Apply select_related and prefetch_related to queryset based on serializer fields.
     """
-    select_related, prefetch_related = get_related_fields_from_serializer(
-        serializer_class
-    )
+    select_related, prefetch_related = get_related_fields_from_serializer(serializer_class)
 
     if select_related:
         queryset = queryset.select_related(*select_related)

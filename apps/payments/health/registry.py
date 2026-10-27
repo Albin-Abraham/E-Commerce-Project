@@ -4,10 +4,11 @@ Registry for payment gateway health checkers (GoF Strategy / Registry Pattern).
 """
 
 import logging
-from apps.payments.health.interfaces import IPaymentGatewayHealthChecker
-from apps.payments.health.checkers.razorpay import RazorpayHealthChecker
-from apps.payments.health.checkers.paypal import PayPalHealthChecker
+
 from apps.payments.health.checkers.cod import CODHealthChecker
+from apps.payments.health.checkers.paypal import PayPalHealthChecker
+from apps.payments.health.checkers.razorpay import RazorpayHealthChecker
+from apps.payments.health.interfaces import IPaymentGatewayHealthChecker
 
 logger = logging.getLogger(__name__)
 
@@ -35,5 +36,7 @@ class PaymentGatewayHealthCheckerRegistry:
         cleaned = gateway_type.strip().upper()
         checker_cls = cls._registry.get(cleaned)
         if not checker_cls:
-            raise ValueError(f"No health checker registered for payment gateway '{gateway_type}'. Supported: {list(cls._registry.keys())}")
+            raise ValueError(
+                f"No health checker registered for payment gateway '{gateway_type}'. Supported: {list(cls._registry.keys())}"
+            )
         return checker_cls()

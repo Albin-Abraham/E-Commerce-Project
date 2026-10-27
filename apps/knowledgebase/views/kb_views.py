@@ -1,11 +1,11 @@
-from core.base_views.api_views import BaseAPIView
-from core.admin.helpers.query_helpers import FilterSchema, FilterField, LOOKUP_OPERATORS
-from apps.knowledgebase.models.kb import KnowledgeCategory, KnowledgeArticle, ProductKnowledgeLink
+from apps.knowledgebase.models.kb import KnowledgeArticle, KnowledgeCategory, ProductKnowledgeLink
 from apps.knowledgebase.serializers import (
-    KnowledgeCategorySerializer,
     KnowledgeArticleSerializer,
+    KnowledgeCategorySerializer,
     ProductKnowledgeLinkSerializer,
 )
+from core.admin.helpers.query_helpers import LOOKUP_OPERATORS, FilterField, FilterSchema
+from core.base_views.api_views import BaseAPIView
 
 
 class KnowledgeCategoryViewSet(BaseAPIView):
@@ -26,6 +26,7 @@ class KnowledgeArticleViewSet(BaseAPIView):
     Knowledge Base Article API ViewSet.
     Integrated with FilterSchema for searching manuals, guides, pitches, and compliance certs by title, slug, metadata, or tags.
     """
+
     model = KnowledgeArticle
     serializer_class = KnowledgeArticleSerializer
     entity_name = "KnowledgeArticle"
@@ -51,6 +52,7 @@ class ProductKnowledgeLinkViewSet(BaseAPIView):
     Product, Variant, Inventory & Category Knowledgebase Linkage API ViewSet.
     Enables lookups by Foreign Keys OR direct target_identifier strings (Product Slug, Variant SKU, Inventory ID, Category Slug).
     """
+
     model = ProductKnowledgeLink
     serializer_class = ProductKnowledgeLinkSerializer
     entity_name = "ProductKnowledgeLink"
@@ -70,4 +72,6 @@ class ProductKnowledgeLinkViewSet(BaseAPIView):
     )
 
     def get_base_queryset(self):
-        return ProductKnowledgeLink.objects.select_related("article", "product", "variant", "inventory", "shop_category")
+        return ProductKnowledgeLink.objects.select_related(
+            "article", "product", "variant", "inventory", "shop_category"
+        )

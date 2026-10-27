@@ -1,19 +1,17 @@
 import pytest
 from rest_framework.test import APIRequestFactory, force_authenticate
 
-from apps.shop.infrastructure.models.product import Product
-from apps.shop.infrastructure.models.variant import ProductVariant
 from apps.shop.infrastructure.models.catalog import (
     Catalog,
-    CatalogItem,
     CatalogCollection,
+    CatalogItem,
     CatalogPublication,
 )
+from apps.shop.infrastructure.models.product import Product
 from apps.shop.interface.views.catalog_views import (
-    CatalogViewSet,
-    CatalogItemViewSet,
     CatalogCollectionViewSet,
-    CatalogPublicationViewSet,
+    CatalogItemViewSet,
+    CatalogViewSet,
 )
 from tests.factories.user import UserFactory
 
@@ -28,7 +26,7 @@ class TestCatalogDomainModels:
     def test_catalog_item_overrides_and_badges(self):
         cat = Catalog.objects.create(name="Primary Storefront", code="MAIN")
         prod = Product.objects.create(name="Standard Laptop", sku="LAP-001", price="1000.00")
-        
+
         item = CatalogItem.objects.create(
             catalog=cat,
             product=prod,
@@ -94,7 +92,8 @@ class TestCatalogDomainModels:
 
     def test_gfk_entity_tagging(self):
         from django.contrib.contenttypes.models import ContentType
-        from apps.shop.infrastructure.models.catalog import TagDefinition, EntityTag
+
+        from apps.shop.infrastructure.models.catalog import EntityTag, TagDefinition
 
         cat = Catalog.objects.create(name="Tag Test Catalog", code="TAG-01")
         prod = Product.objects.create(name="Dynamic Phone", sku="DP-001", price="75.00")

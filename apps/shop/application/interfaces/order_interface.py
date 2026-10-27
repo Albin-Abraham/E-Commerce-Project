@@ -1,14 +1,14 @@
 from abc import ABC, abstractmethod
-from typing import Dict, Any, Optional
-from uuid import UUID
 from decimal import Decimal
+from typing import Any
+from uuid import UUID
 
 
 class IOrderService(ABC):
     """Interface: Order domain operations."""
 
     @abstractmethod
-    def process_order(self, order_data: Dict[str, Any], user_id: UUID) -> Dict[str, Any]:
+    def process_order(self, order_data: dict[str, Any], user_id: UUID) -> dict[str, Any]:
         pass
 
     @abstractmethod
@@ -20,5 +20,5 @@ class IOrderService(ABC):
         pass
 
     @abstractmethod
-    def get_order_summary(self, order_id: UUID) -> Optional[Dict[str, Any]]:
+    def get_order_summary(self, order_id: UUID) -> dict[str, Any] | None:
         pass

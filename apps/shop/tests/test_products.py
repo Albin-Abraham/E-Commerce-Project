@@ -1,7 +1,8 @@
 import pytest
 from rest_framework.test import APIRequestFactory, force_authenticate
-from apps.shop.interface.views.product_views import ProductViewSet
+
 from apps.shop.infrastructure.models.product import Product
+from apps.shop.interface.views.product_views import ProductViewSet
 from tests.factories.user import UserFactory
 
 

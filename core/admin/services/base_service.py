@@ -1,38 +1,45 @@
+from typing import Any, Generic, TypeVar
+
 from django.db import transaction
 from django.db.models import Model
-from core.admin.utils.integrity.retry import retry_on_conflict
-from typing import Any, Type, TypeVar, Generic
 
-T = TypeVar('T', bound=Model)
+from core.admin.utils.integrity.retry import retry_on_conflict
+
+T = TypeVar("T", bound=Model)
+
 
 class BaseService(Generic[T]):
     """
     Base service class to handle common business logic and transaction management.
     """
-    model: Type[T]
+
+    model: type[T]
 
     @classmethod
     def get_queryset(cls, user=None):
         queryset = cls.model.objects.all()
         if user and not user.is_superuser:
-            if hasattr(cls.model, 'company'):
-                company_model = cls.model._meta.get_field('company').related_model
+            if hasattr(cls.model, "company"):
+                company_model = cls.model._meta.get_field("company").related_model
                 from core.registry.provider_registry import ProviderRegistry
+
                 acl_provider = ProviderRegistry.get_acl_provider()
                 if acl_provider:
                     allowed_company_ids = acl_provider.get_allowed_object_ids(user, company_model)
                 else:
                     from django.contrib.contenttypes.models import ContentType
+
                     from apps.access_control.models import EntityAccessControl
+
                     company_ct = ContentType.objects.get_for_model(company_model)
                     allowed_company_ids = EntityAccessControl.objects.filter(
                         user=user, content_type=company_ct
-                    ).values_list('object_id', flat=True)
-                
+                    ).values_list("object_id", flat=True)
+
                 # Fallback to legacy profile if Master ACL is empty
-                profile = getattr(user, 'profile', None)
+                profile = getattr(user, "profile", None)
                 legacy_company_id = profile.company_id if profile else None
-                
+
                 if allowed_company_ids:
                     # Include both ACL and legacy profile just in case it's mid-migration
                     valid_ids = set(allowed_company_ids)
@@ -57,11 +64,11 @@ class BaseService(Generic[T]):
         """
         # Inject Context
         if user and not user.is_superuser:
-            if hasattr(cls.model, 'company') and 'company' not in data and 'company_id' not in data:
+            if hasattr(cls.model, "company") and "company" not in data and "company_id" not in data:
                 # If company isn't explicitly provided, infer it from the user's legacy profile
-                profile = getattr(user, 'profile', None)
+                profile = getattr(user, "profile", None)
                 if profile and profile.company_id:
-                    data['company'] = profile.company
+                    data["company"] = profile.company
 
         instance = cls.model(**data)
         instance.full_clean()
@@ -78,10 +85,10 @@ class BaseService(Generic[T]):
         instance = cls.get_object(pk, user=user)
         if not instance:
             return None
-        
+
         for attr, value in data.items():
             setattr(instance, attr, value)
-        
+
         instance.full_clean()
         instance.save()
         return instance
@@ -95,8 +102,8 @@ class BaseService(Generic[T]):
         instance = cls.get_object(pk, user=user)
         if not instance:
             return False
-            
-        if hasattr(instance, 'soft_delete'):
+
+        if hasattr(instance, "soft_delete"):
             instance.soft_delete()
         else:
             instance.delete()

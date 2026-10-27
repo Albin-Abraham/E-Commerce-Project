@@ -1,8 +1,10 @@
-from celery import shared_task
-import time
 import logging
+import time
+
+from celery import shared_task
 
 logger = logging.getLogger(__name__)
+
 
 @shared_task
 def sample_background_task(seconds=5):
@@ -13,6 +15,7 @@ def sample_background_task(seconds=5):
     time.sleep(seconds)
     logger.info("Sample background task completed successfully.")
     return f"Completed after {seconds} seconds"
+
 
 @shared_task
 def scheduled_heartbeat():

@@ -50,9 +50,6 @@ Authorization is not just a View-level concern. The **`PermissionPolicyMixin`** 
 
 ```python
 class Division(BaseModel):
-    permissions_policy = {
-        "resource": "division",
-        "action_perms": ["division:audit"]
-    }
+    permissions_policy = {"resource": "division", "action_perms": ["division:audit"]}
 ```
 This metadata is consumed by the global `evaluate_policy` engine to ensure that data remains secure even when accessed outside of standard REST endpoints.

@@ -8,7 +8,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ('contenttypes', '0002_remove_content_type_name'),
-        ('procurement_pos', '0001_initial'),
+        ('procurement_pos', '0006_postransaction_idempotency_key_and_more'),
     ]
 
     operations = [

@@ -1,6 +1,3 @@
-from rest_framework import serializers
-
-
 class FieldPermissionMixin:
     """
     Mixin for Serializers to enforce field-level (column-wise) permissions.

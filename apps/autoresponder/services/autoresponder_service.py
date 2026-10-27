@@ -1,6 +1,8 @@
+import logging
+
+from apps.autoresponder.models import AutoResponderEvent, NotificationLog, UserDeviceToken
 from core.services.email_service import DynamicSMTPEmailService
 from core.services.firebase_service import FirebaseNotificationService
-from apps.autoresponder.models import AutoResponderEvent, NotificationLog, UserDeviceToken
 
 logger = logging.getLogger(__name__)
 
@@ -14,13 +16,17 @@ class AutoResponderEngine:
     """
 
     @classmethod
-    def dispatch_event(cls, event_key: str, recipient_email: str, context: dict, user_id: str | None = None) -> NotificationLog:
+    def dispatch_event(
+        cls, event_key: str, recipient_email: str, context: dict, user_id: str | None = None
+    ) -> NotificationLog:
         """
         Dispatches autoresponder event email & notifications using templates and context variables.
         """
         event = AutoResponderEvent.objects.filter(key=event_key, is_active=True).first()
         if not event:
-            logger.warning(f"AutoResponder Event '{event_key}' not found or inactive. Sending default email fallback.")
+            logger.warning(
+                f"AutoResponder Event '{event_key}' not found or inactive. Sending default email fallback."
+            )
             rendered_subject = f"Notification: {event_key.replace('_', ' ').title()}"
             rendered_content = f"Hello,\n\nDetails: {context}"
             short_content = rendered_subject
@@ -52,7 +58,11 @@ class AutoResponderEngine:
 
             # 2. Firebase FCM Push Notification Channel
             if "PUSH_NOTIFICATION" in medium_list and user_id:
-                tokens = list(UserDeviceToken.objects.filter(user_id=user_id, is_active=True).values_list("device_token", flat=True))
+                tokens = list(
+                    UserDeviceToken.objects.filter(user_id=user_id, is_active=True).values_list(
+                        "device_token", flat=True
+                    )
+                )
                 if tokens:
                     fcm_res = FirebaseNotificationService.send_push_to_tokens(
                         tokens=tokens,
@@ -63,7 +73,9 @@ class AutoResponderEngine:
                     logger.info(f"FCM Push result for user {user_id}: {fcm_res}")
 
             log.save(update_fields=["status", "updated_at"])
-            logger.info(f"AutoResponder event '{event_key}' dispatch status to {recipient_email}: {log.status}")
+            logger.info(
+                f"AutoResponder event '{event_key}' dispatch status to {recipient_email}: {log.status}"
+            )
 
         except Exception as exc:
             log.status = "FAILED"

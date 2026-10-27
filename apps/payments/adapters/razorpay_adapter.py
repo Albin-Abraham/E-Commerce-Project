@@ -1,17 +1,18 @@
-import hmac
+import base64
 import hashlib
+import hmac
 import json
 import logging
 import urllib.request
-import base64
 from decimal import Decimal
 from typing import TYPE_CHECKING
+
 from apps.payments.adapters.base import (
     IPaymentGatewayAdapter,
-    PaymentOrderResult,
-    PaymentVerificationResult,
     PaymentCaptureResult,
+    PaymentOrderResult,
     PaymentRefundResult,
+    PaymentVerificationResult,
 )
 
 if TYPE_CHECKING:
@@ -29,6 +30,7 @@ class RazorpayPaymentAdapter(IPaymentGatewayAdapter):
     def __init__(self, config: "ResolvedPaymentGatewayConfig | None" = None):
         if config is None:
             from apps.payments.configuration.resolver import PaymentGatewayConfigResolver
+
             config = PaymentGatewayConfigResolver.resolve_gateway("RAZORPAY")
         self.config = config
         self.key_id = config.api_key
@@ -37,17 +39,21 @@ class RazorpayPaymentAdapter(IPaymentGatewayAdapter):
     def _get_credentials(self) -> tuple[str, str]:
         return self.key_id, self.key_secret
 
-    def create_order(self, amount: Decimal, currency: str, reference_id: str, **kwargs) -> PaymentOrderResult:
+    def create_order(
+        self, amount: Decimal, currency: str, reference_id: str, **kwargs
+    ) -> PaymentOrderResult:
         key_id, key_secret = self._get_credentials()
         amount_subunits = int(amount * 100)
         url = "https://api.razorpay.com/v1/orders"
 
-        payload = json.dumps({
-            "amount": amount_subunits,
-            "currency": currency.upper(),
-            "receipt": reference_id,
-            "payment_capture": 1,
-        }).encode("utf-8")
+        payload = json.dumps(
+            {
+                "amount": amount_subunits,
+                "currency": currency.upper(),
+                "receipt": reference_id,
+                "payment_capture": 1,
+            }
+        ).encode("utf-8")
 
         auth_str = base64.b64encode(f"{key_id}:{key_secret}".encode()).decode("utf-8")
         headers = {"Content-Type": "application/json", "Authorization": f"Basic {auth_str}"}
@@ -80,13 +86,19 @@ class RazorpayPaymentAdapter(IPaymentGatewayAdapter):
         razorpay_signature = payload.get("razorpay_signature")
 
         if not razorpay_order_id or not razorpay_payment_id or not razorpay_signature:
-            return PaymentVerificationResult(is_valid=False, error_message="Missing Razorpay signature fields.")
+            return PaymentVerificationResult(
+                is_valid=False, error_message="Missing Razorpay signature fields."
+            )
 
         if razorpay_signature.startswith("mock_"):
-            return PaymentVerificationResult(is_valid=True, gateway_payment_id=razorpay_payment_id, gateway_signature=razorpay_signature)
+            return PaymentVerificationResult(
+                is_valid=True,
+                gateway_payment_id=razorpay_payment_id,
+                gateway_signature=razorpay_signature,
+            )
 
         _, key_secret = self._get_credentials()
-        msg = f"{razorpay_order_id}|{razorpay_payment_id}".encode("utf-8")
+        msg = f"{razorpay_order_id}|{razorpay_payment_id}".encode()
         generated_sig = hmac.new(key_secret.encode("utf-8"), msg, hashlib.sha256).hexdigest()
         is_valid = hmac.compare_digest(generated_sig, razorpay_signature)
 
@@ -106,10 +118,14 @@ class RazorpayPaymentAdapter(IPaymentGatewayAdapter):
             raw_response={"payment_id": payment_id, "status": "captured"},
         )
 
-    def refund_payment(self, payment_id: str, amount: Decimal, reason: str = "") -> PaymentRefundResult:
+    def refund_payment(
+        self, payment_id: str, amount: Decimal, reason: str = ""
+    ) -> PaymentRefundResult:
         key_id, key_secret = self._get_credentials()
         url = f"https://api.razorpay.com/v1/payments/{payment_id}/refund"
-        payload = json.dumps({"amount": int(amount * 100), "notes": {"reason": reason}}).encode("utf-8")
+        payload = json.dumps({"amount": int(amount * 100), "notes": {"reason": reason}}).encode(
+            "utf-8"
+        )
         auth_str = base64.b64encode(f"{key_id}:{key_secret}".encode()).decode("utf-8")
         headers = {"Content-Type": "application/json", "Authorization": f"Basic {auth_str}"}
 
@@ -117,6 +133,16 @@ class RazorpayPaymentAdapter(IPaymentGatewayAdapter):
             req = urllib.request.Request(url, data=payload, headers=headers, method="POST")
             with urllib.request.urlopen(req, timeout=10) as resp:
                 res = json.loads(resp.read().decode("utf-8"))
-                return PaymentRefundResult(is_success=True, gateway_refund_id=res.get("id", f"rfnd_{payment_id[:6]}"), amount=amount, raw_response=res)
+                return PaymentRefundResult(
+                    is_success=True,
+                    gateway_refund_id=res.get("id", f"rfnd_{payment_id[:6]}"),
+                    amount=amount,
+                    raw_response=res,
+                )
         except Exception:
-            return PaymentRefundResult(is_success=True, gateway_refund_id=f"rfnd_mock_{payment_id[:6]}", amount=amount, raw_response={"status": "refunded"})
+            return PaymentRefundResult(
+                is_success=True,
+                gateway_refund_id=f"rfnd_mock_{payment_id[:6]}",
+                amount=amount,
+                raw_response={"status": "refunded"},
+            )
