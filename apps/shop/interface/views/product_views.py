@@ -12,8 +12,23 @@ from apps.shop.infrastructure.serializers.product_serializers import (
     ProductVariantSerializer,
 )
 from apps.shop.infrastructure.serializers.shop_serializers import BrandSerializer
+from apps.shop.services.storefront_access_service import StorefrontAccessService
 from core.admin.helpers.query_helpers import LOOKUP_OPERATORS, FilterField, FilterSchema
+from core.admin.permissions.drf_permissions import CustomPermissionClass
 from core.base_views.api_views import BaseAPIView
+
+
+class ProductStorefrontPermission(CustomPermissionClass):
+    """
+    Storefront Permission:
+    - Safe read methods (GET, HEAD, OPTIONS): Accessible to customers and public storefront.
+    - Write / Mutation methods (POST, PUT, PATCH, DELETE): Enforced via Admin RBAC / evaluate_policy.
+    """
+
+    def has_permission(self, request, view):
+        if request.method in permissions.SAFE_METHODS:
+            return True
+        return super().has_permission(request, view)
 
 
 class BrandViewSet(BaseAPIView):
@@ -37,6 +52,7 @@ class ProductViewSet(BaseAPIView):
 
     model = Product
     serializer_class = ProductSerializer
+    permission_classes = [ProductStorefrontPermission]
     entity_name = "Product"
     view_id = "SHOP_PRODUCT_MGMT"
 
@@ -66,9 +82,17 @@ class ProductViewSet(BaseAPIView):
     )
 
     def get_base_queryset(self):
-        return Product.objects.select_related("brand", "category").prefetch_related(
+        qs = Product.objects.select_related("brand", "category").prefetch_related(
             "variants__inventory_records", "legacy_inventory_records"
         )
+        request = getattr(self, "request", None)
+        user = getattr(request, "user", None) if request else None
+
+        # Layer 1 & 3: Authorization & Storefront Scoping (Staff sees all, customers see ACTIVE)
+        if not StorefrontAccessService.can_view_internal_fields(user):
+            qs = qs.filter(is_active=True, status="ACTIVE")
+
+        return qs
 
 
 class ProductVariantViewSet(BaseAPIView):
@@ -79,6 +103,7 @@ class ProductVariantViewSet(BaseAPIView):
 
     model = ProductVariant
     serializer_class = ProductVariantSerializer
+    permission_classes = [ProductStorefrontPermission]
     entity_name = "ProductVariant"
     view_id = "SHOP_VARIANT_MGMT"
 
@@ -93,9 +118,20 @@ class ProductVariantViewSet(BaseAPIView):
     )
 
     def get_base_queryset(self):
-        return ProductVariant.objects.select_related("product").prefetch_related(
-            "inventory_records"
-        )
+        qs = ProductVariant.objects.select_related("product").prefetch_related("inventory_records")
+        request = getattr(self, "request", None)
+        user = getattr(request, "user", None) if request else None
+
+        # Layer 1 & 3: Authorization & Storefront Scoping
+        if not StorefrontAccessService.can_view_internal_fields(user):
+            qs = qs.filter(
+                is_active=True,
+                status="ACTIVE",
+                product__is_active=True,
+                product__status="ACTIVE",
+            )
+
+        return qs
 
 
 class ProductFacetsView(APIView):

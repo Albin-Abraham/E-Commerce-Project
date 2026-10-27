@@ -49,7 +49,7 @@ class PricingEngineService:
         # Evaluate rules in Python for date range and max_quantity constraints
         matching_rule = None
         for rule in rules:
-            if rule.max_quantity is not None and quantity > rule.max_quantity:
+            if rule.max_quantity and rule.max_quantity > 0 and quantity > rule.max_quantity:
                 continue
             if rule.valid_from and evaluation_date < rule.valid_from:
                 continue
@@ -65,7 +65,7 @@ class PricingEngineService:
 
         if matching_rule:
             applied_rule_name = matching_rule.name
-            if matching_rule.flat_price is not None:
+            if matching_rule.flat_price is not None and matching_rule.flat_price > 0:
                 final_unit_price = Decimal(str(matching_rule.flat_price))
             elif matching_rule.discount_percentage > 0:
                 applied_discount_percent = Decimal(str(matching_rule.discount_percentage))

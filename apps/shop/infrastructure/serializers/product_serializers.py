@@ -8,7 +8,19 @@ from apps.shop.infrastructure.models.polymorphic import Media, Review
 from apps.shop.infrastructure.models.product import Product
 from apps.shop.infrastructure.models.variant import ProductVariant
 from apps.shop.infrastructure.serializers.media_serializers import MediaAssetSerializer
+from apps.shop.services.pricing_service import PricingEngineService
+from apps.shop.services.storefront_access_service import StorefrontAccessService
 from core.base_serializers.base_serializers import BaseModelSerializer
+
+
+def _extract_request(serializer):
+    curr = serializer
+    while curr:
+        ctx = getattr(curr, "context", None)
+        if isinstance(ctx, dict) and "request" in ctx:
+            return ctx["request"]
+        curr = getattr(curr, "parent", None)
+    return None
 
 
 def _auto_slug(serializer, data):
@@ -74,6 +86,35 @@ class ProductVariantSerializer(BaseModelSerializer):
 
     def get_is_in_stock(self, obj) -> bool:
         return self.get_available_stock(obj) > 0
+
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        request = _extract_request(self)
+        user = getattr(request, "user", None) if request else None
+
+        # Layer 2: Dynamic Commercial Tier Pricing Resolution
+        customer_group = StorefrontAccessService.resolve_customer_group(user)
+        pricing = PricingEngineService.evaluate_price(
+            variant=instance,
+            customer_group=customer_group,
+            quantity=1,
+        )
+        data["price"] = str(pricing["final_unit_price"])
+        data["base_price"] = str(pricing["base_unit_price"])
+        if pricing.get("applied_discount_percent", 0) > 0:
+            data["applied_discount_percent"] = float(pricing["applied_discount_percent"])
+            data["applied_rule_name"] = pricing.get("applied_rule_name")
+
+        # Layer 3: Customer-Friendly Stock Messaging
+        data["stock_status"] = StorefrontAccessService.compute_stock_messaging(
+            data.get("available_stock", 0)
+        )
+
+        # Layer 3: Data Protection - Mask internal lifecycle states for non-staff
+        if not StorefrontAccessService.can_view_internal_fields(user):
+            data.pop("status", None)
+
+        return data
 
 
 class ProductSerializer(BaseModelSerializer):
@@ -145,6 +186,37 @@ class ProductSerializer(BaseModelSerializer):
 
     def get_is_in_stock(self, obj) -> bool:
         return self.get_available_stock(obj) > 0
+
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        request = _extract_request(self)
+        user = getattr(request, "user", None) if request else None
+
+        # Layer 3: Customer-Friendly Stock Messaging
+        data["stock_status"] = StorefrontAccessService.compute_stock_messaging(
+            data.get("available_stock", 0)
+        )
+
+        # Layer 3: Storefront Personalization (Wishlist / Likes)
+        data["is_favorited"] = StorefrontAccessService.check_product_is_favorited(
+            user, str(instance.pk)
+        )
+
+        # If variants exist, reflect lowest dynamic price
+        variants_data = data.get("variants") or []
+        if variants_data:
+            variant_prices = [
+                float(v["price"]) for v in variants_data if "price" in v and v["price"]
+            ]
+            if variant_prices:
+                data["price"] = str(min(variant_prices))
+
+        # Layer 3: Data Protection - Mask internal administrative fields for non-staff
+        if not StorefrontAccessService.can_view_internal_fields(user):
+            for field in StorefrontAccessService.INTERNAL_ADMIN_FIELDS:
+                data.pop(field, None)
+
+        return data
 
     def get_rating_summary(self, obj) -> dict:
         ct = ContentType.objects.get_for_model(obj.__class__)
