@@ -1,0 +1,10 @@
+@import "tailwindcss";
+@config "../tailwind.config.js";
+
+/* ZenOS Generated Design Tokens & Tailwind v4 Theme Layer */
+@import "../build/tokens/tokens.css";
+@import "../build/tokens/tailwind-theme.css";
+
+@import "../node_modules/@heroui/react/dist/styles.css";
+
+@import "./shared/styles/global.css";

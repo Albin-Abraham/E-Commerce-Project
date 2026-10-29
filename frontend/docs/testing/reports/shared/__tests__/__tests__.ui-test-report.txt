@@ -1,0 +1,36 @@
+################################################################################
+# DOMAIN TEST CONTEXT REPORT: SHARED/UI/__TESTS__
+# Domain Key:          shared/ui/__tests__
+# Layer Group:         Shared UI
+# Report File:         __tests__.ui-test-report.txt
+# Generated At:        2026-09-26T21:01:59.291Z
+# Total Test Suites:   1
+# Tracked Issues (0):  None
+# Defended Bugs (0):   None
+################################################################################
+
+================================================================================
+TEST FILE:             src/shared/ui/__tests__/ProgressBar.test.tsx
+ARCH LAYER:            Interface / Driver
+DOMAIN:                shared/ui/__tests__
+TARGET:                ProgressBar
+HARNESS:               RTL
+FIXTURES:              None
+TRACKED ISSUES:        None
+BUGS & DEFECTS:        None
+TAGS:                  None
+--------------------------------------------------------------------------------
+PRIMARY RESPONSIBILITY:
+Validates behavioral invariants for ProgressBar.
+
+TEST SUITES & SCENARIOS:
+- describe("ProgressBar")
+  • it("should not render when idle")
+  • it("should render when router is loading")
+  • it("should render when global loader is loading")
+  • it("should not render when idle after loading completes")
+
+HTTP / MSW INTERACTIONS:
+None
+================================================================================
+

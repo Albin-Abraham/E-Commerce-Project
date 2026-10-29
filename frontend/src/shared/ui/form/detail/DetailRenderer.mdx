@@ -1,0 +1,198 @@
+import { Meta, Canvas, Controls, Story } from "@storybook/addon-docs/blocks";
+import * as DetailRendererStories from "./DetailRenderer.stories";
+
+<Meta of={DetailRendererStories} />
+
+# DetailRenderer
+
+**DetailRenderer** is ZenOS's definition-driven presentation engine designed specifically for entity inspection, detail sheets, and read-only views.
+
+---
+
+## 1. Architectural Philosophy: Zero `<form>` Overhead
+
+Traditional web forms are engineered around **data capture and mutation pipelines**:
+- Validation rules (Zod/Yup).
+- Dirty/touched state tracking.
+- Synthetic `<form>` elements and submit event dispatchers.
+- Error banners and submission queuing.
+
+However, over **70% of enterprise UI surfaces** (customer profiles, hardware specifications, cloud server telemetries, order summaries, audit drawers) are **read-only or inspection-oriented**.
+
+When teams reuse full form engines for detail views, they inherit heavy computational overhead, screen reader confusion from empty `<form>` wrappers, and unnecessary re-render chains.
+
+```
+┌────────────────────────────────────────────────────────────────────────┐
+│                          Schema Definition                             │
+│                  (DetailDefinition / FormField[])                      │
+└──────────────────────────────────┬─────────────────────────────────────┘
+                                   │
+         ┌─────────────────────────┴─────────────────────────┐
+         ▼                                                   ▼
+┌─────────────────────────────────┐         ┌─────────────────────────────────┐
+│     Form UI (FormComposer)      │         │     Detail UI (DetailRenderer)  │
+│  - Interactive <form> wrapper   │         │  - Pure semantic <article>      │
+│  - Validation (Zod/Yup)         │         │  - Zero <form> tag pollution    │
+│  - Submit button & life cycles  │         │  - Fast key-value projections   │
+│  - Micro-subscriptions (dirty)  │         │  - Formatted badges & slots     │
+└─────────────────────────────────┘         └─────────────────────────────────┘
+```
+
+---
+
+## 2. The 4-Tier Field Taxonomy
+
+The ZenOS Design System organizes all field-level rendering into a structured **4-Tier Hierarchy**:
+
+| Tier | Name | Form UI Behavior | Detail UI Behavior (`DetailRenderer`) |
+| :--- | :--- | :--- | :--- |
+| **Tier 1** | **Atoms** | Primitive inputs (`TextField`, `SwitchField`, etc.) with atomic focus, blur, and editing states. | Formatted read-only values (`DetailValueDisplay`): badges with micro-icons, locale currencies/dates, secure links. |
+| **Tier 2** | **Static Fields** | Section titles, headings, and dividers guiding form completion (`HeaderField`, `DividerField`). | Structural hierarchy markers dividing entity metadata into scannable groups. |
+| **Tier 3** | **Structures** | The **Wrapper Trinity** (`OuterWrapper` + `InputWrapper` + `FieldShell`) and containers (`CardField`, `TabsField`, `AccordionField`). | Card elevations (`DetailKeyDetailsCard`), definition lists (`DetailKeyValueRow`), and hero containers. |
+| **Tier 4** | **Wrapped Fields** | Autonomous fields pre-composed with `withAtom` HOC (`FormTextField`, `FormSelectField`). | In `mode="interactive"`, renders standalone widgets directly binding to application state without `<form>` submissions. |
+
+---
+
+## 3. Interactive Showcases
+
+### Showcase 1: Hardware Product Specification (`cards` layout)
+Full enterprise spec sheet demonstrating concentric hero headers, media hero slots, elevated detail cards, and action bars.
+
+<Canvas of={DetailRendererStories.ProductDetailShowcase} />
+
+### Showcase 2: Cloud Telemetry & VM Specs (`key-value` layout)
+Two-column definition list layout rendering compact infrastructure metrics.
+
+<Canvas of={DetailRendererStories.KeyValueLayoutShowcase} />
+
+### Showcase 3: Injected Slots Architecture
+Custom dynamic slots injected into schema-defined slot nodes without touching renderer internals.
+
+<Canvas of={DetailRendererStories.SlotInjectionShowcase} />
+
+### Showcase 4: Standalone Interactive Widgets (`mode="interactive"`)
+Live interactive widgets (switches, range sliders, radios) operating cleanly with direct state binding and **zero `<form>` tags**.
+
+<Canvas of={DetailRendererStories.InteractiveWidgetsWithoutForm} />
+
+### Showcase 5: Borderless Profile Preview (`flat` layout)
+Minimalist container layout ideal for modal dialogs and slide-over drawers.
+
+<Canvas of={DetailRendererStories.FlatLayoutShowcase} />
+
+---
+
+## 4. Field Styles & Token Integration
+
+`DetailRenderer` is built on top of ZenOS design tokens imported from `@shared/theme`:
+
+### Visual Treatments by Field Type
+
+| Schema Field Type | Visual Output in `DetailRenderer` | Design Token |
+| :--- | :--- | :--- |
+| `text`, `number` | High-contrast font-medium text | `tokens.detail.display.base` |
+| `switch`, `checkbox`, `boolean` | Rounded status pill with `Check` or `X` micro-icon | `tokens.detail.display.boolean` |
+| `select`, `radio` | Option label resolution pill with optional category icon | `tokens.detail.display.optionPill` |
+| `currency` | Locale-formatted currency string (`formatCurrencyValue`) | `tokens.detail.display.currency` |
+| `date` | Locale-formatted calendar date (`formatDateValue`) | `tokens.detail.display.date` |
+| `email`, `phone`, `url` | Semantic interactive link with `rel="noopener noreferrer"` | `tokens.detail.display.link` |
+| `image`, `avatar` | Aspect-ratio-constrained thumbnail image | `tokens.detail.display.image` |
+| `array`, `tags` | Horizontal flex-wrapped badge chips | `tokens.detail.display.tag` |
+| `null`, `undefined`, `""` | Muted fallback placeholder (`—`) | `tokens.detail.display.empty` |
+
+### Density System
+`DetailRenderer` scales seamlessly across three standardized density tokens:
+- **`compact`**: `py-1.5`, tight typography for data-dense NOC dashboards and server specs.
+- **`comfortable`** (Default): Balanced padding and typography for standard enterprise portals.
+- **`spacious`**: `py-4`, expanded row height for high-visibility summary views.
+
+---
+
+## 5. State Lifecycle & Engine Decoupling
+
+`DetailRenderer` employs a dual-execution pipeline based on Clean Architecture:
+
+### Display Mode (`mode="display"`)
+- Renders as a pure functional projection: `(schema, data) => JSX`.
+- **Zero Form Engine Overhead**: When no conditional rules exist, the form engine and all 10 form runtime providers are completely omitted.
+- **Dynamic Rule Handling**: If `hasConditionalRules(nodes)` detects runtime visibility rules, `DetailRenderer` mounts a lightweight engine boundary to evaluate conditions without submitting data.
+
+### Interactive Mode (`mode="interactive"`)
+- Mounts `DetailRuntimeBoundary` with `useForm`.
+- **Single-Emission Baseline Diffing**: Uses an internal `baselineRef` to ensure `onChange(fieldId, value)` fires **only** for keys modified by the user, eliminating duplicate emissions.
+
+---
+
+## 6. Compound Components API
+
+`DetailRenderer` provides compound subcomponents for composable layouts:
+
+```tsx
+import { DetailRenderer } from "@ui/form";
+
+<DetailRenderer definition={definition} data={data}>
+  <DetailRenderer.Header
+    title="Instance Alpha"
+    subtitle="Region: US-East"
+    badgeIcon="server"
+    status={{ label: "Running", variant: "success" }}
+    tags={["Production", "mTLS"]}
+  />
+  <DetailRenderer.KeyDetailsCard title="Hardware Specifications">
+    <DetailRenderer.KeyValueRow label="Memory" value="64GB DDR5" />
+    <DetailRenderer.KeyValueRow label="CPU" value="16 Cores" />
+  </DetailRenderer.KeyDetailsCard>
+  <DetailRenderer.BottomActions>
+    <button type="button">Restart</button>
+  </DetailRenderer.BottomActions>
+</DetailRenderer>
+```
+
+### Component Reference
+
+| Component | Responsibility | Props Contract |
+| :--- | :--- | :--- |
+| `DetailRenderer` | Root container managing schema normalization and layout | `DetailRendererProps<T>` |
+| `DetailRenderer.Header` | Concentric hero header with icon badge, status pill, and tags | `HeaderRendererProps` |
+| `DetailRenderer.KeyDetailsCard` | Elevated card container with header actions | `KeyDetailsCardRendererProps` |
+| `DetailRenderer.KeyValueRow` | Two-column label/value definition row (`horizontal` / `vertical`) | `KeyValueRowProps` |
+| `DetailRenderer.ValueDisplay` | Standalone value formatter for booleans, dates, currency, and tags | `ValueDisplayProps` |
+| `DetailRenderer.BottomActions` | 48px touch-safe responsive bottom action bar | `BottomActionSlotRendererProps` |
+
+---
+
+## 7. Modular Architecture & File Structure
+
+`DetailRenderer` is decomposed into focused, single-responsibility modules following Clean Architecture and SOLID principles:
+
+```text
+src/shared/ui/form/detail/
+├── types.ts                                # Core contracts (DetailRendererProps, DetailRendererSlots, etc.)
+├── DetailRenderer.tsx                      # Root entrypoint: schema normalization & pipeline dispatch
+├── index.ts                                # Public barrel export
+├── components/                             # Standalone visual subcomponents (SRP)
+│   ├── DetailHeader.tsx                    # Concentric hero header with icon badge & status
+│   ├── DetailKeyDetailsCard.tsx            # Elevated section card container
+│   ├── DetailKeyValueRow.tsx               # Two-column definition list row (<dt>/<dd>)
+│   ├── DetailBottomActions.tsx             # 48px touch-safe responsive action bar
+│   ├── DetailValueDisplay.tsx              # Secure value renderer with protocol allowlisting
+│   └── index.ts
+├── formatters/                             # Pure domain logic (0 UI/React dependencies)
+│   ├── display-model.ts                    # normalizeDisplayModel, isSafeUrl, isSafeEmail, isSafePhone
+│   └── index.ts
+├── runtime/                                # Dual Execution Pipeline
+│   ├── DetailRendererView.tsx              # Pure display projection (<article>, zero FormRuntimeProvider)
+│   ├── DetailRuntimeBoundary.tsx           # Headless engine mount boundary (useForm, diff tracking)
+│   ├── DetailFieldList.tsx                 # Recursive field list & layout style dispatcher
+│   └── index.ts
+└── DetailRenderers.tsx                     # Backward-compatible re-export barrel & dictionary
+```
+
+---
+
+## 8. UX/UI & Ergonomics Best Practices
+
+1. **Screen Reader Safety**: By emitting pure `<article>`, `<section>`, and `<div>` elements with zero `<form>` tags, password autofill bots and screen readers are never confused by false form inputs.
+2. **Touch Targets**: Bottom actions and interactive switches enforce minimum 48px touch bounding boxes for tablet and mobile reliability.
+3. **URL Protocol Security**: Links rendered by `DetailValueDisplay` are validated against an explicit protocol allowlist (`https:`, `http:`, `/`), blocking `javascript:` and `data:` schemes from executing script.
+4. **Storybook React 19 Performance**: Always configure `docs: { source: { type: "code" } }` when passing JSX element slots to prevent deep Fiber graph traversal lockups.

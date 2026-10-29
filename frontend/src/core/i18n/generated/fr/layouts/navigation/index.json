@@ -1,0 +1,55 @@
+{
+  "brand": {
+    "name": "ZenOS",
+    "subtitle": "Plateforme"
+  },
+  "footer": {
+    "copyright": "© {{year}} Architecture Monolithique Modulaire ZenOS. 10/10 Prête pour l'Entreprise.",
+    "platformTerms": "Conditions de la Plateforme"
+  },
+  "header": {
+    "allProducts": "Tous les Produits",
+    "allProductsDesc": "Parcourir l'ensemble du catalogue industriel.",
+    "analytics": "Analytique",
+    "analyticsDesc": "Indicateurs de performance et veille.",
+    "builder": "Générateur",
+    "builderDesc": "Créer et configurer des modules personnalisés.",
+    "platform": "Plateforme",
+    "products": "Produits",
+    "signIn": "Se Connecter",
+    "signOut": "Déconnexion",
+    "signOutDesc": "Mettre fin à la session et effacer les identifiants",
+    "workspace": "Espace de Travail",
+    "workspaceContext": "Contexte de Travail",
+    "workspaceContextDesc": "Changer d'entreprise et d'agence active"
+  },
+  "menu": {
+    "cart": "Mon Panier",
+    "dashboard": "Tableau de Bord",
+    "logout": "Se Déconnecter",
+    "profile": "Profil",
+    "shop": "Produits",
+    "toggle": "Menu"
+  },
+  "sections": {
+    "navigation": "Système de Navigation",
+    "utilities": "Utilitaires de Plateforme"
+  },
+  "sidebar": {
+    "allProducts": "Tous les Produits",
+    "analytics": "Analytique",
+    "authPortal": "Portail d'Authentification",
+    "branchConfig": "Configuration de Succursale",
+    "employeeWizard": "Assistant d'Intégration",
+    "formBuilder": "Générateur de Formulaires",
+    "identityAccounts": "Identité et Comptes",
+    "interactiveTable": "Tableau Interactif",
+    "inventory": "Inventaire",
+    "multiStepForm": "Formulaire Multi-Étapes",
+    "productsCatalog": "Catalogue de Produits",
+    "securitySettings": "Paramètres de Sécurité",
+    "showcaseTemplates": "Modèles de Démonstration",
+    "userProfile": "Profil Utilisateur",
+    "workspace": "Espace de Travail"
+  }
+}

@@ -1,0 +1,19 @@
+/* ============================================================
+   ZENITH LAYERING (Semantic Z-Index Scale)
+   ============================================================ */
+
+@theme {
+  --z-negative: -1;
+  --z-base: 0;
+  --z-accent: 10;
+  --z-overlap: 20;
+  --z-header: 100;
+  --z-sticky: 200;
+  --z-dropdown: 300;
+  --z-overlay: 400;
+  --z-modal: 500;
+  --z-popover: 600;
+  --z-toast: 700;
+  --z-tooltip: 800;
+  --z-system: 9000;
+}

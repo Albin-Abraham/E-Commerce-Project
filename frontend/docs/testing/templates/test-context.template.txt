@@ -1,0 +1,17 @@
+================================================================================
+TEST FILE:     {{FILE_PATH}}
+ARCH LAYER:    {{LAYER}} [Domain | Application | Infrastructure | Interface | Regression]
+TARGET:        {{TARGET_SYMBOL}}
+HARNESS:       {{HARNESS}} [Pure Vitest | RTL + Driver | MSW | vitest-axe]
+FIXTURES:      {{FIXTURES_USED}}
+TAGS:          {{TAGS}} (e.g. [ISSUE-1042], [A11Y], [MATRIX], [SCOPED-CONTEXT])
+--------------------------------------------------------------------------------
+PRIMARY RESPONSIBILITY:
+{{SUMMARY_DESCRIPTION}}
+
+TEST SUITES & SCENARIOS:
+{{SCENARIOS_TREE}}
+
+HTTP / MSW INTERACTIONS (if applicable):
+{{MSW_ENDPOINTS}}
+================================================================================

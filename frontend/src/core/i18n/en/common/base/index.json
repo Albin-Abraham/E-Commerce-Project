@@ -1,0 +1,21 @@
+{
+  "buttons": {
+    "back": "Back",
+    "cancel": "Cancel",
+    "close": "Close",
+    "confirm": "Confirm",
+    "delete": "Delete",
+    "edit": "Edit",
+    "next": "Next Step",
+    "reset": "Reset",
+    "retry": "Retry",
+    "save": "Save Changes",
+    "submit": "Submit"
+  },
+  "feedback": {
+    "error": "Something went wrong",
+    "loading": "Loading...",
+    "submitting": "Submitting...",
+    "success": "Operation successful"
+  }
+}

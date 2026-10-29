@@ -1,0 +1,119 @@
+{
+  "fault": {
+    "fallbackMessage": "Le noyau du système n'a pas pu s'initialiser.",
+    "resetKernel": "Réinitialiser le Noyau",
+    "title": "Défaut Architectural"
+  },
+  "features": {
+    "cards": {
+      "caching": {
+        "description": "Préchauffage intelligent des données et fragments au niveau de la route éliminant la latence utilisateur.",
+        "title": "Préchargement & Anticipation"
+      },
+      "ddd": {
+        "description": "Tranches fonctionnelles découplées avec une logique métier de domaine strictement isolée.",
+        "title": "Conception Pilotée par le Domaine"
+      },
+      "mdap": {
+        "description": "Compilation de méta-schémas pour des moteurs de formulaires et tableaux de classe entreprise.",
+        "title": "Architecture Dirigée par les Modèles"
+      },
+      "tokens": {
+        "description": "Matrices multicouches de typographie, espacement, élévation et contraste dynamique.",
+        "title": "Système de Tokens W3C"
+      }
+    },
+    "sectionSubtitle": "Conçu pour la résilience, le haut débit et une ergonomie développeur sans compromis.",
+    "sectionTitle": "Piliers Architecturaux"
+  },
+  "footer": {
+    "copyright": "© 2026 Albin Abraham • Implémentation d'Architecture Propre",
+    "docs": "Documentation",
+    "github": "GitHub",
+    "systemDebug": "Débogage Système"
+  },
+  "header": {
+    "features": "Fonctionnalités",
+    "home": "Accueil",
+    "login": "Connexion",
+    "pricing": "Tarifs",
+    "showcase": "Démonstrations",
+    "signUp": "S'inscrire",
+    "title": "Zenith"
+  },
+  "hero": {
+    "badge": "Architecture de Qualité Industrielle v2.4",
+    "buttons": {
+      "initKernel": "Initialiser le Noyau",
+      "switchEnvironment": "Changer d'Environnement"
+    },
+    "description": "Un modèle haute performance démontrant le Domain-Driven Design, les principes SOLID et le moteur de styles Zenith.",
+    "titleGradient": "React Nouvelle Génération",
+    "titleRest": "Infrastructure pour l'Échelle"
+  },
+  "industrial": {
+    "featureItem": "Composant {{number}}",
+    "title": "Composants Industriels"
+  },
+  "monitor": {
+    "description": "Synchronisation en temps réel avec les fournisseurs de données externes via les intercepteurs TanStack Query.",
+    "impairedStatus": "État du Système : Dégradé",
+    "metrics": {
+      "activeSessions": "Sessions Actives",
+      "apiLatency": "Latence P99 API",
+      "memoryFootprint": "Empreinte Mémoire",
+      "uptime": "Disponibilité du Noyau"
+    },
+    "networkOutage": "Panne Réseau Détectée",
+    "noData": "Aucune Donnée",
+    "operationalStatus": "État du Système : Opérationnel",
+    "status": "Tous les Systèmes Sont Opérationnels",
+    "syncing": "Synchronisation des Données...",
+    "systemPayload": "Charge Utile du Système",
+    "title": "Moniteur d'Infrastructure"
+  },
+  "navGrid": {
+    "auth": {
+      "desc": "Démonstration phare de connexion en écran divisé mettant en valeur l'esthétique verre.",
+      "title": "Portail de Sécurité"
+    },
+    "branch": {
+      "desc": "Suite de gestion des opérations avec regroupement géospatial approfondi des données.",
+      "title": "Suite de Déploiement"
+    },
+    "builder": {
+      "desc": "Générateur structurel récursif pour composer des formulaires dynamiques complexes.",
+      "title": "Moteur de Mise en Page"
+    },
+    "docs": {
+      "desc": "Principes architecturaux et tokens de conception guidant le moteur de rendu.",
+      "title": "Documentation Système"
+    },
+    "employee": {
+      "desc": "Flux d'intégration d'employés haute densité avec emplacements de prévisualisation en direct.",
+      "title": "Enregistrement Moderne"
+    },
+    "wizard": {
+      "desc": "Flux d'intégration multi-étapes avec transitions élastiques et animations fluides.",
+      "title": "Assistant Interactif"
+    }
+  },
+  "quickNav": {
+    "items": {
+      "builder": "Ouvrir le Générateur",
+      "catalog": "Explorer le Catalogue",
+      "showcases": "Voir les Démonstrations",
+      "workspace": "Gérer l'Espace de Travail"
+    },
+    "subtitle": "Accès directs aux capacités d'entreprise et démonstrations.",
+    "title": "Accès Rapide à la Plateforme"
+  },
+  "stats": {
+    "architecturePurity": "Pureté Architecturale",
+    "bootLatency": "Latence de Démarrage",
+    "typeSafety": "Sécurité Typologique"
+  },
+  "trust": {
+    "title": "Plébiscité par les Équipes d'Infrastructure d'Entreprise"
+  }
+}

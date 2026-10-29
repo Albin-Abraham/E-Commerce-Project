@@ -1,0 +1,32 @@
+{
+  "forbidden": {
+    "action": "Ir al Inicio",
+    "code": "403",
+    "description": "No tiene los permisos administrativos requeridos para acceder a este recurso.",
+    "title": "Acceso Denegado"
+  },
+  "network": {
+    "action": "Reconectar",
+    "code": "NET_ERR",
+    "description": "No se pudo conectar con el servidor remoto. Verifique su conexión a internet.",
+    "title": "Red No Disponible"
+  },
+  "notFound": {
+    "action": "Volver al Panel",
+    "code": "404",
+    "description": "El recurso solicitado no se pudo encontrar o ha sido reubicado.",
+    "title": "Página No Encontrada"
+  },
+  "serverError": {
+    "action": "Reintentar Conexión",
+    "code": "500",
+    "description": "Ocurrió una excepción inesperada al procesar su solicitud.",
+    "title": "Error Interno del Servidor"
+  },
+  "timeout": {
+    "action": "Intentar de Nuevo",
+    "code": "408",
+    "description": "La solicitud excedió el tiempo de espera. Verifique su conexión de red.",
+    "title": "Tiempo de Espera Agotado"
+  }
+}

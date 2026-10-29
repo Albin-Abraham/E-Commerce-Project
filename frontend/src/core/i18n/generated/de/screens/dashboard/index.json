@@ -1,0 +1,119 @@
+{
+  "fault": {
+    "fallbackMessage": "System-Kernel konnte nicht initialisiert werden.",
+    "resetKernel": "Kernel Zurücksetzen",
+    "title": "Architekturfehler"
+  },
+  "features": {
+    "cards": {
+      "caching": {
+        "description": "Intelligentes Vorwärmen von Daten und Chunks auf Routenebene ohne Benutzerlatenz.",
+        "title": "Vorladen & Vorabruf"
+      },
+      "ddd": {
+        "description": "Entkoppelte Funktionsbausteine mit strikt isolierter Domänen-Geschäftslogik.",
+        "title": "Domain-Driven Design"
+      },
+      "mdap": {
+        "description": "Meta-Schema-Kompilierung für unternehmenstaugliche Formular- und Tabellen-Engines.",
+        "title": "Modellgetriebene Architektur"
+      },
+      "tokens": {
+        "description": "Mehrschichtige Typografie-, Abstands-, Elevations- und Dynamik-Kontrast-Matrizen.",
+        "title": "W3C-Token-System"
+      }
+    },
+    "sectionSubtitle": "Entwickelt für Ausfallsicherheit, hohen Durchsatz und kompromisslose Entwicklerergonomie.",
+    "sectionTitle": "Architektonische Säulen"
+  },
+  "footer": {
+    "copyright": "© 2026 Albin Abraham • Saubere Architektur-Implementierung",
+    "docs": "Dokumentation",
+    "github": "GitHub",
+    "systemDebug": "System-Debug"
+  },
+  "header": {
+    "features": "Funktionen",
+    "home": "Startseite",
+    "login": "Anmelden",
+    "pricing": "Preise",
+    "showcase": "Showcase",
+    "signUp": "Registrieren",
+    "title": "Zenith"
+  },
+  "hero": {
+    "badge": "Industrielle Architektur v2.4",
+    "buttons": {
+      "initKernel": "Kernel Initialisieren",
+      "switchEnvironment": "Umgebung Wechseln"
+    },
+    "description": "Ein Hochleistungs-Boilerplate, das Domain-Driven Design, SOLID-Prinzipien und die Zenith Styling Engine demonstriert.",
+    "titleGradient": "React der nächsten Generation",
+    "titleRest": "Infrastruktur für Skalierung"
+  },
+  "industrial": {
+    "featureItem": "Komponente {{number}}",
+    "title": "Industrielle Komponenten"
+  },
+  "monitor": {
+    "description": "Echtzeitsynchronisierung mit externen Datenanbietern über TanStack-Query-Interzeptoren.",
+    "impairedStatus": "Systemstatus: Beeinträchtigt",
+    "metrics": {
+      "activeSessions": "Aktive Sitzungen",
+      "apiLatency": "API P99-Latenz",
+      "memoryFootprint": "Speicherbedarf",
+      "uptime": "Kernel-Betriebszeit"
+    },
+    "networkOutage": "Netzwerkausfall Erkannt",
+    "noData": "Keine Daten",
+    "operationalStatus": "Systemstatus: Betriebsbereit",
+    "status": "Alle Systeme Betriebsbereit",
+    "syncing": "Daten Werden Synchronisiert...",
+    "systemPayload": "System-Nutzlast",
+    "title": "Infrastruktur-Monitor"
+  },
+  "navGrid": {
+    "auth": {
+      "desc": "Flaggschiff-Split-Screen-Login-Demo mit Portalmodus und Glasästhetik.",
+      "title": "Sicherheitsportal"
+    },
+    "branch": {
+      "desc": "Betriebsmanagement-Suite mit tiefer geospatialer Datengruppierung.",
+      "title": "Bereitstellungs-Suite"
+    },
+    "builder": {
+      "desc": "Rekursiver Strukturbuilder zur Erstellung komplexer dynamischer Formulare.",
+      "title": "Layout-Engine"
+    },
+    "docs": {
+      "desc": "Architekturprinzipien und Designtokens, die die Render-Engine leiten.",
+      "title": "System-Dokumentation"
+    },
+    "employee": {
+      "desc": "Hochdichter Mitarbeiter-Onboarding-Flow mit Live-Daten-Vorschauslots.",
+      "title": "Moderne Registrierung"
+    },
+    "wizard": {
+      "desc": "Mehrstufiger Onboarding-Ablauf mit elastischen Übergängen und Federanimationen.",
+      "title": "Interaktiver Assistent"
+    }
+  },
+  "quickNav": {
+    "items": {
+      "builder": "Formular-Builder Öffnen",
+      "catalog": "Katalog Erkunden",
+      "showcases": "Showcases Anzeigen",
+      "workspace": "Arbeitsbereich Verwalten"
+    },
+    "subtitle": "Direkte Sprungrouten zu Unternehmensfunktionen und Demos.",
+    "title": "Plattform-Schnellzugriff"
+  },
+  "stats": {
+    "architecturePurity": "Architektur-Reinheit",
+    "bootLatency": "Startlatenz",
+    "typeSafety": "Typsicherheit"
+  },
+  "trust": {
+    "title": "Geschätzt von Enterprise-Infrastruktur-Teams"
+  }
+}

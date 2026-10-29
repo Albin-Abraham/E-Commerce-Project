@@ -1,0 +1,21 @@
+{
+  "primitives": {
+    "border": {
+      "width": {
+        "none": { "$value": "0px", "$type": "dimension" },
+        "thin": { "$value": "1px", "$type": "dimension" },
+        "medium": { "$value": "2px", "$type": "dimension" },
+        "thick": { "$value": "4px", "$type": "dimension" }
+      },
+      "style": {
+        "solid": { "$value": "solid", "$type": "string" },
+        "dashed": { "$value": "dashed", "$type": "string" },
+        "dotted": { "$value": "dotted", "$type": "string" }
+      },
+      "focusRing": {
+        "offset": { "$value": "2px", "$type": "dimension" },
+        "width": { "$value": "2px", "$type": "dimension" }
+      }
+    }
+  }
+}

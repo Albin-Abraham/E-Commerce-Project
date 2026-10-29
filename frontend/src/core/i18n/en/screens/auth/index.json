@@ -1,0 +1,70 @@
+{
+  "brand": {
+    "slides": {
+      "slide1": {
+        "allocations": "Active Workspaces",
+        "description": "ZenOS empowers you with a unified command center—delivering deep telemetry and a 360° view of your entire organization.",
+        "growth": "System Throughput",
+        "title": "Unified Hub for Smarter Industrial Operations",
+        "yield": "Real-time Telemetry Engine"
+      },
+      "slide2": {
+        "branches": "42 Active Branches",
+        "deployments": "Recent Deployments",
+        "description": "Monitor global branch performance, supply chain flow, and real-time operational metrics across your entire organization seamlessly.",
+        "efficiency": "Efficiency Score",
+        "nodes": "Global Nodes",
+        "title": "Intelligent Branch & Logistics Orchestration"
+      },
+      "slide3": {
+        "description": "Built on zero-trust principles with automated compliance auditing to ensure your proprietary data remains absolutely secure.",
+        "encrypted": "End-to-End Encrypted",
+        "title": "Enterprise-Grade Security & Sovereign Compliance",
+        "zeroTrust": "Zero Trust"
+      }
+    },
+    "title": "ZenOS"
+  },
+  "common": {
+    "confirmPassword": "Confirm Password",
+    "confirmPasswordPlaceholder": "Confirm your password",
+    "divider": "Or continue with",
+    "emailPlaceholder": "Enter your email address",
+    "footer": "© {{year}} ZenOS Platform. All Rights Reserved",
+    "namePlaceholder": "Enter your full name",
+    "passwordPlaceholder": "Enter your password",
+    "privacy": "Privacy",
+    "signInTab": "Sign In",
+    "signUpTab": "Sign Up",
+    "socialAuth": "Social Authentication",
+    "terms": "Terms"
+  },
+  "login": {
+    "email": "Email Address",
+    "header": "Welcome to ZenOS",
+    "password": "Password",
+    "submit": "Sign In",
+    "subtitle": "Sign in to your account to continue.",
+    "switchRegister": "Don't have an account? Register",
+    "title": "Welcome Back"
+  },
+  "override": {
+    "roles": {
+      "admin": "Platform Administrator",
+      "auditor": "Security Auditor",
+      "operator": "System Operator"
+    },
+    "subtitle": "Select a pre-configured role or supply a custom token for testing.",
+    "title": "Authentication / Role Override"
+  },
+  "register": {
+    "email": "Work Email",
+    "header": "Welcome to ZenOS",
+    "name": "Full Name",
+    "password": "Password",
+    "submit": "Create Account",
+    "subtitle": "Create your account to get started.",
+    "switchLogin": "Already have an account? Sign in",
+    "title": "Create Account"
+  }
+}

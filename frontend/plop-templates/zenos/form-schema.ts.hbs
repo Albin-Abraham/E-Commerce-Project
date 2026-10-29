@@ -1,0 +1,21 @@
+import type { FormDefinition } from "@ui/form/types";
+import { compileEntityToFormDef } from "@ui/form/utils/mdap-compiler";
+
+import type { {{pascalCase name}}FormData } from "./{{kebabCase name}}-logical";
+import { build{{pascalCase name}}Entity } from "./{{kebabCase name}}-logical";
+import {
+  build{{pascalCase name}}Presentation,
+  build{{pascalCase name}}Surface,
+} from "./{{kebabCase name}}-surface";
+
+export function build{{pascalCase name}}Schema(): FormDefinition<{{pascalCase name}}FormData> {
+  const entity = build{{pascalCase name}}Entity();
+  entity.surface = build{{pascalCase name}}Surface();
+  entity.presentation = build{{pascalCase name}}Presentation();
+
+  return compileEntityToFormDef(
+    entity,
+    "{{kebabCase name}}-form",
+    "Save {{titleCase name}}"
+  );
+}

@@ -1,0 +1,41 @@
+/* ============================================================
+   ZENITH FORM INPUT TOKENS (Standard & Standalone Inputs)
+   ============================================================ */
+
+@theme {
+  --color-form-field-bg: var(--color-surface);
+  --color-form-field-bg-hover: color-mix(in srgb, var(--color-surface-elevated) 60%, transparent);
+  --color-form-field-bg-focus: var(--color-background);
+  --color-form-field-bg-disabled: color-mix(in srgb, var(--color-muted) 15%, transparent);
+
+  --color-form-field-border: color-mix(in srgb, var(--color-border) 80%, transparent);
+  --color-form-field-border-hover: color-mix(in srgb, var(--color-primary) 50%, transparent);
+  --color-form-field-border-focus: var(--color-primary);
+  --color-form-field-border-error: var(--color-danger);
+  --color-form-field-border-disabled: color-mix(in srgb, var(--color-border) 40%, transparent);
+
+  --color-form-field-text: var(--color-foreground);
+  --color-form-field-placeholder: color-mix(in srgb, var(--color-foreground) 40%, transparent);
+
+  --color-form-field-ring-focus: color-mix(in srgb, var(--color-primary) 20%, transparent);
+  --color-form-field-ring-error: color-mix(in srgb, var(--color-danger) 20%, transparent);
+}
+
+.dark {
+  --color-form-field-bg: color-mix(in srgb, var(--color-surface) 60%, transparent);
+  --color-form-field-bg-hover: color-mix(in srgb, var(--color-surface-elevated) 40%, transparent);
+  --color-form-field-bg-focus: var(--color-surface-elevated);
+  --color-form-field-bg-disabled: color-mix(in srgb, var(--color-muted) 10%, transparent);
+
+  --color-form-field-border: var(--color-border-strong);
+  --color-form-field-border-hover: color-mix(in srgb, var(--color-primary) 60%, transparent);
+  --color-form-field-border-focus: var(--color-primary);
+  --color-form-field-border-error: var(--color-danger);
+  --color-form-field-border-disabled: color-mix(in srgb, var(--color-border) 30%, transparent);
+
+  --color-form-field-text: var(--color-foreground);
+  --color-form-field-placeholder: color-mix(in srgb, var(--color-foreground) 30%, transparent);
+
+  --color-form-field-ring-focus: color-mix(in srgb, var(--color-primary) 25%, transparent);
+  --color-form-field-ring-error: color-mix(in srgb, var(--color-danger) 25%, transparent);
+}

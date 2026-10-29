@@ -1,0 +1,79 @@
+{
+  "onboarding": {
+    "badge": "Motor MDAP • Registro de Empleados",
+    "description": "Perfil profesional de nueva contratación y autorización de trabajo.",
+    "submit": "Registrar Empleado",
+    "title": "Registro de Empleados",
+    "sections": {
+      "personal": {
+        "title": "Incorporación de Empleados",
+        "description": "Información básica de contacto e identificación."
+      },
+      "employment": {
+        "title": "Información de Empleo",
+        "description": "Departamento y estado de ciudadanía."
+      }
+    },
+    "fields": {
+      "fullName": "Nombre Completo",
+      "email": "Correo Electrónico",
+      "phone": "Número de Teléfono",
+      "department": {
+        "label": "Departamento",
+        "options": {
+          "eng": "Ingeniería",
+          "hr": "Recursos Humanos",
+          "sales": "Ventas"
+        }
+      },
+      "citizenship": {
+        "label": "Estado de Ciudadanía",
+        "options": {
+          "citizen": "Ciudadano",
+          "pr": "Residente Permanente",
+          "permit": "Permiso de Trabajo"
+        }
+      },
+      "permitDetails": "Detalles Especiales",
+      "permitNumber": "Número de Permiso",
+      "expiryDate": "Fecha de Expiración",
+      "preview": "Vista Previa del Empleado"
+    },
+    "previewCard": {
+      "engineState": "Estado del Motor",
+      "validPayload": "CARGA VÁLIDA",
+      "pendingInput": "ENTRADA PENDIENTE",
+      "awaitingName": "Esperando Nombre...",
+      "selectDepartment": "Seleccione un Departamento",
+      "engDivision": "División de Ingeniería",
+      "hrDivision": "División de RRHH"
+    },
+    "permitDetailsDesc": "Documentación requerida para autorizaciones de trabajo temporales."
+  },
+  "validation": {
+    "alphaOnly": "{{label}} solo puede contener letras",
+    "alphanumeric": "{{label}} debe contener solo letras y números",
+    "digitsOnly": "{{label}} debe contener solo dígitos",
+    "email": "Dirección de correo electrónico no válida",
+    "ip": "{{label}} debe ser una dirección IP válida",
+    "max": "{{label}} debe ser como máximo {{value}}",
+    "maxLength": "{{label}} debe tener como máximo {{value}} caracteres",
+    "min": "{{label}} debe tener al menos {{value}} caracteres",
+    "minLength": "{{label}} debe tener al menos {{value}} caracteres",
+    "pattern": "Formato de {{label}} no válido",
+    "phone": "Número de teléfono no válido",
+    "postalCode": "{{label}} debe ser un código postal válido",
+    "required": "{{label}} es obligatorio",
+    "summary_description": "Encontramos algunos problemas en el formulario. Por favor, revise los campos resaltados a continuación.",
+    "summary_title": "Por favor, corrija los errores antes de enviar",
+    "url": "{{label}} debe ser una URL válida"
+  },
+  "navigationGuard": {
+    "title": "Cambios sin guardar en {{domain_name}}",
+    "message": "Tienes cambios sin guardar en {{domain_name}}. Si sales de esta página se descartarán todas las modificaciones.",
+    "confirm": "Descartar y salir",
+    "cancel": "Permanecer en la página",
+    "toastTitle": "Navegación reanudada",
+    "toastDescription": "Se descartaron los cambios sin guardar en {{domain_name}}."
+  }
+}

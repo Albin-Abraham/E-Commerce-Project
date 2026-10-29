@@ -1,0 +1,1002 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`Primitive Migration Guard > Category 1: Primitive fields > styles snapshot: checkbox/compact 1`] = `
+{
+  "base": "form-field relative group w-full transition-all duration-300 flex flex-col opacity-100 mb-0 min-w-0",
+  "clearButton": "absolute right-4 top-1/2 -translate-y-1/2 text-muted hover:text-foreground cursor-pointer transition-all hover:scale-125 z-[var(--z-overlap)]",
+  "description": "text-xs text-foreground/50 leading-relaxed mt-2 font-medium border-l-2 border-primary/20 pl-3 opacity-60",
+  "errorMessage": "animate-in fade-in slide-in-from-top-1 flex items-center gap-1.5 text-[length:var(--text-xs)] text-danger font-medium mt-1.5",
+  "helperWrapper": "mt-2",
+  "input": "bg-transparent border-none focus:ring-0 placeholder:text-foreground/30 text-foreground antialiased inline-block w-auto text-sm",
+  "inputWrapper": "overflow-hidden isolation-auto flex items-center border border-border bg-surface text-foreground shadow-sm placeholder:text-muted/50 transition-all duration-200 ease-in-out hover:border-primary/40 hover:shadow-md focus-within:ring-2 focus-within:ring-primary/20 focus-within:border-primary outline-none rounded-[var(--radius-md)] min-h-[40px] px-3.5 py-2 gap-3",
+  "label": "text-sm font-bold text-foreground/80 tracking-tight mb-2 transition-all group-hover:text-primary group-focus-within:text-primary",
+}
+`;
+
+exports[`Primitive Migration Guard > Category 1: Primitive fields > styles snapshot: checkbox/default 1`] = `
+{
+  "base": "form-field relative group w-full transition-all duration-300 flex flex-col opacity-100 mb-0 min-w-0",
+  "clearButton": "absolute right-4 top-1/2 -translate-y-1/2 text-muted hover:text-foreground cursor-pointer transition-all hover:scale-125 z-[var(--z-overlap)]",
+  "description": "text-xs text-foreground/50 leading-relaxed mt-2 font-medium border-l-2 border-primary/20 pl-3 opacity-60",
+  "errorMessage": "animate-in fade-in slide-in-from-top-1 flex items-center gap-1.5 text-[length:var(--text-xs)] text-danger font-medium mt-1.5",
+  "helperWrapper": "mt-2",
+  "input": "bg-transparent border-none focus:ring-0 placeholder:text-foreground/30 text-foreground antialiased inline-block w-auto text-sm",
+  "inputWrapper": "overflow-hidden isolation-auto flex items-center border border-border bg-surface text-foreground shadow-sm placeholder:text-muted/50 transition-all duration-200 ease-in-out hover:border-primary/40 hover:shadow-md focus-within:ring-2 focus-within:ring-primary/20 focus-within:border-primary outline-none rounded-[var(--radius-md)] min-h-[40px] px-3.5 py-2 gap-3",
+  "label": "text-sm font-bold text-foreground/80 tracking-tight mb-2 transition-all group-hover:text-primary group-focus-within:text-primary",
+}
+`;
+
+exports[`Primitive Migration Guard > Category 1: Primitive fields > styles snapshot: date/alias 1`] = `
+{
+  "base": "form-field relative group w-full transition-all duration-300 flex flex-col opacity-100 mb-0 min-w-0",
+  "clearButton": "absolute right-4 top-1/2 -translate-y-1/2 text-muted hover:text-foreground cursor-pointer transition-all hover:scale-125 z-[var(--z-overlap)]",
+  "description": "text-xs text-foreground/50 leading-relaxed mt-2 font-medium border-l-2 border-primary/20 pl-3 opacity-60",
+  "errorMessage": "animate-in fade-in slide-in-from-top-1 flex items-center gap-1.5 text-[length:var(--text-xs)] text-danger font-medium mt-1.5",
+  "helperWrapper": "mt-2",
+  "input": "border-none placeholder:text-foreground/30 text-foreground antialiased block w-full border-transparent bg-transparent focus:ring-0 min-h-0 py-0 text-sm",
+  "inputWrapper": "overflow-hidden isolation-auto flex items-center border border-border bg-surface text-foreground shadow-sm placeholder:text-muted/50 transition-all duration-200 ease-in-out hover:border-primary/40 hover:shadow-md focus-within:ring-2 focus-within:ring-primary/20 focus-within:border-primary outline-none rounded-[var(--radius-md)] min-h-[40px] px-3.5 py-2 gap-3",
+  "label": "text-sm font-bold text-foreground/80 tracking-tight mb-2 transition-all group-hover:text-primary group-focus-within:text-primary",
+}
+`;
+
+exports[`Primitive Migration Guard > Category 1: Primitive fields > styles snapshot: email/alias 1`] = `
+{
+  "base": "form-field relative group w-full transition-all duration-300 flex flex-col opacity-100 mb-0 min-w-0",
+  "clearButton": "absolute right-4 top-1/2 -translate-y-1/2 text-muted hover:text-foreground cursor-pointer transition-all hover:scale-125 z-[var(--z-overlap)]",
+  "description": "text-xs text-foreground/50 leading-relaxed mt-2 font-medium border-l-2 border-primary/20 pl-3 opacity-60",
+  "errorMessage": "animate-in fade-in slide-in-from-top-1 flex items-center gap-1.5 text-[length:var(--text-xs)] text-danger font-medium mt-1.5",
+  "helperWrapper": "mt-2",
+  "input": "border-none placeholder:text-foreground/30 text-foreground antialiased block w-full border-transparent bg-transparent focus:ring-0 min-h-0 py-0 text-sm",
+  "inputWrapper": "overflow-hidden isolation-auto flex items-center border border-border bg-surface text-foreground shadow-sm placeholder:text-muted/50 transition-all duration-200 ease-in-out hover:border-primary/40 hover:shadow-md focus-within:ring-2 focus-within:ring-primary/20 focus-within:border-primary outline-none rounded-[var(--radius-md)] min-h-[40px] px-3.5 py-2 gap-3",
+  "label": "text-sm font-bold text-foreground/80 tracking-tight mb-2 transition-all group-hover:text-primary group-focus-within:text-primary",
+}
+`;
+
+exports[`Primitive Migration Guard > Category 1: Primitive fields > styles snapshot: file/default 1`] = `
+{
+  "base": "form-field relative group w-full transition-all duration-300 flex flex-col opacity-100 mb-0 min-w-0",
+  "clearButton": "absolute right-4 top-1/2 -translate-y-1/2 text-muted hover:text-foreground cursor-pointer transition-all hover:scale-125 z-[var(--z-overlap)]",
+  "description": "text-xs text-foreground/50 leading-relaxed mt-2 font-medium border-l-2 border-primary/20 pl-3 opacity-60",
+  "errorMessage": "animate-in fade-in slide-in-from-top-1 flex items-center gap-1.5 text-[length:var(--text-xs)] text-danger font-medium mt-1.5",
+  "helperWrapper": "mt-2",
+  "input": "border-none placeholder:text-foreground/30 text-foreground antialiased block w-full border-transparent bg-transparent focus:ring-0 min-h-0 py-0 text-sm",
+  "inputWrapper": "overflow-hidden isolation-auto flex items-center border border-border bg-surface text-foreground shadow-sm placeholder:text-muted/50 transition-all duration-200 ease-in-out hover:border-primary/40 hover:shadow-md focus-within:ring-2 focus-within:ring-primary/20 focus-within:border-primary outline-none rounded-[var(--radius-md)] min-h-[40px] px-3.5 py-2 gap-3",
+  "label": "text-sm font-bold text-foreground/80 tracking-tight mb-2 transition-all group-hover:text-primary group-focus-within:text-primary",
+}
+`;
+
+exports[`Primitive Migration Guard > Category 1: Primitive fields > styles snapshot: multiselect/default 1`] = `
+{
+  "base": "form-field relative group w-full transition-all duration-300 flex flex-col opacity-100 mb-0 min-w-0",
+  "clearButton": "absolute right-4 top-1/2 -translate-y-1/2 text-muted hover:text-foreground cursor-pointer transition-all hover:scale-125 z-[var(--z-overlap)]",
+  "description": "text-xs text-foreground/50 leading-relaxed mt-2 font-medium border-l-2 border-primary/20 pl-3 opacity-60",
+  "errorMessage": "animate-in fade-in slide-in-from-top-1 flex items-center gap-1.5 text-[length:var(--text-xs)] text-danger font-medium mt-1.5",
+  "helperWrapper": "mt-2",
+  "input": "border-none placeholder:text-foreground/30 text-foreground antialiased block w-full border-transparent bg-transparent focus:ring-0 min-h-0 py-0 text-sm",
+  "inputWrapper": "overflow-hidden isolation-auto flex items-center border border-border bg-surface text-foreground shadow-sm placeholder:text-muted/50 transition-all duration-200 ease-in-out hover:border-primary/40 hover:shadow-md focus-within:ring-2 focus-within:ring-primary/20 focus-within:border-primary outline-none rounded-[var(--radius-md)] min-h-[40px] px-3.5 py-2 gap-3",
+  "label": "text-sm font-bold text-foreground/80 tracking-tight mb-2 transition-all group-hover:text-primary group-focus-within:text-primary",
+}
+`;
+
+exports[`Primitive Migration Guard > Category 1: Primitive fields > styles snapshot: number/alias 1`] = `
+{
+  "base": "form-field relative group w-full transition-all duration-300 flex flex-col opacity-100 mb-0 min-w-0",
+  "clearButton": "absolute right-4 top-1/2 -translate-y-1/2 text-muted hover:text-foreground cursor-pointer transition-all hover:scale-125 z-[var(--z-overlap)]",
+  "description": "text-xs text-foreground/50 leading-relaxed mt-2 font-medium border-l-2 border-primary/20 pl-3 opacity-60",
+  "errorMessage": "animate-in fade-in slide-in-from-top-1 flex items-center gap-1.5 text-[length:var(--text-xs)] text-danger font-medium mt-1.5",
+  "helperWrapper": "mt-2",
+  "input": "border-none placeholder:text-foreground/30 text-foreground antialiased block w-full border-transparent bg-transparent focus:ring-0 min-h-0 py-0 text-sm",
+  "inputWrapper": "overflow-hidden isolation-auto flex items-center border border-border bg-surface text-foreground shadow-sm placeholder:text-muted/50 transition-all duration-200 ease-in-out hover:border-primary/40 hover:shadow-md focus-within:ring-2 focus-within:ring-primary/20 focus-within:border-primary outline-none rounded-[var(--radius-md)] min-h-[40px] px-3.5 py-2 gap-3",
+  "label": "text-sm font-bold text-foreground/80 tracking-tight mb-2 transition-all group-hover:text-primary group-focus-within:text-primary",
+}
+`;
+
+exports[`Primitive Migration Guard > Category 1: Primitive fields > styles snapshot: password/alias 1`] = `
+{
+  "base": "form-field relative group w-full transition-all duration-300 flex flex-col opacity-100 mb-0 min-w-0",
+  "clearButton": "absolute right-4 top-1/2 -translate-y-1/2 text-muted hover:text-foreground cursor-pointer transition-all hover:scale-125 z-[var(--z-overlap)]",
+  "description": "text-xs text-foreground/50 leading-relaxed mt-2 font-medium border-l-2 border-primary/20 pl-3 opacity-60",
+  "errorMessage": "animate-in fade-in slide-in-from-top-1 flex items-center gap-1.5 text-[length:var(--text-xs)] text-danger font-medium mt-1.5",
+  "helperWrapper": "mt-2",
+  "input": "border-none placeholder:text-foreground/30 text-foreground antialiased block w-full border-transparent bg-transparent focus:ring-0 min-h-0 py-0 text-sm",
+  "inputWrapper": "overflow-hidden isolation-auto flex items-center border border-border bg-surface text-foreground shadow-sm placeholder:text-muted/50 transition-all duration-200 ease-in-out hover:border-primary/40 hover:shadow-md focus-within:ring-2 focus-within:ring-primary/20 focus-within:border-primary outline-none rounded-[var(--radius-md)] min-h-[40px] px-3.5 py-2 gap-3",
+  "label": "text-sm font-bold text-foreground/80 tracking-tight mb-2 transition-all group-hover:text-primary group-focus-within:text-primary",
+}
+`;
+
+exports[`Primitive Migration Guard > Category 1: Primitive fields > styles snapshot: phone/alias 1`] = `
+{
+  "base": "form-field relative group w-full transition-all duration-300 flex flex-col opacity-100 mb-0 min-w-0",
+  "clearButton": "absolute right-4 top-1/2 -translate-y-1/2 text-muted hover:text-foreground cursor-pointer transition-all hover:scale-125 z-[var(--z-overlap)]",
+  "description": "text-xs text-foreground/50 leading-relaxed mt-2 font-medium border-l-2 border-primary/20 pl-3 opacity-60",
+  "errorMessage": "animate-in fade-in slide-in-from-top-1 flex items-center gap-1.5 text-[length:var(--text-xs)] text-danger font-medium mt-1.5",
+  "helperWrapper": "mt-2",
+  "input": "border-none placeholder:text-foreground/30 text-foreground antialiased block w-full border-transparent bg-transparent focus:ring-0 min-h-0 py-0 text-sm",
+  "inputWrapper": "overflow-hidden isolation-auto flex items-center border border-border bg-surface text-foreground shadow-sm placeholder:text-muted/50 transition-all duration-200 ease-in-out hover:border-primary/40 hover:shadow-md focus-within:ring-2 focus-within:ring-primary/20 focus-within:border-primary outline-none rounded-[var(--radius-md)] min-h-[40px] px-3.5 py-2 gap-3",
+  "label": "text-sm font-bold text-foreground/80 tracking-tight mb-2 transition-all group-hover:text-primary group-focus-within:text-primary",
+}
+`;
+
+exports[`Primitive Migration Guard > Category 1: Primitive fields > styles snapshot: radio/default 1`] = `
+{
+  "base": "form-field relative group w-full transition-all duration-300 flex flex-col opacity-100 mb-0 min-w-0",
+  "clearButton": "absolute right-4 top-1/2 -translate-y-1/2 text-muted hover:text-foreground cursor-pointer transition-all hover:scale-125 z-[var(--z-overlap)]",
+  "description": "text-xs text-foreground/50 leading-relaxed mt-2 font-medium border-l-2 border-primary/20 pl-3 opacity-60",
+  "errorMessage": "animate-in fade-in slide-in-from-top-1 flex items-center gap-1.5 text-[length:var(--text-xs)] text-danger font-medium mt-1.5",
+  "helperWrapper": "mt-2",
+  "input": "bg-transparent border-none focus:ring-0 placeholder:text-foreground/30 text-foreground antialiased inline-block w-auto text-sm",
+  "inputWrapper": "overflow-hidden isolation-auto flex items-center border border-border bg-surface text-foreground shadow-sm placeholder:text-muted/50 transition-all duration-200 ease-in-out hover:border-primary/40 hover:shadow-md focus-within:ring-2 focus-within:ring-primary/20 focus-within:border-primary outline-none rounded-[var(--radius-md)] min-h-[40px] px-3.5 py-2 gap-3",
+  "label": "text-sm font-bold text-foreground/80 tracking-tight mb-2 transition-all group-hover:text-primary group-focus-within:text-primary",
+}
+`;
+
+exports[`Primitive Migration Guard > Category 1: Primitive fields > styles snapshot: range/default 1`] = `
+{
+  "base": "form-field relative group w-full transition-all duration-300 flex flex-col opacity-100 mb-0 min-w-0",
+  "clearButton": "absolute right-4 top-1/2 -translate-y-1/2 text-muted hover:text-foreground cursor-pointer transition-all hover:scale-125 z-[var(--z-overlap)]",
+  "description": "text-xs text-foreground/50 leading-relaxed mt-2 font-medium border-l-2 border-primary/20 pl-3 opacity-60",
+  "errorMessage": "animate-in fade-in slide-in-from-top-1 flex items-center gap-1.5 text-[length:var(--text-xs)] text-danger font-medium mt-1.5",
+  "helperWrapper": "mt-2",
+  "input": "border-none placeholder:text-foreground/30 text-foreground antialiased block w-full border-transparent bg-transparent focus:ring-0 min-h-0 py-0 text-sm",
+  "inputWrapper": "overflow-hidden isolation-auto flex items-center border border-border bg-surface text-foreground shadow-sm placeholder:text-muted/50 transition-all duration-200 ease-in-out hover:border-primary/40 hover:shadow-md focus-within:ring-2 focus-within:ring-primary/20 focus-within:border-primary outline-none rounded-[var(--radius-md)] min-h-[40px] px-3.5 py-2 gap-3",
+  "label": "text-sm font-bold text-foreground/80 tracking-tight mb-2 transition-all group-hover:text-primary group-focus-within:text-primary",
+}
+`;
+
+exports[`Primitive Migration Guard > Category 1: Primitive fields > styles snapshot: search_input/no-label 1`] = `
+{
+  "base": "form-field relative group w-full transition-all duration-300 flex flex-col opacity-100 mb-0 min-w-0",
+  "clearButton": "absolute right-4 top-1/2 -translate-y-1/2 text-muted hover:text-foreground cursor-pointer transition-all hover:scale-125 z-[var(--z-overlap)]",
+  "description": "text-xs text-foreground/50 leading-relaxed mt-2 font-medium border-l-2 border-primary/20 pl-3 opacity-60",
+  "errorMessage": "animate-in fade-in slide-in-from-top-1 flex items-center gap-1.5 text-[length:var(--text-xs)] text-danger font-medium mt-1.5",
+  "helperWrapper": "mt-2",
+  "input": "border-none placeholder:text-foreground/30 text-foreground antialiased block w-full border-transparent bg-transparent focus:ring-0 min-h-0 py-0 text-sm",
+  "inputWrapper": "overflow-hidden isolation-auto flex items-center border border-border bg-surface text-foreground shadow-sm placeholder:text-muted/50 transition-all duration-200 ease-in-out hover:border-primary/40 hover:shadow-md focus-within:ring-2 focus-within:ring-primary/20 focus-within:border-primary outline-none rounded-[var(--radius-md)] min-h-[40px] px-3.5 py-2 gap-3",
+  "label": "text-sm font-bold text-foreground/80 tracking-tight mb-2 transition-all group-hover:text-primary group-focus-within:text-primary",
+}
+`;
+
+exports[`Primitive Migration Guard > Category 1: Primitive fields > styles snapshot: select/error 1`] = `
+{
+  "base": "form-field relative group w-full transition-all duration-300 flex flex-col opacity-100 mb-0 min-w-0",
+  "clearButton": "absolute right-4 top-1/2 -translate-y-1/2 text-muted hover:text-foreground cursor-pointer transition-all hover:scale-125 z-[var(--z-overlap)]",
+  "description": "text-xs text-foreground/50 leading-relaxed mt-2 font-medium border-l-2 border-primary/20 pl-3 opacity-60",
+  "errorMessage": "animate-in fade-in slide-in-from-top-1 flex items-center gap-1.5 text-[length:var(--text-xs)] text-danger font-medium mt-1.5",
+  "helperWrapper": "mt-2",
+  "input": "border-none placeholder:text-foreground/30 text-foreground antialiased flex w-full border-transparent bg-transparent focus:ring-0 min-h-0 py-0 text-sm",
+  "inputWrapper": "overflow-hidden isolation-auto flex items-center border bg-surface transition-all duration-200 ease-in-out hover:border-primary/40 hover:shadow-md focus-within:ring-2 focus-within:ring-primary/20 focus-within:border-primary outline-none border-danger text-danger placeholder:text-danger/30 focus:border-danger focus:ring-danger/20 shadow-none rounded-[var(--radius-md)] min-h-[40px] px-3.5 py-2 gap-3",
+  "label": "text-sm font-bold text-foreground/80 tracking-tight mb-2 transition-all group-hover:text-primary group-focus-within:text-primary",
+}
+`;
+
+exports[`Primitive Migration Guard > Category 1: Primitive fields > styles snapshot: select/filled 1`] = `
+{
+  "base": "form-field relative group w-full transition-all duration-300 flex flex-col opacity-100 mb-0 min-w-0",
+  "clearButton": "absolute right-4 top-1/2 -translate-y-1/2 text-muted hover:text-foreground cursor-pointer transition-all hover:scale-125 z-[var(--z-overlap)]",
+  "description": "text-xs text-foreground/50 leading-relaxed mt-2 font-medium border-l-2 border-primary/20 pl-3 opacity-60",
+  "errorMessage": "animate-in fade-in slide-in-from-top-1 flex items-center gap-1.5 text-[length:var(--text-xs)] text-danger font-medium mt-1.5",
+  "helperWrapper": "mt-2",
+  "input": "border-none placeholder:text-foreground/30 text-foreground antialiased flex w-full border-transparent bg-transparent focus:ring-0 min-h-0 py-0 text-sm",
+  "inputWrapper": "overflow-hidden isolation-auto flex items-center border-none bg-subtle text-foreground placeholder:text-muted/50 transition-colors duration-200 hover:bg-muted/10 focus-within:bg-surface focus-within:ring-2 focus-within:ring-primary/20 outline-none shadow-sm rounded-[var(--radius-md)] min-h-[40px] px-3.5 py-2 gap-3",
+  "label": "text-sm font-bold text-foreground/80 tracking-tight mb-2 transition-all group-hover:text-primary group-focus-within:text-primary",
+}
+`;
+
+exports[`Primitive Migration Guard > Category 1: Primitive fields > styles snapshot: select/outlined 1`] = `
+{
+  "base": "form-field relative group w-full transition-all duration-300 flex flex-col opacity-100 mb-0 min-w-0",
+  "clearButton": "absolute right-4 top-1/2 -translate-y-1/2 text-muted hover:text-foreground cursor-pointer transition-all hover:scale-125 z-[var(--z-overlap)]",
+  "description": "text-xs text-foreground/50 leading-relaxed mt-2 font-medium border-l-2 border-primary/20 pl-3 opacity-60",
+  "errorMessage": "animate-in fade-in slide-in-from-top-1 flex items-center gap-1.5 text-[length:var(--text-xs)] text-danger font-medium mt-1.5",
+  "helperWrapper": "mt-2",
+  "input": "border-none placeholder:text-foreground/30 text-foreground antialiased flex w-full border-transparent bg-transparent focus:ring-0 min-h-0 py-0 text-sm",
+  "inputWrapper": "overflow-hidden isolation-auto flex items-center border border-border bg-surface text-foreground shadow-sm placeholder:text-muted/50 transition-all duration-200 ease-in-out hover:border-primary/40 hover:shadow-md focus-within:ring-2 focus-within:ring-primary/20 focus-within:border-primary outline-none rounded-[var(--radius-md)] min-h-[40px] px-3.5 py-2 gap-3",
+  "label": "text-sm font-bold text-foreground/80 tracking-tight mb-2 transition-all group-hover:text-primary group-focus-within:text-primary",
+}
+`;
+
+exports[`Primitive Migration Guard > Category 1: Primitive fields > styles snapshot: select/underlined 1`] = `
+{
+  "base": "form-field relative group w-full transition-all duration-300 flex flex-col opacity-100 mb-0 min-w-0",
+  "clearButton": "absolute right-4 top-1/2 -translate-y-1/2 text-muted hover:text-foreground cursor-pointer transition-all hover:scale-125 z-[var(--z-overlap)]",
+  "description": "text-xs text-foreground/50 leading-relaxed mt-2 font-medium border-l-2 border-primary/20 pl-3 opacity-60",
+  "errorMessage": "animate-in fade-in slide-in-from-top-1 flex items-center gap-1.5 text-[length:var(--text-xs)] text-danger font-medium mt-1.5",
+  "helperWrapper": "mt-2",
+  "input": "border-none placeholder:text-foreground/30 text-foreground antialiased flex w-full border-transparent bg-transparent focus:ring-0 min-h-0 py-0 text-sm",
+  "inputWrapper": "overflow-hidden isolation-auto flex items-center border-b-2 border-border bg-transparent text-foreground placeholder:text-muted/50 transition-colors duration-200 hover:border-primary/40 focus-within:border-primary focus-within:ring-0 outline-none rounded-[var(--radius-md)] min-h-[40px] px-3.5 py-2 gap-3",
+  "label": "text-sm font-bold text-foreground/80 tracking-tight mb-2 transition-all group-hover:text-primary group-focus-within:text-primary",
+}
+`;
+
+exports[`Primitive Migration Guard > Category 1: Primitive fields > styles snapshot: switch/default 1`] = `
+{
+  "base": "form-field relative group w-full transition-all duration-300 flex flex-col opacity-100 mb-0 min-w-0",
+  "clearButton": "absolute right-4 top-1/2 -translate-y-1/2 text-muted hover:text-foreground cursor-pointer transition-all hover:scale-125 z-[var(--z-overlap)]",
+  "description": "text-xs text-foreground/50 leading-relaxed mt-2 font-medium border-l-2 border-primary/20 pl-3 opacity-60",
+  "errorMessage": "animate-in fade-in slide-in-from-top-1 flex items-center gap-1.5 text-[length:var(--text-xs)] text-danger font-medium mt-1.5",
+  "helperWrapper": "mt-2",
+  "input": "border-none placeholder:text-foreground/30 text-foreground antialiased block w-full border-transparent bg-transparent focus:ring-0 min-h-0 py-0 text-sm",
+  "inputWrapper": "overflow-hidden isolation-auto flex items-center border border-border bg-surface text-foreground shadow-sm placeholder:text-muted/50 transition-all duration-200 ease-in-out hover:border-primary/40 hover:shadow-md focus-within:ring-2 focus-within:ring-primary/20 focus-within:border-primary outline-none rounded-[var(--radius-md)] min-h-[40px] px-3.5 py-2 gap-3",
+  "label": "text-sm font-bold text-foreground/80 tracking-tight mb-2 transition-all group-hover:text-primary group-focus-within:text-primary",
+}
+`;
+
+exports[`Primitive Migration Guard > Category 1: Primitive fields > styles snapshot: table_filter/no-label 1`] = `
+{
+  "base": "form-field relative group w-full transition-all duration-300 flex flex-col opacity-100 mb-0 min-w-0",
+  "clearButton": "absolute right-4 top-1/2 -translate-y-1/2 text-muted hover:text-foreground cursor-pointer transition-all hover:scale-125 z-[var(--z-overlap)]",
+  "description": "text-xs text-foreground/50 leading-relaxed mt-2 font-medium border-l-2 border-primary/20 pl-3 opacity-60",
+  "errorMessage": "animate-in fade-in slide-in-from-top-1 flex items-center gap-1.5 text-[length:var(--text-xs)] text-danger font-medium mt-1.5",
+  "helperWrapper": "mt-2",
+  "input": "border-none placeholder:text-foreground/30 text-foreground antialiased block w-full border-transparent bg-transparent focus:ring-0 min-h-0 py-0 text-sm",
+  "inputWrapper": "overflow-hidden isolation-auto flex items-center border border-border bg-surface text-foreground shadow-sm placeholder:text-muted/50 transition-all duration-200 ease-in-out hover:border-primary/40 hover:shadow-md focus-within:ring-2 focus-within:ring-primary/20 focus-within:border-primary outline-none rounded-[var(--radius-md)] min-h-[40px] px-3.5 py-2 gap-3",
+  "label": "text-sm font-bold text-foreground/80 tracking-tight mb-2 transition-all group-hover:text-primary group-focus-within:text-primary",
+}
+`;
+
+exports[`Primitive Migration Guard > Category 1: Primitive fields > styles snapshot: text/compact 1`] = `
+{
+  "base": "form-field relative group w-full transition-all duration-300 flex flex-col opacity-100 mb-0 min-w-0",
+  "clearButton": "absolute right-4 top-1/2 -translate-y-1/2 text-muted hover:text-foreground cursor-pointer transition-all hover:scale-125 z-[var(--z-overlap)]",
+  "description": "text-xs text-foreground/50 leading-relaxed mt-2 font-medium border-l-2 border-primary/20 pl-3 opacity-60",
+  "errorMessage": "animate-in fade-in slide-in-from-top-1 flex items-center gap-1.5 text-[length:var(--text-xs)] text-danger font-medium mt-1.5",
+  "helperWrapper": "mt-2",
+  "input": "border-none placeholder:text-foreground/30 text-foreground antialiased block w-full border-transparent bg-transparent focus:ring-0 min-h-0 py-0 text-sm",
+  "inputWrapper": "overflow-hidden isolation-auto flex items-center border border-border bg-surface text-foreground shadow-sm placeholder:text-muted/50 transition-all duration-200 ease-in-out hover:border-primary/40 hover:shadow-md focus-within:ring-2 focus-within:ring-primary/20 focus-within:border-primary outline-none rounded-[var(--radius-md)] min-h-[40px] px-3.5 py-2 gap-3",
+  "label": "text-sm font-bold text-foreground/80 tracking-tight mb-2 transition-all group-hover:text-primary group-focus-within:text-primary",
+}
+`;
+
+exports[`Primitive Migration Guard > Category 1: Primitive fields > styles snapshot: text/custom-classNames 1`] = `
+{
+  "base": "form-field relative group w-full transition-all duration-300 flex flex-col opacity-100 mb-0 my-custom-base min-w-0",
+  "clearButton": "absolute right-4 top-1/2 -translate-y-1/2 text-muted hover:text-foreground cursor-pointer transition-all hover:scale-125 z-[var(--z-overlap)]",
+  "description": "text-xs text-foreground/50 leading-relaxed mt-2 font-medium border-l-2 border-primary/20 pl-3 opacity-60",
+  "errorMessage": "animate-in fade-in slide-in-from-top-1 flex items-center gap-1.5 text-[length:var(--text-xs)] text-danger font-medium mt-1.5",
+  "helperWrapper": "mt-2",
+  "input": "border-none placeholder:text-foreground/30 text-foreground antialiased block w-full border-transparent bg-transparent focus:ring-0 min-h-0 py-0 text-sm my-custom-input",
+  "inputWrapper": "overflow-hidden isolation-auto flex items-center border border-border bg-surface text-foreground shadow-sm placeholder:text-muted/50 transition-all duration-200 ease-in-out hover:border-primary/40 hover:shadow-md focus-within:ring-2 focus-within:ring-primary/20 focus-within:border-primary outline-none rounded-[var(--radius-md)] my-custom-surface min-h-[40px] px-3.5 py-2 gap-3",
+  "label": "text-sm font-bold text-foreground/80 tracking-tight mb-2 transition-all group-hover:text-primary group-focus-within:text-primary",
+}
+`;
+
+exports[`Primitive Migration Guard > Category 1: Primitive fields > styles snapshot: text/default 1`] = `
+{
+  "base": "form-field relative group w-full transition-all duration-300 flex flex-col opacity-100 mb-0 min-w-0",
+  "clearButton": "absolute right-4 top-1/2 -translate-y-1/2 text-muted hover:text-foreground cursor-pointer transition-all hover:scale-125 z-[var(--z-overlap)]",
+  "description": "text-xs text-foreground/50 leading-relaxed mt-2 font-medium border-l-2 border-primary/20 pl-3 opacity-60",
+  "errorMessage": "animate-in fade-in slide-in-from-top-1 flex items-center gap-1.5 text-[length:var(--text-xs)] text-danger font-medium mt-1.5",
+  "helperWrapper": "mt-2",
+  "input": "border-none placeholder:text-foreground/30 text-foreground antialiased block w-full border-transparent bg-transparent focus:ring-0 min-h-0 py-0 text-sm",
+  "inputWrapper": "overflow-hidden isolation-auto flex items-center border border-border bg-surface text-foreground shadow-sm placeholder:text-muted/50 transition-all duration-200 ease-in-out hover:border-primary/40 hover:shadow-md focus-within:ring-2 focus-within:ring-primary/20 focus-within:border-primary outline-none rounded-[var(--radius-md)] min-h-[40px] px-3.5 py-2 gap-3",
+  "label": "text-sm font-bold text-foreground/80 tracking-tight mb-2 transition-all group-hover:text-primary group-focus-within:text-primary",
+}
+`;
+
+exports[`Primitive Migration Guard > Category 1: Primitive fields > styles snapshot: text/error-state 1`] = `
+{
+  "base": "form-field relative group w-full transition-all duration-300 flex flex-col opacity-100 mb-0 min-w-0",
+  "clearButton": "absolute right-4 top-1/2 -translate-y-1/2 text-muted hover:text-foreground cursor-pointer transition-all hover:scale-125 z-[var(--z-overlap)]",
+  "description": "text-xs text-foreground/50 leading-relaxed mt-2 font-medium border-l-2 border-primary/20 pl-3 opacity-60",
+  "errorMessage": "animate-in fade-in slide-in-from-top-1 flex items-center gap-1.5 text-[length:var(--text-xs)] text-danger font-medium mt-1.5",
+  "helperWrapper": "mt-2",
+  "input": "border-none placeholder:text-foreground/30 text-foreground antialiased block w-full border-transparent bg-transparent focus:ring-0 min-h-0 py-0 text-sm",
+  "inputWrapper": "overflow-hidden isolation-auto flex items-center border bg-surface transition-all duration-200 ease-in-out hover:border-primary/40 hover:shadow-md focus-within:ring-2 focus-within:ring-primary/20 focus-within:border-primary outline-none border-danger text-danger placeholder:text-danger/30 focus:border-danger focus:ring-danger/20 shadow-none rounded-[var(--radius-md)] min-h-[40px] px-3.5 py-2 gap-3",
+  "label": "text-sm font-bold text-foreground/80 tracking-tight mb-2 transition-all group-hover:text-primary group-focus-within:text-primary",
+}
+`;
+
+exports[`Primitive Migration Guard > Category 1: Primitive fields > styles snapshot: text/intent+error 1`] = `
+{
+  "base": "form-field relative group w-full transition-all duration-300 flex flex-col opacity-100 mb-0 min-w-0",
+  "clearButton": "absolute right-4 top-1/2 -translate-y-1/2 text-muted hover:text-foreground cursor-pointer transition-all hover:scale-125 z-[var(--z-overlap)]",
+  "description": "text-xs text-foreground/50 leading-relaxed mt-2 font-medium border-l-2 border-primary/20 pl-3 opacity-60",
+  "errorMessage": "animate-in fade-in slide-in-from-top-1 flex items-center gap-1.5 text-[length:var(--text-xs)] text-danger font-medium mt-1.5",
+  "helperWrapper": "mt-2",
+  "input": "border-none placeholder:text-foreground/30 text-foreground antialiased block w-full border-transparent bg-transparent focus:ring-0 min-h-0 py-0 text-sm",
+  "inputWrapper": "overflow-hidden isolation-auto flex items-center border bg-surface transition-all duration-200 ease-in-out hover:border-primary/40 hover:shadow-md focus-within:ring-2 focus-within:ring-primary/20 focus-within:border-primary outline-none placeholder:text-danger/30 focus:border-danger focus:ring-danger/20 shadow-none text-danger border-danger group-focus-within:text-danger rounded-[var(--radius-md)] min-h-[40px] px-3.5 py-2 gap-3",
+  "label": "text-sm font-bold text-foreground/80 tracking-tight mb-2 transition-all group-hover:text-primary group-focus-within:text-primary",
+}
+`;
+
+exports[`Primitive Migration Guard > Category 1: Primitive fields > styles snapshot: text/intent-danger 1`] = `
+{
+  "base": "form-field relative group w-full transition-all duration-300 flex flex-col opacity-100 mb-0 min-w-0",
+  "clearButton": "absolute right-4 top-1/2 -translate-y-1/2 text-muted hover:text-foreground cursor-pointer transition-all hover:scale-125 z-[var(--z-overlap)]",
+  "description": "text-xs text-foreground/50 leading-relaxed mt-2 font-medium border-l-2 border-primary/20 pl-3 opacity-60",
+  "errorMessage": "animate-in fade-in slide-in-from-top-1 flex items-center gap-1.5 text-[length:var(--text-xs)] text-danger font-medium mt-1.5",
+  "helperWrapper": "mt-2",
+  "input": "border-none placeholder:text-foreground/30 text-foreground antialiased block w-full border-transparent bg-transparent focus:ring-0 min-h-0 py-0 text-sm",
+  "inputWrapper": "overflow-hidden isolation-auto flex items-center border bg-surface shadow-sm placeholder:text-muted/50 transition-all duration-200 ease-in-out hover:border-primary/40 hover:shadow-md focus-within:ring-2 focus-within:ring-primary/20 focus-within:border-primary outline-none text-danger border-danger group-focus-within:text-danger rounded-[var(--radius-md)] min-h-[40px] px-3.5 py-2 gap-3",
+  "label": "text-sm font-bold text-foreground/80 tracking-tight mb-2 transition-all group-hover:text-primary group-focus-within:text-primary",
+}
+`;
+
+exports[`Primitive Migration Guard > Category 1: Primitive fields > styles snapshot: text/intent-primary 1`] = `
+{
+  "base": "form-field relative group w-full transition-all duration-300 flex flex-col opacity-100 mb-0 min-w-0",
+  "clearButton": "absolute right-4 top-1/2 -translate-y-1/2 text-muted hover:text-foreground cursor-pointer transition-all hover:scale-125 z-[var(--z-overlap)]",
+  "description": "text-xs text-foreground/50 leading-relaxed mt-2 font-medium border-l-2 border-primary/20 pl-3 opacity-60",
+  "errorMessage": "animate-in fade-in slide-in-from-top-1 flex items-center gap-1.5 text-[length:var(--text-xs)] text-danger font-medium mt-1.5",
+  "helperWrapper": "mt-2",
+  "input": "border-none placeholder:text-foreground/30 text-foreground antialiased block w-full border-transparent bg-transparent focus:ring-0 min-h-0 py-0 text-sm",
+  "inputWrapper": "overflow-hidden isolation-auto flex items-center border bg-surface shadow-sm placeholder:text-muted/50 transition-all duration-200 ease-in-out hover:border-primary/40 hover:shadow-md focus-within:ring-2 focus-within:ring-primary/20 focus-within:border-primary outline-none text-primary border-primary group-focus-within:text-primary rounded-[var(--radius-md)] min-h-[40px] px-3.5 py-2 gap-3",
+  "label": "text-sm font-bold text-foreground/80 tracking-tight mb-2 transition-all group-hover:text-primary group-focus-within:text-primary",
+}
+`;
+
+exports[`Primitive Migration Guard > Category 1: Primitive fields > styles snapshot: text/radius-full 1`] = `
+{
+  "base": "form-field relative group w-full transition-all duration-300 flex flex-col opacity-100 mb-0 min-w-0",
+  "clearButton": "absolute right-4 top-1/2 -translate-y-1/2 text-muted hover:text-foreground cursor-pointer transition-all hover:scale-125 z-[var(--z-overlap)]",
+  "description": "text-xs text-foreground/50 leading-relaxed mt-2 font-medium border-l-2 border-primary/20 pl-3 opacity-60",
+  "errorMessage": "animate-in fade-in slide-in-from-top-1 flex items-center gap-1.5 text-[length:var(--text-xs)] text-danger font-medium mt-1.5",
+  "helperWrapper": "mt-2",
+  "input": "border-none placeholder:text-foreground/30 text-foreground antialiased block w-full border-transparent bg-transparent focus:ring-0 min-h-0 py-0 text-sm",
+  "inputWrapper": "overflow-hidden isolation-auto flex items-center border border-border bg-surface text-foreground shadow-sm placeholder:text-muted/50 transition-all duration-200 ease-in-out hover:border-primary/40 hover:shadow-md focus-within:ring-2 focus-within:ring-primary/20 focus-within:border-primary outline-none rounded-[var(--radius-full)] min-h-[40px] px-3.5 py-2 gap-3",
+  "label": "text-sm font-bold text-foreground/80 tracking-tight mb-2 transition-all group-hover:text-primary group-focus-within:text-primary",
+}
+`;
+
+exports[`Primitive Migration Guard > Category 1: Primitive fields > styles snapshot: text/radius-sm 1`] = `
+{
+  "base": "form-field relative group w-full transition-all duration-300 flex flex-col opacity-100 mb-0 min-w-0",
+  "clearButton": "absolute right-4 top-1/2 -translate-y-1/2 text-muted hover:text-foreground cursor-pointer transition-all hover:scale-125 z-[var(--z-overlap)]",
+  "description": "text-xs text-foreground/50 leading-relaxed mt-2 font-medium border-l-2 border-primary/20 pl-3 opacity-60",
+  "errorMessage": "animate-in fade-in slide-in-from-top-1 flex items-center gap-1.5 text-[length:var(--text-xs)] text-danger font-medium mt-1.5",
+  "helperWrapper": "mt-2",
+  "input": "border-none placeholder:text-foreground/30 text-foreground antialiased block w-full border-transparent bg-transparent focus:ring-0 min-h-0 py-0 text-sm",
+  "inputWrapper": "overflow-hidden isolation-auto flex items-center border border-border bg-surface text-foreground shadow-sm placeholder:text-muted/50 transition-all duration-200 ease-in-out hover:border-primary/40 hover:shadow-md focus-within:ring-2 focus-within:ring-primary/20 focus-within:border-primary outline-none rounded-[var(--radius-sm)] min-h-[40px] px-3.5 py-2 gap-3",
+  "label": "text-sm font-bold text-foreground/80 tracking-tight mb-2 transition-all group-hover:text-primary group-focus-within:text-primary",
+}
+`;
+
+exports[`Primitive Migration Guard > Category 1: Primitive fields > styles snapshot: text/spacious 1`] = `
+{
+  "base": "form-field relative group w-full transition-all duration-300 flex flex-col opacity-100 mb-0 min-w-0",
+  "clearButton": "absolute right-4 top-1/2 -translate-y-1/2 text-muted hover:text-foreground cursor-pointer transition-all hover:scale-125 z-[var(--z-overlap)]",
+  "description": "text-xs text-foreground/50 leading-relaxed mt-2 font-medium border-l-2 border-primary/20 pl-3 opacity-60",
+  "errorMessage": "animate-in fade-in slide-in-from-top-1 flex items-center gap-1.5 text-[length:var(--text-xs)] text-danger font-medium mt-1.5",
+  "helperWrapper": "mt-2",
+  "input": "border-none placeholder:text-foreground/30 text-foreground antialiased block w-full border-transparent bg-transparent focus:ring-0 min-h-0 py-0 text-sm",
+  "inputWrapper": "overflow-hidden isolation-auto flex items-center border border-border bg-surface text-foreground shadow-sm placeholder:text-muted/50 transition-all duration-200 ease-in-out hover:border-primary/40 hover:shadow-md focus-within:ring-2 focus-within:ring-primary/20 focus-within:border-primary outline-none rounded-[var(--radius-md)] min-h-[40px] px-3.5 py-2 gap-3",
+  "label": "text-sm font-bold text-foreground/80 tracking-tight mb-2 transition-all group-hover:text-primary group-focus-within:text-primary",
+}
+`;
+
+exports[`Primitive Migration Guard > Category 1: Primitive fields > styles snapshot: textarea/custom-classNames 1`] = `
+{
+  "base": "form-field relative group w-full transition-all duration-300 flex flex-col opacity-100 mb-0 ta-base min-w-0",
+  "clearButton": "absolute right-4 top-1/2 -translate-y-1/2 text-muted hover:text-foreground cursor-pointer transition-all hover:scale-125 z-[var(--z-overlap)]",
+  "description": "text-xs text-foreground/50 leading-relaxed mt-2 font-medium border-l-2 border-primary/20 pl-3 opacity-60",
+  "errorMessage": "animate-in fade-in slide-in-from-top-1 flex items-center gap-1.5 text-[length:var(--text-xs)] text-danger font-medium mt-1.5",
+  "helperWrapper": "mt-2",
+  "input": "border-none placeholder:text-foreground/30 text-foreground antialiased block w-full border-transparent bg-transparent focus:ring-0 min-h-0 py-0 text-sm",
+  "inputWrapper": "overflow-hidden isolation-auto flex items-center border border-border bg-surface text-foreground shadow-sm placeholder:text-muted/50 transition-all duration-200 ease-in-out hover:border-primary/40 hover:shadow-md focus-within:ring-2 focus-within:ring-primary/20 focus-within:border-primary outline-none rounded-[var(--radius-md)] min-h-[40px] px-3.5 py-2 gap-3",
+  "label": "text-sm font-bold text-foreground/80 tracking-tight mb-2 transition-all group-hover:text-primary group-focus-within:text-primary",
+}
+`;
+
+exports[`Primitive Migration Guard > Category 1: Primitive fields > styles snapshot: textarea/default 1`] = `
+{
+  "base": "form-field relative group w-full transition-all duration-300 flex flex-col opacity-100 mb-0 min-w-0",
+  "clearButton": "absolute right-4 top-1/2 -translate-y-1/2 text-muted hover:text-foreground cursor-pointer transition-all hover:scale-125 z-[var(--z-overlap)]",
+  "description": "text-xs text-foreground/50 leading-relaxed mt-2 font-medium border-l-2 border-primary/20 pl-3 opacity-60",
+  "errorMessage": "animate-in fade-in slide-in-from-top-1 flex items-center gap-1.5 text-[length:var(--text-xs)] text-danger font-medium mt-1.5",
+  "helperWrapper": "mt-2",
+  "input": "border-none placeholder:text-foreground/30 text-foreground antialiased block w-full border-transparent bg-transparent focus:ring-0 min-h-0 py-0 text-sm",
+  "inputWrapper": "overflow-hidden isolation-auto flex items-center border border-border bg-surface text-foreground shadow-sm placeholder:text-muted/50 transition-all duration-200 ease-in-out hover:border-primary/40 hover:shadow-md focus-within:ring-2 focus-within:ring-primary/20 focus-within:border-primary outline-none rounded-[var(--radius-md)] min-h-[40px] px-3.5 py-2 gap-3",
+  "label": "text-sm font-bold text-foreground/80 tracking-tight mb-2 transition-all group-hover:text-primary group-focus-within:text-primary",
+}
+`;
+
+exports[`Primitive Migration Guard > Category 1: Primitive fields > styles snapshot: url/alias 1`] = `
+{
+  "base": "form-field relative group w-full transition-all duration-300 flex flex-col opacity-100 mb-0 min-w-0",
+  "clearButton": "absolute right-4 top-1/2 -translate-y-1/2 text-muted hover:text-foreground cursor-pointer transition-all hover:scale-125 z-[var(--z-overlap)]",
+  "description": "text-xs text-foreground/50 leading-relaxed mt-2 font-medium border-l-2 border-primary/20 pl-3 opacity-60",
+  "errorMessage": "animate-in fade-in slide-in-from-top-1 flex items-center gap-1.5 text-[length:var(--text-xs)] text-danger font-medium mt-1.5",
+  "helperWrapper": "mt-2",
+  "input": "border-none placeholder:text-foreground/30 text-foreground antialiased block w-full border-transparent bg-transparent focus:ring-0 min-h-0 py-0 text-sm",
+  "inputWrapper": "overflow-hidden isolation-auto flex items-center border border-border bg-surface text-foreground shadow-sm placeholder:text-muted/50 transition-all duration-200 ease-in-out hover:border-primary/40 hover:shadow-md focus-within:ring-2 focus-within:ring-primary/20 focus-within:border-primary outline-none rounded-[var(--radius-md)] min-h-[40px] px-3.5 py-2 gap-3",
+  "label": "text-sm font-bold text-foreground/80 tracking-tight mb-2 transition-all group-hover:text-primary group-focus-within:text-primary",
+}
+`;
+
+exports[`Primitive Migration Guard > Category 2: Static fields (no wrapper) > styles snapshot: button/danger 1`] = `
+{
+  "base": "form-field relative group w-full transition-all duration-300 flex flex-col opacity-100 mb-0 min-w-0",
+  "clearButton": "absolute right-4 top-1/2 -translate-y-1/2 text-muted hover:text-foreground cursor-pointer transition-all hover:scale-125 z-[var(--z-overlap)]",
+  "description": "text-xs text-foreground/50 leading-relaxed mt-2 font-medium border-l-2 border-primary/20 pl-3 opacity-60",
+  "errorMessage": "animate-in fade-in slide-in-from-top-1 flex items-center gap-1.5 text-[length:var(--text-xs)] text-danger font-medium mt-1.5",
+  "helperWrapper": "mt-2",
+  "input": "border-none placeholder:text-foreground/30 text-foreground antialiased block w-full border-transparent bg-transparent focus:ring-0 min-h-0 py-0 text-sm",
+  "inputWrapper": "overflow-hidden isolation-auto flex items-center border border-border placeholder:text-muted/50 transition-all duration-200 ease-in-out hover:border-primary/40 hover:shadow-md focus-within:ring-2 focus-within:ring-primary/20 focus-within:border-primary outline-none bg-danger text-danger-foreground hover:bg-danger/90 shadow-md shadow-danger/10 rounded-[var(--radius-md)] min-h-[40px] px-3.5 py-2 gap-3",
+  "label": "text-sm font-bold text-foreground/80 tracking-tight mb-2 transition-all group-hover:text-primary group-focus-within:text-primary",
+}
+`;
+
+exports[`Primitive Migration Guard > Category 2: Static fields (no wrapper) > styles snapshot: button/primary 1`] = `
+{
+  "base": "form-field relative group w-full transition-all duration-300 flex flex-col opacity-100 mb-0 min-w-0",
+  "clearButton": "absolute right-4 top-1/2 -translate-y-1/2 text-muted hover:text-foreground cursor-pointer transition-all hover:scale-125 z-[var(--z-overlap)]",
+  "description": "text-xs text-foreground/50 leading-relaxed mt-2 font-medium border-l-2 border-primary/20 pl-3 opacity-60",
+  "errorMessage": "animate-in fade-in slide-in-from-top-1 flex items-center gap-1.5 text-[length:var(--text-xs)] text-danger font-medium mt-1.5",
+  "helperWrapper": "mt-2",
+  "input": "border-none placeholder:text-foreground/30 text-foreground antialiased block w-full border-transparent bg-transparent focus:ring-0 min-h-0 py-0 text-sm",
+  "inputWrapper": "overflow-hidden isolation-auto flex items-center border border-border placeholder:text-muted/50 transition-all duration-200 ease-in-out hover:border-primary/40 hover:shadow-md focus-within:ring-2 focus-within:ring-primary/20 focus-within:border-primary outline-none bg-primary text-primary-foreground hover:bg-primary/90 shadow-md rounded-[var(--radius-md)] min-h-[40px] px-3.5 py-2 gap-3",
+  "label": "text-sm font-bold text-foreground/80 tracking-tight mb-2 transition-all group-hover:text-primary group-focus-within:text-primary",
+}
+`;
+
+exports[`Primitive Migration Guard > Category 2: Static fields (no wrapper) > styles snapshot: button/subtle 1`] = `
+{
+  "base": "form-field relative group w-full transition-all duration-300 flex flex-col opacity-100 mb-0 min-w-0",
+  "clearButton": "absolute right-4 top-1/2 -translate-y-1/2 text-muted hover:text-foreground cursor-pointer transition-all hover:scale-125 z-[var(--z-overlap)]",
+  "description": "text-xs text-foreground/50 leading-relaxed mt-2 font-medium border-l-2 border-primary/20 pl-3 opacity-60",
+  "errorMessage": "animate-in fade-in slide-in-from-top-1 flex items-center gap-1.5 text-[length:var(--text-xs)] text-danger font-medium mt-1.5",
+  "helperWrapper": "mt-2",
+  "input": "border-none placeholder:text-foreground/30 text-foreground antialiased block w-full border-transparent bg-transparent focus:ring-0 min-h-0 py-0 text-sm",
+  "inputWrapper": "overflow-hidden isolation-auto flex items-center border border-border shadow-sm placeholder:text-muted/50 transition-all duration-200 ease-in-out hover:border-primary/40 hover:shadow-md focus-within:ring-2 focus-within:ring-primary/20 focus-within:border-primary outline-none bg-transparent text-foreground/60 hover:text-foreground hover:bg-subtle rounded-[var(--radius-md)] min-h-[40px] px-3.5 py-2 gap-3",
+  "label": "text-sm font-bold text-foreground/80 tracking-tight mb-2 transition-all group-hover:text-primary group-focus-within:text-primary",
+}
+`;
+
+exports[`Primitive Migration Guard > Category 2: Static fields (no wrapper) > styles snapshot: header 1`] = `
+{
+  "base": "form-field relative group w-full transition-all duration-300 flex flex-col opacity-100 mb-0 min-w-0",
+  "clearButton": "absolute right-4 top-1/2 -translate-y-1/2 text-muted hover:text-foreground cursor-pointer transition-all hover:scale-125 z-[var(--z-overlap)]",
+  "description": "text-xs text-foreground/50 leading-relaxed mt-2 font-medium border-l-2 border-primary/20 pl-3 opacity-60",
+  "errorMessage": "animate-in fade-in slide-in-from-top-1 flex items-center gap-1.5 text-[length:var(--text-xs)] text-danger font-medium mt-1.5",
+  "helperWrapper": "mt-2",
+  "input": "border-none placeholder:text-foreground/30 text-foreground antialiased block w-full border-transparent bg-transparent focus:ring-0 min-h-0 py-0 text-sm",
+  "inputWrapper": "overflow-hidden isolation-auto flex items-center border border-border bg-surface text-foreground shadow-sm placeholder:text-muted/50 transition-all duration-200 ease-in-out hover:border-primary/40 hover:shadow-md focus-within:ring-2 focus-within:ring-primary/20 focus-within:border-primary outline-none rounded-[var(--radius-md)] min-h-[40px] px-3.5 py-2 gap-3",
+  "label": "text-sm font-bold text-foreground/80 tracking-tight mb-2 transition-all group-hover:text-primary group-focus-within:text-primary",
+}
+`;
+
+exports[`Primitive Migration Guard > Category 2: Static fields (no wrapper) > styles snapshot: image 1`] = `
+{
+  "base": "form-field relative group w-full transition-all duration-300 flex flex-col opacity-100 mb-0 min-w-0",
+  "clearButton": "absolute right-4 top-1/2 -translate-y-1/2 text-muted hover:text-foreground cursor-pointer transition-all hover:scale-125 z-[var(--z-overlap)]",
+  "description": "text-xs text-foreground/50 leading-relaxed mt-2 font-medium border-l-2 border-primary/20 pl-3 opacity-60",
+  "errorMessage": "animate-in fade-in slide-in-from-top-1 flex items-center gap-1.5 text-[length:var(--text-xs)] text-danger font-medium mt-1.5",
+  "helperWrapper": "mt-2",
+  "input": "border-none placeholder:text-foreground/30 text-foreground antialiased block w-full border-transparent bg-transparent focus:ring-0 min-h-0 py-0 text-sm",
+  "inputWrapper": "overflow-hidden isolation-auto flex items-center border border-border bg-surface text-foreground shadow-sm placeholder:text-muted/50 transition-all duration-200 ease-in-out hover:border-primary/40 hover:shadow-md focus-within:ring-2 focus-within:ring-primary/20 focus-within:border-primary outline-none rounded-[var(--radius-md)] min-h-[40px] px-3.5 py-2 gap-3",
+  "label": "text-sm font-bold text-foreground/80 tracking-tight mb-2 transition-all group-hover:text-primary group-focus-within:text-primary",
+}
+`;
+
+exports[`Primitive Migration Guard > Category 2: Static fields (no wrapper) > styles snapshot: paragraph 1`] = `
+{
+  "base": "form-field relative group w-full transition-all duration-300 flex flex-col opacity-100 mb-0 min-w-0",
+  "clearButton": "absolute right-4 top-1/2 -translate-y-1/2 text-muted hover:text-foreground cursor-pointer transition-all hover:scale-125 z-[var(--z-overlap)]",
+  "description": "text-xs text-foreground/50 leading-relaxed mt-2 font-medium border-l-2 border-primary/20 pl-3 opacity-60",
+  "errorMessage": "animate-in fade-in slide-in-from-top-1 flex items-center gap-1.5 text-[length:var(--text-xs)] text-danger font-medium mt-1.5",
+  "helperWrapper": "mt-2",
+  "input": "border-none placeholder:text-foreground/30 text-foreground antialiased block w-full border-transparent bg-transparent focus:ring-0 min-h-0 py-0 text-sm",
+  "inputWrapper": "overflow-hidden isolation-auto flex items-center border border-border bg-surface text-foreground shadow-sm placeholder:text-muted/50 transition-all duration-200 ease-in-out hover:border-primary/40 hover:shadow-md focus-within:ring-2 focus-within:ring-primary/20 focus-within:border-primary outline-none rounded-[var(--radius-md)] min-h-[40px] px-3.5 py-2 gap-3",
+  "label": "text-sm font-bold text-foreground/80 tracking-tight mb-2 transition-all group-hover:text-primary group-focus-within:text-primary",
+}
+`;
+
+exports[`Primitive Migration Guard > Category 3: Structure fields > structure snapshot: accordion/default 1`] = `
+{
+  "base": "form-field relative group w-full transition-all duration-300 flex flex-col opacity-100 mb-0 min-w-0",
+  "clearButton": "absolute right-4 top-1/2 -translate-y-1/2 text-muted hover:text-foreground cursor-pointer transition-all hover:scale-125 z-[var(--z-overlap)]",
+  "description": "text-xs text-foreground/50 leading-relaxed mt-2 font-medium border-l-2 border-primary/20 pl-3 opacity-60",
+  "errorMessage": "animate-in fade-in slide-in-from-top-1 flex items-center gap-1.5 text-[length:var(--text-xs)] text-danger font-medium mt-1.5",
+  "helperWrapper": "mt-2",
+  "input": "border-none placeholder:text-foreground/30 text-foreground antialiased block w-full border-transparent bg-transparent focus:ring-0 min-h-0 py-0 text-sm",
+  "inputWrapper": "overflow-hidden isolation-auto flex items-center border border-border bg-surface text-foreground shadow-sm placeholder:text-muted/50 transition-all duration-200 ease-in-out hover:border-primary/40 hover:shadow-md focus-within:ring-2 focus-within:ring-primary/20 focus-within:border-primary outline-none rounded-[var(--radius-md)] min-h-[40px] px-3.5 py-2 gap-3",
+  "label": "text-sm font-bold text-foreground/80 tracking-tight mb-2 transition-all group-hover:text-primary group-focus-within:text-primary",
+}
+`;
+
+exports[`Primitive Migration Guard > Category 3: Structure fields > structure snapshot: card/default 1`] = `
+{
+  "base": "form-field relative group w-full transition-all duration-300 flex flex-col opacity-100 mb-0 min-w-0",
+  "clearButton": "absolute right-4 top-1/2 -translate-y-1/2 text-muted hover:text-foreground cursor-pointer transition-all hover:scale-125 z-[var(--z-overlap)]",
+  "description": "text-xs text-foreground/50 leading-relaxed mt-2 font-medium border-l-2 border-primary/20 pl-3 opacity-60",
+  "errorMessage": "animate-in fade-in slide-in-from-top-1 flex items-center gap-1.5 text-[length:var(--text-xs)] text-danger font-medium mt-1.5",
+  "helperWrapper": "mt-2",
+  "input": "border-none placeholder:text-foreground/30 text-foreground antialiased block w-full border-transparent bg-transparent focus:ring-0 min-h-0 py-0 text-sm",
+  "inputWrapper": "overflow-hidden isolation-auto flex items-center border border-border bg-surface text-foreground shadow-sm placeholder:text-muted/50 transition-all duration-200 ease-in-out hover:border-primary/40 hover:shadow-md focus-within:ring-2 focus-within:ring-primary/20 focus-within:border-primary outline-none rounded-[var(--radius-md)] min-h-[40px] px-3.5 py-2 gap-3",
+  "label": "text-sm font-bold text-foreground/80 tracking-tight mb-2 transition-all group-hover:text-primary group-focus-within:text-primary",
+}
+`;
+
+exports[`Primitive Migration Guard > Category 3: Structure fields > structure snapshot: card/elevation-sm 1`] = `
+{
+  "base": "form-field relative group w-full transition-all duration-300 flex flex-col opacity-100 mb-0 min-w-0",
+  "clearButton": "absolute right-4 top-1/2 -translate-y-1/2 text-muted hover:text-foreground cursor-pointer transition-all hover:scale-125 z-[var(--z-overlap)]",
+  "description": "text-xs text-foreground/50 leading-relaxed mt-2 font-medium border-l-2 border-primary/20 pl-3 opacity-60",
+  "errorMessage": "animate-in fade-in slide-in-from-top-1 flex items-center gap-1.5 text-[length:var(--text-xs)] text-danger font-medium mt-1.5",
+  "helperWrapper": "mt-2",
+  "input": "border-none placeholder:text-foreground/30 text-foreground antialiased block w-full border-transparent bg-transparent focus:ring-0 min-h-0 py-0 text-sm",
+  "inputWrapper": "overflow-hidden isolation-auto flex items-center border border-border bg-surface text-foreground shadow-sm placeholder:text-muted/50 transition-all duration-200 ease-in-out hover:border-primary/40 hover:shadow-md focus-within:ring-2 focus-within:ring-primary/20 focus-within:border-primary outline-none rounded-[var(--radius-md)] min-h-[40px] px-3.5 py-2 gap-3",
+  "label": "text-sm font-bold text-foreground/80 tracking-tight mb-2 transition-all group-hover:text-primary group-focus-within:text-primary",
+}
+`;
+
+exports[`Primitive Migration Guard > Category 3: Structure fields > structure snapshot: container/default 1`] = `
+{
+  "base": "form-field relative group w-full transition-all duration-300 flex flex-col opacity-100 mb-0 min-w-0",
+  "clearButton": "absolute right-4 top-1/2 -translate-y-1/2 text-muted hover:text-foreground cursor-pointer transition-all hover:scale-125 z-[var(--z-overlap)]",
+  "description": "text-xs text-foreground/50 leading-relaxed mt-2 font-medium border-l-2 border-primary/20 pl-3 opacity-60",
+  "errorMessage": "animate-in fade-in slide-in-from-top-1 flex items-center gap-1.5 text-[length:var(--text-xs)] text-danger font-medium mt-1.5",
+  "helperWrapper": "mt-2",
+  "input": "border-none placeholder:text-foreground/30 text-foreground antialiased block w-full border-transparent bg-transparent focus:ring-0 min-h-0 py-0 text-sm",
+  "inputWrapper": "overflow-hidden isolation-auto flex items-center border border-border bg-surface text-foreground shadow-sm placeholder:text-muted/50 transition-all duration-200 ease-in-out hover:border-primary/40 hover:shadow-md focus-within:ring-2 focus-within:ring-primary/20 focus-within:border-primary outline-none rounded-[var(--radius-md)] min-h-[40px] px-3.5 py-2 gap-3",
+  "label": "text-sm font-bold text-foreground/80 tracking-tight mb-2 transition-all group-hover:text-primary group-focus-within:text-primary",
+}
+`;
+
+exports[`Primitive Migration Guard > Category 3: Structure fields > structure snapshot: container/flex 1`] = `
+{
+  "base": "form-field relative group w-full transition-all duration-300 flex flex-col opacity-100 mb-0 min-w-0",
+  "clearButton": "absolute right-4 top-1/2 -translate-y-1/2 text-muted hover:text-foreground cursor-pointer transition-all hover:scale-125 z-[var(--z-overlap)]",
+  "description": "text-xs text-foreground/50 leading-relaxed mt-2 font-medium border-l-2 border-primary/20 pl-3 opacity-60",
+  "errorMessage": "animate-in fade-in slide-in-from-top-1 flex items-center gap-1.5 text-[length:var(--text-xs)] text-danger font-medium mt-1.5",
+  "helperWrapper": "mt-2",
+  "input": "border-none placeholder:text-foreground/30 text-foreground antialiased block w-full border-transparent bg-transparent focus:ring-0 min-h-0 py-0 text-sm",
+  "inputWrapper": "overflow-hidden isolation-auto flex items-center border border-border bg-surface text-foreground shadow-sm placeholder:text-muted/50 transition-all duration-200 ease-in-out hover:border-primary/40 hover:shadow-md focus-within:ring-2 focus-within:ring-primary/20 focus-within:border-primary outline-none rounded-[var(--radius-md)] min-h-[40px] px-3.5 py-2 gap-3",
+  "label": "text-sm font-bold text-foreground/80 tracking-tight mb-2 transition-all group-hover:text-primary group-focus-within:text-primary",
+}
+`;
+
+exports[`Primitive Migration Guard > Category 3: Structure fields > structure snapshot: container/grid 1`] = `
+{
+  "base": "form-field relative group w-full transition-all duration-300 flex flex-col opacity-100 mb-0 min-w-0",
+  "clearButton": "absolute right-4 top-1/2 -translate-y-1/2 text-muted hover:text-foreground cursor-pointer transition-all hover:scale-125 z-[var(--z-overlap)]",
+  "description": "text-xs text-foreground/50 leading-relaxed mt-2 font-medium border-l-2 border-primary/20 pl-3 opacity-60",
+  "errorMessage": "animate-in fade-in slide-in-from-top-1 flex items-center gap-1.5 text-[length:var(--text-xs)] text-danger font-medium mt-1.5",
+  "helperWrapper": "mt-2",
+  "input": "border-none placeholder:text-foreground/30 text-foreground antialiased block w-full border-transparent bg-transparent focus:ring-0 min-h-0 py-0 text-sm",
+  "inputWrapper": "overflow-hidden isolation-auto flex items-center border border-border bg-surface text-foreground shadow-sm placeholder:text-muted/50 transition-all duration-200 ease-in-out hover:border-primary/40 hover:shadow-md focus-within:ring-2 focus-within:ring-primary/20 focus-within:border-primary outline-none rounded-[var(--radius-md)] min-h-[40px] px-3.5 py-2 gap-3",
+  "label": "text-sm font-bold text-foreground/80 tracking-tight mb-2 transition-all group-hover:text-primary group-focus-within:text-primary",
+}
+`;
+
+exports[`Primitive Migration Guard > Category 3: Structure fields > structure snapshot: fieldset/default 1`] = `
+{
+  "base": "form-field relative group w-full transition-all duration-300 flex flex-col opacity-100 mb-0 min-w-0",
+  "clearButton": "absolute right-4 top-1/2 -translate-y-1/2 text-muted hover:text-foreground cursor-pointer transition-all hover:scale-125 z-[var(--z-overlap)]",
+  "description": "text-xs text-foreground/50 leading-relaxed mt-2 font-medium border-l-2 border-primary/20 pl-3 opacity-60",
+  "errorMessage": "animate-in fade-in slide-in-from-top-1 flex items-center gap-1.5 text-[length:var(--text-xs)] text-danger font-medium mt-1.5",
+  "helperWrapper": "mt-2",
+  "input": "border-none placeholder:text-foreground/30 text-foreground antialiased block w-full border-transparent bg-transparent focus:ring-0 min-h-0 py-0 text-sm",
+  "inputWrapper": "overflow-hidden isolation-auto flex items-center border border-border bg-surface text-foreground shadow-sm placeholder:text-muted/50 transition-all duration-200 ease-in-out hover:border-primary/40 hover:shadow-md focus-within:ring-2 focus-within:ring-primary/20 focus-within:border-primary outline-none rounded-[var(--radius-md)] min-h-[40px] px-3.5 py-2 gap-3",
+  "label": "text-sm font-bold text-foreground/80 tracking-tight mb-2 transition-all group-hover:text-primary group-focus-within:text-primary",
+}
+`;
+
+exports[`Primitive Migration Guard > Category 3: Structure fields > structure snapshot: group/default 1`] = `
+{
+  "base": "form-field relative group w-full transition-all duration-300 flex flex-col opacity-100 mb-0 min-w-0",
+  "clearButton": "absolute right-4 top-1/2 -translate-y-1/2 text-muted hover:text-foreground cursor-pointer transition-all hover:scale-125 z-[var(--z-overlap)]",
+  "description": "text-xs text-foreground/50 leading-relaxed mt-2 font-medium border-l-2 border-primary/20 pl-3 opacity-60",
+  "errorMessage": "animate-in fade-in slide-in-from-top-1 flex items-center gap-1.5 text-[length:var(--text-xs)] text-danger font-medium mt-1.5",
+  "helperWrapper": "mt-2",
+  "input": "border-none placeholder:text-foreground/30 text-foreground antialiased block w-full border-transparent bg-transparent focus:ring-0 min-h-0 py-0 text-sm",
+  "inputWrapper": "overflow-hidden isolation-auto flex items-center border border-border bg-surface text-foreground shadow-sm placeholder:text-muted/50 transition-all duration-200 ease-in-out hover:border-primary/40 hover:shadow-md focus-within:ring-2 focus-within:ring-primary/20 focus-within:border-primary outline-none rounded-[var(--radius-md)] min-h-[40px] px-3.5 py-2 gap-3",
+  "label": "text-sm font-bold text-foreground/80 tracking-tight mb-2 transition-all group-hover:text-primary group-focus-within:text-primary",
+}
+`;
+
+exports[`Primitive Migration Guard > Category 4: Edge cases > density × variant matrix > comfortable + filled 1`] = `
+{
+  "base": "form-field relative group w-full transition-all duration-300 flex flex-col opacity-100 mb-0 min-w-0",
+  "clearButton": "absolute right-4 top-1/2 -translate-y-1/2 text-muted hover:text-foreground cursor-pointer transition-all hover:scale-125 z-[var(--z-overlap)]",
+  "description": "text-xs text-foreground/50 leading-relaxed mt-2 font-medium border-l-2 border-primary/20 pl-3 opacity-60",
+  "errorMessage": "animate-in fade-in slide-in-from-top-1 flex items-center gap-1.5 text-[length:var(--text-xs)] text-danger font-medium mt-1.5",
+  "helperWrapper": "mt-2",
+  "input": "border-none placeholder:text-foreground/30 text-foreground antialiased block w-full border-transparent bg-transparent focus:ring-0 min-h-0 py-0 text-sm",
+  "inputWrapper": "overflow-hidden isolation-auto flex items-center border-none bg-subtle text-foreground placeholder:text-muted/50 transition-colors duration-200 hover:bg-muted/10 focus-within:bg-surface focus-within:ring-2 focus-within:ring-primary/20 outline-none shadow-sm rounded-[var(--radius-md)] min-h-[40px] px-3.5 py-2 gap-3",
+  "label": "text-sm font-bold text-foreground/80 tracking-tight mb-2 transition-all group-hover:text-primary group-focus-within:text-primary",
+}
+`;
+
+exports[`Primitive Migration Guard > Category 4: Edge cases > density × variant matrix > comfortable + outlined 1`] = `
+{
+  "base": "form-field relative group w-full transition-all duration-300 flex flex-col opacity-100 mb-0 min-w-0",
+  "clearButton": "absolute right-4 top-1/2 -translate-y-1/2 text-muted hover:text-foreground cursor-pointer transition-all hover:scale-125 z-[var(--z-overlap)]",
+  "description": "text-xs text-foreground/50 leading-relaxed mt-2 font-medium border-l-2 border-primary/20 pl-3 opacity-60",
+  "errorMessage": "animate-in fade-in slide-in-from-top-1 flex items-center gap-1.5 text-[length:var(--text-xs)] text-danger font-medium mt-1.5",
+  "helperWrapper": "mt-2",
+  "input": "border-none placeholder:text-foreground/30 text-foreground antialiased block w-full border-transparent bg-transparent focus:ring-0 min-h-0 py-0 text-sm",
+  "inputWrapper": "overflow-hidden isolation-auto flex items-center border border-border bg-surface text-foreground shadow-sm placeholder:text-muted/50 transition-all duration-200 ease-in-out hover:border-primary/40 hover:shadow-md focus-within:ring-2 focus-within:ring-primary/20 focus-within:border-primary outline-none rounded-[var(--radius-md)] min-h-[40px] px-3.5 py-2 gap-3",
+  "label": "text-sm font-bold text-foreground/80 tracking-tight mb-2 transition-all group-hover:text-primary group-focus-within:text-primary",
+}
+`;
+
+exports[`Primitive Migration Guard > Category 4: Edge cases > density × variant matrix > comfortable + underlined 1`] = `
+{
+  "base": "form-field relative group w-full transition-all duration-300 flex flex-col opacity-100 mb-0 min-w-0",
+  "clearButton": "absolute right-4 top-1/2 -translate-y-1/2 text-muted hover:text-foreground cursor-pointer transition-all hover:scale-125 z-[var(--z-overlap)]",
+  "description": "text-xs text-foreground/50 leading-relaxed mt-2 font-medium border-l-2 border-primary/20 pl-3 opacity-60",
+  "errorMessage": "animate-in fade-in slide-in-from-top-1 flex items-center gap-1.5 text-[length:var(--text-xs)] text-danger font-medium mt-1.5",
+  "helperWrapper": "mt-2",
+  "input": "border-none placeholder:text-foreground/30 text-foreground antialiased block w-full border-transparent bg-transparent focus:ring-0 min-h-0 py-0 text-sm",
+  "inputWrapper": "overflow-hidden isolation-auto flex items-center border-b-2 border-border bg-transparent text-foreground placeholder:text-muted/50 transition-colors duration-200 hover:border-primary/40 focus-within:border-primary focus-within:ring-0 outline-none rounded-[var(--radius-md)] min-h-[40px] px-3.5 py-2 gap-3",
+  "label": "text-sm font-bold text-foreground/80 tracking-tight mb-2 transition-all group-hover:text-primary group-focus-within:text-primary",
+}
+`;
+
+exports[`Primitive Migration Guard > Category 4: Edge cases > density × variant matrix > compact + filled 1`] = `
+{
+  "base": "form-field relative group w-full transition-all duration-300 flex flex-col opacity-100 mb-0 min-w-0",
+  "clearButton": "absolute right-4 top-1/2 -translate-y-1/2 text-muted hover:text-foreground cursor-pointer transition-all hover:scale-125 z-[var(--z-overlap)]",
+  "description": "text-xs text-foreground/50 leading-relaxed mt-2 font-medium border-l-2 border-primary/20 pl-3 opacity-60",
+  "errorMessage": "animate-in fade-in slide-in-from-top-1 flex items-center gap-1.5 text-[length:var(--text-xs)] text-danger font-medium mt-1.5",
+  "helperWrapper": "mt-2",
+  "input": "border-none placeholder:text-foreground/30 text-foreground antialiased block w-full border-transparent bg-transparent focus:ring-0 min-h-0 py-0 text-sm",
+  "inputWrapper": "overflow-hidden isolation-auto flex items-center border-none bg-subtle text-foreground placeholder:text-muted/50 transition-colors duration-200 hover:bg-muted/10 focus-within:bg-surface focus-within:ring-2 focus-within:ring-primary/20 outline-none shadow-sm rounded-[var(--radius-md)] min-h-[40px] px-3.5 py-2 gap-3",
+  "label": "text-sm font-bold text-foreground/80 tracking-tight mb-2 transition-all group-hover:text-primary group-focus-within:text-primary",
+}
+`;
+
+exports[`Primitive Migration Guard > Category 4: Edge cases > density × variant matrix > compact + outlined 1`] = `
+{
+  "base": "form-field relative group w-full transition-all duration-300 flex flex-col opacity-100 mb-0 min-w-0",
+  "clearButton": "absolute right-4 top-1/2 -translate-y-1/2 text-muted hover:text-foreground cursor-pointer transition-all hover:scale-125 z-[var(--z-overlap)]",
+  "description": "text-xs text-foreground/50 leading-relaxed mt-2 font-medium border-l-2 border-primary/20 pl-3 opacity-60",
+  "errorMessage": "animate-in fade-in slide-in-from-top-1 flex items-center gap-1.5 text-[length:var(--text-xs)] text-danger font-medium mt-1.5",
+  "helperWrapper": "mt-2",
+  "input": "border-none placeholder:text-foreground/30 text-foreground antialiased block w-full border-transparent bg-transparent focus:ring-0 min-h-0 py-0 text-sm",
+  "inputWrapper": "overflow-hidden isolation-auto flex items-center border border-border bg-surface text-foreground shadow-sm placeholder:text-muted/50 transition-all duration-200 ease-in-out hover:border-primary/40 hover:shadow-md focus-within:ring-2 focus-within:ring-primary/20 focus-within:border-primary outline-none rounded-[var(--radius-md)] min-h-[40px] px-3.5 py-2 gap-3",
+  "label": "text-sm font-bold text-foreground/80 tracking-tight mb-2 transition-all group-hover:text-primary group-focus-within:text-primary",
+}
+`;
+
+exports[`Primitive Migration Guard > Category 4: Edge cases > density × variant matrix > compact + underlined 1`] = `
+{
+  "base": "form-field relative group w-full transition-all duration-300 flex flex-col opacity-100 mb-0 min-w-0",
+  "clearButton": "absolute right-4 top-1/2 -translate-y-1/2 text-muted hover:text-foreground cursor-pointer transition-all hover:scale-125 z-[var(--z-overlap)]",
+  "description": "text-xs text-foreground/50 leading-relaxed mt-2 font-medium border-l-2 border-primary/20 pl-3 opacity-60",
+  "errorMessage": "animate-in fade-in slide-in-from-top-1 flex items-center gap-1.5 text-[length:var(--text-xs)] text-danger font-medium mt-1.5",
+  "helperWrapper": "mt-2",
+  "input": "border-none placeholder:text-foreground/30 text-foreground antialiased block w-full border-transparent bg-transparent focus:ring-0 min-h-0 py-0 text-sm",
+  "inputWrapper": "overflow-hidden isolation-auto flex items-center border-b-2 border-border bg-transparent text-foreground placeholder:text-muted/50 transition-colors duration-200 hover:border-primary/40 focus-within:border-primary focus-within:ring-0 outline-none rounded-[var(--radius-md)] min-h-[40px] px-3.5 py-2 gap-3",
+  "label": "text-sm font-bold text-foreground/80 tracking-tight mb-2 transition-all group-hover:text-primary group-focus-within:text-primary",
+}
+`;
+
+exports[`Primitive Migration Guard > Category 4: Edge cases > density × variant matrix > spacious + filled 1`] = `
+{
+  "base": "form-field relative group w-full transition-all duration-300 flex flex-col opacity-100 mb-0 min-w-0",
+  "clearButton": "absolute right-4 top-1/2 -translate-y-1/2 text-muted hover:text-foreground cursor-pointer transition-all hover:scale-125 z-[var(--z-overlap)]",
+  "description": "text-xs text-foreground/50 leading-relaxed mt-2 font-medium border-l-2 border-primary/20 pl-3 opacity-60",
+  "errorMessage": "animate-in fade-in slide-in-from-top-1 flex items-center gap-1.5 text-[length:var(--text-xs)] text-danger font-medium mt-1.5",
+  "helperWrapper": "mt-2",
+  "input": "border-none placeholder:text-foreground/30 text-foreground antialiased block w-full border-transparent bg-transparent focus:ring-0 min-h-0 py-0 text-sm",
+  "inputWrapper": "overflow-hidden isolation-auto flex items-center border-none bg-subtle text-foreground placeholder:text-muted/50 transition-colors duration-200 hover:bg-muted/10 focus-within:bg-surface focus-within:ring-2 focus-within:ring-primary/20 outline-none shadow-sm rounded-[var(--radius-md)] min-h-[40px] px-3.5 py-2 gap-3",
+  "label": "text-sm font-bold text-foreground/80 tracking-tight mb-2 transition-all group-hover:text-primary group-focus-within:text-primary",
+}
+`;
+
+exports[`Primitive Migration Guard > Category 4: Edge cases > density × variant matrix > spacious + outlined 1`] = `
+{
+  "base": "form-field relative group w-full transition-all duration-300 flex flex-col opacity-100 mb-0 min-w-0",
+  "clearButton": "absolute right-4 top-1/2 -translate-y-1/2 text-muted hover:text-foreground cursor-pointer transition-all hover:scale-125 z-[var(--z-overlap)]",
+  "description": "text-xs text-foreground/50 leading-relaxed mt-2 font-medium border-l-2 border-primary/20 pl-3 opacity-60",
+  "errorMessage": "animate-in fade-in slide-in-from-top-1 flex items-center gap-1.5 text-[length:var(--text-xs)] text-danger font-medium mt-1.5",
+  "helperWrapper": "mt-2",
+  "input": "border-none placeholder:text-foreground/30 text-foreground antialiased block w-full border-transparent bg-transparent focus:ring-0 min-h-0 py-0 text-sm",
+  "inputWrapper": "overflow-hidden isolation-auto flex items-center border border-border bg-surface text-foreground shadow-sm placeholder:text-muted/50 transition-all duration-200 ease-in-out hover:border-primary/40 hover:shadow-md focus-within:ring-2 focus-within:ring-primary/20 focus-within:border-primary outline-none rounded-[var(--radius-md)] min-h-[40px] px-3.5 py-2 gap-3",
+  "label": "text-sm font-bold text-foreground/80 tracking-tight mb-2 transition-all group-hover:text-primary group-focus-within:text-primary",
+}
+`;
+
+exports[`Primitive Migration Guard > Category 4: Edge cases > density × variant matrix > spacious + underlined 1`] = `
+{
+  "base": "form-field relative group w-full transition-all duration-300 flex flex-col opacity-100 mb-0 min-w-0",
+  "clearButton": "absolute right-4 top-1/2 -translate-y-1/2 text-muted hover:text-foreground cursor-pointer transition-all hover:scale-125 z-[var(--z-overlap)]",
+  "description": "text-xs text-foreground/50 leading-relaxed mt-2 font-medium border-l-2 border-primary/20 pl-3 opacity-60",
+  "errorMessage": "animate-in fade-in slide-in-from-top-1 flex items-center gap-1.5 text-[length:var(--text-xs)] text-danger font-medium mt-1.5",
+  "helperWrapper": "mt-2",
+  "input": "border-none placeholder:text-foreground/30 text-foreground antialiased block w-full border-transparent bg-transparent focus:ring-0 min-h-0 py-0 text-sm",
+  "inputWrapper": "overflow-hidden isolation-auto flex items-center border-b-2 border-border bg-transparent text-foreground placeholder:text-muted/50 transition-colors duration-200 hover:border-primary/40 focus-within:border-primary focus-within:ring-0 outline-none rounded-[var(--radius-md)] min-h-[40px] px-3.5 py-2 gap-3",
+  "label": "text-sm font-bold text-foreground/80 tracking-tight mb-2 transition-all group-hover:text-primary group-focus-within:text-primary",
+}
+`;
+
+exports[`Primitive Migration Guard > Category 4: Edge cases > field with description 1`] = `
+{
+  "base": "form-field relative group w-full transition-all duration-300 flex flex-col opacity-100 mb-0 min-w-0",
+  "clearButton": "absolute right-4 top-1/2 -translate-y-1/2 text-muted hover:text-foreground cursor-pointer transition-all hover:scale-125 z-[var(--z-overlap)]",
+  "description": "text-xs text-foreground/50 leading-relaxed mt-2 font-medium border-l-2 border-primary/20 pl-3 opacity-60",
+  "errorMessage": "animate-in fade-in slide-in-from-top-1 flex items-center gap-1.5 text-[length:var(--text-xs)] text-danger font-medium mt-1.5",
+  "helperWrapper": "mt-2",
+  "input": "border-none placeholder:text-foreground/30 text-foreground antialiased block w-full border-transparent bg-transparent focus:ring-0 min-h-0 py-0 text-sm",
+  "inputWrapper": "overflow-hidden isolation-auto flex items-center border border-border bg-surface text-foreground shadow-sm placeholder:text-muted/50 transition-all duration-200 ease-in-out hover:border-primary/40 hover:shadow-md focus-within:ring-2 focus-within:ring-primary/20 focus-within:border-primary outline-none rounded-[var(--radius-md)] min-h-[40px] px-3.5 py-2 gap-3",
+  "label": "text-sm font-bold text-foreground/80 tracking-tight mb-2 transition-all group-hover:text-primary group-focus-within:text-primary",
+}
+`;
+
+exports[`Primitive Migration Guard > Category 4: Edge cases > field with placeholder 1`] = `
+{
+  "base": "form-field relative group w-full transition-all duration-300 flex flex-col opacity-100 mb-0 min-w-0",
+  "clearButton": "absolute right-4 top-1/2 -translate-y-1/2 text-muted hover:text-foreground cursor-pointer transition-all hover:scale-125 z-[var(--z-overlap)]",
+  "description": "text-xs text-foreground/50 leading-relaxed mt-2 font-medium border-l-2 border-primary/20 pl-3 opacity-60",
+  "errorMessage": "animate-in fade-in slide-in-from-top-1 flex items-center gap-1.5 text-[length:var(--text-xs)] text-danger font-medium mt-1.5",
+  "helperWrapper": "mt-2",
+  "input": "border-none placeholder:text-foreground/30 text-foreground antialiased block w-full border-transparent bg-transparent focus:ring-0 min-h-0 py-0 text-sm",
+  "inputWrapper": "overflow-hidden isolation-auto flex items-center border border-border bg-surface text-foreground shadow-sm placeholder:text-muted/50 transition-all duration-200 ease-in-out hover:border-primary/40 hover:shadow-md focus-within:ring-2 focus-within:ring-primary/20 focus-within:border-primary outline-none rounded-[var(--radius-md)] min-h-[40px] px-3.5 py-2 gap-3",
+  "label": "text-sm font-bold text-foreground/80 tracking-tight mb-2 transition-all group-hover:text-primary group-focus-within:text-primary",
+}
+`;
+
+exports[`Primitive Migration Guard > Category 4: Edge cases > headless mode produces base styles 1`] = `
+{
+  "base": "form-field relative group w-full transition-all duration-300 flex flex-col opacity-100 mb-0 min-w-0",
+  "clearButton": "absolute right-4 top-1/2 -translate-y-1/2 text-muted hover:text-foreground cursor-pointer transition-all hover:scale-125 z-[var(--z-overlap)]",
+  "description": "text-xs text-foreground/50 leading-relaxed mt-2 font-medium border-l-2 border-primary/20 pl-3 opacity-60",
+  "errorMessage": "animate-in fade-in slide-in-from-top-1 flex items-center gap-1.5 text-[length:var(--text-xs)] text-danger font-medium mt-1.5",
+  "helperWrapper": "mt-2",
+  "input": "border-none placeholder:text-foreground/30 text-foreground antialiased block w-full border-transparent bg-transparent focus:ring-0 min-h-0 py-0 text-sm",
+  "inputWrapper": "overflow-hidden isolation-auto flex items-center border border-border bg-surface text-foreground shadow-sm placeholder:text-muted/50 transition-all duration-200 ease-in-out hover:border-primary/40 hover:shadow-md focus-within:ring-2 focus-within:ring-primary/20 focus-within:border-primary outline-none rounded-[var(--radius-md)] min-h-[40px] px-3.5 py-2 gap-3",
+  "label": "text-sm font-bold text-foreground/80 tracking-tight mb-2 transition-all group-hover:text-primary group-focus-within:text-primary",
+}
+`;
+
+exports[`Primitive Migration Guard > Category 4: Edge cases > hidden label 1`] = `
+{
+  "base": "form-field relative group w-full transition-all duration-300 flex flex-col opacity-100 mb-0 min-w-0",
+  "clearButton": "absolute right-4 top-1/2 -translate-y-1/2 text-muted hover:text-foreground cursor-pointer transition-all hover:scale-125 z-[var(--z-overlap)]",
+  "description": "text-xs text-foreground/50 leading-relaxed mt-2 font-medium border-l-2 border-primary/20 pl-3 opacity-60",
+  "errorMessage": "animate-in fade-in slide-in-from-top-1 flex items-center gap-1.5 text-[length:var(--text-xs)] text-danger font-medium mt-1.5",
+  "helperWrapper": "mt-2",
+  "input": "border-none placeholder:text-foreground/30 text-foreground antialiased block w-full border-transparent bg-transparent focus:ring-0 min-h-0 py-0 text-sm",
+  "inputWrapper": "overflow-hidden isolation-auto flex items-center border border-border bg-surface text-foreground shadow-sm placeholder:text-muted/50 transition-all duration-200 ease-in-out hover:border-primary/40 hover:shadow-md focus-within:ring-2 focus-within:ring-primary/20 focus-within:border-primary outline-none rounded-[var(--radius-md)] min-h-[40px] px-3.5 py-2 gap-3",
+  "label": "text-sm font-bold text-foreground/80 tracking-tight mb-2 transition-all group-hover:text-primary group-focus-within:text-primary",
+}
+`;
+
+exports[`Primitive Migration Guard > Category 4: Edge cases > side label placement 1`] = `
+{
+  "base": "form-field relative group w-full transition-all duration-300 flex flex-col opacity-100 mb-0 min-w-0",
+  "clearButton": "absolute right-4 top-1/2 -translate-y-1/2 text-muted hover:text-foreground cursor-pointer transition-all hover:scale-125 z-[var(--z-overlap)]",
+  "description": "text-xs text-foreground/50 leading-relaxed mt-2 font-medium border-l-2 border-primary/20 pl-3 opacity-60",
+  "errorMessage": "animate-in fade-in slide-in-from-top-1 flex items-center gap-1.5 text-[length:var(--text-xs)] text-danger font-medium mt-1.5",
+  "helperWrapper": "mt-2",
+  "input": "border-none placeholder:text-foreground/30 text-foreground antialiased block w-full border-transparent bg-transparent focus:ring-0 min-h-0 py-0 text-sm",
+  "inputWrapper": "overflow-hidden isolation-auto flex items-center border border-border bg-surface text-foreground shadow-sm placeholder:text-muted/50 transition-all duration-200 ease-in-out hover:border-primary/40 hover:shadow-md focus-within:ring-2 focus-within:ring-primary/20 focus-within:border-primary outline-none rounded-[var(--radius-md)] min-h-[40px] px-3.5 py-2 gap-3",
+  "label": "text-sm font-bold text-foreground/80 tracking-tight mb-2 transition-all group-hover:text-primary group-focus-within:text-primary",
+}
+`;
+
+exports[`Primitive Migration Guard > Category 4: Edge cases > variant × intent matrix > filled + danger 1`] = `
+{
+  "base": "form-field relative group w-full transition-all duration-300 flex flex-col opacity-100 mb-0 min-w-0",
+  "clearButton": "absolute right-4 top-1/2 -translate-y-1/2 text-muted hover:text-foreground cursor-pointer transition-all hover:scale-125 z-[var(--z-overlap)]",
+  "description": "text-xs text-foreground/50 leading-relaxed mt-2 font-medium border-l-2 border-primary/20 pl-3 opacity-60",
+  "errorMessage": "animate-in fade-in slide-in-from-top-1 flex items-center gap-1.5 text-[length:var(--text-xs)] text-danger font-medium mt-1.5",
+  "helperWrapper": "mt-2",
+  "input": "border-none placeholder:text-foreground/30 text-foreground antialiased block w-full border-transparent bg-transparent focus:ring-0 min-h-0 py-0 text-sm",
+  "inputWrapper": "overflow-hidden isolation-auto flex items-center border-none bg-subtle placeholder:text-muted/50 transition-colors duration-200 hover:bg-muted/10 focus-within:bg-surface focus-within:ring-2 focus-within:ring-primary/20 outline-none shadow-sm text-danger border-danger group-focus-within:text-danger rounded-[var(--radius-md)] min-h-[40px] px-3.5 py-2 gap-3",
+  "label": "text-sm font-bold text-foreground/80 tracking-tight mb-2 transition-all group-hover:text-primary group-focus-within:text-primary",
+}
+`;
+
+exports[`Primitive Migration Guard > Category 4: Edge cases > variant × intent matrix > filled + primary 1`] = `
+{
+  "base": "form-field relative group w-full transition-all duration-300 flex flex-col opacity-100 mb-0 min-w-0",
+  "clearButton": "absolute right-4 top-1/2 -translate-y-1/2 text-muted hover:text-foreground cursor-pointer transition-all hover:scale-125 z-[var(--z-overlap)]",
+  "description": "text-xs text-foreground/50 leading-relaxed mt-2 font-medium border-l-2 border-primary/20 pl-3 opacity-60",
+  "errorMessage": "animate-in fade-in slide-in-from-top-1 flex items-center gap-1.5 text-[length:var(--text-xs)] text-danger font-medium mt-1.5",
+  "helperWrapper": "mt-2",
+  "input": "border-none placeholder:text-foreground/30 text-foreground antialiased block w-full border-transparent bg-transparent focus:ring-0 min-h-0 py-0 text-sm",
+  "inputWrapper": "overflow-hidden isolation-auto flex items-center border-none bg-subtle placeholder:text-muted/50 transition-colors duration-200 hover:bg-muted/10 focus-within:bg-surface focus-within:ring-2 focus-within:ring-primary/20 outline-none shadow-sm text-primary border-primary group-focus-within:text-primary rounded-[var(--radius-md)] min-h-[40px] px-3.5 py-2 gap-3",
+  "label": "text-sm font-bold text-foreground/80 tracking-tight mb-2 transition-all group-hover:text-primary group-focus-within:text-primary",
+}
+`;
+
+exports[`Primitive Migration Guard > Category 4: Edge cases > variant × intent matrix > filled + secondary 1`] = `
+{
+  "base": "form-field relative group w-full transition-all duration-300 flex flex-col opacity-100 mb-0 min-w-0",
+  "clearButton": "absolute right-4 top-1/2 -translate-y-1/2 text-muted hover:text-foreground cursor-pointer transition-all hover:scale-125 z-[var(--z-overlap)]",
+  "description": "text-xs text-foreground/50 leading-relaxed mt-2 font-medium border-l-2 border-primary/20 pl-3 opacity-60",
+  "errorMessage": "animate-in fade-in slide-in-from-top-1 flex items-center gap-1.5 text-[length:var(--text-xs)] text-danger font-medium mt-1.5",
+  "helperWrapper": "mt-2",
+  "input": "border-none placeholder:text-foreground/30 text-foreground antialiased block w-full border-transparent bg-transparent focus:ring-0 min-h-0 py-0 text-sm",
+  "inputWrapper": "overflow-hidden isolation-auto flex items-center border-none bg-subtle placeholder:text-muted/50 transition-colors duration-200 hover:bg-muted/10 focus-within:bg-surface focus-within:ring-2 focus-within:ring-primary/20 outline-none shadow-sm text-secondary border-secondary group-focus-within:text-secondary rounded-[var(--radius-md)] min-h-[40px] px-3.5 py-2 gap-3",
+  "label": "text-sm font-bold text-foreground/80 tracking-tight mb-2 transition-all group-hover:text-primary group-focus-within:text-primary",
+}
+`;
+
+exports[`Primitive Migration Guard > Category 4: Edge cases > variant × intent matrix > filled + subtle 1`] = `
+{
+  "base": "form-field relative group w-full transition-all duration-300 flex flex-col opacity-100 mb-0 min-w-0",
+  "clearButton": "absolute right-4 top-1/2 -translate-y-1/2 text-muted hover:text-foreground cursor-pointer transition-all hover:scale-125 z-[var(--z-overlap)]",
+  "description": "text-xs text-foreground/50 leading-relaxed mt-2 font-medium border-l-2 border-primary/20 pl-3 opacity-60",
+  "errorMessage": "animate-in fade-in slide-in-from-top-1 flex items-center gap-1.5 text-[length:var(--text-xs)] text-danger font-medium mt-1.5",
+  "helperWrapper": "mt-2",
+  "input": "border-none placeholder:text-foreground/30 text-foreground antialiased block w-full border-transparent bg-transparent focus:ring-0 min-h-0 py-0 text-sm",
+  "inputWrapper": "overflow-hidden isolation-auto flex items-center border-none bg-subtle text-foreground placeholder:text-muted/50 transition-colors duration-200 hover:bg-muted/10 focus-within:bg-surface focus-within:ring-2 focus-within:ring-primary/20 outline-none shadow-sm rounded-[var(--radius-md)] min-h-[40px] px-3.5 py-2 gap-3",
+  "label": "text-sm font-bold text-foreground/80 tracking-tight mb-2 transition-all group-hover:text-primary group-focus-within:text-primary",
+}
+`;
+
+exports[`Primitive Migration Guard > Category 4: Edge cases > variant × intent matrix > filled + success 1`] = `
+{
+  "base": "form-field relative group w-full transition-all duration-300 flex flex-col opacity-100 mb-0 min-w-0",
+  "clearButton": "absolute right-4 top-1/2 -translate-y-1/2 text-muted hover:text-foreground cursor-pointer transition-all hover:scale-125 z-[var(--z-overlap)]",
+  "description": "text-xs text-foreground/50 leading-relaxed mt-2 font-medium border-l-2 border-primary/20 pl-3 opacity-60",
+  "errorMessage": "animate-in fade-in slide-in-from-top-1 flex items-center gap-1.5 text-[length:var(--text-xs)] text-danger font-medium mt-1.5",
+  "helperWrapper": "mt-2",
+  "input": "border-none placeholder:text-foreground/30 text-foreground antialiased block w-full border-transparent bg-transparent focus:ring-0 min-h-0 py-0 text-sm",
+  "inputWrapper": "overflow-hidden isolation-auto flex items-center border-none bg-subtle placeholder:text-muted/50 transition-colors duration-200 hover:bg-muted/10 focus-within:bg-surface focus-within:ring-2 focus-within:ring-primary/20 outline-none shadow-sm text-success border-success group-focus-within:text-success rounded-[var(--radius-md)] min-h-[40px] px-3.5 py-2 gap-3",
+  "label": "text-sm font-bold text-foreground/80 tracking-tight mb-2 transition-all group-hover:text-primary group-focus-within:text-primary",
+}
+`;
+
+exports[`Primitive Migration Guard > Category 4: Edge cases > variant × intent matrix > filled + warning 1`] = `
+{
+  "base": "form-field relative group w-full transition-all duration-300 flex flex-col opacity-100 mb-0 min-w-0",
+  "clearButton": "absolute right-4 top-1/2 -translate-y-1/2 text-muted hover:text-foreground cursor-pointer transition-all hover:scale-125 z-[var(--z-overlap)]",
+  "description": "text-xs text-foreground/50 leading-relaxed mt-2 font-medium border-l-2 border-primary/20 pl-3 opacity-60",
+  "errorMessage": "animate-in fade-in slide-in-from-top-1 flex items-center gap-1.5 text-[length:var(--text-xs)] text-danger font-medium mt-1.5",
+  "helperWrapper": "mt-2",
+  "input": "border-none placeholder:text-foreground/30 text-foreground antialiased block w-full border-transparent bg-transparent focus:ring-0 min-h-0 py-0 text-sm",
+  "inputWrapper": "overflow-hidden isolation-auto flex items-center border-none bg-subtle placeholder:text-muted/50 transition-colors duration-200 hover:bg-muted/10 focus-within:bg-surface focus-within:ring-2 focus-within:ring-primary/20 outline-none shadow-sm text-warning border-warning group-focus-within:text-warning rounded-[var(--radius-md)] min-h-[40px] px-3.5 py-2 gap-3",
+  "label": "text-sm font-bold text-foreground/80 tracking-tight mb-2 transition-all group-hover:text-primary group-focus-within:text-primary",
+}
+`;
+
+exports[`Primitive Migration Guard > Category 4: Edge cases > variant × intent matrix > outlined + danger 1`] = `
+{
+  "base": "form-field relative group w-full transition-all duration-300 flex flex-col opacity-100 mb-0 min-w-0",
+  "clearButton": "absolute right-4 top-1/2 -translate-y-1/2 text-muted hover:text-foreground cursor-pointer transition-all hover:scale-125 z-[var(--z-overlap)]",
+  "description": "text-xs text-foreground/50 leading-relaxed mt-2 font-medium border-l-2 border-primary/20 pl-3 opacity-60",
+  "errorMessage": "animate-in fade-in slide-in-from-top-1 flex items-center gap-1.5 text-[length:var(--text-xs)] text-danger font-medium mt-1.5",
+  "helperWrapper": "mt-2",
+  "input": "border-none placeholder:text-foreground/30 text-foreground antialiased block w-full border-transparent bg-transparent focus:ring-0 min-h-0 py-0 text-sm",
+  "inputWrapper": "overflow-hidden isolation-auto flex items-center border bg-surface shadow-sm placeholder:text-muted/50 transition-all duration-200 ease-in-out hover:border-primary/40 hover:shadow-md focus-within:ring-2 focus-within:ring-primary/20 focus-within:border-primary outline-none text-danger border-danger group-focus-within:text-danger rounded-[var(--radius-md)] min-h-[40px] px-3.5 py-2 gap-3",
+  "label": "text-sm font-bold text-foreground/80 tracking-tight mb-2 transition-all group-hover:text-primary group-focus-within:text-primary",
+}
+`;
+
+exports[`Primitive Migration Guard > Category 4: Edge cases > variant × intent matrix > outlined + primary 1`] = `
+{
+  "base": "form-field relative group w-full transition-all duration-300 flex flex-col opacity-100 mb-0 min-w-0",
+  "clearButton": "absolute right-4 top-1/2 -translate-y-1/2 text-muted hover:text-foreground cursor-pointer transition-all hover:scale-125 z-[var(--z-overlap)]",
+  "description": "text-xs text-foreground/50 leading-relaxed mt-2 font-medium border-l-2 border-primary/20 pl-3 opacity-60",
+  "errorMessage": "animate-in fade-in slide-in-from-top-1 flex items-center gap-1.5 text-[length:var(--text-xs)] text-danger font-medium mt-1.5",
+  "helperWrapper": "mt-2",
+  "input": "border-none placeholder:text-foreground/30 text-foreground antialiased block w-full border-transparent bg-transparent focus:ring-0 min-h-0 py-0 text-sm",
+  "inputWrapper": "overflow-hidden isolation-auto flex items-center border bg-surface shadow-sm placeholder:text-muted/50 transition-all duration-200 ease-in-out hover:border-primary/40 hover:shadow-md focus-within:ring-2 focus-within:ring-primary/20 focus-within:border-primary outline-none text-primary border-primary group-focus-within:text-primary rounded-[var(--radius-md)] min-h-[40px] px-3.5 py-2 gap-3",
+  "label": "text-sm font-bold text-foreground/80 tracking-tight mb-2 transition-all group-hover:text-primary group-focus-within:text-primary",
+}
+`;
+
+exports[`Primitive Migration Guard > Category 4: Edge cases > variant × intent matrix > outlined + secondary 1`] = `
+{
+  "base": "form-field relative group w-full transition-all duration-300 flex flex-col opacity-100 mb-0 min-w-0",
+  "clearButton": "absolute right-4 top-1/2 -translate-y-1/2 text-muted hover:text-foreground cursor-pointer transition-all hover:scale-125 z-[var(--z-overlap)]",
+  "description": "text-xs text-foreground/50 leading-relaxed mt-2 font-medium border-l-2 border-primary/20 pl-3 opacity-60",
+  "errorMessage": "animate-in fade-in slide-in-from-top-1 flex items-center gap-1.5 text-[length:var(--text-xs)] text-danger font-medium mt-1.5",
+  "helperWrapper": "mt-2",
+  "input": "border-none placeholder:text-foreground/30 text-foreground antialiased block w-full border-transparent bg-transparent focus:ring-0 min-h-0 py-0 text-sm",
+  "inputWrapper": "overflow-hidden isolation-auto flex items-center border bg-surface shadow-sm placeholder:text-muted/50 transition-all duration-200 ease-in-out hover:border-primary/40 hover:shadow-md focus-within:ring-2 focus-within:ring-primary/20 focus-within:border-primary outline-none text-secondary border-secondary group-focus-within:text-secondary rounded-[var(--radius-md)] min-h-[40px] px-3.5 py-2 gap-3",
+  "label": "text-sm font-bold text-foreground/80 tracking-tight mb-2 transition-all group-hover:text-primary group-focus-within:text-primary",
+}
+`;
+
+exports[`Primitive Migration Guard > Category 4: Edge cases > variant × intent matrix > outlined + subtle 1`] = `
+{
+  "base": "form-field relative group w-full transition-all duration-300 flex flex-col opacity-100 mb-0 min-w-0",
+  "clearButton": "absolute right-4 top-1/2 -translate-y-1/2 text-muted hover:text-foreground cursor-pointer transition-all hover:scale-125 z-[var(--z-overlap)]",
+  "description": "text-xs text-foreground/50 leading-relaxed mt-2 font-medium border-l-2 border-primary/20 pl-3 opacity-60",
+  "errorMessage": "animate-in fade-in slide-in-from-top-1 flex items-center gap-1.5 text-[length:var(--text-xs)] text-danger font-medium mt-1.5",
+  "helperWrapper": "mt-2",
+  "input": "border-none placeholder:text-foreground/30 text-foreground antialiased block w-full border-transparent bg-transparent focus:ring-0 min-h-0 py-0 text-sm",
+  "inputWrapper": "overflow-hidden isolation-auto flex items-center border border-border bg-surface text-foreground shadow-sm placeholder:text-muted/50 transition-all duration-200 ease-in-out hover:border-primary/40 hover:shadow-md focus-within:ring-2 focus-within:ring-primary/20 focus-within:border-primary outline-none rounded-[var(--radius-md)] min-h-[40px] px-3.5 py-2 gap-3",
+  "label": "text-sm font-bold text-foreground/80 tracking-tight mb-2 transition-all group-hover:text-primary group-focus-within:text-primary",
+}
+`;
+
+exports[`Primitive Migration Guard > Category 4: Edge cases > variant × intent matrix > outlined + success 1`] = `
+{
+  "base": "form-field relative group w-full transition-all duration-300 flex flex-col opacity-100 mb-0 min-w-0",
+  "clearButton": "absolute right-4 top-1/2 -translate-y-1/2 text-muted hover:text-foreground cursor-pointer transition-all hover:scale-125 z-[var(--z-overlap)]",
+  "description": "text-xs text-foreground/50 leading-relaxed mt-2 font-medium border-l-2 border-primary/20 pl-3 opacity-60",
+  "errorMessage": "animate-in fade-in slide-in-from-top-1 flex items-center gap-1.5 text-[length:var(--text-xs)] text-danger font-medium mt-1.5",
+  "helperWrapper": "mt-2",
+  "input": "border-none placeholder:text-foreground/30 text-foreground antialiased block w-full border-transparent bg-transparent focus:ring-0 min-h-0 py-0 text-sm",
+  "inputWrapper": "overflow-hidden isolation-auto flex items-center border bg-surface shadow-sm placeholder:text-muted/50 transition-all duration-200 ease-in-out hover:border-primary/40 hover:shadow-md focus-within:ring-2 focus-within:ring-primary/20 focus-within:border-primary outline-none text-success border-success group-focus-within:text-success rounded-[var(--radius-md)] min-h-[40px] px-3.5 py-2 gap-3",
+  "label": "text-sm font-bold text-foreground/80 tracking-tight mb-2 transition-all group-hover:text-primary group-focus-within:text-primary",
+}
+`;
+
+exports[`Primitive Migration Guard > Category 4: Edge cases > variant × intent matrix > outlined + warning 1`] = `
+{
+  "base": "form-field relative group w-full transition-all duration-300 flex flex-col opacity-100 mb-0 min-w-0",
+  "clearButton": "absolute right-4 top-1/2 -translate-y-1/2 text-muted hover:text-foreground cursor-pointer transition-all hover:scale-125 z-[var(--z-overlap)]",
+  "description": "text-xs text-foreground/50 leading-relaxed mt-2 font-medium border-l-2 border-primary/20 pl-3 opacity-60",
+  "errorMessage": "animate-in fade-in slide-in-from-top-1 flex items-center gap-1.5 text-[length:var(--text-xs)] text-danger font-medium mt-1.5",
+  "helperWrapper": "mt-2",
+  "input": "border-none placeholder:text-foreground/30 text-foreground antialiased block w-full border-transparent bg-transparent focus:ring-0 min-h-0 py-0 text-sm",
+  "inputWrapper": "overflow-hidden isolation-auto flex items-center border bg-surface shadow-sm placeholder:text-muted/50 transition-all duration-200 ease-in-out hover:border-primary/40 hover:shadow-md focus-within:ring-2 focus-within:ring-primary/20 focus-within:border-primary outline-none text-warning border-warning group-focus-within:text-warning rounded-[var(--radius-md)] min-h-[40px] px-3.5 py-2 gap-3",
+  "label": "text-sm font-bold text-foreground/80 tracking-tight mb-2 transition-all group-hover:text-primary group-focus-within:text-primary",
+}
+`;
+
+exports[`Primitive Migration Guard > Category 4: Edge cases > variant × intent matrix > underlined + danger 1`] = `
+{
+  "base": "form-field relative group w-full transition-all duration-300 flex flex-col opacity-100 mb-0 min-w-0",
+  "clearButton": "absolute right-4 top-1/2 -translate-y-1/2 text-muted hover:text-foreground cursor-pointer transition-all hover:scale-125 z-[var(--z-overlap)]",
+  "description": "text-xs text-foreground/50 leading-relaxed mt-2 font-medium border-l-2 border-primary/20 pl-3 opacity-60",
+  "errorMessage": "animate-in fade-in slide-in-from-top-1 flex items-center gap-1.5 text-[length:var(--text-xs)] text-danger font-medium mt-1.5",
+  "helperWrapper": "mt-2",
+  "input": "border-none placeholder:text-foreground/30 text-foreground antialiased block w-full border-transparent bg-transparent focus:ring-0 min-h-0 py-0 text-sm",
+  "inputWrapper": "overflow-hidden isolation-auto flex items-center border-b-2 bg-transparent placeholder:text-muted/50 transition-colors duration-200 hover:border-primary/40 focus-within:border-primary focus-within:ring-0 outline-none text-danger border-danger group-focus-within:text-danger rounded-[var(--radius-md)] min-h-[40px] px-3.5 py-2 gap-3",
+  "label": "text-sm font-bold text-foreground/80 tracking-tight mb-2 transition-all group-hover:text-primary group-focus-within:text-primary",
+}
+`;
+
+exports[`Primitive Migration Guard > Category 4: Edge cases > variant × intent matrix > underlined + primary 1`] = `
+{
+  "base": "form-field relative group w-full transition-all duration-300 flex flex-col opacity-100 mb-0 min-w-0",
+  "clearButton": "absolute right-4 top-1/2 -translate-y-1/2 text-muted hover:text-foreground cursor-pointer transition-all hover:scale-125 z-[var(--z-overlap)]",
+  "description": "text-xs text-foreground/50 leading-relaxed mt-2 font-medium border-l-2 border-primary/20 pl-3 opacity-60",
+  "errorMessage": "animate-in fade-in slide-in-from-top-1 flex items-center gap-1.5 text-[length:var(--text-xs)] text-danger font-medium mt-1.5",
+  "helperWrapper": "mt-2",
+  "input": "border-none placeholder:text-foreground/30 text-foreground antialiased block w-full border-transparent bg-transparent focus:ring-0 min-h-0 py-0 text-sm",
+  "inputWrapper": "overflow-hidden isolation-auto flex items-center border-b-2 bg-transparent placeholder:text-muted/50 transition-colors duration-200 hover:border-primary/40 focus-within:border-primary focus-within:ring-0 outline-none text-primary border-primary group-focus-within:text-primary rounded-[var(--radius-md)] min-h-[40px] px-3.5 py-2 gap-3",
+  "label": "text-sm font-bold text-foreground/80 tracking-tight mb-2 transition-all group-hover:text-primary group-focus-within:text-primary",
+}
+`;
+
+exports[`Primitive Migration Guard > Category 4: Edge cases > variant × intent matrix > underlined + secondary 1`] = `
+{
+  "base": "form-field relative group w-full transition-all duration-300 flex flex-col opacity-100 mb-0 min-w-0",
+  "clearButton": "absolute right-4 top-1/2 -translate-y-1/2 text-muted hover:text-foreground cursor-pointer transition-all hover:scale-125 z-[var(--z-overlap)]",
+  "description": "text-xs text-foreground/50 leading-relaxed mt-2 font-medium border-l-2 border-primary/20 pl-3 opacity-60",
+  "errorMessage": "animate-in fade-in slide-in-from-top-1 flex items-center gap-1.5 text-[length:var(--text-xs)] text-danger font-medium mt-1.5",
+  "helperWrapper": "mt-2",
+  "input": "border-none placeholder:text-foreground/30 text-foreground antialiased block w-full border-transparent bg-transparent focus:ring-0 min-h-0 py-0 text-sm",
+  "inputWrapper": "overflow-hidden isolation-auto flex items-center border-b-2 bg-transparent placeholder:text-muted/50 transition-colors duration-200 hover:border-primary/40 focus-within:border-primary focus-within:ring-0 outline-none text-secondary border-secondary group-focus-within:text-secondary rounded-[var(--radius-md)] min-h-[40px] px-3.5 py-2 gap-3",
+  "label": "text-sm font-bold text-foreground/80 tracking-tight mb-2 transition-all group-hover:text-primary group-focus-within:text-primary",
+}
+`;
+
+exports[`Primitive Migration Guard > Category 4: Edge cases > variant × intent matrix > underlined + subtle 1`] = `
+{
+  "base": "form-field relative group w-full transition-all duration-300 flex flex-col opacity-100 mb-0 min-w-0",
+  "clearButton": "absolute right-4 top-1/2 -translate-y-1/2 text-muted hover:text-foreground cursor-pointer transition-all hover:scale-125 z-[var(--z-overlap)]",
+  "description": "text-xs text-foreground/50 leading-relaxed mt-2 font-medium border-l-2 border-primary/20 pl-3 opacity-60",
+  "errorMessage": "animate-in fade-in slide-in-from-top-1 flex items-center gap-1.5 text-[length:var(--text-xs)] text-danger font-medium mt-1.5",
+  "helperWrapper": "mt-2",
+  "input": "border-none placeholder:text-foreground/30 text-foreground antialiased block w-full border-transparent bg-transparent focus:ring-0 min-h-0 py-0 text-sm",
+  "inputWrapper": "overflow-hidden isolation-auto flex items-center border-b-2 border-border bg-transparent text-foreground placeholder:text-muted/50 transition-colors duration-200 hover:border-primary/40 focus-within:border-primary focus-within:ring-0 outline-none rounded-[var(--radius-md)] min-h-[40px] px-3.5 py-2 gap-3",
+  "label": "text-sm font-bold text-foreground/80 tracking-tight mb-2 transition-all group-hover:text-primary group-focus-within:text-primary",
+}
+`;
+
+exports[`Primitive Migration Guard > Category 4: Edge cases > variant × intent matrix > underlined + success 1`] = `
+{
+  "base": "form-field relative group w-full transition-all duration-300 flex flex-col opacity-100 mb-0 min-w-0",
+  "clearButton": "absolute right-4 top-1/2 -translate-y-1/2 text-muted hover:text-foreground cursor-pointer transition-all hover:scale-125 z-[var(--z-overlap)]",
+  "description": "text-xs text-foreground/50 leading-relaxed mt-2 font-medium border-l-2 border-primary/20 pl-3 opacity-60",
+  "errorMessage": "animate-in fade-in slide-in-from-top-1 flex items-center gap-1.5 text-[length:var(--text-xs)] text-danger font-medium mt-1.5",
+  "helperWrapper": "mt-2",
+  "input": "border-none placeholder:text-foreground/30 text-foreground antialiased block w-full border-transparent bg-transparent focus:ring-0 min-h-0 py-0 text-sm",
+  "inputWrapper": "overflow-hidden isolation-auto flex items-center border-b-2 bg-transparent placeholder:text-muted/50 transition-colors duration-200 hover:border-primary/40 focus-within:border-primary focus-within:ring-0 outline-none text-success border-success group-focus-within:text-success rounded-[var(--radius-md)] min-h-[40px] px-3.5 py-2 gap-3",
+  "label": "text-sm font-bold text-foreground/80 tracking-tight mb-2 transition-all group-hover:text-primary group-focus-within:text-primary",
+}
+`;
+
+exports[`Primitive Migration Guard > Category 4: Edge cases > variant × intent matrix > underlined + warning 1`] = `
+{
+  "base": "form-field relative group w-full transition-all duration-300 flex flex-col opacity-100 mb-0 min-w-0",
+  "clearButton": "absolute right-4 top-1/2 -translate-y-1/2 text-muted hover:text-foreground cursor-pointer transition-all hover:scale-125 z-[var(--z-overlap)]",
+  "description": "text-xs text-foreground/50 leading-relaxed mt-2 font-medium border-l-2 border-primary/20 pl-3 opacity-60",
+  "errorMessage": "animate-in fade-in slide-in-from-top-1 flex items-center gap-1.5 text-[length:var(--text-xs)] text-danger font-medium mt-1.5",
+  "helperWrapper": "mt-2",
+  "input": "border-none placeholder:text-foreground/30 text-foreground antialiased block w-full border-transparent bg-transparent focus:ring-0 min-h-0 py-0 text-sm",
+  "inputWrapper": "overflow-hidden isolation-auto flex items-center border-b-2 bg-transparent placeholder:text-muted/50 transition-colors duration-200 hover:border-primary/40 focus-within:border-primary focus-within:ring-0 outline-none text-warning border-warning group-focus-within:text-warning rounded-[var(--radius-md)] min-h-[40px] px-3.5 py-2 gap-3",
+  "label": "text-sm font-bold text-foreground/80 tracking-tight mb-2 transition-all group-hover:text-primary group-focus-within:text-primary",
+}
+`;

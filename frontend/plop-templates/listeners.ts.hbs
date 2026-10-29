@@ -1,0 +1,19 @@
+import { ListenerMiddlewareInstance, isAnyOf } from '@reduxjs/toolkit';
+import { increment, decrement, setValue } from './slice';
+import { RootState } from '../../store';
+
+export const {{camelCase name}}Listeners = (listenerMiddleware: ListenerMiddlewareInstance<RootState>) => {
+  listenerMiddleware.startListening({
+    matcher: isAnyOf(increment, decrement),
+    effect: async (action, listenerApi) => {
+      console.log('{{name}} value changed:', listenerApi.getState().{{camelCase name}}.value);
+    },
+  });
+
+  listenerMiddleware.startListening({
+    actionCreator: setValue,
+    effect: async (action, listenerApi) => {
+      console.log('{{name}} value explicitly set to:', action.payload);
+    },
+  });
+};

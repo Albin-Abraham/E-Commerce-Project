@@ -1,0 +1,20 @@
+================================================================================
+TEST FILE:             {{FILE_PATH}}
+ARCH LAYER:            {{ARCH_LAYER}}
+DOMAIN:                {{DOMAIN_KEY}}
+TARGET:                {{TARGET_SYMBOL}}
+HARNESS:               {{HARNESS}}
+FIXTURES:              {{FIXTURES_USED}}
+TRACKED ISSUES:        {{TRACKED_ISSUES}}
+BUGS & DEFECTS:        {{BUGS_DEFENDED}}
+TAGS:                  {{TAGS}}
+--------------------------------------------------------------------------------
+PRIMARY RESPONSIBILITY:
+{{PRIMARY_RESPONSIBILITY}}
+
+TEST SUITES & SCENARIOS:
+{{SCENARIOS_TREE}}
+
+HTTP / MSW INTERACTIONS:
+{{MSW_ENDPOINTS}}
+================================================================================

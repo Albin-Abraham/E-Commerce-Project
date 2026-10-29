@@ -1,0 +1,65 @@
+{
+  "analytics": {
+    "activeListings": "Active Listings",
+    "activeProducts": "Active Products",
+    "conversionRate": "Conversion Rate",
+    "engine": "Revenue Intelligence Engine",
+    "grossSales": "Gross Sales",
+    "marketShare": "Market Share",
+    "offline": "Offline",
+    "subtitle": "Real-time inventory and revenue telemetry.",
+    "title": "Product Analytics",
+    "topPerformers": "Top Performers",
+    "totalRevenue": "Total Revenue",
+    "variant": "Product Variant Alpha-{{id}}",
+    "viewReport": "View Full Report"
+  },
+  "cart": {
+    "continueShopping": "Continue Shopping",
+    "emptySubtitle": "Looks like you haven't added anything yet.",
+    "emptyTitle": "Your basket is empty",
+    "free": "Free",
+    "itemsSecured": "{{count}} Items Secured",
+    "secureCheckout": "Secure Checkout",
+    "shipping": "Shipping",
+    "sslSecured": "SSL Secured 256-bit Encryption",
+    "subtotal": "Subtotal",
+    "title": "Your Cart",
+    "total": "Total"
+  },
+  "catalog": {
+    "emptyState": "No products match your search query.",
+    "exportPdf": "Export Top 10 PDF",
+    "generatingPdf": "Generating PDF...",
+    "searchPlaceholder": "Search collections...",
+    "subtitle": "High-fidelity industrial hardware and components built for scale.",
+    "syncingState": "The catalog is currently being synchronized.",
+    "title": "Our Collections",
+    "viewDetails": "View Details"
+  },
+  "detail": {
+    "error": "Error loading product metadata.",
+    "loading": "Loading product...",
+    "retailPrice": "Retail Price",
+    "title": "Product Specifications"
+  },
+  "inventory": {
+    "inStock": "In Stock",
+    "initializeAudit": "Initialize Stock Audit",
+    "liveInventory": "Live Inventory",
+    "reorderLevel": "Reorder Level",
+    "sku": "SKU",
+    "title": "Stock Inventory"
+  },
+  "marketplace": {
+    "addToCart": "Add to Cart",
+    "connectionError": "The marketplace could not be synchronized with the core engine.",
+    "connectionFailure": "Connection Failure",
+    "discovering": "Discovering {{total}} curated items for your shop",
+    "productPolicy": "Product Policy",
+    "syncFeed": "Sync Feed",
+    "syncing": "Syncing with Product Engine...",
+    "taxInc": "Tax Inc.",
+    "title": "Product Marketplace"
+  }
+}

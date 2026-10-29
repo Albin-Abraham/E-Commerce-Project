@@ -1,0 +1,113 @@
+################################################################################
+# DOMAIN TEST CONTEXT REPORT: SHELL/PAGES
+# Domain Key:          shell/pages
+# Layer Group:         Shell
+# Report File:         shell-pages.test-report.txt
+# Generated At:        2026-09-26T21:01:59.309Z
+# Total Test Suites:   4
+# Tracked Issues (0):  None
+# Defended Bugs (0):   None
+################################################################################
+
+================================================================================
+TEST FILE:             src/shell/pages/products/__tests__/product.list.test.tsx
+ARCH LAYER:            Interface / Driver
+DOMAIN:                shell/pages
+TARGET:                product.list
+HARNESS:               RTL
+FIXTURES:              None
+TRACKED ISSUES:        None
+BUGS & DEFECTS:        None
+TAGS:                  None
+--------------------------------------------------------------------------------
+PRIMARY RESPONSIBILITY:
+Validates behavioral invariants for ProductsPage (Enterprise UI Integration Test).
+
+TEST SUITES & SCENARIOS:
+- describe("ProductsPage (Enterprise UI Integration Test)")
+  • it("should render the product catalog from the loader data")
+  • it("should debouce URL search params when the user types")
+  • it("should delegate navigation perfectly via getLinkProps")
+
+HTTP / MSW INTERACTIONS:
+None
+================================================================================
+
+================================================================================
+TEST FILE:             src/shell/pages/static-pages/__tests__/AuthPortalPage.test.tsx
+ARCH LAYER:            Interface / Driver
+DOMAIN:                shell/pages
+TARGET:                AuthPortalPage
+HARNESS:               RTL
+FIXTURES:              None
+TRACKED ISSUES:        None
+BUGS & DEFECTS:        None
+TAGS:                  None
+--------------------------------------------------------------------------------
+PRIMARY RESPONSIBILITY:
+Validates behavioral invariants for AuthPortalPage.
+
+TEST SUITES & SCENARIOS:
+- describe("AuthPortalPage")
+  • it("renders the Login form by default")
+  • it("toggles to the Signup form when ")
+  • it("calls login function on successful form submission in login mode and navigates to Root")
+  • it("calls register function on successful form submission in signup mode and navigates to Root")
+  • it("handles 422 server validation errors and displays them inline")
+  • it("handles 400 Bad Request server validation errors and displays them inline")
+  • it("handles non-field server errors by displaying toast and marking the field")
+
+HTTP / MSW INTERACTIONS:
+None
+================================================================================
+
+================================================================================
+TEST FILE:             src/shell/pages/static-pages/__tests__/WorkspacePage.test.tsx
+ARCH LAYER:            Interface / Driver
+DOMAIN:                shell/pages
+TARGET:                WorkspacePage
+HARNESS:               RTL
+FIXTURES:              None
+TRACKED ISSUES:        None
+BUGS & DEFECTS:        None
+TAGS:                  None
+--------------------------------------------------------------------------------
+PRIMARY RESPONSIBILITY:
+Validates behavioral invariants for WorkspacePage & SessionContextPicker.
+
+TEST SUITES & SCENARIOS:
+- describe("WorkspacePage & SessionContextPicker")
+  • it("renders with theme background and layout classes")
+  • it("renders the SessionContextPicker form card with semantic bg-surface and header")
+
+HTTP / MSW INTERACTIONS:
+None
+================================================================================
+
+================================================================================
+TEST FILE:             src/shell/pages/static-pages/__tests__/multi-step-form.test.tsx
+ARCH LAYER:            Interface / Driver
+DOMAIN:                shell/pages
+TARGET:                multi-step-form
+HARNESS:               RTL
+FIXTURES:              None
+TRACKED ISSUES:        None
+BUGS & DEFECTS:        None
+TAGS:                  None
+--------------------------------------------------------------------------------
+PRIMARY RESPONSIBILITY:
+Advance the wizard one step via the footer's Next button.
+Two things make a bare stepper click insufficient:
+1. The page sets `settings.wizard.linear: true`, and FormStepper computes
+
+TEST SUITES & SCENARIOS:
+- describe("Employee Onboarding Wizard (UI & Schema Logic)")
+  • it("renders the initial Personal Profile section")
+  • it("switches to the Instructions tab")
+  • it("conditionally renders the Visa section based on citizenship status")
+  • it("conditionally renders the Spouse section based on marital status")
+
+HTTP / MSW INTERACTIONS:
+None
+================================================================================
+

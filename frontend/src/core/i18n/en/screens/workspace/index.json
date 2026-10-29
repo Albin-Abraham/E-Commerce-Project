@@ -1,0 +1,26 @@
+{
+  "actions": {
+    "launch": "Launch Environment",
+    "reset": "Reset Selection"
+  },
+  "alerts": {
+    "ready": "Ready to launch — environment configured"
+  },
+  "fields": {
+    "branch": {
+      "label": "Branch",
+      "placeholder": "Select a branch…"
+    },
+    "businessUnit": {
+      "label": "Business Unit",
+      "placeholder": "Select a business unit…"
+    },
+    "company": {
+      "createAction": "Create Company +",
+      "label": "Company",
+      "placeholder": "Select a company…"
+    }
+  },
+  "subtitle": "Choose your company and business unit to continue.",
+  "title": "Workspace Configuration"
+}

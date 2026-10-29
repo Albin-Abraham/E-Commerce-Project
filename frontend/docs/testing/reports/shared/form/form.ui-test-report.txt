@@ -1,0 +1,1086 @@
+################################################################################
+# DOMAIN TEST CONTEXT REPORT: SHARED/UI/FORM
+# Domain Key:          shared/ui/form
+# Layer Group:         Shared UI
+# Report File:         form.ui-test-report.txt
+# Generated At:        2026-09-26T21:01:59.293Z
+# Total Test Suites:   38
+# Tracked Issues (1):  FEAT-FORM-URL-SYNC
+# Defended Bugs (2):   Defect Guard: Backend Detail Envelope Unwrapping; BUG-URL-INFINITE-LOOP
+################################################################################
+
+================================================================================
+TEST FILE:             src/shared/ui/form/components/FieldSkeleton.test.tsx
+ARCH LAYER:            Interface / Driver
+DOMAIN:                shared/ui/form
+TARGET:                FieldSkeleton
+HARNESS:               RTL
+FIXTURES:              None
+TRACKED ISSUES:        None
+BUGS & DEFECTS:        None
+TAGS:                  None
+--------------------------------------------------------------------------------
+PRIMARY RESPONSIBILITY:
+Validates behavioral invariants for FieldSkeleton.
+
+TEST SUITES & SCENARIOS:
+- describe("FieldSkeleton")
+  • it("renders an input-shaped skeleton for input types")
+  • it("renders a tall block for textarea components")
+  • it("renders a toggle row for switch/checkbox types")
+  • it("renders text lines for a paragraph static type")
+  • it("falls back to an input placeholder for unknown types")
+- describe("CardSkeleton")
+  • it("mirrors card chrome: header, body rows, footer")
+  • it("uses FieldSkeleton type=card path")
+
+HTTP / MSW INTERACTIONS:
+None
+================================================================================
+
+================================================================================
+TEST FILE:             src/shared/ui/form/core/__tests__/SchemaRegistry.test.ts
+ARCH LAYER:            Domain
+DOMAIN:                shared/ui/form
+TARGET:                SchemaRegistry
+HARNESS:               Pure Vitest (Zero Mocks, Zero DOM)
+FIXTURES:              None
+TRACKED ISSUES:        None
+BUGS & DEFECTS:        None
+TAGS:                  None
+--------------------------------------------------------------------------------
+PRIMARY RESPONSIBILITY:
+Validates behavioral invariants for SchemaRegistry Code-Splitting & Lazy Loading.
+
+TEST SUITES & SCENARIOS:
+- describe("SchemaRegistry Code-Splitting & Lazy Loading")
+  • it("registers and resolves synchronous schemas")
+  • it("registers and resolves code-split lazy schema loaders")
+  • it("preloads schemas and multiple schemas concurrently")
+  • it("throws clear error when resolving unregistered schema")
+
+HTTP / MSW INTERACTIONS:
+None
+================================================================================
+
+================================================================================
+TEST FILE:             src/shared/ui/form/core/__tests__/computed-fields.test.ts
+ARCH LAYER:            Domain
+DOMAIN:                shared/ui/form
+TARGET:                computed-fields
+HARNESS:               Pure Vitest (Zero Mocks, Zero DOM)
+FIXTURES:              None
+TRACKED ISSUES:        None
+BUGS & DEFECTS:        None
+TAGS:                  None
+--------------------------------------------------------------------------------
+PRIMARY RESPONSIBILITY:
+Validates behavioral invariants for FormCore Computed Fields.
+
+TEST SUITES & SCENARIOS:
+- describe("FormCore Computed Fields")
+  • it("should recalculate computed field when dependency changes")
+  • it("should support recursive recalculation (multi-level dependencies)")
+  • it("should correctly match dependencies using field names even if IDs are different")
+
+HTTP / MSW INTERACTIONS:
+None
+================================================================================
+
+================================================================================
+TEST FILE:             src/shared/ui/form/core/__tests__/deferred-validation.test.ts
+ARCH LAYER:            Domain
+DOMAIN:                shared/ui/form
+TARGET:                deferred-validation
+HARNESS:               Pure Vitest (Zero Mocks, Zero DOM)
+FIXTURES:              None
+TRACKED ISSUES:        None
+BUGS & DEFECTS:        None
+TAGS:                  None
+--------------------------------------------------------------------------------
+PRIMARY RESPONSIBILITY:
+`disableDeferredValidation` screens incoming values BEFORE they reach form
+state. Illegal input (special characters, failed rules) is REJECTED: the
+previous value is kept, the error is recorded, and nothing is stored — not
+
+TEST SUITES & SCENARIOS:
+- describe("disableDeferredValidation")
+- describe("default (deferred) behaviour is preserved")
+  • it("stores disallowed characters verbatim when the flag is off")
+- describe("enabled via FormCoreOptions")
+  • it("rejects alphanumeric input containing _, comma or #")
+  • it("accepts clean alphanumeric input unchanged")
+  • it("rejects non-digit characters for digitsOnly")
+  • it("rejects non-letters for alphaOnly and honours rule.value ")
+- describe("enabled via schema settings")
+  • it("reads FormDefinition.validation.disableDeferredValidation")
+  • it("lets FormCoreOptions override the schema flag")
+- describe("rejection path")
+  • it("rejects a candidate that still fails validation, keeping the previous value")
+- describe("no thrown errors")
+  • it("resolves rather than throwing when the candidate is rejected")
+  • it("resolves rather than throwing when a custom rule fn throws internally")
+  • it("records the violation as a field error so the UI can surface it")
+  • it("clears the recorded error once a valid value is accepted")
+- describe("rules without a sanitizer")
+  • it("rejects a non-matching pattern value rather than flagging it")
+  • it("accepts empty values without sanitizing or erroring")
+
+HTTP / MSW INTERACTIONS:
+None
+================================================================================
+
+================================================================================
+TEST FILE:             src/shared/ui/form/core/__tests__/engine.test.ts
+ARCH LAYER:            Domain
+DOMAIN:                shared/ui/form
+TARGET:                engine
+HARNESS:               Pure Vitest (Zero Mocks, Zero DOM)
+FIXTURES:              None
+TRACKED ISSUES:        None
+BUGS & DEFECTS:        None
+TAGS:                  None
+--------------------------------------------------------------------------------
+PRIMARY RESPONSIBILITY:
+Validates behavioral invariants for FormCore Engine.
+
+TEST SUITES & SCENARIOS:
+- describe("FormCore Engine")
+  • it("should initialize with default values")
+  • it("should initialize with provided initial values")
+  • it("should update values correctly via setValue")
+  • it("should run validation on setValue")
+  • it("should validate all fields on submit")
+  • it("should handle visibility updates")
+  • it("should handle validation modes correctly")
+  • it("should support middleware interception")
+  • it("honors metadata.events.onChange in adapter pipeline")
+  • it("supports legacy root events.onChange via compatibility bridge")
+
+HTTP / MSW INTERACTIONS:
+None
+================================================================================
+
+================================================================================
+TEST FILE:             src/shared/ui/form/core/__tests__/flow.test.ts
+ARCH LAYER:            Domain
+DOMAIN:                shared/ui/form
+TARGET:                flow
+HARNESS:               Pure Vitest (Zero Mocks, Zero DOM)
+FIXTURES:              None
+TRACKED ISSUES:        None
+BUGS & DEFECTS:        None
+TAGS:                  None
+--------------------------------------------------------------------------------
+PRIMARY RESPONSIBILITY:
+Validates behavioral invariants for Flow Engine (FlowProxy).
+
+TEST SUITES & SCENARIOS:
+- describe("Flow Engine (FlowProxy)")
+  • it("should handle sequential navigation correctly")
+  • it("should handle static branching")
+  • it("should handle dynamic function-based branching")
+  • it("should return null if current step is not found")
+
+HTTP / MSW INTERACTIONS:
+None
+================================================================================
+
+================================================================================
+TEST FILE:             src/shared/ui/form/core/__tests__/integration.test.ts
+ARCH LAYER:            Domain
+DOMAIN:                shared/ui/form
+TARGET:                integration
+HARNESS:               Pure Vitest (Zero Mocks, Zero DOM)
+FIXTURES:              None
+TRACKED ISSUES:        None
+BUGS & DEFECTS:        None
+TAGS:                  None
+--------------------------------------------------------------------------------
+PRIMARY RESPONSIBILITY:
+Validates behavioral invariants for FormCore — Full Submission Pipeline.
+
+TEST SUITES & SCENARIOS:
+- describe("FormCore — Full Submission Pipeline")
+  • it("should execute full setValue → validate → submit lifecycle")
+  • it("should reject submission when required fields are empty")
+  • it("should inject server errors via state manager")
+  • it("should validate specific fields on demand")
+  • it("should skip implicit type validation on empty optional fields")
+  • it("should run implicit type validation on non-empty optional fields")
+- describe("FormCore — AND/OR Conditional Logic")
+  • it("should show/hide field based on AND condition")
+  • it("should show/hide field based on OR condition (any match)")
+  • it("should enable/disable field based on condition groups")
+  • it("should use canonical field.conditions (not just meta.conditions) for enable/disable")
+- describe("FormCore — Middleware Chain")
+  • it("should run registered middleware after setValue")
+  • it("should run multiple middleware in registration order")
+  • it("should pass form facade to middleware context")
+- describe("FormCore — Repeater Row Lifecycle")
+  • it("should resolve static repeater field")
+  • it("should resolve dynamic repeater field paths")
+  • it("should set values on repeater rows via path")
+  • it("should validate required fields inside repeater rows")
+  • it("should maintain separate state for multiple rows")
+
+HTTP / MSW INTERACTIONS:
+None
+================================================================================
+
+================================================================================
+TEST FILE:             src/shared/ui/form/core/__tests__/modules.test.ts
+ARCH LAYER:            Domain
+DOMAIN:                shared/ui/form
+TARGET:                modules
+HARNESS:               Pure Vitest (Zero Mocks, Zero DOM)
+FIXTURES:              None
+TRACKED ISSUES:        None
+BUGS & DEFECTS:        None
+TAGS:                  None
+--------------------------------------------------------------------------------
+PRIMARY RESPONSIBILITY:
+Validates behavioral invariants for Core Modules.
+
+TEST SUITES & SCENARIOS:
+- describe("Core Modules")
+- describe("ErrorManager")
+  • it("should add and manage errors")
+  • it("should clear errors")
+- describe("DebugManager")
+  • it("should collect logs when enabled")
+  • it("should not log when disabled")
+
+HTTP / MSW INTERACTIONS:
+None
+================================================================================
+
+================================================================================
+TEST FILE:             src/shared/ui/form/core/__tests__/repeater-logic.test.ts
+ARCH LAYER:            Domain
+DOMAIN:                shared/ui/form
+TARGET:                repeater-logic
+HARNESS:               Pure Vitest (Zero Mocks, Zero DOM)
+FIXTURES:              None
+TRACKED ISSUES:        None
+BUGS & DEFECTS:        None
+TAGS:                  None
+--------------------------------------------------------------------------------
+PRIMARY RESPONSIBILITY:
+Validates behavioral invariants for FormCore Repeater Logic.
+
+TEST SUITES & SCENARIOS:
+- describe("FormCore Repeater Logic")
+  • it("should resolve static fields")
+  • it("should resolve dynamic repeater fields")
+  • it("should handle setting values for dynamic fields")
+  • it("should validate dynamic fields")
+
+HTTP / MSW INTERACTIONS:
+None
+================================================================================
+
+================================================================================
+TEST FILE:             src/shared/ui/form/core/__tests__/state-manager.test.ts
+ARCH LAYER:            Domain
+DOMAIN:                shared/ui/form
+TARGET:                state-manager
+HARNESS:               Pure Vitest (Zero Mocks, Zero DOM)
+FIXTURES:              None
+TRACKED ISSUES:        None
+BUGS & DEFECTS:        None
+TAGS:                  None
+--------------------------------------------------------------------------------
+PRIMARY RESPONSIBILITY:
+Validates behavioral invariants for StateManager (5V Architecture).
+
+TEST SUITES & SCENARIOS:
+- describe("StateManager (5V Architecture)")
+  • it("should initialize with correct default structure")
+  • it("should update values and vitality on setRawValue")
+  • it("should update vitality specifically using setVitality")
+  • it("should update vitality using setVitality and trigger notification")
+  • it("should notify subscribers on change")
+  • it("should maintain immutability of state values")
+
+HTTP / MSW INTERACTIONS:
+None
+================================================================================
+
+================================================================================
+TEST FILE:             src/shared/ui/form/core/__tests__/validation-adapter.test.ts
+ARCH LAYER:            Domain
+DOMAIN:                shared/ui/form
+TARGET:                validation-adapter
+HARNESS:               Pure Vitest (Zero Mocks, Zero DOM)
+FIXTURES:              None
+TRACKED ISSUES:        None
+BUGS & DEFECTS:        None
+TAGS:                  None
+--------------------------------------------------------------------------------
+PRIMARY RESPONSIBILITY:
+Validates behavioral invariants for Validation Adapter Pattern.
+
+TEST SUITES & SCENARIOS:
+- describe("Validation Adapter Pattern")
+  • it("should use default internal validation if no adapter is provided")
+  • it("should use custom adapter when provided")
+  • it("should handle async validation adapters")
+
+HTTP / MSW INTERACTIONS:
+None
+================================================================================
+
+================================================================================
+TEST FILE:             src/shared/ui/form/core/__tests__/value-proxy.test.ts
+ARCH LAYER:            Domain
+DOMAIN:                shared/ui/form
+TARGET:                value-proxy
+HARNESS:               Pure Vitest (Zero Mocks, Zero DOM)
+FIXTURES:              None
+TRACKED ISSUES:        None
+BUGS & DEFECTS:        None
+TAGS:                  None
+--------------------------------------------------------------------------------
+PRIMARY RESPONSIBILITY:
+Validates behavioral invariants for ValueProxy Utility.
+
+TEST SUITES & SCENARIOS:
+- describe("ValueProxy Utility")
+- describe("getValue")
+  • it("should retrieve simple properties")
+  • it("should retrieve nested properties using dot notation")
+  • it("should retrieve array elements")
+  • it("should return undefined for non-existent paths")
+  • it("should handle null/undefined target gracefully")
+- describe("setValue")
+  • it("should set simple properties")
+  • it("should set nested properties")
+  • it("should create intermediate objects for deep paths")
+  • it("should set array elements")
+  • it("should handle null target without crashing")
+
+HTTP / MSW INTERACTIONS:
+None
+================================================================================
+
+================================================================================
+TEST FILE:             src/shared/ui/form/core/__tests__/visibility.test.ts
+ARCH LAYER:            Domain
+DOMAIN:                shared/ui/form
+TARGET:                visibility
+HARNESS:               Pure Vitest (Zero Mocks, Zero DOM)
+FIXTURES:              None
+TRACKED ISSUES:        None
+BUGS & DEFECTS:        None
+TAGS:                  None
+--------------------------------------------------------------------------------
+PRIMARY RESPONSIBILITY:
+Validates behavioral invariants for FormCore Visibility Logic (Cascading).
+
+TEST SUITES & SCENARIOS:
+- describe("FormCore Visibility Logic (Cascading)")
+  • it("should hide child when parent container is hidden")
+  • it("should show child when parent container is shown")
+  • it("should skip validation for hidden nested children")
+  • it("should enforce validation for visible nested children")
+
+HTTP / MSW INTERACTIONS:
+None
+================================================================================
+
+================================================================================
+TEST FILE:             src/shared/ui/form/core/modules/remote-options.test.ts
+ARCH LAYER:            Domain
+DOMAIN:                shared/ui/form
+TARGET:                remote-options
+HARNESS:               Pure Vitest (Zero Mocks, Zero DOM)
+FIXTURES:              None
+TRACKED ISSUES:        None
+BUGS & DEFECTS:        Defect Guard: Backend Detail Envelope Unwrapping
+TAGS:                  None
+--------------------------------------------------------------------------------
+PRIMARY RESPONSIBILITY:
+Validates behavioral invariants for RemoteOptionsManager.
+
+TEST SUITES & SCENARIOS:
+- describe("RemoteOptionsManager")
+  • it("should generate proper dependency keys and deduplicate fetches")
+  • it("should interpolate url and include search query in api call")
+  • it("should not fetch if watched dependencies are not met")
+  • it("should successfully unwrap and map options from backend detail envelope")
+
+HTTP / MSW INTERACTIONS:
+None
+================================================================================
+
+================================================================================
+TEST FILE:             src/shared/ui/form/fields/primitive/__tests__/SelectField.test.tsx
+ARCH LAYER:            Interface / Driver
+DOMAIN:                shared/ui/form
+TARGET:                SelectField
+HARNESS:               RTL
+FIXTURES:              None
+TRACKED ISSUES:        None
+BUGS & DEFECTS:        None
+TAGS:                  None
+--------------------------------------------------------------------------------
+PRIMARY RESPONSIBILITY:
+Validates behavioral invariants for SelectField Accessibility (ARIA) & Keyboard Navigation.
+
+TEST SUITES & SCENARIOS:
+- describe("SelectField Accessibility (ARIA) & Keyboard Navigation")
+  • it("renders with correct ARIA combobox attributes")
+  • it("opens menu and renders options with role=")
+  • it("supports keyboard navigation with ArrowDown, ArrowUp, and Enter")
+  • it("closes on Escape key press")
+
+HTTP / MSW INTERACTIONS:
+None
+================================================================================
+
+================================================================================
+TEST FILE:             src/shared/ui/form/hooks/__tests__/useFormUrlSync.test.ts
+ARCH LAYER:            Interface / Driver
+DOMAIN:                shared/ui/form
+TARGET:                useFormUrlSync
+HARNESS:               RTL
+FIXTURES:              None
+TRACKED ISSUES:        FEAT-FORM-URL-SYNC
+BUGS & DEFECTS:        BUG-URL-INFINITE-LOOP
+TAGS:                  None
+--------------------------------------------------------------------------------
+PRIMARY RESPONSIBILITY:
+Form URL Synchronization Hook Test Suite
+Validates bi-directional synchronization between headless Form state and PlatformUrlPort:
+1. Mount hydration without triggering re-render loops
+
+TEST SUITES & SCENARIOS:
+- describe("useFormUrlSync")
+  • it("hydrates form values from URL port on mount")
+  • it("merges form updates non-destructively without wiping table or global params")
+  • it("removes parameter when form field is cleared")
+  • it("supports scoped parameter namespacing")
+  • it("synchronizes wizard steps bi-directionally")
+
+HTTP / MSW INTERACTIONS:
+None
+================================================================================
+
+================================================================================
+TEST FILE:             src/shared/ui/form/hooks/useForm.test.tsx
+ARCH LAYER:            Interface / Driver
+DOMAIN:                shared/ui/form
+TARGET:                useForm
+HARNESS:               RTL
+FIXTURES:              None
+TRACKED ISSUES:        None
+BUGS & DEFECTS:        None
+TAGS:                  None
+--------------------------------------------------------------------------------
+PRIMARY RESPONSIBILITY:
+Validates behavioral invariants for useForm lifecycle.
+
+TEST SUITES & SCENARIOS:
+- describe("useForm lifecycle")
+  • it("recreates form when schema structure changes even with same id")
+  • it("keeps form instance stable for equivalent schema objects")
+
+HTTP / MSW INTERACTIONS:
+None
+================================================================================
+
+================================================================================
+TEST FILE:             src/shared/ui/form/layout/__tests__/SectionComposer.test.tsx
+ARCH LAYER:            Interface / Driver
+DOMAIN:                shared/ui/form
+TARGET:                SectionComposer
+HARNESS:               RTL
+FIXTURES:              None
+TRACKED ISSUES:        None
+BUGS & DEFECTS:        None
+TAGS:                  None
+--------------------------------------------------------------------------------
+PRIMARY RESPONSIBILITY:
+START · Automatic section spacing
+Verifies the layered spacing precedence:
+1. Author override (layout.gap/rowGap/colGap) wins and preserves margins.
+
+TEST SUITES & SCENARIOS:
+- describe("SpacingCalculator tokens")
+  • it("exposes exact grid gap tokens aligned with the density scale")
+- describe("Section composer automatic spacing")
+  • it("applies the calculator grid gap (not gap-4) and strips field margins")
+  • it("honours an explicit author gap and preserves per-field margins")
+  • it("keeps authored field margins when the author owns spacing")
+  • it("drives block layouts with space-y and never strips margins")
+
+HTTP / MSW INTERACTIONS:
+None
+================================================================================
+
+================================================================================
+TEST FILE:             src/shared/ui/form/tests/DynamicRegistry.test.tsx
+ARCH LAYER:            Interface / Driver
+DOMAIN:                shared/ui/form
+TARGET:                DynamicRegistry
+HARNESS:               RTL
+FIXTURES:              None
+TRACKED ISSUES:        None
+BUGS & DEFECTS:        None
+TAGS:                  None
+--------------------------------------------------------------------------------
+PRIMARY RESPONSIBILITY:
+Validates behavioral invariants for Enterprise Dynamic Registry and Field Contract System.
+
+TEST SUITES & SCENARIOS:
+- describe("Enterprise Dynamic Registry and Field Contract System")
+  • it("registers a contract definition and renders raw API payload cleanly")
+  • it("applies contextual overrides correctly based on form/tenant context")
+  • it("catches invalid API payloads at the contract boundary and renders a loud FieldErrorBoundary")
+  • it("renders a graceful fallback UI when requesting an unregistered field type")
+
+HTTP / MSW INTERACTIONS:
+None
+================================================================================
+
+================================================================================
+TEST FILE:             src/shared/ui/form/tests/FormA11yShortcuts.test.tsx
+ARCH LAYER:            Interface / Driver
+DOMAIN:                shared/ui/form
+TARGET:                FormA11yShortcuts
+HARNESS:               RTL
+FIXTURES:              None
+TRACKED ISSUES:        None
+BUGS & DEFECTS:        None
+TAGS:                  None
+--------------------------------------------------------------------------------
+PRIMARY RESPONSIBILITY:
+Validates behavioral invariants for Form Primitives: A11y aria-keyshortcuts Integration.
+
+TEST SUITES & SCENARIOS:
+- describe("Form Primitives: A11y aria-keyshortcuts Integration")
+  • it("renders aria-keyshortcuts on TextField")
+  • it("renders aria-keyshortcuts on SelectField")
+  • it("renders aria-keyshortcuts on TextareaField")
+  • it("renders aria-keyshortcuts on ButtonField")
+  • it("renders aria-keyshortcuts on CheckboxField")
+  • it("renders aria-keyshortcuts on SwitchField")
+  • it("renders aria-keyshortcuts on MultiSelectField")
+
+HTTP / MSW INTERACTIONS:
+None
+================================================================================
+
+================================================================================
+TEST FILE:             src/shared/ui/form/tests/FormImperative.test.tsx
+ARCH LAYER:            Interface / Driver
+DOMAIN:                shared/ui/form
+TARGET:                FormImperative
+HARNESS:               Driver
+FIXTURES:              None
+TRACKED ISSUES:        None
+BUGS & DEFECTS:        None
+TAGS:                  None
+--------------------------------------------------------------------------------
+PRIMARY RESPONSIBILITY:
+Validates behavioral invariants for Form Imperative API (Driver-Based).
+
+TEST SUITES & SCENARIOS:
+- describe("Form Imperative API (Driver-Based)")
+  • it("should allow programmatic control via ref")
+  • it("should expose the internal engine for advanced control")
+
+HTTP / MSW INTERACTIONS:
+None
+================================================================================
+
+================================================================================
+TEST FILE:             src/shared/ui/form/tests/FormNavigationGuard.test.tsx
+ARCH LAYER:            Interface / Driver
+DOMAIN:                shared/ui/form
+TARGET:                FormNavigationGuard
+HARNESS:               RTL
+FIXTURES:              None
+TRACKED ISSUES:        None
+BUGS & DEFECTS:        None
+TAGS:                  None
+--------------------------------------------------------------------------------
+PRIMARY RESPONSIBILITY:
+Validates behavioral invariants for FormNavigationGuard & Dynamic TranslatedText Interpolation.
+
+TEST SUITES & SCENARIOS:
+- describe("FormNavigationGuard & Dynamic TranslatedText Interpolation")
+- describe("resolveTranslation with parameters")
+  • it("interpolates {{domain_name}} in raw strings")
+  • it("interpolates {{domain_name}} in TranslatedText objects")
+  • it("interpolates {{domain_name}} using i18n keys with parameter tokens")
+- describe("Form Component Guard Configuration")
+  • it("renders without activating navigationGuard by default")
+  • it("accepts custom NavigationGuardConfig with TranslatedText and domainName override")
+  • it("accepts custom NavigationGuardConfig with confirm/cancel aliases without explicit enabled flag")
+
+HTTP / MSW INTERACTIONS:
+None
+================================================================================
+
+================================================================================
+TEST FILE:             src/shared/ui/form/tests/MetaSchemaBridge.test.tsx
+ARCH LAYER:            Interface / Driver
+DOMAIN:                shared/ui/form
+TARGET:                MetaSchemaBridge
+HARNESS:               RTL
+FIXTURES:              None
+TRACKED ISSUES:        None
+BUGS & DEFECTS:        None
+TAGS:                  None
+--------------------------------------------------------------------------------
+PRIMARY RESPONSIBILITY:
+Validates behavioral invariants for MetaSchemaBridge Compiler.
+
+TEST SUITES & SCENARIOS:
+- describe("MetaSchemaBridge Compiler")
+  • it("compiles a raw API metaSchema into a standard FormDefinition (RenderDefinition)")
+  • it("applies presentational UI overrides seamlessly (Data-Centric Styling)")
+  • it("compiles an API metaSchema to high-density table column definitions")
+  • it("compiles a dynamic schema directly to a pure layout RenderDefinition without form properties")
+  • it("dynamically injects custom slot components into the compiled definition")
+  • it("successfully renders a compiled definition in the Form engine")
+  • it("successfully renders a pure RenderDefinition using the lightweight FormRenderer component")
+
+HTTP / MSW INTERACTIONS:
+None
+================================================================================
+
+================================================================================
+TEST FILE:             src/shared/ui/form/tests/WrapperFields.test.tsx
+ARCH LAYER:            Interface / Driver
+DOMAIN:                shared/ui/form
+TARGET:                WrapperFields
+HARNESS:               RTL
+FIXTURES:              None
+TRACKED ISSUES:        None
+BUGS & DEFECTS:        None
+TAGS:                  None
+--------------------------------------------------------------------------------
+PRIMARY RESPONSIBILITY:
+Validates behavioral invariants for Wrapper Fields Components.
+
+TEST SUITES & SCENARIOS:
+- describe("Wrapper Fields Components")
+  • it("renders UncontrolledField directly and updates values on change")
+  • it("renders ControlledField directly with custom component render props")
+  • it("renders unified Field component in Uncontrolled mode")
+  • it("renders unified Field component in Controlled mode")
+
+HTTP / MSW INTERACTIONS:
+None
+================================================================================
+
+================================================================================
+TEST FILE:             src/shared/ui/form/tests/atoms.test.tsx
+ARCH LAYER:            Interface / Driver
+DOMAIN:                shared/ui/form
+TARGET:                atoms
+HARNESS:               RTL
+FIXTURES:              None
+TRACKED ISSUES:        None
+BUGS & DEFECTS:        None
+TAGS:                  None
+--------------------------------------------------------------------------------
+PRIMARY RESPONSIBILITY:
+Validates behavioral invariants for Form Atoms.
+
+TEST SUITES & SCENARIOS:
+- describe("Form Atoms")
+- describe("FieldIcon")
+  • it("should render correctly when a valid icon name is provided")
+  • it("should render null when no icon name is provided")
+  • it("should render null when an invalid icon name is provided")
+- describe("FieldTooltip")
+  • it("should render the tooltip info icon when text is provided")
+  • it("should render null when no text is provided")
+- describe("HelpText")
+  • it("should render correctly with string text")
+  • it("should render correctly with array of strings")
+  • it("should render null when text is empty")
+- describe("ValidationHints")
+  • it("should render a list of hints")
+  • it("should render null when no hints are provided")
+
+HTTP / MSW INTERACTIONS:
+None
+================================================================================
+
+================================================================================
+TEST FILE:             src/shared/ui/form/tests/createSimpleForm.test.ts
+ARCH LAYER:            Domain
+DOMAIN:                shared/ui/form
+TARGET:                createSimpleForm
+HARNESS:               Pure Vitest (Zero Mocks, Zero DOM)
+FIXTURES:              None
+TRACKED ISSUES:        None
+BUGS & DEFECTS:        None
+TAGS:                  None
+--------------------------------------------------------------------------------
+PRIMARY RESPONSIBILITY:
+Validates behavioral invariants for createSimpleForm.
+
+TEST SUITES & SCENARIOS:
+- describe("createSimpleForm")
+  • it("should create a valid FormDefinition with defaults")
+  • it("should map component presentation override correctly")
+  • it("should wire validationSchema and custom options")
+
+HTTP / MSW INTERACTIONS:
+None
+================================================================================
+
+================================================================================
+TEST FILE:             src/shared/ui/form/tests/engine-performance.test.ts
+ARCH LAYER:            Interface / Driver
+DOMAIN:                shared/ui/form
+TARGET:                engine-performance
+HARNESS:               Pure Vitest (Zero Mocks, Zero DOM)
+FIXTURES:              None
+TRACKED ISSUES:        None
+BUGS & DEFECTS:        None
+TAGS:                  None
+--------------------------------------------------------------------------------
+PRIMARY RESPONSIBILITY:
+Validates behavioral invariants for Zenith Engine Performance Audit.
+
+TEST SUITES & SCENARIOS:
+- describe("Zenith Engine Performance Audit")
+  • it("quantifies normalization and state initialization overhead")
+  • it("verifies repeater validity rollup (Correctness Task #1)")
+
+HTTP / MSW INTERACTIONS:
+None
+================================================================================
+
+================================================================================
+TEST FILE:             src/shared/ui/form/tests/fields.test.tsx
+ARCH LAYER:            Interface / Driver
+DOMAIN:                shared/ui/form
+TARGET:                fields
+HARNESS:               RTL
+FIXTURES:              None
+TRACKED ISSUES:        None
+BUGS & DEFECTS:        None
+TAGS:                  None
+--------------------------------------------------------------------------------
+PRIMARY RESPONSIBILITY:
+The field registry is lazy: eager types resolve synchronously, while heavier
+ones (container, card, …) resolve on first render. These tests assert against
+that split rather than a fully synchronous map.
+
+TEST SUITES & SCENARIOS:
+- describe("Field Registry")
+- describe("eager field types")
+  • it("should return the correct component for a registered type")
+  • it("should return a fallback for an unknown type rather than throwing")
+  • it("should share one component instance across aliases")
+- describe("lazy field types")
+  • it("registers the heavy structural types lazily")
+  • it("keeps the basic input types out of the lazy set")
+- describe("FIELD_METADATA")
+  • it("should contain metadata for basic input types")
+  • it("should return a renderable icon for each metadata item")
+- describe("Registry Integrity")
+  • it("should have all standard field types registered")
+
+HTTP / MSW INTERACTIONS:
+None
+================================================================================
+
+================================================================================
+TEST FILE:             src/shared/ui/form/tests/formContract.test.tsx
+ARCH LAYER:            Interface / Driver
+DOMAIN:                shared/ui/form
+TARGET:                formContract
+HARNESS:               RTL
+FIXTURES:              None
+TRACKED ISSUES:        None
+BUGS & DEFECTS:        None
+TAGS:                  None
+--------------------------------------------------------------------------------
+PRIMARY RESPONSIBILITY:
+Validates behavioral invariants for MPDA / MDAP Type-Safe Form Contract API.
+
+TEST SUITES & SCENARIOS:
+- describe("MPDA / MDAP Type-Safe Form Contract API")
+  • it("infers static TypeScript types correctly and compiles to an executable FormDefinition")
+  • it("supports dynamic slot elements and prefix/suffix in typed contracts")
+
+HTTP / MSW INTERACTIONS:
+None
+================================================================================
+
+================================================================================
+TEST FILE:             src/shared/ui/form/tests/layout-utils.test.ts
+ARCH LAYER:            Domain
+DOMAIN:                shared/ui/form
+TARGET:                layout-utils
+HARNESS:               Pure Vitest (Zero Mocks, Zero DOM)
+FIXTURES:              None
+TRACKED ISSUES:        None
+BUGS & DEFECTS:        None
+TAGS:                  None
+--------------------------------------------------------------------------------
+PRIMARY RESPONSIBILITY:
+Validates behavioral invariants for Form Layout Utilities.
+
+TEST SUITES & SCENARIOS:
+- describe("Form Layout Utilities")
+- describe("getFieldLayout")
+  • it("should extract basic layout properties correctly")
+  • it("should handle enabled/disabled state")
+- describe("getFormLayoutTree")
+  • it("should convert sections and fields into a hierarchical tree")
+  • it("should map card layout sections to ")
+
+HTTP / MSW INTERACTIONS:
+None
+================================================================================
+
+================================================================================
+TEST FILE:             src/shared/ui/form/tests/primitive-migration-guard.test.ts
+ARCH LAYER:            Domain
+DOMAIN:                shared/ui/form
+TARGET:                primitive-migration-guard
+HARNESS:               Pure Vitest (Zero Mocks, Zero DOM)
+FIXTURES:              None
+TRACKED ISSUES:        None
+BUGS & DEFECTS:        None
+TAGS:                  None
+--------------------------------------------------------------------------------
+PRIMARY RESPONSIBILITY:
+Primitive Migration Guard
+Golden snapshot tests that capture the FULL className output of
+buildHeroUIClasses() for every field type, variant, density, and
+
+TEST SUITES & SCENARIOS:
+- describe("Primitive Migration Guard")
+- describe("Category 1: Primitive fields")
+  • it("styles snapshot: ${name}")
+- describe("Category 2: Static fields (no wrapper)")
+  • it("styles snapshot: ${name}")
+- describe("Category 3: Structure fields")
+  • it("structure snapshot: ${name}")
+- describe("Category 4: Edge cases")
+  • it("headless mode produces base styles")
+  • it("side label placement")
+  • it("hidden label")
+  • it("field with description")
+  • it("field with placeholder")
+- describe("variant × intent matrix")
+  • it("${variant} + ${intent}")
+- describe("density × variant matrix")
+  • it("${density} + ${variant}")
+
+HTTP / MSW INTERACTIONS:
+None
+================================================================================
+
+================================================================================
+TEST FILE:             src/shared/ui/form/tests/proxy-benchmark.test.ts
+ARCH LAYER:            Domain
+DOMAIN:                shared/ui/form
+TARGET:                proxy-benchmark
+HARNESS:               Pure Vitest (Zero Mocks, Zero DOM)
+FIXTURES:              None
+TRACKED ISSUES:        None
+BUGS & DEFECTS:        None
+TAGS:                  None
+--------------------------------------------------------------------------------
+PRIMARY RESPONSIBILITY:
+Validates behavioral invariants for Proxy Overhead Benchmark.
+
+TEST SUITES & SCENARIOS:
+- describe("Proxy Overhead Benchmark")
+  • it("quantifies direct mutation vs proxy-guarded mutation overhead")
+
+HTTP / MSW INTERACTIONS:
+None
+================================================================================
+
+================================================================================
+TEST FILE:             src/shared/ui/form/tests/schema-normalizer.test.ts
+ARCH LAYER:            Domain
+DOMAIN:                shared/ui/form
+TARGET:                schema-normalizer
+HARNESS:               Pure Vitest (Zero Mocks, Zero DOM)
+FIXTURES:              None
+TRACKED ISSUES:        None
+BUGS & DEFECTS:        None
+TAGS:                  None
+--------------------------------------------------------------------------------
+PRIMARY RESPONSIBILITY:
+Validates behavioral invariants for SchemaNormalizer.
+
+TEST SUITES & SCENARIOS:
+- describe("SchemaNormalizer")
+  • it("generates deterministic fallback IDs")
+  • it("resolves canonical layout from properties when layout is missing")
+  • it("warns on unknown schema keys in development")
+
+HTTP / MSW INTERACTIONS:
+None
+================================================================================
+
+================================================================================
+TEST FILE:             src/shared/ui/form/tests/schema-styles.test.tsx
+ARCH LAYER:            Domain
+DOMAIN:                shared/ui/form
+TARGET:                schema-styles
+HARNESS:               Pure Vitest (Zero Mocks, Zero DOM)
+FIXTURES:              None
+TRACKED ISSUES:        None
+BUGS & DEFECTS:        None
+TAGS:                  None
+--------------------------------------------------------------------------------
+PRIMARY RESPONSIBILITY:
+Validates behavioral invariants for Form Style System.
+
+TEST SUITES & SCENARIOS:
+- describe("Form Style System")
+- describe("Row Layout Utilities")
+  • it("should correctly group fields into rows based on columnSpan")
+  • it("should generate correct static grid classes")
+- describe("HeroUI Style Generation (buildHeroUIClasses)")
+  • it("should generate base classes for inputs")
+  • it("should apply variant styles correctly")
+  • it("should handle validation error state")
+
+HTTP / MSW INTERACTIONS:
+None
+================================================================================
+
+================================================================================
+TEST FILE:             src/shared/ui/form/tests/withViewModelAndSlots.test.tsx
+ARCH LAYER:            Interface / Driver
+DOMAIN:                shared/ui/form
+TARGET:                withViewModelAndSlots
+HARNESS:               RTL
+FIXTURES:              None
+TRACKED ISSUES:        None
+BUGS & DEFECTS:        None
+TAGS:                  None
+--------------------------------------------------------------------------------
+PRIMARY RESPONSIBILITY:
+Validates behavioral invariants for DCS Dynamic Slot Architecture & withViewModel Integration.
+
+TEST SUITES & SCENARIOS:
+- describe("DCS Dynamic Slot Architecture & withViewModel Integration")
+  • it("renders custom startContent and endContent on ButtonField via properties")
+  • it("renders dynamic startContent and endContent in withAtom OuterWrapper without hardcoding")
+  • it("renders decoupled schema definitions with type: array and component: multiselect")
+  • it("renders decoupled schema definitions with type: string and component: radio with option icons")
+
+HTTP / MSW INTERACTIONS:
+None
+================================================================================
+
+================================================================================
+TEST FILE:             src/shared/ui/form/types/__tests__/withWizard.test.ts
+ARCH LAYER:            Domain
+DOMAIN:                shared/ui/form
+TARGET:                withWizard
+HARNESS:               Pure Vitest (Zero Mocks, Zero DOM)
+FIXTURES:              None
+TRACKED ISSUES:        None
+BUGS & DEFECTS:        None
+TAGS:                  None
+--------------------------------------------------------------------------------
+PRIMARY RESPONSIBILITY:
+Validates behavioral invariants for withWizard.
+
+TEST SUITES & SCENARIOS:
+- describe("withWizard")
+  • it("stamps settings.wizard.enabled=true on the contract")
+  • it("merges stepper config into settings.wizard")
+  • it("preserves existing settings and can set an explicit initial step")
+  • it("does not mutate the input contract")
+  • it("leaves the rest of the contract untouched")
+
+HTTP / MSW INTERACTIONS:
+None
+================================================================================
+
+================================================================================
+TEST FILE:             src/shared/ui/form/utils/__tests__/ErrorParser.test.ts
+ARCH LAYER:            Domain
+DOMAIN:                shared/ui/form
+TARGET:                ErrorParser
+HARNESS:               Pure Vitest (Zero Mocks, Zero DOM)
+FIXTURES:              None
+TRACKED ISSUES:        None
+BUGS & DEFECTS:        None
+TAGS:                  None
+--------------------------------------------------------------------------------
+PRIMARY RESPONSIBILITY:
+Build a minimal nameToIdMap for the given field names.
+By convention the test ID equals `id_<name>` to keep assertions readable.
+
+TEST SUITES & SCENARIOS:
+- describe("ErrorParser.parse()")
+- describe("direct field resolution")
+  • it("resolves a flat string error to its field id")
+  • it("resolves an array of messages for a single field")
+  • it("falls back to the raw key when no mapping exists")
+- describe("built-in FIELD_ALIASES fallback")
+  • it("maps ")
+  • it("maps ")
+  • it("maps ")
+  • it("maps ")
+  • it("maps ")
+  • it("maps ")
+- describe("schema-level field aliases")
+  • it("resolves server ")
+  • it("resolves via schemaAliases param (forward: targetField → aliases[])")
+  • it("resolves via schemaAliases param (reverse: server sends alias key)")
+  • it("resolves confirmPassword alias for confirm_password field")
+  • it("schema aliases take priority over FIELD_ALIASES fallback")
+- describe("nested error objects")
+  • it("falls back to dotted path when nested leaf field is not in nameToIdMap")
+  • it("resolves the leaf segment when the leaf name is in nameToIdMap")
+- describe("edge cases")
+  • it("returns empty array for empty error object")
+  • it("ignores non-string, non-object, non-array values")
+  • it("handles multiple fields with independent errors")
+
+HTTP / MSW INTERACTIONS:
+None
+================================================================================
+
+================================================================================
+TEST FILE:             src/shared/ui/form/utils/__tests__/layout-orchestration.test.ts
+ARCH LAYER:            Domain
+DOMAIN:                shared/ui/form
+TARGET:                layout-orchestration
+HARNESS:               Pure Vitest (Zero Mocks, Zero DOM)
+FIXTURES:              None
+TRACKED ISSUES:        None
+BUGS & DEFECTS:        None
+TAGS:                  None
+--------------------------------------------------------------------------------
+PRIMARY RESPONSIBILITY:
+Validates behavioral invariants for Layout Orchestration Scaling Logic.
+
+TEST SUITES & SCENARIOS:
+- describe("Layout Orchestration Scaling Logic")
+- describe("getGridClassName")
+  • it("should return responsive col-span classes for standard 12-column grid")
+  • it("should return responsive col-span classes for nested 6-span field")
+  • it("should return static col-span classes for non-12-column grid to prevent mobile breakage")
+- describe("getLayoutItemClasses (Scaled Spans)")
+  • it("should return standard col-span-6 for 50% width in 12-col grid")
+  • it("should scale 6/12 span to 1/2 in a 2-column grid")
+  • it("should scale 12/12 span to 2/2 in a 2-column grid")
+  • it("should handle headers as full-width candidates regardless of span")
+
+HTTP / MSW INTERACTIONS:
+None
+================================================================================
+

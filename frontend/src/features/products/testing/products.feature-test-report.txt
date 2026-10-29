@@ -1,0 +1,45 @@
+################################################################################
+# DOMAIN TEST CONTEXT REPORT: FEATURES/PRODUCTS
+# Domain Key:          features/products
+# Layer Group:         Features
+# Report File:         products.feature-test-report.txt
+# Generated At:        2026-09-26T21:01:59.279Z
+# Total Test Suites:   1
+# Tracked Issues (1):  ISSUE-1042
+# Defended Bugs (2):   Regression [ISSUE-1042]; Defect Guard: URL Sync Infinite Loop Shield
+################################################################################
+
+================================================================================
+TEST FILE:             src/features/products/__tests__/product.architecture.test.tsx
+ARCH LAYER:            Regression
+DOMAIN:                features/products
+TARGET:                product.architecture
+HARNESS:               MSW + vitest-axe
+FIXTURES:              product.fixture
+TRACKED ISSUES:        ISSUE-1042
+BUGS & DEFECTS:        Regression [ISSUE-1042]; Defect Guard: URL Sync Infinite Loop Shield
+TAGS:                  None
+--------------------------------------------------------------------------------
+PRIMARY RESPONSIBILITY:
+Architecture Reference Test Suite
+Demonstrates:
+1. Schema-Validated Fixtures (backed by Zod)
+
+TEST SUITES & SCENARIOS:
+- describe("Architecture Reference: Products Feature Pipeline")
+- describe("1. Schema-Validated Fixture Invariants")
+  • it("creates a domain-valid product fixture with defaults")
+  • it("prevents fixture drift by failing on schema violations")
+- describe("2. Scoped MSW Network Simulation")
+  • it("extracts :orgId and :branchId and filters by namespaced table sort & params")
+  • it("extracts single entity by :id within scope")
+- describe("3. Parameterized Server Error Handling Matrix")
+- describe("4. In-Process Accessibility Scan (vitest-axe)")
+  • it("detects no accessibility violations on an accessible form container")
+- describe("Regression [ISSUE-1042]: URL Sync Infinite Loop Shield")
+  • it("locks in stability of query parameters without cascading triggers")
+
+HTTP / MSW INTERACTIONS:
+- GET /api/products/error-check
+================================================================================
+

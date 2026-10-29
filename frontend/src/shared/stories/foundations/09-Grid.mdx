@@ -1,0 +1,58 @@
+import { Meta } from "@storybook/addon-docs/blocks";
+
+<Meta title="01 — Foundations / ▦ Grid" />
+
+# ▦ Grid
+
+The grid establishes structured horizontal alignment, consistent margins, and responsive multi-column layouts across ZenOS.
+
+---
+
+## 01 — Principles
+
+### 1. 12-Column Mathematical Hierarchy
+A 12-column grid permits balanced divisions into halves (6), thirds (4), quarters (3), and full width (12).
+
+### 2. Flexible Responsive Collapsing
+- **Desktop (≥1024px)**: 12 columns with 24px/32px gutters.
+- **Tablet (768px–1023px)**: 8 or 6 columns with 16px/24px gutters.
+- **Mobile (`<768px`)**: 4 columns or single stacked column with 16px gutters.
+
+---
+
+## 02 — Specification
+
+| Grid Token | Compact | Comfortable | Spacious |
+| :--- | :---: | :---: | :---: |
+| `grid.columns` | `12` | `12` | `12` |
+| `grid.gutter` | `16px` | `24px` | `32px` |
+| `grid.margin` | `16px` | `24px` | `32px` |
+
+---
+
+## 03 — Tokens
+
+Defined in `tokens/primitives/grid.json`:
+```json
+{
+  "primitives": {
+    "grid": {
+      "columns": { "$value": "12", "$type": "dimension" },
+      "gutter": {
+        "comfortable": { "$value": "24px", "$type": "dimension" }
+      }
+    }
+  }
+}
+```
+
+---
+
+## 04 — Implementation
+
+```tsx
+<div className="grid grid-cols-12 gap-6 p-6">
+  <div className="col-span-12 lg:col-span-8">Main Content (8 cols)</div>
+  <div className="col-span-12 lg:col-span-4">Sidebar (4 cols)</div>
+</div>
+```

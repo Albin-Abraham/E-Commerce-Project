@@ -1,0 +1,348 @@
+import { Meta, Canvas } from "@storybook/addon-docs/blocks";
+
+<Meta title="Theming" />
+
+# Theming
+
+The Zenith Design System uses a CSS variable-based theming system with Tailwind CSS v4. This provides a flexible, performant way to customize the design system for your brand.
+
+## Theme Architecture
+
+### CSS Variables
+
+All design tokens are exposed as CSS custom properties:
+
+```css
+:root {
+  /* Colors */
+  --color-primary: #3b82f6;
+  --color-primary-hover: #2563eb;
+  --color-success: #10b981;
+  --color-warning: #f59e0b;
+  --color-danger: #ef4444;
+
+  /* Spacing */
+  --space-xs: 0.25rem;
+  --space-sm: 0.5rem;
+  --space-md: 1rem;
+  --space-lg: 1.5rem;
+  --space-xl: 2rem;
+  --space-2xl: 3rem;
+
+  /* Typography */
+  --font-sans: "Inter", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", monospace;
+  --text-xs: 0.75rem;
+  --text-sm: 0.875rem;
+  --text-base: 1rem;
+  --text-lg: 1.125rem;
+  --text-xl: 1.25rem;
+  --text-2xl: 1.5rem;
+
+  /* Border Radius */
+  --radius-sm: 0.25rem;
+  --radius-md: 0.375rem;
+  --radius-lg: 0.5rem;
+  --radius-xl: 0.75rem;
+  --radius-2xl: 1rem;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+
+  /* Z-Index */
+  --z-base: 0;
+  --z-raised: 10;
+  --z-overlay: 40;
+  --z-modal: 50;
+  --z-popover: 60;
+  --z-tooltip: 70;
+  --z-toast: 80;
+}
+```
+
+## Configuration
+
+### Tailwind Config
+
+Extend the theme in your `tailwind.config.ts`:
+
+```ts
+import type { Config } from "tailwindcss";
+
+export default {
+  content: [
+    "./src/**/*.{js,ts,jsx,tsx}",
+    "./node_modules/@zenith/design-system/**/*.{js,ts,jsx,tsx}",
+  ],
+  theme: {
+    extend: {
+      colors: {
+        primary: {
+          50: "var(--color-primary-50)",
+          100: "var(--color-primary-100)",
+          // ...
+          600: "var(--color-primary-600)",
+          700: "var(--color-primary-700)",
+        },
+        // Custom semantic colors
+        brand: {
+          light: "#your-light-color",
+          DEFAULT: "#your-main-color",
+          dark: "#your-dark-color",
+        },
+      },
+      fontFamily: {
+        sans: ["var(--font-sans)", "system-ui"],
+        mono: ["var(--font-mono)", "monospace"],
+      },
+      spacing: {
+        "18": "4.5rem",
+        "88": "22rem",
+      },
+      borderRadius: {
+        "4xl": "2rem",
+      },
+    },
+  },
+} satisfies Config;
+```
+
+### CSS Variables Override
+
+Override variables in your global CSS:
+
+```css
+/* global.css */
+@import "tailwindcss";
+
+@theme {
+  --color-primary: #your-brand-color;
+  --color-primary-hover: #your-brand-hover;
+  --color-success: #your-success-color;
+  --color-danger: #your-danger-color;
+
+  --font-sans: "Your Font", system-ui, sans-serif;
+  --font-mono: "Your Mono Font", monospace;
+
+  --radius-lg: 0.75rem;
+  --radius-xl: 1rem;
+
+  --shadow-md: 0 4px 12px -2px rgb(0 0 0 / 0.08);
+}
+```
+
+## Dark Mode
+
+The design system supports dark mode via the `dark` class:
+
+```css
+.dark {
+  --color-background: #0f172a;
+  --color-surface: #1e293b;
+  --color-border: #334155;
+  --color-text: #f1f5f9;
+  --color-text-muted: #94a3b8;
+
+  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.3);
+  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.4);
+  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.4);
+}
+```
+
+### Toggle Dark Mode
+
+```tsx
+function ThemeToggle() {
+  const [isDark, setIsDark] = useState(false);
+
+  useEffect(() => {
+    document.documentElement.classList.toggle("dark", isDark);
+  }, [isDark]);
+
+  return (
+    <Button variant="ghost" onClick={() => setIsDark(!isDark)}>
+      {isDark ? "☀️" : "🌙"}
+    </Button>
+  );
+}
+```
+
+## Theme Provider
+
+For dynamic theming, use the ThemeProvider:
+
+```tsx
+import { ThemeProvider, useTheme } from "@zenith/design-system";
+
+function App() {
+  return (
+    <ThemeProvider
+      defaultTheme="system"
+      themes={{
+        light: { /* light theme overrides */ },
+        dark: { /* dark theme overrides */ },
+        brand: { /* custom brand theme */ },
+      }}
+    >
+      <YourApp />
+    </ThemeProvider>
+  );
+}
+
+function ThemedComponent() {
+  const { theme, setTheme, resolvedTheme } = useTheme();
+
+  return (
+    <select value={theme} onChange={(e) => setTheme(e.target.value)}>
+      <option value="light">Light</option>
+      <option value="dark">Dark</option>
+      <option value="system">System</option>
+    </select>
+  );
+}
+```
+
+## Component-Level Theming
+
+### Using ClassName Overrides
+
+```tsx
+<Button className="bg-brand-600 hover:bg-brand-700 text-white">
+  Branded Button
+</Button>
+
+<Box className="bg-brand-50 border-brand-200">
+  Branded Card
+</Box>
+```
+
+### Using Variant Extensions
+
+Extend component variants in your config:
+
+```ts
+// tailwind.config.ts
+const buttonVariants = {
+  variants: {
+    variant: {
+      primary: "bg-primary-600 text-white hover:bg-primary-700",
+      secondary: "bg-gray-100 text-gray-900 hover:bg-gray-200",
+      brand: "bg-brand-600 text-white hover:bg-brand-700", // Custom
+      brandOutline: "border-2 border-brand-600 text-brand-600 hover:bg-brand-50", // Custom
+    },
+  },
+};
+```
+
+## Design Tokens Reference
+
+### Colors
+
+| Token | Light | Dark | Usage |
+|-------|-------|------|-------|
+| `--color-primary` | #3b82f6 | #60a5fa | Primary actions |
+| `--color-success` | #10b981 | #34d399 | Success states |
+| `--color-warning` | #f59e0b | #fbbf24 | Warnings |
+| `--color-danger` | #ef4444 | #f87171 | Errors |
+| `--color-background` | #ffffff | #0f172a | Page background |
+| `--color-surface` | #f8fafc | #1e293b | Card surfaces |
+| `--color-border` | #e2e8f0 | #334155 | Borders |
+| `--color-text` | #0f172a | #f1f5f9 | Primary text |
+| `--color-text-muted` | #64748b | #94a3b8 | Secondary text |
+
+### Spacing Scale
+
+| Token | Value |
+|-------|-------|
+| `--space-xs` | 0.25rem (4px) |
+| `--space-sm` | 0.5rem (8px) |
+| `--space-md` | 1rem (16px) |
+| `--space-lg` | 1.5rem (24px) |
+| `--space-xl` | 2rem (32px) |
+| `--space-2xl` | 3rem (48px) |
+
+### Typography
+
+| Token | Value |
+|-------|-------|
+| `--text-xs` | 0.75rem (12px) |
+| `--text-sm` | 0.875rem (14px) |
+| `--text-base` | 1rem (16px) |
+| `--text-lg` | 1.125rem (18px) |
+| `--text-xl` | 1.25rem (20px) |
+| `--text-2xl` | 1.5rem (24px) |
+| `--text-3xl` | 1.875rem (30px) |
+
+### Border Radius
+
+| Token | Value |
+|-------|-------|
+| `--radius-sm` | 0.25rem (4px) |
+| `--radius-md` | 0.375rem (6px) |
+| `--radius-lg` | 0.5rem (8px) |
+| `--radius-xl` | 0.75rem (12px) |
+| `--radius-2xl` | 1rem (16px) |
+
+## Custom Theme Example
+
+```css
+/* themes/ocean.css */
+@theme {
+  --color-primary: #0ea5e9;
+  --color-primary-hover: #0284c7;
+  --color-primary-light: #e0f2fe;
+
+  --color-success: #14b8a6;
+  --color-warning: #f97316;
+  --color-danger: #ef4444;
+
+  --font-sans: "Plus Jakarta Sans", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", monospace;
+
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+  --radius-xl: 1rem;
+
+  --shadow-md: 0 4px 12px -2px rgb(14 165 233 / 0.15);
+  --shadow-lg: 0 12px 24px -4px rgb(14 165 233 / 0.2);
+}
+
+/* Apply theme */
+[data-theme="ocean"] {
+  @import "themes/ocean.css";
+}
+```
+
+## Best Practices
+
+1. **Use semantic tokens** - Prefer `--color-primary` over hardcoded colors
+2. **Extend, don't replace** - Add custom tokens alongside existing ones
+3. **Test in both modes** - Verify components work in light and dark mode
+4. **Document custom tokens** - Keep a token reference for your team
+5. **Use the theme provider** - For dynamic theme switching
+
+## Migration Guide
+
+### From Hardcoded Colors
+
+```tsx
+// Before
+<Button className="bg-blue-600 hover:bg-blue-700">Click</Button>
+
+// After
+<Button variant="primary">Click</Button>
+// Or for brand colors:
+<Button className="bg-brand-600 hover:bg-brand-700">Click</Button>
+```
+
+### From Custom Spacing
+
+```tsx
+// Before
+<Box className="p-6 m-4">Content</Box>
+
+// After
+<Box p="xl" m="lg">Content</Box>
+```

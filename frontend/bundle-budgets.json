@@ -1,0 +1,7 @@
+{
+  "$comment": "Bundle-size budgets for production builds. All sizes are gzip bytes reported in KB. Measured baseline (2026-10): initial JS 714 KB (index 234 + pdf-engine 480), initial CSS 74 KB, largest chunk 480 KB. Budgets sit above current values so they gate regressions without failing today's build.",
+  "initialJsGzipKb": 850,
+  "initialCssGzipKb": 90,
+  "maxChunkGzipKb": 500,
+  "maxInitialJsGrowthPct": 10
+}

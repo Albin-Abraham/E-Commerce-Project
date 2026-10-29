@@ -1,0 +1,119 @@
+{
+  "fault": {
+    "fallbackMessage": "System kernel failed to initialize.",
+    "resetKernel": "Reset Kernel",
+    "title": "Architectural Fault"
+  },
+  "features": {
+    "cards": {
+      "caching": {
+        "description": "Route-level intelligent chunk and data warming eliminating user latency.",
+        "title": "Eager & Prefetching"
+      },
+      "ddd": {
+        "description": "Decoupled feature slices with strictly isolated domain business logic.",
+        "title": "Domain-Driven Design"
+      },
+      "mdap": {
+        "description": "Meta-schema compilation for enterprise-grade form and table engines.",
+        "title": "Model-Driven Architecture"
+      },
+      "tokens": {
+        "description": "Multi-layered typography, spacing, elevation, and dynamic contrast matrices.",
+        "title": "W3C Token System"
+      }
+    },
+    "sectionSubtitle": "Engineered for resilience, high throughput, and zero-compromise developer ergonomics.",
+    "sectionTitle": "Architectural Pillars"
+  },
+  "footer": {
+    "copyright": "© 2026 Albin Abraham • Clean Architecture Implementation",
+    "docs": "Docs",
+    "github": "GitHub",
+    "systemDebug": "System Debug"
+  },
+  "header": {
+    "features": "Features",
+    "home": "Home",
+    "login": "Login",
+    "pricing": "Pricing",
+    "showcase": "Showcase",
+    "signUp": "Sign Up",
+    "title": "Zenith"
+  },
+  "hero": {
+    "badge": "Industrial Grade Architecture v2.4",
+    "buttons": {
+      "initKernel": "Initialize Kernel",
+      "switchEnvironment": "Switch Environment"
+    },
+    "description": "A high-performance boilerplate demonstrating Domain-Driven Design, SOLID principles, and the Zenith Object-Based Styling Engine. Built for developers who demand architectural excellence.",
+    "titleGradient": "Next-Generation React",
+    "titleRest": "Infrastructure for Scale"
+  },
+  "industrial": {
+    "featureItem": "Feature {{number}}",
+    "title": "Industrial Components"
+  },
+  "monitor": {
+    "description": "Real-time synchronization with external data providers via TanStack Query interceptors.",
+    "impairedStatus": "System Status: Impaired",
+    "metrics": {
+      "activeSessions": "Active Sessions",
+      "apiLatency": "API P99 Latency",
+      "memoryFootprint": "Memory Footprint",
+      "uptime": "Kernel Uptime"
+    },
+    "networkOutage": "Network Outage Detected",
+    "noData": "No Data",
+    "operationalStatus": "System Status: Operational",
+    "status": "All Systems Operational",
+    "syncing": "Syncing Data...",
+    "systemPayload": "System Payload",
+    "title": "Infrastructure Monitor"
+  },
+  "navGrid": {
+    "auth": {
+      "desc": "Flagship split-screen login demo showcasing portal-mode and glass aesthetics.",
+      "title": "Security Portal"
+    },
+    "branch": {
+      "desc": "Operations management suite with deep geospatial data grouping.",
+      "title": "Deployment Suite"
+    },
+    "builder": {
+      "desc": "Recursive structural builder for constructing complex dynamic forms.",
+      "title": "Layout Engine"
+    },
+    "docs": {
+      "desc": "Architectural principles and design tokens guiding the render engine.",
+      "title": "System Docs"
+    },
+    "employee": {
+      "desc": "High-density employee onboarding flow with live data preview slots.",
+      "title": "Modern Registration"
+    },
+    "wizard": {
+      "desc": "Multi-step onboarding flow with elastic transitions and spring motion.",
+      "title": "Interactive Wizard"
+    }
+  },
+  "quickNav": {
+    "items": {
+      "builder": "Open Form Builder",
+      "catalog": "Explore Catalog",
+      "showcases": "View Showcases",
+      "workspace": "Manage Workspace"
+    },
+    "subtitle": "Direct jump routes to enterprise capabilities and demos.",
+    "title": "Platform Quick Access"
+  },
+  "stats": {
+    "architecturePurity": "Architecture Purity",
+    "bootLatency": "Boot Latency",
+    "typeSafety": "Type Safety"
+  },
+  "trust": {
+    "title": "Trusted by Enterprise Infrastructure Teams"
+  }
+}

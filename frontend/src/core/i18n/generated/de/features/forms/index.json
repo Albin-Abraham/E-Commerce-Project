@@ -1,0 +1,79 @@
+{
+  "onboarding": {
+    "badge": "MDAP-Engine • Mitarbeiter-Onboarding",
+    "description": "Berufliches Profil und Arbeitserlaubnis für Neueinstellungen.",
+    "fields": {
+      "citizenship": {
+        "label": "Staatsbürgerschaftsstatus",
+        "options": {
+          "citizen": "Staatsbürger",
+          "permit": "Arbeitserlaubnis",
+          "pr": "Ständiger Wohnsitz"
+        }
+      },
+      "department": {
+        "label": "Abteilung",
+        "options": {
+          "eng": "Entwicklung",
+          "hr": "Personalwesen",
+          "sales": "Vertrieb"
+        }
+      },
+      "email": "E-Mail-Adresse",
+      "expiryDate": "Ablaufdatum",
+      "fullName": "Vollständiger Name",
+      "permitDetails": "Besondere Angaben",
+      "permitNumber": "Erlaubnisnummer",
+      "phone": "Telefonnummer",
+      "preview": "Mitarbeiter-Vorschau"
+    },
+    "permitDetailsDesc": "Erforderliche Dokumentation für befristete Arbeitsgenehmigungen.",
+    "previewCard": {
+      "awaitingName": "Warte auf Namenseingabe...",
+      "engDivision": "Entwicklungsabteilung",
+      "engineState": "Engine-Status",
+      "hrDivision": "Personalabteilung",
+      "pendingInput": "AUSSTEHENDE EINGABE",
+      "selectDepartment": "Abteilung auswählen",
+      "validPayload": "GÜLTIGE NUTZLAST"
+    },
+    "sections": {
+      "employment": {
+        "description": "Abteilungs- und Staatsangehörigkeitsstatus.",
+        "title": "Beschäftigungsinformationen"
+      },
+      "personal": {
+        "description": "Grundlegende Kontakt- und Identifikationsdaten.",
+        "title": "Mitarbeiter-Onboarding"
+      }
+    },
+    "submit": "Mitarbeiter Registrieren",
+    "title": "Mitarbeiterregistrierung"
+  },
+  "validation": {
+    "alphaOnly": "{{label}} darf nur Buchstaben enthalten",
+    "alphanumeric": "{{label}} darf nur Buchstaben und Zahlen enthalten",
+    "digitsOnly": "{{label}} darf nur Ziffern enthalten",
+    "email": "Ungültige E-Mail-Adresse",
+    "ip": "{{label}} muss eine gültige IP-Adresse sein",
+    "max": "{{label}} darf höchstens {{value}} sein",
+    "maxLength": "{{label}} darf maximal {{value}} Zeichen lang sein",
+    "min": "{{label}} muss mindestens {{value}} Zeichen lang sein",
+    "minLength": "{{label}} muss mindestens {{value}} Zeichen lang sein",
+    "pattern": "Ungültiges Format für {{label}}",
+    "phone": "Ungültige Telefonnummer",
+    "postalCode": "{{label}} muss eine gültige Postleitzahl sein",
+    "required": "{{label}} ist erforderlich",
+    "summary_description": "Es wurden Fehler festgestellt. Bitte überprüfen Sie die markierten Felder.",
+    "summary_title": "Bitte korrigieren Sie die Fehler vor dem Absenden",
+    "url": "{{label}} muss eine gültige URL sein"
+  },
+  "navigationGuard": {
+    "title": "Ungespeicherte Änderungen in {{domain_name}}",
+    "message": "Sie haben ungespeicherte Änderungen in {{domain_name}}. Wenn Sie diese Seite verlassen, werden alle Änderungen verworfen.",
+    "confirm": "Verwerfen & Verlassen",
+    "cancel": "Auf Seite bleiben",
+    "toastTitle": "Navigation fortgesetzt",
+    "toastDescription": "Ungespeicherte Änderungen in {{domain_name}} wurden verworfen."
+  }
+}

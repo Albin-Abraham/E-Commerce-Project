@@ -1,0 +1,39 @@
+################################################################################
+# DOMAIN TEST CONTEXT REPORT: SHARED/COMPONENTS
+# Domain Key:          shared/components
+# Layer Group:         Shared
+# Report File:         components.shared-test-report.txt
+# Generated At:        2026-09-26T21:01:59.279Z
+# Total Test Suites:   1
+# Tracked Issues (0):  None
+# Defended Bugs (0):   None
+################################################################################
+
+================================================================================
+TEST FILE:             src/shared/components/Search/GlobalSearch.test.tsx
+ARCH LAYER:            Interface / Driver
+DOMAIN:                shared/components
+TARGET:                GlobalSearch
+HARNESS:               RTL
+FIXTURES:              None
+TRACKED ISSUES:        None
+BUGS & DEFECTS:        None
+TAGS:                  None
+--------------------------------------------------------------------------------
+PRIMARY RESPONSIBILITY:
+Validates behavioral invariants for GlobalSearch Component.
+
+TEST SUITES & SCENARIOS:
+- describe("GlobalSearch Component")
+  • it("renders correctly with placeholder")
+  • it("updates local state but NOT URL when typing")
+  • it("updates URL params when Enter is pressed")
+  • it("clears search when Clear button is clicked")
+  • it("displays the current search value from URL params")
+  • it("focuses input when PlatformCommand.FocusSearch is emitted")
+  • it("blurs input when Escape key is pressed")
+
+HTTP / MSW INTERACTIONS:
+None
+================================================================================
+

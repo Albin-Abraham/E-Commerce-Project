@@ -1,0 +1,318 @@
+import { Meta, Canvas } from "@storybook/addon-docs/blocks";
+
+<Meta title="Layout Primitives" />
+
+# Layout Primitives
+
+The layout primitives are the foundational building blocks for creating responsive, flexible layouts. They follow a composition model where complex layouts are built by combining simple primitives.
+
+## Primitives Overview
+
+| Primitive | Purpose | Key Props |
+|-----------|---------|-----------|
+| `Box` | Basic container with spacing modifiers | `p`, `m`, `px`, `py`, `asChild` |
+| `Flex` | Flexbox container | `direction`, `align`, `justify`, `gap`, `wrap` |
+| `Grid` | CSS Grid container | `columns`, `gap`, `align`, `justify` |
+| `VStack` | Vertical stack (Flex column) | `align`, `justify`, `gap` |
+| `Layer` | Z-index aware positioning | `level`, `position`, `inset`, `isolate` |
+| `PageShell` | Full-page layout container | `slots`, `className` |
+
+## Box
+
+The most basic layout primitive. Accepts spacing modifiers and renders as a `div` (or custom element via `asChild`).
+
+```tsx
+import { Box } from "@zenith/design-system";
+
+<Box p="md" m="lg" bg="surface" radius="lg">
+  Content with padding and margin
+</Box>
+```
+
+### Spacing Modifiers
+
+All layout primitives support spacing modifiers:
+
+```tsx
+// Margin
+<Box m="lg" />           // All sides
+<Box mt="md" mb="sm" />  // Individual sides
+<Box mx="auto" />        // Horizontal center
+
+// Padding
+<Box p="md" />
+<Box px="lg" py="sm" />
+```
+
+### asChild Pattern
+
+Render as a different element while preserving props:
+
+```tsx
+<Box asChild>
+  <button className="custom-button">Box as Button</button>
+</Box>
+```
+
+## Flex
+
+Flexbox container with semantic props for direction, alignment, and justification.
+
+```tsx
+import { Flex } from "@zenith/design-system";
+
+<Flex direction="col" gap="md" align="stretch">
+  <Box>Item 1</Box>
+  <Box>Item 2</Box>
+  <Box>Item 3</Box>
+</Flex>
+```
+
+### Common Patterns
+
+**Centered Content:**
+```tsx
+<Flex align="center" justify="center" className="h-64">
+  <Box>Perfectly Centered</Box>
+</Flex>
+```
+
+**Navigation Bar:**
+```tsx
+<Flex justify="between" align="center" className="px-6 py-4">
+  <Text variant="h2" bold>Logo</Text>
+  <Flex gap="lg">
+    <a href="#">Features</a>
+    <a href="#">Pricing</a>
+    <a href="#">About</a>
+  </Flex>
+  <Button>Get Started</Button>
+</Flex>
+```
+
+**Form Layout:**
+```tsx
+<Flex direction="col" gap="lg" className="w-full max-w-md">
+  <Flex direction="col" gap="xs">
+    <label>Email</label>
+    <input className="px-3 py-2 border rounded" />
+  </Flex>
+  <Flex direction="col" gap="xs">
+    <label>Password</label>
+    <input type="password" className="px-3 py-2 border rounded" />
+  </Flex>
+  <Button>Submit</Button>
+</Flex>
+```
+
+## Grid
+
+CSS Grid container with responsive column support.
+
+```tsx
+import { Grid, GridItem } from "@zenith/design-system";
+
+<Grid columns={12} gap="lg">
+  <GridItem colSpan={8}>
+    <Box>Main Content (8/12)</Box>
+  </GridItem>
+  <GridItem colSpan={4}>
+    <Box>Sidebar (4/12)</Box>
+  </GridItem>
+</Grid>
+```
+
+### Responsive Spans
+
+```tsx
+<Grid columns={12} gap="md">
+  <GridItem colSpan={{ base: 12, md: 6, lg: 3 }}>
+    {/* 12 cols on mobile, 6 on tablet, 3 on desktop */}
+  </GridItem>
+</Grid>
+```
+
+### Dashboard Layout
+
+```tsx
+<Grid columns={12} gap="lg">
+  <GridItem colSpan={12}>
+    <Box variant="card" p="lg">Header</Box>
+  </GridItem>
+  <GridItem colSpan={8}>
+    <Box variant="card" p="lg" className="h-64">Main Content</Box>
+  </GridItem>
+  <GridItem colSpan={4}>
+    <Box variant="card" p="lg" className="h-64">Sidebar</Box>
+  </GridItem>
+  <GridItem colSpan={12}>
+    <Box variant="card" p="lg">Footer</Box>
+  </GridItem>
+</Grid>
+```
+
+## VStack
+
+Vertical stack - a specialized Flex with `direction="col"`.
+
+```tsx
+import { VStack } from "@zenith/design-system";
+
+<VStack gap="lg" align="stretch">
+  <Box>Item 1</Box>
+  <Box>Item 2</Box>
+  <Box>Item 3</Box>
+</VStack>
+```
+
+### Form Stack
+
+```tsx
+<VStack gap="lg" className="w-full max-w-md">
+  <Flex direction="col" gap="xs">
+    <label>Username</label>
+    <input className="px-3 py-2 border rounded" />
+  </Flex>
+  <Flex direction="col" gap="xs">
+    <label>Email</label>
+    <input type="email" className="px-3 py-2 border rounded" />
+  </Flex>
+  <Button>Submit</Button>
+</VStack>
+```
+
+## Layer
+
+Z-index aware positioning primitive with semantic levels.
+
+```tsx
+import { Layer } from "@zenith/design-system";
+
+<Layer level="modal" position="fixed" inset>
+  <Modal />
+</Layer>
+```
+
+### Z-Index Levels
+
+| Level | Value | Use Case |
+|-------|-------|----------|
+| `base` | 0 | Default content |
+| `raised` | 10 | Elevated cards |
+| `overlay` | 40 | Backdrops |
+| `modal` | 50 | Modal dialogs |
+| `popover` | 60 | Popovers |
+| `tooltip` | 70 | Tooltips |
+| `toast` | 80 | Toast notifications |
+| `overlap` | 90 | Overlapping elements |
+
+### Common Patterns
+
+**Modal Overlay:**
+```tsx
+<Layer level="overlay" position="fixed" inset className="bg-black/50">
+  <Layer level="modal" position="fixed" className="top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
+    <ModalContent />
+  </Layer>
+</Layer>
+```
+
+**Toast Container:**
+```tsx
+<Layer level="toast" position="fixed" className="bottom-4 right-4">
+  <Toast />
+</Layer>
+```
+
+**Edit Button on Card:**
+```tsx
+<Box variant="card" p="lg" className="relative">
+  <Layer level="overlap" position="absolute" className="top-2 right-2">
+    <EditButton />
+  </Layer>
+</Box>
+```
+
+## PageShell
+
+Full-page layout container for orchestrated views.
+
+```tsx
+import { PageShell } from "@zenith/design-system";
+
+<PageShell
+  slots={{
+    shell: "page-shell--dashboard w-full h-full flex flex-col",
+    atmosphere: "bg-gradient-to-br from-blue-50 to-indigo-50",
+  }}
+>
+  <header className="bg-white border-b px-6 py-4">
+    <h1>Dashboard</h1>
+  </header>
+  <main className="flex-1 p-6 overflow-auto">
+    <DashboardContent />
+  </main>
+</PageShell>
+```
+
+## Composition Examples
+
+### Holy Grail Layout
+
+```tsx
+<Grid columns={12} gap="md" className="h-screen">
+  <GridItem colSpan={12}><Header /></GridItem>
+  <GridItem colSpan={3}><Sidebar /></GridItem>
+  <GridItem colSpan={6}><MainContent /></GridItem>
+  <GridItem colSpan={3}><Aside /></GridItem>
+  <GridItem colSpan={12}><Footer /></GridItem>
+</Grid>
+```
+
+### Card Grid with Auto-Flow
+
+```tsx
+<Grid columns={{ base: 1, md: 2, lg: 3 }} gap="lg">
+  {items.map(item => (
+    <GridItem key={item.id}>
+      <Card>{item.content}</Card>
+    </GridItem>
+  ))}
+</Grid>
+```
+
+### Form with Grid Layout
+
+```tsx
+<VStack gap="lg">
+  <Grid columns={12} gap="md">
+    <GridItem colSpan={6}>
+      <TextField label="First Name" />
+    </GridItem>
+    <GridItem colSpan={6}>
+      <TextField label="Last Name" />
+    </GridItem>
+    <GridItem colSpan={12}>
+      <TextField label="Email" type="email" />
+    </GridItem>
+  </Grid>
+</VStack>
+```
+
+## Best Practices
+
+1. **Compose primitives** - Build complex layouts by combining Box, Flex, Grid, VStack
+2. **Use semantic props** - Prefer `gap="md"` over custom CSS classes
+3. **Responsive by default** - Use responsive `colSpan` objects for Grid items
+4. **Layer for z-index** - Use Layer for any positioned elements that need z-index management
+5. **PageShell for pages** - Use PageShell for full-page layouts with proper atmosphere
+
+## Migration from CSS
+
+| CSS Pattern | Zenith Primitive |
+|-------------|------------------|
+| `<div className="p-4 m-2">` | `<Box p="md" m="sm">` |
+| `<div className="flex items-center justify-between">` | `<Flex align="center" justify="between">` |
+| `<div className="grid grid-cols-3 gap-4">` | `<Grid columns={3} gap="md">` |
+| `<div className="flex flex-col gap-4">` | `<VStack gap="lg">` |
+| `<div className="fixed inset-0 z-50">` | `<Layer level="modal" position="fixed" inset>` |

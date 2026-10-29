@@ -1,0 +1,11 @@
+[
+  { "label": "New York", "value": "NY", "country": "US" },
+  { "label": "Los Angeles", "value": "LA", "country": "US" },
+  { "label": "Chicago", "value": "CHI", "country": "US" },
+  { "label": "Mumbai", "value": "MUM", "country": "IN" },
+  { "label": "Delhi", "value": "DEL", "country": "IN" },
+  { "label": "Bangalore", "value": "BLR", "country": "IN" },
+  { "label": "London", "value": "LON", "country": "UK" },
+  { "label": "Manchester", "value": "MAN", "country": "UK" },
+  { "label": "Birmingham", "value": "BIR", "country": "UK" }
+]

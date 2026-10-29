@@ -1,0 +1,119 @@
+{
+  "fault": {
+    "fallbackMessage": "El kernel del sistema no pudo inicializarse.",
+    "resetKernel": "Restablecer Kernel",
+    "title": "Fallo Arquitectónico"
+  },
+  "features": {
+    "cards": {
+      "caching": {
+        "description": "Calentamiento inteligente de fragmentos y datos a nivel de ruta eliminando la latencia del usuario.",
+        "title": "Carga Anticipada y Precarga"
+      },
+      "ddd": {
+        "description": "Porciones de funcionalidades desacopladas con lógica empresarial de dominio estrictamente aislada.",
+        "title": "Diseño Guiado por el Dominio"
+      },
+      "mdap": {
+        "description": "Compilación de metaesquemas para motores de formularios y tablas empresariales.",
+        "title": "Arquitectura Guiada por Modelos"
+      },
+      "tokens": {
+        "description": "Matrices de tipografía multicapa, espaciado, elevación y contraste dinámico.",
+        "title": "Sistema de Tokens W3C"
+      }
+    },
+    "sectionSubtitle": "Diseñado para resiliencia, alto rendimiento y ergonomía para desarrolladores sin compromisos.",
+    "sectionTitle": "Pilares Arquitectónicos"
+  },
+  "footer": {
+    "copyright": "© 2026 Albin Abraham • Implementación de Arquitectura Limpia",
+    "docs": "Documentación",
+    "github": "GitHub",
+    "systemDebug": "Depuración del Sistema"
+  },
+  "header": {
+    "features": "Características",
+    "home": "Inicio",
+    "login": "Acceder",
+    "pricing": "Precios",
+    "showcase": "Demostración",
+    "signUp": "Registrarse",
+    "title": "Zenith"
+  },
+  "hero": {
+    "badge": "Arquitectura de Grado Industrial v2.4",
+    "buttons": {
+      "initKernel": "Inicializar Kernel",
+      "switchEnvironment": "Cambiar Entorno"
+    },
+    "description": "Un boilerplate de alto rendimiento que demuestra Diseño Guiado por el Dominio, principios SOLID y el Motor de Estilos Basado en Objetos Zenith.",
+    "titleGradient": "React de Nueva Generación",
+    "titleRest": "Infraestructura para Escala"
+  },
+  "industrial": {
+    "featureItem": "Componente {{number}}",
+    "title": "Componentes Industriales"
+  },
+  "monitor": {
+    "description": "Sincronización en tiempo real con proveedores de datos externos mediante interceptores TanStack Query.",
+    "impairedStatus": "Estado del Sistema: Deteriorado",
+    "metrics": {
+      "activeSessions": "Sesiones Activas",
+      "apiLatency": "Latencia P99 API",
+      "memoryFootprint": "Huella de Memoria",
+      "uptime": "Tiempo de Actividad"
+    },
+    "networkOutage": "Corte de Red Detectado",
+    "noData": "Sin Datos",
+    "operationalStatus": "Estado del Sistema: Operativo",
+    "status": "Todos los Sistemas Operativos",
+    "syncing": "Sincronizando Datos...",
+    "systemPayload": "Carga Útil del Sistema",
+    "title": "Monitor de Infraestructura"
+  },
+  "navGrid": {
+    "auth": {
+      "desc": "Demostración insignia de inicio de sesión con pantalla dividida y estética de cristal.",
+      "title": "Portal de Seguridad"
+    },
+    "branch": {
+      "desc": "Suite de gestión de operaciones con agrupación geoespacial profunda de datos.",
+      "title": "Suite de Despliegue"
+    },
+    "builder": {
+      "desc": "Constructor estructural recursivo para componer formularios dinámicos complejos.",
+      "title": "Motor de Diseño"
+    },
+    "docs": {
+      "desc": "Principios arquitectónicos y tokens de diseño que guían el motor de renderizado.",
+      "title": "Docs del Sistema"
+    },
+    "employee": {
+      "desc": "Flujo de registro de empleados de alta densidad con ranuras de vista previa en tiempo real.",
+      "title": "Registro Moderno"
+    },
+    "wizard": {
+      "desc": "Flujo de incorporación multipaso con transiciones elásticas y movimiento por resorte.",
+      "title": "Asistente Interactivo"
+    }
+  },
+  "quickNav": {
+    "items": {
+      "builder": "Abrir Constructor",
+      "catalog": "Explorar Catálogo",
+      "showcases": "Ver Demostraciones",
+      "workspace": "Gestionar Espacio de Trabajo"
+    },
+    "subtitle": "Accesos directos a capacidades y demostraciones empresariales.",
+    "title": "Acceso Rápido a la Plataforma"
+  },
+  "stats": {
+    "architecturePurity": "Pureza Arquitectónica",
+    "bootLatency": "Latencia de Arranque",
+    "typeSafety": "Seguridad de Tipos"
+  },
+  "trust": {
+    "title": "De Confianza para Equipos de Infraestructura Empresarial"
+  }
+}

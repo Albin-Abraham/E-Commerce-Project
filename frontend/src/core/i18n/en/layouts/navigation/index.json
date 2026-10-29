@@ -1,0 +1,55 @@
+{
+  "brand": {
+    "name": "ZenOS",
+    "subtitle": "Platform"
+  },
+  "footer": {
+    "copyright": "© {{year}} ZenOS Modular Monolith Architecture. 10/10 Enterprise Ready.",
+    "platformTerms": "Platform Terms"
+  },
+  "header": {
+    "allProducts": "All Products",
+    "allProductsDesc": "Browse the full industrial catalog.",
+    "analytics": "Analytics",
+    "analyticsDesc": "Performance metrics and intelligence.",
+    "builder": "Builder",
+    "builderDesc": "Create and configure custom modules.",
+    "platform": "Platform",
+    "products": "Products",
+    "signIn": "Sign In",
+    "signOut": "Sign Out",
+    "signOutDesc": "End session and clear credentials",
+    "workspace": "Workspace",
+    "workspaceContext": "Workspace Context",
+    "workspaceContextDesc": "Switch active company & branch"
+  },
+  "menu": {
+    "cart": "My Cart",
+    "dashboard": "Dashboard",
+    "logout": "Sign Out",
+    "profile": "Profile",
+    "shop": "Products",
+    "toggle": "Menu"
+  },
+  "sections": {
+    "navigation": "Navigation System",
+    "utilities": "Platform Utilities"
+  },
+  "sidebar": {
+    "allProducts": "All Products",
+    "analytics": "Analytics",
+    "authPortal": "Auth Portal",
+    "branchConfig": "Branch Config",
+    "employeeWizard": "Employee Wizard",
+    "formBuilder": "Form Builder",
+    "identityAccounts": "Identity & Accounts",
+    "interactiveTable": "Interactive Table",
+    "inventory": "Inventory",
+    "multiStepForm": "Multi-Step Form",
+    "productsCatalog": "Products Catalog",
+    "securitySettings": "Security Settings",
+    "showcaseTemplates": "Showcase Templates",
+    "userProfile": "User Profile",
+    "workspace": "Workspace"
+  }
+}

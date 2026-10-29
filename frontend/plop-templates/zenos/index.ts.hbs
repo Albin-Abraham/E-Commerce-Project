@@ -1,0 +1,8 @@
+export * from "./services/{{kebabCase name}}.repository";
+export * from "./services/{{kebabCase name}}.keys";
+export * from "./services/{{kebabCase name}}.builder";
+export * from "./hooks/use{{pascalCase name}}Facade";
+{{#if includeUrlParams}}
+export * from "./context/{{pascalCase name}}ViewContext";
+{{/if}}
+export * from "./routes";

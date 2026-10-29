@@ -1,0 +1,15 @@
+{
+  "primitives": {
+    "opacity": {
+      "0": { "$value": "0", "$type": "dimension" },
+      "5": { "$value": "0.05", "$type": "dimension" },
+      "10": { "$value": "0.10", "$type": "dimension" },
+      "20": { "$value": "0.20", "$type": "dimension" },
+      "40": { "$value": "0.40", "$type": "dimension" },
+      "disabled": { "$value": "0.50", "$type": "dimension" },
+      "overlay": { "$value": "0.60", "$type": "dimension" },
+      "hover": { "$value": "0.80", "$type": "dimension" },
+      "100": { "$value": "1", "$type": "dimension" }
+    }
+  }
+}

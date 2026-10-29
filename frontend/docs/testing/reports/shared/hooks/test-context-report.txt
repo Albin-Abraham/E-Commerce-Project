@@ -1,0 +1,36 @@
+################################################################################
+# DOMAIN TEST CONTEXT REPORT: SHARED/HOOKS
+# Domain Key:          shared/hooks
+# Layer Group:         Shared
+# Report File:         hooks.shared-test-report.txt
+# Generated At:        2026-09-26T21:01:59.280Z
+# Total Test Suites:   1
+# Tracked Issues (0):  None
+# Defended Bugs (0):   None
+################################################################################
+
+================================================================================
+TEST FILE:             src/shared/hooks/routing/__tests__/useFilterUrlSync.test.ts
+ARCH LAYER:            Interface / Driver
+DOMAIN:                shared/hooks
+TARGET:                useFilterUrlSync
+HARNESS:               RTL
+FIXTURES:              None
+TRACKED ISSUES:        None
+BUGS & DEFECTS:        None
+TAGS:                  None
+--------------------------------------------------------------------------------
+PRIMARY RESPONSIBILITY:
+Validates behavioral invariants for useFilterUrlSync.
+
+TEST SUITES & SCENARIOS:
+- describe("useFilterUrlSync")
+  • it("hydrates initial state from URL parameters without JSON.parse")
+  • it("synchronizes local state updates to URL parameters without JSON.stringify")
+  • it("handles bracketed nested object fields cleanly")
+  • it("preserves non-owned query parameters non-destructively")
+
+HTTP / MSW INTERACTIONS:
+None
+================================================================================
+

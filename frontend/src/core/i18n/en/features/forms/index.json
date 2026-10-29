@@ -1,0 +1,84 @@
+{
+  "onboarding": {
+    "badge": "MDAP Engine • Employee Onboarding",
+    "description": "New hire professional profile and work authorization.",
+    "fields": {
+      "citizenship": {
+        "label": "Citizenship Status",
+        "options": {
+          "citizen": "Citizen",
+          "permit": "Work Permit",
+          "pr": "Permanent Resident"
+        }
+      },
+      "department": {
+        "label": "Department",
+        "options": {
+          "eng": "Engineering",
+          "hr": "HR",
+          "sales": "Sales"
+        }
+      },
+      "email": "Email Address",
+      "expiryDate": "Expiry Date",
+      "fullName": "Full Name",
+      "permitDetails": "Special Details",
+      "permitNumber": "Permit Number",
+      "phone": "Phone Number",
+      "preview": "Employee Preview"
+    },
+    "permitDetailsDesc": "Required documentation for temporary work authorizations.",
+    "previewCard": {
+      "awaitingName": "Awaiting Name...",
+      "engDivision": "Engineering Division",
+      "engineState": "Engine State",
+      "hrDivision": "HR Division",
+      "pendingInput": "PENDING INPUT",
+      "selectDepartment": "Select Department",
+      "validPayload": "VALID PAYLOAD"
+    },
+    "sections": {
+      "employment": {
+        "description": "Department and citizenship status.",
+        "title": "Employment Info"
+      },
+      "personal": {
+        "description": "Basic contact and identification info.",
+        "title": "Employee Onboarding"
+      }
+    },
+    "submit": "Register Employee",
+    "title": "Employee Registration"
+  },
+  "validation": {
+    "alphaOnly": "{{label}} can only contain letters",
+    "alphanumeric": "{{label}} must contain only letters and numbers",
+    "digitsOnly": "{{label}} must contain only digits",
+    "email": "Invalid email address",
+    "ip": "{{label}} must be a valid IP address",
+    "max": "{{label}} must be at most {{value}}",
+    "maxLength": "{{label}} must be at most {{value}} characters",
+    "min": "{{label}} must be at least {{value}} characters",
+    "minLength": "{{label}} must be at least {{value}} characters",
+    "pattern": "Invalid format for {{label}}",
+    "phone": "Invalid phone number",
+    "postalCode": "{{label}} must be a valid postal code",
+    "required": "{{label}} is required",
+    "summary_description": "We found some issues in the form. Please check the highlighted fields below.",
+    "summary_title": "Please correct the errors before submitting",
+    "url": "{{label}} must be a valid URL"
+  },
+  "navigationGuard": {
+    "title": "Unsaved Changes in {{domain_name}}",
+    "message": "You have unsaved changes in {{domain_name}}. Leaving this page will discard all modifications.",
+    "confirm": "Discard & Leave",
+    "cancel": "Stay on Page",
+    "toastTitle": "Navigation Resumed",
+    "toastDescription": "Unsaved changes in {{domain_name}} were discarded."
+  },
+  "detail": {
+    "yes": "Yes",
+    "no": "No",
+    "keyDetails": "Key Details"
+  }
+}

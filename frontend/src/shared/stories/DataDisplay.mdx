@@ -1,0 +1,297 @@
+import { Meta, Canvas } from "@storybook/addon-docs/blocks";
+
+<Meta title="Data Display" />
+
+# Data Display
+
+Components for displaying tabular data, generating PDF reports, and visualizing information.
+
+## Table Components
+
+### ZenithTable
+
+The main table component with virtualization, sorting, filtering, and pagination.
+
+```tsx
+import { ZenithTable } from "@zenith/design-system";
+
+<ZenithTable
+  columns={[
+    { key: "name", label: "Name", width: 200 },
+    { key: "email", label: "Email", flex: 2 },
+    { key: "role", label: "Role", width: 120 },
+    { key: "status", label: "Status", width: 100 },
+  ]}
+  rows={data}
+  rowKey="id"
+  sortable
+  filterable
+  pagination={{ pageSize: 25 }}
+  virtualized
+  height={600}
+/>
+```
+
+### Table Primitives
+
+Low-level table building blocks:
+
+```tsx
+import { TablePrimitives, TableAtomicCell } from "@zenith/design-system";
+
+<TablePrimitives
+  columns={columns}
+  rows={rows}
+  renderCell={(column, row) => (
+    <TableAtomicCell column={column} row={row} />
+  )}
+/>
+```
+
+### TaskStatus
+
+Display import/processing task status with summary cards and error list.
+
+```tsx
+import { TaskStatus, DefaultSummary, DefaultErrorList } from "@zenith/design-system";
+
+<TaskStatus
+  summary={{ created_count: 42, updated_count: 15, error_count: 3 }}
+  errors={[
+    { row: 5, message: "Invalid email" },
+    { row: 12, error: "Duplicate entry" },
+  ]}
+  status="completed"
+  renderSummary={DefaultSummary}
+  renderErrors={DefaultErrorList}
+/>
+```
+
+### ScopeSelector
+
+Choose export/selection scope (current page vs all filtered data).
+
+```tsx
+import { ScopeSelector, DefaultScopeSelector } from "@zenith/design-system";
+
+<DefaultScopeSelector
+  options={[
+    { type: "page", label: "Current Page", count: 25 },
+    { type: "filtered", label: "All Filtered", count: 1250 },
+    { type: "all", label: "All Data", count: 5000 },
+  ]}
+  onSelect={handleScopeChange}
+  defaultType="filtered"
+/>
+```
+
+### ProgressModal
+
+Modal for displaying task progress with automatic state handling.
+
+```tsx
+import { ProgressModal } from "@zenith/design-system";
+
+<ProgressModal
+  isOpen={true}
+  onClose={handleClose}
+  status="processing"
+  progress={65}
+  title="Importing Users"
+  dismissable={false}
+>
+  {({ status, progress, title, close }) => (
+    <ModalContent status={status} progress={progress} title={title} close={close} />
+  )}
+</ProgressModal>
+```
+
+## PDF Generation
+
+### PdfGrid / PdfRow / PdfCol
+
+CSS Grid-based layout for PDF generation.
+
+```tsx
+import { PdfGrid, PdfRow, PdfCol, PdfBox, PdfText } from "@zenith/design-system";
+
+<PdfGrid columns={12} gap="md">
+  <PdfCol span={6}>
+    <PdfBox variant="card" padding="md">
+      <PdfText variant="h3">Left Column</PdfText>
+      <PdfText variant="body">Content goes here</PdfText>
+    </PdfBox>
+  </PdfCol>
+  <PdfCol span={6}>
+    <PdfBox variant="card" padding="md">
+      <PdfText variant="h3">Right Column</PdfText>
+      <PdfText variant="body">More content</PdfText>
+    </PdfBox>
+  </PdfCol>
+</PdfGrid>
+```
+
+### PdfTable
+
+Data table for PDF with formatting support.
+
+```tsx
+import { PdfTable } from "@zenith/design-system";
+
+<PdfTable
+  columns={[
+    { key: "name", label: "Item", width: 150 },
+    { key: "price", label: "Price", format: "currency", align: "right", width: 100 },
+    { key: "qty", label: "Qty", format: "number", align: "center", width: 60 },
+    { key: "total", label: "Total", format: "currency", align: "right", width: 100 },
+  ]}
+  rows={[
+    { name: "Widget A", price: 29.99, qty: 5, total: 149.95 },
+    { name: "Gadget B", price: 49.99, qty: 3, total: 149.97 },
+  ]}
+  striped
+  bordered
+/>
+```
+
+### PdfText
+
+Typography with design token presets.
+
+```tsx
+import { PdfText } from "@zenith/design-system";
+
+<PdfText variant="h1">Report Title</PdfText>
+<PdfText variant="overline" color="primary">Q1 2024</PdfText>
+<PdfText variant="bodyLarge">Executive summary text...</PdfText>
+<PdfText variant="body">Regular body text.</PdfText>
+<PdfText variant="caption" color="textMuted">CONFIDENTIAL</PdfText>
+<PdfText variant="dataCell">1,234,567.89</PdfText>
+```
+
+### PdfImage
+
+Images in PDF with fit and radius options.
+
+```tsx
+import { PdfImage } from "@zenith/design-system";
+
+<PdfImage
+  src="https://example.com/logo.png"
+  width={120}
+  height={60}
+  fit="contain"
+/>
+
+<PdfImage
+  src="https://example.com/photo.jpg"
+  width={200}
+  height={200}
+  fit="cover"
+  radius={100}
+/>
+```
+
+### PdfAtoms
+
+Divider, Badge, Spacer for PDF layouts.
+
+```tsx
+import { PdfDivider, PdfBadge, PdfSpacer } from "@zenith/design-system";
+
+<PdfDivider color="primary" thickness={2} my="md" />
+<PdfBadge label="Draft" color="warning" bg="surface" />
+<PdfSpacer height={24} />
+<PdfSpacer flex={1} />
+```
+
+## Complete PDF Document
+
+```tsx
+import { PdfPage, PdfEngine, PdfThemeProvider } from "@zenith/design-system";
+
+<PdfThemeProvider theme={defaultTheme}>
+  <PdfEngine>
+    <PdfPage>
+      {/* Header */}
+      <PdfRow justify="between" align="center" mb="lg">
+        <PdfCol>
+          <PdfText variant="h1">Quarterly Report</PdfText>
+          <PdfText variant="caption" color="textMuted">Q1 2024</PdfText>
+        </PdfCol>
+        <PdfCol align="end">
+          <PdfImage src="logo.png" width={100} height={50} />
+        </PdfCol>
+      </PdfRow>
+
+      <PdfDivider my="md" />
+
+      {/* Summary Cards */}
+      <PdfGrid columns={4} gap="md" mb="xl">
+        <PdfCol span={1}>
+          <PdfBox variant="card" padding="md" align="center">
+            <PdfText variant="overline" color="primary">Revenue</PdfText>
+            <PdfText variant="h2" bold>$1.2M</PdfText>
+            <PdfText variant="caption" color="success">+15%</PdfText>
+          </PdfBox>
+        </PdfCol>
+        {/* ... more cards */}
+      </PdfGrid>
+
+      {/* Detail Table */}
+      <PdfText variant="h3" mb="md">Top Products</PdfText>
+      <PdfTable
+        columns={[
+          { key: "product", label: "Product", width: 200 },
+          { key: "sales", label: "Sales", format: "number", align: "right", width: 100 },
+          { key: "revenue", label: "Revenue", format: "currency", align: "right", width: 120 },
+        ]}
+        rows={productData}
+        striped
+        bordered
+      />
+    </PdfPage>
+  </PdfEngine>
+</PdfThemeProvider>
+```
+
+## Best Practices
+
+### Table Design
+
+1. **Use consistent column widths** - Fixed widths for numeric columns
+2. **Align data properly** - Right-align numbers, left-align text
+3. **Provide formatting** - Currency, percentages, dates
+4. **Enable sorting/filtering** - For large datasets
+5. **Use virtualization** - For 1000+ rows
+
+### PDF Layout
+
+1. **Use grid system** - PdfGrid/PdfCol for responsive layouts
+2. **Keep content flowable** - Avoid fixed heights
+3. **Test page breaks** - Use `keep_together` on PdfBox
+4. **Optimize images** - Use appropriate dimensions
+
+### Performance
+
+1. **Virtualize large tables** - Use `virtualized` prop
+2. **Lazy load data** - Fetch on demand
+3. **Memoize columns/rows** - Prevent unnecessary re-renders
+
+## Examples
+
+<Canvas>
+  <Story name="Primitives/Table/TaskStatus/Default" />
+</Canvas>
+
+<Canvas>
+  <Story name="Primitives/Table/ScopeSelector/Default" />
+</Canvas>
+
+<Canvas>
+  <Story name="Primitives/PDF/PdfTable/Default" />
+</Canvas>
+
+<Canvas>
+  <Story name="Primitives/PDF/PdfGrid/TwoColumns" />
+</Canvas>

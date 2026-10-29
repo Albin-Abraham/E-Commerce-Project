@@ -1,0 +1,79 @@
+import { Meta, Canvas } from "@storybook/addon-docs/blocks";
+import { Box, Flex, Text, Button } from "@/shared/ui";
+
+<Meta title="Introduction" />
+
+# Zenith Design System
+
+A comprehensive React component library built with TypeScript, Tailwind CSS, and Storybook.
+
+## Overview
+
+The Zenith Design System provides a complete set of primitives, components, and utilities for building modern web applications. It follows a layered architecture:
+
+- **Primitives** - Foundational building blocks (Box, Flex, Grid, Text, etc.)
+- **Components** - Composed UI elements (Forms, Modals, Tables, etc.)
+- **Patterns** - Common UI patterns and layouts
+- **Utilities** - Helpers for theming, i18n, and more
+
+## Design Principles
+
+1. **Composition over Configuration** - Build complex UIs by composing simple primitives
+2. **Type Safety First** - Full TypeScript support with strict typing
+3. **Accessibility Built-in** - WCAG 2.1 AA compliance out of the box
+4. **Performance Oriented** - Minimal bundle size, optimized rendering
+5. **Developer Experience** - Excellent DX with Storybook documentation
+
+## Quick Start
+
+```tsx
+import { Box, Flex, Text, Button } from "@/shared/ui";
+
+export function MyComponent() {
+  return (
+    <Box p="lg" variant="card">
+      <Flex gap="md" align="center">
+        <Text variant="h2">Hello Zenith</Text>
+        <Button variant="primary">Get Started</Button>
+      </Flex>
+    </Box>
+  );
+}
+```
+
+## Primitives Showcase
+
+<Canvas>
+  <Story name="Introduction/QuickStart" />
+</Canvas>
+
+## Installation
+
+```bash
+pnpm add @zenith/design-system
+```
+
+## Theming
+
+The design system uses CSS variables for theming. Configure your theme in `tailwind.config.ts`:
+
+```ts
+export default {
+  theme: {
+    extend: {
+      colors: {
+        primary: { ... },
+        surface: { ... },
+        // ...
+      },
+    },
+  },
+};
+```
+
+## Resources
+
+- [Storybook Documentation](https://storybook.your-domain.com)
+- [GitHub Repository](https://github.com/your-org/zenith)
+- [Contributing Guide](./CONTRIBUTING.md)
+- [Changelog](./CHANGELOG.md)

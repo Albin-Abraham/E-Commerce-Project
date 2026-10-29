@@ -1,0 +1,169 @@
+################################################################################
+# DOMAIN TEST CONTEXT REPORT: CORE/ROUTER
+# Domain Key:          core/router
+# Layer Group:         Core
+# Report File:         router.core-test-report.txt
+# Generated At:        2026-09-26T21:01:59.278Z
+# Total Test Suites:   4
+# Tracked Issues (1):  FEAT-ROUTER-SERIALIZER
+# Defended Bugs (3):   BUG-JSON-STRINGIFY; BUG-PROTOTYPE-POLLUTION; Security Guard: Prototype Pollution Shield
+################################################################################
+
+================================================================================
+TEST FILE:             src/core/router/adapters/__tests__/PlatformUrlAdapters.test.ts
+ARCH LAYER:            Domain
+DOMAIN:                core/router
+TARGET:                PlatformUrlAdapters
+HARNESS:               Pure Vitest (Zero Mocks, Zero DOM)
+FIXTURES:              None
+TRACKED ISSUES:        None
+BUGS & DEFECTS:        None
+TAGS:                  None
+--------------------------------------------------------------------------------
+PRIMARY RESPONSIBILITY:
+Validates behavioral invariants for PlatformUrlAdapters - createMock.
+
+TEST SUITES & SCENARIOS:
+- describe("PlatformUrlAdapters - createMock")
+  • it("initializes from provided state and returns snapshot")
+  • it("handles scoped keys transparently")
+  • it("preserves unmanaged parameters during set and delete")
+  • it("removes entries when set value is null, undefined, or empty string")
+  • it("handles multi-value array entries via getAll")
+
+HTTP / MSW INTERACTIONS:
+None
+================================================================================
+
+================================================================================
+TEST FILE:             src/core/router/helpers/__tests__/route.utils.test.tsx
+ARCH LAYER:            Interface / Driver
+DOMAIN:                core/router
+TARGET:                route.utils
+HARNESS:               Pure Vitest (Zero Mocks, Zero DOM)
+FIXTURES:              None
+TRACKED ISSUES:        None
+BUGS & DEFECTS:        None
+TAGS:                  None
+--------------------------------------------------------------------------------
+PRIMARY RESPONSIBILITY:
+Validates behavioral invariants for Router Utils.
+
+TEST SUITES & SCENARIOS:
+- describe("Router Utils")
+- describe("applyModuleInheritance")
+  • it("should inherit layout and wrapper from module if not present in route")
+  • it("should override module layout and wrapper if present in route")
+  • it("should merge guards")
+  • it("should merge meta")
+- describe("buildRouteObject")
+  • it("should create a redirect route")
+  • it("should create a leaf route with element")
+  • it("should create nested routes")
+  • it("should generate index route if parent has a page")
+  • it("should attach loader if present")
+  • it("should compile a lazy route using React Router lazy structure")
+  • it("should automatically defer route loader promises if route has a skeleton definition")
+  • it("should resolve splash screen if skeleton is configured as ")
+- describe("Logical Guard Combinators")
+- describe("allOf (AND)")
+  • it("should pass if all inner guards pass")
+  • it("should fail if at least one inner guard fails")
+  • it("should short-circuit and not execute subsequent guards after first failure")
+- describe("anyOf (OR)")
+  • it("should pass if at least one inner guard passes")
+  • it("should fail if all inner guards fail")
+  • it("should short-circuit and not execute subsequent guards after first success")
+- describe("noneOf (NOT / NOR)")
+  • it("should pass if all inner guards fail")
+  • it("should fail if at least one inner guard passes")
+  • it("should short-circuit and stop on the first passing guard")
+- describe("PrefetchManager & PlatformLink")
+  • it("should initialize prefetch manager with route tree and construct loader prefetch promises")
+  • it("should respect cache time-to-live and expire entries")
+  • it("should eliminate dynamic waterfalls by automatically chaining loader execution after lazy chunk resolves")
+  • it("should dynamically inject <link rel=")
+
+HTTP / MSW INTERACTIONS:
+None
+================================================================================
+
+================================================================================
+TEST FILE:             src/core/router/hooks/usePlatformNavigation.test.tsx
+ARCH LAYER:            Interface / Driver
+DOMAIN:                core/router
+TARGET:                usePlatformNavigation
+HARNESS:               RTL
+FIXTURES:              None
+TRACKED ISSUES:        None
+BUGS & DEFECTS:        None
+TAGS:                  None
+--------------------------------------------------------------------------------
+PRIMARY RESPONSIBILITY:
+Validates behavioral invariants for usePlatformNavigation.
+
+TEST SUITES & SCENARIOS:
+- describe("usePlatformNavigation")
+  • it("provides navigation helpers")
+  • it("isActive returns true for current path")
+- describe("usePlatformUrlParams")
+  • it("returns empty search if no param exists")
+  • it("detects scope based on pathname by default")
+  • it("uses manual scope if provided")
+  • it("sets and gets search params")
+  • it("exposes universal PlatformUrlPort and parsed query via qs")
+
+HTTP / MSW INTERACTIONS:
+None
+================================================================================
+
+================================================================================
+TEST FILE:             src/core/router/utils/__tests__/url-serializer.test.ts
+ARCH LAYER:            Domain
+DOMAIN:                core/router
+TARGET:                url-serializer
+HARNESS:               Pure Vitest (Zero Mocks, Zero DOM)
+FIXTURES:              None
+TRACKED ISSUES:        FEAT-ROUTER-SERIALIZER
+BUGS & DEFECTS:        BUG-JSON-STRINGIFY; BUG-PROTOTYPE-POLLUTION; Security Guard: Prototype Pollution Shield
+TAGS:                  None
+--------------------------------------------------------------------------------
+PRIMARY RESPONSIBILITY:
+URL Serializer & Query Parser Test Suite
+Validates high-performance URL serialization using qs:
+1. Primitive coercion and preserving numeric strings with leading zeroes
+
+TEST SUITES & SCENARIOS:
+- describe("url-serializer")
+- describe("parseQueryPrimitive")
+  • it("parses boolean true and false")
+  • it("parses valid numbers")
+  • it("preserves strings that look like numeric codes (leading zeroes)")
+  • it("preserves standard string values")
+- describe("parseQueryArray")
+  • it("parses comma-separated values into typed primitives")
+  • it("handles already separated string arrays")
+  • it("handles empty values")
+- describe("serializeQueryPrimitive")
+  • it("serializes primitives to strings")
+  • it("returns null for empty or nullish values")
+- describe("serializeObjectToEntries")
+  • it("flattens flat primitives into string entries")
+  • it("flattens nested objects into bracket notation without JSON.stringify")
+  • it("handles arrays with repeat format")
+  • it("handles arrays with comma format")
+  • it("marks empty or nullish values as null for removal")
+- describe("deserializeEntriesToObject")
+  • it("deserializes flat params into typed objects")
+  • it("deserializes bracket notation into nested objects without JSON.parse")
+  • it("deserializes comma-separated arrays into typed arrays")
+  • it("deserializes repeated multi-value params")
+- describe("stringifyQuery & parseQuery (qs integration)")
+  • it("stringifies nested objects keeping colons and brackets clean")
+  • it("parses query string into typed JavaScript objects")
+  • it("guards against prototype pollution")
+
+HTTP / MSW INTERACTIONS:
+None
+================================================================================
+

@@ -1,0 +1,15 @@
+{
+  "buttons": {
+    "submit": "Enviar",
+    "cancel": "Cancelar",
+    "save": "Guardar Cambios",
+    "next": "Siguiente",
+    "back": "Atrás"
+  },
+  "feedback": {
+    "loading": "Cargando...",
+    "submitting": "Enviando...",
+    "success": "Operación exitosa",
+    "error": "Algo salió mal"
+  }
+}

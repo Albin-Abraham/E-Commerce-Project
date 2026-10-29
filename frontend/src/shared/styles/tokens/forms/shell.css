@@ -1,0 +1,21 @@
+/* ============================================================
+   ZENITH FORM SHELL, HEADER, ACTIONS & VALIDATION SUMMARY TOKENS
+   ============================================================ */
+
+@theme {
+  --color-form-shell-divider: color-mix(in srgb, var(--color-border) 60%, transparent);
+  --color-form-shell-badge-outer: color-mix(in srgb, var(--color-primary) 10%, transparent);
+  --color-form-shell-badge-inner: var(--color-background);
+
+  --color-form-shell-validation-bg: color-mix(in srgb, var(--color-danger) 5%, transparent);
+  --color-form-shell-validation-border: color-mix(in srgb, var(--color-danger) 20%, transparent);
+}
+
+.dark {
+  --color-form-shell-divider: color-mix(in srgb, var(--color-border-strong) 80%, transparent);
+  --color-form-shell-badge-outer: color-mix(in srgb, var(--color-primary) 15%, transparent);
+  --color-form-shell-badge-inner: var(--color-surface);
+
+  --color-form-shell-validation-bg: color-mix(in srgb, var(--color-danger) 10%, transparent);
+  --color-form-shell-validation-border: color-mix(in srgb, var(--color-danger) 30%, transparent);
+}

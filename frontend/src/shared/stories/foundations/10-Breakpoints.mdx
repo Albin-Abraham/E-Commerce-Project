@@ -1,0 +1,56 @@
+import { Meta } from "@storybook/addon-docs/blocks";
+
+<Meta title="01 — Foundations / 📱 Breakpoints" />
+
+# 📱 Breakpoints
+
+Breakpoints define responsive viewport thresholds where layouts reflow and typography scales adjust.
+
+---
+
+## 01 — Principles
+
+### 1. Mobile-First Progressive Enhancement
+CSS defaults target mobile viewports. Media queries use `min-width` to layer complexity as viewport real estate expands.
+
+### 2. Hierarchy Preservation
+Display headings reduce gracefully on mobile, while body reading text remains stable (14px–16px) to preserve legibility.
+
+---
+
+## 02 — Specification
+
+| Breakpoint | Min-Width | Target Device Scope |
+| :--- | :---: | :--- |
+| `breakpoints.mobile` | `320px` | Handheld mobile phones |
+| `breakpoints.tablet` | `768px` | Tablets and small portrait viewports |
+| `breakpoints.desktop` | `1024px` | Standard laptops and desktop screens |
+| `breakpoints.wide` | `1280px` | High-resolution displays |
+| `breakpoints.ultra` | `1536px` | 4K & ultra-wide desktop monitors |
+
+---
+
+## 03 — Tokens
+
+Defined in `tokens/primitives/breakpoints.json`:
+```json
+{
+  "primitives": {
+    "breakpoints": {
+      "tablet": { "$value": "768px", "$type": "dimension" },
+      "desktop": { "$value": "1024px", "$type": "dimension" }
+    }
+  }
+}
+```
+
+---
+
+## 04 — Implementation
+
+```tsx
+<div className="flex flex-col md:flex-row gap-4 p-4 md:p-8">
+  <div className="w-full md:w-1/2">Responsive Column 1</div>
+  <div className="w-full md:w-1/2">Responsive Column 2</div>
+</div>
+```

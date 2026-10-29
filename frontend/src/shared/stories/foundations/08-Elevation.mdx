@@ -1,0 +1,50 @@
+import { Meta } from "@storybook/addon-docs/blocks";
+
+<Meta title="01 — Foundations / 🌓 Elevation" />
+
+# 🌓 Elevation
+
+Elevation communicates spatial depth, surface hierarchy, and floating states along the z-axis.
+
+---
+
+## 01 — Principles
+
+### 1. Light Source Consistency
+All drop shadows cast downwards with a natural blur spread, simulating a single directional top ambient light source.
+
+### 2. Dark Mode Surface Elevation
+In dark themes, elevation is communicated through **surface lightening** rather than drop shadows:
+- Surface Level 0 (Base Canvas): `#0b0f17`
+- Surface Level 1 (Card): `#111827`
+- Surface Level 2 (Popover): `#1f2937`
+- Surface Level 3 (Modal): `#374151`
+
+---
+
+## 02 — Specification
+
+| Elevation Level | Token | Offset & Blur | Primary Role |
+| :--- | :--- | :--- | :--- |
+| **Level 0** | `elevation.level0` | `none` | Base background |
+| **Level 1** | `elevation.level1` | `0 1px 2px rgba(0,0,0,0.05)` | Cards, input containers |
+| **Level 2** | `elevation.level2` | `0 4px 6px rgba(0,0,0,0.1)` | Dropdowns, menus |
+| **Level 3** | `elevation.level3` | `0 10px 15px rgba(0,0,0,0.1)` | Sticky navigation, side drawers |
+| **Level 4** | `elevation.level4` | `0 20px 25px rgba(0,0,0,0.1)` | Modal dialogs |
+| **Level 5** | `elevation.level5` | `0 20px 30px rgba(0,0,0,0.08)` | Top-level toasts, notifications |
+
+---
+
+## 03 — Tokens
+
+Defined in `tokens/primitives/elevation.json` and `tokens/primitives/effects.json`.
+
+---
+
+## 04 — Implementation
+
+```tsx
+<div className="bg-surface shadow-[var(--shadow-md)] rounded-lg p-6">
+  <Heading level={3}>Elevated Card</Heading>
+</div>
+```

@@ -1,0 +1,1202 @@
+<div
+  class="app-page-container min-h-screen relative flex items-center justify-center p-4 lg:p-8"
+  style="
+    background-image: url(&quot;/images/onboarding-bg.png&quot;);
+    background-size: cover;
+    background-position: center center;
+  "
+>
+  <div
+    class="absolute inset-0 bg-slate-950/20 backdrop-blur-[2px] pointer-events-none"
+  ></div>
+  <div class="relative z-10 w-full max-w-4xl mx-auto">
+    <div
+      class="page-shell z-shell transition-all duration-500 page-shell--portal min-h-screen flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 bg-transparent text-foreground"
+    >
+      <div class="page-shell__atmosphere">
+        <div
+          class="absolute -top-24 -left-24 w-96 h-96 bg-primary/10 rounded-full blur-3xl animate-pulse"
+        ></div>
+        <div
+          class="absolute -bottom-24 -right-24 w-96 h-96 bg-secondary/10 rounded-full blur-3xl animate-pulse delay-700"
+        ></div>
+      </div>
+      <form
+        class="form-root animate-in fade-in zoom-in-95 z-density-spacious form-root--spacious z-card z-card--glass !bg-surface/95 relative transition-all duration-700 shadow-premium rounded-[var(--radius-lg)] w-full p-8 lg:p-10 shadow-3xl flex flex-col text-[length:var(--text-base)] text-foreground"
+        style="height: auto"
+        novalidate=""
+        autocomplete="off"
+      >
+        <div class="form-header mb-6 px-1">
+          <div class="flex gap-6 py-6 items-center">
+            <div class="flex flex-col gap-2 flex-grow">
+              <h1
+                class="form-header__title font-black text-foreground tracking-tightest leading-none drop-shadow-sm"
+              >
+                Employee Onboarding
+              </h1>
+              <p
+                class="form-header__description mt-1.5 text-foreground/50 leading-relaxed font-medium"
+              >
+                Complete your professional registration profile.
+              </p>
+            </div>
+          </div>
+        </div>
+        <div class="form-body" style="max-height: none; min-height: 0">
+          <div class="form-body__content-container mx-auto w-full">
+            <div class="block">
+              <div class="block">
+                <nav
+                  class="form-stepper transition-all duration-500 flex items-center justify-between w-full"
+                  aria-label="Form Steps"
+                  data-part="stepper-top"
+                >
+                  <div
+                    data-part="stepper-item"
+                    data-active="true"
+                    class="step-item flex transition-all duration-300 relative flex-1 flex-col items-center text-center opacity-100"
+                  >
+                    <button
+                      class="flex items-center justify-center rounded-full font-black z-10 transition-all duration-500 w-10 h-10 text-sm mb-3 bg-primary text-white scale-110 shadow-glow ring-4 ring-primary/10"
+                    >
+                      1
+                    </button>
+                    <div class="flex flex-col transition-all duration-300 mt-2">
+                      <span
+                        data-part="stepper-label"
+                        class="font-black tracking-tight leading-none transition-colors duration-300 text-[10px] uppercase tracking-widest mb-1 text-foreground"
+                        >Personal Details</span
+                      >
+                    </div>
+                    <div
+                      class="absolute top-5 left-[calc(50%+25px)] right-[calc(-50%+25px)] h-[2px] bg-border/40 -z-0"
+                    >
+                      <div
+                        class="h-full bg-primary transition-all duration-700 origin-left"
+                        style="width: 0%"
+                      ></div>
+                    </div>
+                  </div>
+                  <div
+                    data-part="stepper-item"
+                    data-active="false"
+                    class="step-item flex transition-all duration-300 relative flex-1 flex-col items-center text-center opacity-40 grayscale-[0.4]"
+                  >
+                    <button
+                      class="flex items-center justify-center rounded-full font-black z-10 transition-all duration-500 w-10 h-10 text-sm mb-3 bg-surface-elevated text-foreground/20 border border-border"
+                    >
+                      2
+                    </button>
+                    <div class="flex flex-col transition-all duration-300 mt-2">
+                      <span
+                        data-part="stepper-label"
+                        class="font-black tracking-tight leading-none transition-colors duration-300 text-[10px] uppercase tracking-widest mb-1 text-foreground/40"
+                        >Spouse Information</span
+                      >
+                    </div>
+                    <div
+                      class="absolute top-5 left-[calc(50%+25px)] right-[calc(-50%+25px)] h-[2px] bg-border/40 -z-0"
+                    >
+                      <div
+                        class="h-full bg-primary transition-all duration-700 origin-left"
+                        style="width: 0%"
+                      ></div>
+                    </div>
+                  </div>
+                  <div
+                    data-part="stepper-item"
+                    data-active="false"
+                    class="step-item flex transition-all duration-300 relative flex-1 flex-col items-center text-center opacity-40 grayscale-[0.4]"
+                  >
+                    <button
+                      class="flex items-center justify-center rounded-full font-black z-10 transition-all duration-500 w-10 h-10 text-sm mb-3 bg-surface-elevated text-foreground/20 border border-border"
+                    >
+                      3
+                    </button>
+                    <div class="flex flex-col transition-all duration-300 mt-2">
+                      <span
+                        data-part="stepper-label"
+                        class="font-black tracking-tight leading-none transition-colors duration-300 text-[10px] uppercase tracking-widest mb-1 text-foreground/40"
+                        >Visa &amp; Legal</span
+                      >
+                    </div>
+                  </div>
+                </nav>
+                <div
+                  class="animate-in fade-in slide-in-from-right-4 duration-500"
+                >
+                  <div class="space-y-[var(--space-5)] w-full">
+                    <div
+                      class="form-field-ensemble w-full origin-top transition-shadow col-span-12"
+                      data-field-id="personal-details"
+                      data-field-name="personal-details"
+                    >
+                      <div class="relative group/debug">
+                        <div
+                          class="absolute -inset-1 border border-dashed border-magenta-500/20 rounded pointer-events-none group-hover/debug:border-magenta-500/50 transition-colors"
+                        ></div>
+                        <div
+                          class="absolute -top-3 left-2 bg-magenta-500 text-white text-[9px] px-1 rounded opacity-0 group-hover/debug:opacity-100 transition-opacity whitespace-nowrap z-50"
+                        >
+                          personal-details | section
+                        </div>
+                        <div
+                          class="form-section z-layout-boundary transition-all duration-300"
+                        >
+                          <div
+                            class="form-section__header relative flex flex-col gap-1 pl-6 mb-6 border-l-4 border-primary/20"
+                          >
+                            <h3
+                              class="form-section__title z-heading-2 text-[length:var(--text-lg)] font-bold text-foreground tracking-tight"
+                            >
+                              Personal Details
+                            </h3>
+                            <p
+                              class="form-section__description z-body !text-[var(--text-sm)] opacity-50 text-[length:var(--text-sm)] text-muted mt-1 leading-relaxed"
+                            >
+                              Basic identification and contact information.
+                            </p>
+                          </div>
+                          <div class="form-section__content">
+                            <div
+                              class="grid grid-cols-12 gap-[var(--space-lg)] w-full auto-rows-min"
+                              data-parent-layout="grid"
+                            >
+                              <div
+                                class="form-field-ensemble w-full origin-top transition-shadow col-span-12 md:col-span-6"
+                                data-field-id="first_name"
+                                data-field-name="first_name"
+                              >
+                                <div class="relative group/debug">
+                                  <div
+                                    class="absolute -inset-1 border border-dashed border-magenta-500/20 rounded pointer-events-none group-hover/debug:border-magenta-500/50 transition-colors"
+                                  ></div>
+                                  <div
+                                    class="absolute -top-3 left-2 bg-magenta-500 text-white text-[9px] px-1 rounded opacity-0 group-hover/debug:opacity-100 transition-opacity whitespace-nowrap z-50"
+                                  >
+                                    first_name | text
+                                  </div>
+                                  <div
+                                    class="form-field-container form-field relative group w-full transition-all duration-300 flex flex-col opacity-100 mb-0 min-w-0"
+                                    data-field-id="first_name"
+                                    data-field-name="first_name"
+                                    data-style-strategy="DCS-HeroUI"
+                                    data-density="spacious"
+                                  >
+                                    <div
+                                      class="form-field-inner relative w-full flex flex-col gap-1.5"
+                                      data-align="left"
+                                      data-error="false"
+                                    >
+                                      <div
+                                        class="form-field-inner__label-zone w-full"
+                                      >
+                                        <div
+                                          class="flex justify-between items-center w-full mb-1.5 min-h-[1.5rem]"
+                                        >
+                                          <label
+                                            for="first_name"
+                                            data-part="label"
+                                            class="text-sm font-bold text-foreground/80 tracking-tight mb-2 group-hover:text-primary group-focus-within:text-primary after:content-['*'] after:ml-0.5 after:text-red-500 transition-colors"
+                                            >First Name</label
+                                          >
+                                        </div>
+                                      </div>
+                                      <div
+                                        class="form-field-inner__content-zone relative min-w-0 flex flex-col gap-2 w-full"
+                                      >
+                                        <div
+                                          class="relative w-full overflow-visible"
+                                        >
+                                          <div
+                                            class="form-field-ensemble group relative w-full flex flex-col min-w-0"
+                                            data-density="spacious"
+                                          >
+                                            <div
+                                              class="form-field-surface flex transition-all duration-500 min-w-0 items-center focus-within:border-primary focus-within:ring-4 focus-within:ring-primary/10 focus-within:shadow-glow px-6 py-4 gap-4 dark:bg-black/20 overflow-hidden isolation-auto flex items-center border border-border/60 bg-white/50 backdrop-blur-sm text-foreground shadow-sm transition-all duration-200 hover:border-primary/40 hover:shadow-md focus-within:ring-4 focus-within:ring-primary/10 focus-within:border-primary outline-none scale-[1.01] rounded-[var(--radius-md)]"
+                                              data-unit="input-wrapper"
+                                            >
+                                              <div
+                                                class="flex items-center justify-center shrink-0 min-w-fit text-foreground/40 transition-colors group-focus-within:text-primary"
+                                              >
+                                                <svg
+                                                  xmlns="http://www.w3.org/2000/svg"
+                                                  width="16"
+                                                  height="16"
+                                                  viewBox="0 0 24 24"
+                                                  fill="none"
+                                                  stroke="currentColor"
+                                                  stroke-width="2.5"
+                                                  stroke-linecap="round"
+                                                  stroke-linejoin="round"
+                                                  class="lucide lucide-user"
+                                                  aria-hidden="true"
+                                                >
+                                                  <path
+                                                    d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"
+                                                  ></path>
+                                                  <circle
+                                                    cx="12"
+                                                    cy="7"
+                                                    r="4"
+                                                  ></circle>
+                                                </svg>
+                                              </div>
+                                              <div class="flex-grow min-w-0">
+                                                <input
+                                                  id="first_name"
+                                                  placeholder="e.g. John"
+                                                  tabindex="0"
+                                                  autocomplete="off"
+                                                  aria-invalid="false"
+                                                  aria-required="true"
+                                                  class="outline-none ring-0 placeholder:italic font-medium selection:bg-primary/30 focus:placeholder:text-foreground/50 transition-all duration-500 border-none placeholder:text-foreground/30 text-sm text-foreground antialiased block w-full border-transparent bg-transparent focus:ring-0"
+                                                  datapath="first_name"
+                                                  statekey="first_name"
+                                                  label="First Name"
+                                                  rowgroup="0"
+                                                  inputprops="[object Object]"
+                                                  version="0"
+                                                  type="text"
+                                                  value=""
+                                                  name="first_name"
+                                                />
+                                              </div>
+                                            </div>
+                                          </div>
+                                        </div>
+                                        <div class="w-full"></div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                              <div
+                                class="form-field-ensemble w-full origin-top transition-shadow col-span-12 md:col-span-6"
+                                data-field-id="last_name"
+                                data-field-name="last_name"
+                              >
+                                <div class="relative group/debug">
+                                  <div
+                                    class="absolute -inset-1 border border-dashed border-magenta-500/20 rounded pointer-events-none group-hover/debug:border-magenta-500/50 transition-colors"
+                                  ></div>
+                                  <div
+                                    class="absolute -top-3 left-2 bg-magenta-500 text-white text-[9px] px-1 rounded opacity-0 group-hover/debug:opacity-100 transition-opacity whitespace-nowrap z-50"
+                                  >
+                                    last_name | text
+                                  </div>
+                                  <div
+                                    class="form-field-container form-field relative group w-full transition-all duration-300 flex flex-col opacity-100 mb-0 min-w-0"
+                                    data-field-id="last_name"
+                                    data-field-name="last_name"
+                                    data-style-strategy="DCS-HeroUI"
+                                    data-density="spacious"
+                                  >
+                                    <div
+                                      class="form-field-inner relative w-full flex flex-col gap-1.5"
+                                      data-align="left"
+                                      data-error="false"
+                                    >
+                                      <div
+                                        class="form-field-inner__label-zone w-full"
+                                      >
+                                        <div
+                                          class="flex justify-between items-center w-full mb-1.5 min-h-[1.5rem]"
+                                        >
+                                          <label
+                                            for="last_name"
+                                            data-part="label"
+                                            class="text-sm font-bold text-foreground/80 tracking-tight mb-2 group-hover:text-primary group-focus-within:text-primary after:content-['*'] after:ml-0.5 after:text-red-500 transition-colors"
+                                            >Last Name</label
+                                          >
+                                        </div>
+                                      </div>
+                                      <div
+                                        class="form-field-inner__content-zone relative min-w-0 flex flex-col gap-2 w-full"
+                                      >
+                                        <div
+                                          class="relative w-full overflow-visible"
+                                        >
+                                          <div
+                                            class="form-field-ensemble group relative w-full flex flex-col min-w-0"
+                                            data-density="spacious"
+                                          >
+                                            <div
+                                              class="form-field-surface flex transition-all duration-500 min-w-0 items-center focus-within:border-primary focus-within:ring-4 focus-within:ring-primary/10 focus-within:shadow-glow px-6 py-4 gap-4 dark:bg-black/20 overflow-hidden isolation-auto flex items-center border border-border/60 bg-white/50 backdrop-blur-sm text-foreground shadow-sm transition-all duration-200 hover:border-primary/40 hover:shadow-md focus-within:ring-4 focus-within:ring-primary/10 focus-within:border-primary outline-none scale-[1.01] rounded-[var(--radius-md)]"
+                                              data-unit="input-wrapper"
+                                            >
+                                              <div
+                                                class="flex items-center justify-center shrink-0 min-w-fit text-foreground/40 transition-colors group-focus-within:text-primary"
+                                              >
+                                                <svg
+                                                  xmlns="http://www.w3.org/2000/svg"
+                                                  width="16"
+                                                  height="16"
+                                                  viewBox="0 0 24 24"
+                                                  fill="none"
+                                                  stroke="currentColor"
+                                                  stroke-width="2.5"
+                                                  stroke-linecap="round"
+                                                  stroke-linejoin="round"
+                                                  class="lucide lucide-user"
+                                                  aria-hidden="true"
+                                                >
+                                                  <path
+                                                    d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"
+                                                  ></path>
+                                                  <circle
+                                                    cx="12"
+                                                    cy="7"
+                                                    r="4"
+                                                  ></circle>
+                                                </svg>
+                                              </div>
+                                              <div class="flex-grow min-w-0">
+                                                <input
+                                                  id="last_name"
+                                                  placeholder="e.g. Doe"
+                                                  tabindex="0"
+                                                  autocomplete="off"
+                                                  aria-invalid="false"
+                                                  aria-required="true"
+                                                  class="outline-none ring-0 placeholder:italic font-medium selection:bg-primary/30 focus:placeholder:text-foreground/50 transition-all duration-500 border-none placeholder:text-foreground/30 text-sm text-foreground antialiased block w-full border-transparent bg-transparent focus:ring-0"
+                                                  datapath="last_name"
+                                                  statekey="last_name"
+                                                  label="Last Name"
+                                                  rowgroup="0"
+                                                  inputprops="[object Object]"
+                                                  version="0"
+                                                  type="text"
+                                                  value=""
+                                                  name="last_name"
+                                                />
+                                              </div>
+                                            </div>
+                                          </div>
+                                        </div>
+                                        <div class="w-full"></div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                              <div
+                                class="form-field-ensemble w-full origin-top transition-shadow col-span-12"
+                                data-field-id="email"
+                                data-field-name="email"
+                              >
+                                <div class="relative group/debug">
+                                  <div
+                                    class="absolute -inset-1 border border-dashed border-magenta-500/20 rounded pointer-events-none group-hover/debug:border-magenta-500/50 transition-colors"
+                                  ></div>
+                                  <div
+                                    class="absolute -top-3 left-2 bg-magenta-500 text-white text-[9px] px-1 rounded opacity-0 group-hover/debug:opacity-100 transition-opacity whitespace-nowrap z-50"
+                                  >
+                                    email | email
+                                  </div>
+                                  <div
+                                    class="form-field-container form-field relative group w-full transition-all duration-300 flex flex-col opacity-100 mb-0 min-w-0"
+                                    data-field-id="email"
+                                    data-field-name="email"
+                                    data-style-strategy="DCS-HeroUI"
+                                    data-density="spacious"
+                                  >
+                                    <div
+                                      class="form-field-inner relative w-full flex flex-col gap-1.5"
+                                      data-align="left"
+                                      data-error="false"
+                                    >
+                                      <div
+                                        class="form-field-inner__label-zone w-full"
+                                      >
+                                        <div
+                                          class="flex justify-between items-center w-full mb-1.5 min-h-[1.5rem]"
+                                        >
+                                          <label
+                                            for="email"
+                                            data-part="label"
+                                            class="text-sm font-bold text-foreground/80 tracking-tight mb-2 group-hover:text-primary group-focus-within:text-primary after:content-['*'] after:ml-0.5 after:text-red-500 transition-colors"
+                                            >Email Address</label
+                                          >
+                                        </div>
+                                      </div>
+                                      <div
+                                        class="form-field-inner__content-zone relative min-w-0 flex flex-col gap-2 w-full"
+                                      >
+                                        <div
+                                          class="relative w-full overflow-visible"
+                                        >
+                                          <div
+                                            class="form-field-ensemble group relative w-full flex flex-col min-w-0"
+                                            data-density="spacious"
+                                          >
+                                            <div
+                                              class="form-field-surface flex transition-all duration-500 min-w-0 items-center focus-within:border-primary focus-within:ring-4 focus-within:ring-primary/10 focus-within:shadow-glow px-6 py-4 gap-4 dark:bg-black/20 overflow-hidden isolation-auto flex items-center border border-border/60 bg-white/50 backdrop-blur-sm text-foreground shadow-sm transition-all duration-200 hover:border-primary/40 hover:shadow-md focus-within:ring-4 focus-within:ring-primary/10 focus-within:border-primary outline-none scale-[1.01] rounded-[var(--radius-md)]"
+                                              data-unit="input-wrapper"
+                                            >
+                                              <div
+                                                class="flex items-center justify-center shrink-0 min-w-fit text-foreground/40 transition-colors group-focus-within:text-primary"
+                                              >
+                                                <svg
+                                                  xmlns="http://www.w3.org/2000/svg"
+                                                  width="16"
+                                                  height="16"
+                                                  viewBox="0 0 24 24"
+                                                  fill="none"
+                                                  stroke="currentColor"
+                                                  stroke-width="2.5"
+                                                  stroke-linecap="round"
+                                                  stroke-linejoin="round"
+                                                  class="lucide lucide-mail"
+                                                  aria-hidden="true"
+                                                >
+                                                  <path
+                                                    d="m22 7-8.991 5.727a2 2 0 0 1-2.009 0L2 7"
+                                                  ></path>
+                                                  <rect
+                                                    x="2"
+                                                    y="4"
+                                                    width="20"
+                                                    height="16"
+                                                    rx="2"
+                                                  ></rect>
+                                                </svg>
+                                              </div>
+                                              <div class="flex-grow min-w-0">
+                                                <input
+                                                  id="email"
+                                                  placeholder="john.doe@company.com"
+                                                  tabindex="0"
+                                                  autocomplete="off"
+                                                  aria-invalid="false"
+                                                  aria-required="true"
+                                                  class="outline-none ring-0 placeholder:italic font-medium selection:bg-primary/30 focus:placeholder:text-foreground/50 transition-all duration-500 border-none placeholder:text-foreground/30 text-sm text-foreground antialiased block w-full border-transparent bg-transparent focus:ring-0"
+                                                  datapath="email"
+                                                  statekey="email"
+                                                  label="Email Address"
+                                                  rowgroup="0"
+                                                  inputprops="[object Object]"
+                                                  version="0"
+                                                  type="email"
+                                                  value=""
+                                                  name="email"
+                                                />
+                                              </div>
+                                            </div>
+                                          </div>
+                                        </div>
+                                        <div class="w-full"></div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                              <div
+                                class="form-field-ensemble w-full origin-top transition-shadow col-span-12"
+                                data-field-id="id_check"
+                                data-field-name="id_check"
+                              >
+                                <div class="relative group/debug">
+                                  <div
+                                    class="absolute -inset-1 border border-dashed border-magenta-500/20 rounded pointer-events-none group-hover/debug:border-magenta-500/50 transition-colors"
+                                  ></div>
+                                  <div
+                                    class="absolute -top-3 left-2 bg-magenta-500 text-white text-[9px] px-1 rounded opacity-0 group-hover/debug:opacity-100 transition-opacity whitespace-nowrap z-50"
+                                  >
+                                    id_check | container
+                                  </div>
+                                  <div
+                                    data-unit="container"
+                                    data-field-id="id_check"
+                                    class="gap-6 full mt-4 p-8 bg-white/5 rounded-[32px] border border-white/5 backdrop-blur-sm shadow-inner transition-all duration-300 hover:shadow-sm relative"
+                                  >
+                                    <div
+                                      class="form-field-ensemble w-full origin-top transition-shadow"
+                                      data-field-id="id_check_header"
+                                      data-field-name="id_check_header"
+                                    >
+                                      <div class="relative group/debug">
+                                        <div
+                                          class="absolute -inset-1 border border-dashed border-magenta-500/20 rounded pointer-events-none group-hover/debug:border-magenta-500/50 transition-colors"
+                                        ></div>
+                                        <div
+                                          class="absolute -top-3 left-2 bg-magenta-500 text-white text-[9px] px-1 rounded opacity-0 group-hover/debug:opacity-100 transition-opacity whitespace-nowrap z-50"
+                                        >
+                                          id_check_header | header
+                                        </div>
+                                        <div
+                                          class="form-field-static group w-full"
+                                        >
+                                          <div
+                                            class="form-field-container form-field relative group w-full transition-all duration-300 flex flex-col opacity-100 mb-0 min-w-0"
+                                            data-field-id="id_check_header"
+                                            data-headless="true"
+                                            data-style-strategy="headless"
+                                            data-density="spacious"
+                                          >
+                                            <div
+                                              class="form-static-header flex-col text-center border-none placeholder:text-foreground/30 text-sm text-foreground antialiased block w-full border-transparent bg-transparent focus:ring-0 center"
+                                            >
+                                              <h3
+                                                class="text-foreground z-heading-3 mb-2"
+                                              >
+                                                Government ID
+                                              </h3>
+                                              <p
+                                                class="text-center text-xs text-foreground/50 leading-relaxed mt-2 font-medium border-l-2 border-primary/20 pl-3 opacity-60"
+                                              >
+                                                Secure identity verification
+                                                check
+                                              </p>
+                                            </div>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                    <div
+                                      class="form-field-ensemble w-full origin-top transition-shadow"
+                                      data-field-id="id_type"
+                                      data-field-name="id_check.type"
+                                    >
+                                      <div class="relative group/debug">
+                                        <div
+                                          class="absolute -inset-1 border border-dashed border-magenta-500/20 rounded pointer-events-none group-hover/debug:border-magenta-500/50 transition-colors"
+                                        ></div>
+                                        <div
+                                          class="absolute -top-3 left-2 bg-magenta-500 text-white text-[9px] px-1 rounded opacity-0 group-hover/debug:opacity-100 transition-opacity whitespace-nowrap z-50"
+                                        >
+                                          id_type | select
+                                        </div>
+                                        <div
+                                          class="form-field-container form-field relative group w-full transition-all duration-300 flex flex-col opacity-100 mb-0 min-w-0"
+                                          data-field-id="id_type"
+                                          data-field-name="id_check.type"
+                                          data-style-strategy="DCS-HeroUI"
+                                          data-density="spacious"
+                                        >
+                                          <div
+                                            class="form-field-inner relative w-full flex flex-col gap-1.5"
+                                            data-align="left"
+                                            data-error="false"
+                                          >
+                                            <div
+                                              class="form-field-inner__label-zone w-full"
+                                            >
+                                              <div
+                                                class="flex justify-between items-center w-full mb-1.5 min-h-[1.5rem]"
+                                              >
+                                                <label
+                                                  for="id_type"
+                                                  data-part="label"
+                                                  class="text-sm font-bold text-foreground/80 tracking-tight mb-2 group-hover:text-primary group-focus-within:text-primary transition-colors"
+                                                  >Document Type</label
+                                                >
+                                              </div>
+                                            </div>
+                                            <div
+                                              class="form-field-inner__content-zone relative min-w-0 flex flex-col gap-2 w-full"
+                                            >
+                                              <div
+                                                class="relative w-full overflow-visible"
+                                              >
+                                                <div
+                                                  class="form-field-ensemble group relative w-full flex flex-col min-w-0"
+                                                  data-density="spacious"
+                                                >
+                                                  <div
+                                                    class="form-field-surface flex transition-all duration-500 min-w-0 items-center focus-within:border-primary focus-within:ring-4 focus-within:ring-primary/10 focus-within:shadow-glow px-6 py-4 gap-4 dark:bg-black/20 overflow-hidden isolation-auto flex items-center border border-border/60 bg-white/50 backdrop-blur-sm text-foreground shadow-sm transition-all duration-200 hover:border-primary/40 hover:shadow-md focus-within:ring-4 focus-within:ring-primary/10 focus-within:border-primary outline-none scale-[1.01] rounded-[var(--radius-md)]"
+                                                    data-unit="input-wrapper"
+                                                  >
+                                                    <div
+                                                      class="flex-grow min-w-0"
+                                                    >
+                                                      <div
+                                                        class="w-full min-w-0"
+                                                      >
+                                                        <div
+                                                          class="relative w-full h-full"
+                                                          data-field-root="id_type"
+                                                          data-field-type="select"
+                                                          data-field-name="id_check.type"
+                                                        >
+                                                          <div
+                                                            class="flex-1 w-full min-w-0"
+                                                            data-unit="select-trigger-container"
+                                                          >
+                                                            <button
+                                                              type="button"
+                                                              id="id_type"
+                                                              role="combobox"
+                                                              aria-expanded="false"
+                                                              aria-haspopup="listbox"
+                                                              aria-controls="id_type-menu"
+                                                              aria-label="Document Type"
+                                                              data-id="id_type"
+                                                              data-unit="select-trigger"
+                                                              data-is-open="false"
+                                                              data-options-count="3"
+                                                              class="flex-row items-center justify-between cursor-pointer transition-all duration-300 outline-none min-h-[var(--space-12)] px-4 gap-4 ring-0 shadow-none min-w-0 border-none placeholder:text-foreground/30 text-sm text-foreground antialiased flex w-full border-transparent bg-transparent focus:ring-0"
+                                                            >
+                                                              <div
+                                                                class="flex items-center flex-nowrap gap-3 overflow-hidden min-w-0 flex-1"
+                                                                data-unit="select-value-container"
+                                                              >
+                                                                <span
+                                                                  data-unit="select-value"
+                                                                  class="font-medium tracking-tight truncate block text-foreground/30"
+                                                                  >Select...</span
+                                                                >
+                                                              </div>
+                                                              <div
+                                                                class="text-foreground/30 shrink-0"
+                                                                style="
+                                                                  transform: none;
+                                                                "
+                                                              >
+                                                                <svg
+                                                                  xmlns="http://www.w3.org/2000/svg"
+                                                                  width="24"
+                                                                  height="24"
+                                                                  viewBox="0 0 24 24"
+                                                                  fill="none"
+                                                                  stroke="currentColor"
+                                                                  stroke-width="2"
+                                                                  stroke-linecap="round"
+                                                                  stroke-linejoin="round"
+                                                                  class="lucide lucide-chevron-down w-4 h-4"
+                                                                  aria-hidden="true"
+                                                                >
+                                                                  <path
+                                                                    d="m6 9 6 6 6-6"
+                                                                  ></path>
+                                                                </svg>
+                                                              </div>
+                                                            </button>
+                                                          </div>
+                                                        </div>
+                                                      </div>
+                                                    </div>
+                                                  </div>
+                                                </div>
+                                              </div>
+                                              <div class="w-full"></div>
+                                            </div>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                    <div
+                                      class="form-field-ensemble w-full origin-top transition-shadow"
+                                      data-field-id="id_number"
+                                      data-field-name="id_check.number"
+                                    >
+                                      <div class="relative group/debug">
+                                        <div
+                                          class="absolute -inset-1 border border-dashed border-magenta-500/20 rounded pointer-events-none group-hover/debug:border-magenta-500/50 transition-colors"
+                                        ></div>
+                                        <div
+                                          class="absolute -top-3 left-2 bg-magenta-500 text-white text-[9px] px-1 rounded opacity-0 group-hover/debug:opacity-100 transition-opacity whitespace-nowrap z-50"
+                                        >
+                                          id_number | text
+                                        </div>
+                                        <div
+                                          class="form-field-container form-field relative group w-full transition-all duration-300 flex flex-col opacity-100 mb-0 min-w-0"
+                                          data-field-id="id_number"
+                                          data-field-name="id_check.number"
+                                          data-style-strategy="DCS-HeroUI"
+                                          data-density="spacious"
+                                        >
+                                          <div
+                                            class="form-field-inner relative w-full flex flex-col gap-1.5"
+                                            data-align="left"
+                                            data-error="false"
+                                          >
+                                            <div
+                                              class="form-field-inner__label-zone w-full"
+                                            >
+                                              <div
+                                                class="flex justify-between items-center w-full mb-1.5 min-h-[1.5rem]"
+                                              >
+                                                <label
+                                                  for="id_number"
+                                                  data-part="label"
+                                                  class="text-sm font-bold text-foreground/80 tracking-tight mb-2 group-hover:text-primary group-focus-within:text-primary transition-colors"
+                                                  >ID Number</label
+                                                >
+                                              </div>
+                                            </div>
+                                            <div
+                                              class="form-field-inner__content-zone relative min-w-0 flex flex-col gap-2 w-full"
+                                            >
+                                              <div
+                                                class="relative w-full overflow-visible"
+                                              >
+                                                <div
+                                                  class="form-field-ensemble group relative w-full flex flex-col min-w-0"
+                                                  data-density="spacious"
+                                                >
+                                                  <div
+                                                    class="form-field-surface flex transition-all duration-500 min-w-0 items-center focus-within:border-primary focus-within:ring-4 focus-within:ring-primary/10 focus-within:shadow-glow px-6 py-4 gap-4 dark:bg-black/20 overflow-hidden isolation-auto flex items-center border border-border/60 bg-white/50 backdrop-blur-sm text-foreground shadow-sm transition-all duration-200 hover:border-primary/40 hover:shadow-md focus-within:ring-4 focus-within:ring-primary/10 focus-within:border-primary outline-none scale-[1.01] rounded-[var(--radius-md)]"
+                                                    data-unit="input-wrapper"
+                                                  >
+                                                    <div
+                                                      class="flex-grow min-w-0"
+                                                    >
+                                                      <input
+                                                        id="id_number"
+                                                        placeholder="X-XXXX-XXXX"
+                                                        tabindex="0"
+                                                        autocomplete="off"
+                                                        aria-invalid="false"
+                                                        aria-required="false"
+                                                        class="outline-none ring-0 placeholder:italic font-medium selection:bg-primary/30 focus:placeholder:text-foreground/50 transition-all duration-500 border-none placeholder:text-foreground/30 text-sm text-foreground antialiased block w-full border-transparent bg-transparent focus:ring-0"
+                                                        datapath="id_check.number"
+                                                        statekey="id_number"
+                                                        label="ID Number"
+                                                        rowgroup="1"
+                                                        inputprops="[object Object]"
+                                                        version="0"
+                                                        type="text"
+                                                        value=""
+                                                        name="id_check.number"
+                                                      />
+                                                    </div>
+                                                  </div>
+                                                </div>
+                                              </div>
+                                              <div class="w-full"></div>
+                                            </div>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                              <div
+                                class="form-field-ensemble w-full origin-top transition-shadow col-span-12"
+                                data-field-id="martial_status_group"
+                                data-field-name="martial_status_group"
+                              >
+                                <div class="relative group/debug">
+                                  <div
+                                    class="absolute -inset-1 border border-dashed border-magenta-500/20 rounded pointer-events-none group-hover/debug:border-magenta-500/50 transition-colors"
+                                  ></div>
+                                  <div
+                                    class="absolute -top-3 left-2 bg-magenta-500 text-white text-[9px] px-1 rounded opacity-0 group-hover/debug:opacity-100 transition-opacity whitespace-nowrap z-50"
+                                  >
+                                    martial_status_group | container
+                                  </div>
+                                  <div
+                                    data-unit="container"
+                                    data-field-id="martial_status_group"
+                                    class="gap-6 full mt-8 p-10 bg-white/5 backdrop-blur-lg border border-white/5 rounded-[40px] shadow-sm transition-all duration-300 hover:shadow-sm relative"
+                                  >
+                                    <div
+                                      class="form-field-ensemble w-full origin-top transition-shadow col-span-1"
+                                      data-field-id="marital_status"
+                                      data-field-name="marital_status"
+                                    >
+                                      <div class="relative group/debug">
+                                        <div
+                                          class="absolute -inset-1 border border-dashed border-magenta-500/20 rounded pointer-events-none group-hover/debug:border-magenta-500/50 transition-colors"
+                                        ></div>
+                                        <div
+                                          class="absolute -top-3 left-2 bg-magenta-500 text-white text-[9px] px-1 rounded opacity-0 group-hover/debug:opacity-100 transition-opacity whitespace-nowrap z-50"
+                                        >
+                                          marital_status | select
+                                        </div>
+                                        <div
+                                          class="form-field-container form-field relative group w-full transition-all duration-300 flex flex-col opacity-100 mb-0 min-w-0"
+                                          data-field-id="marital_status"
+                                          data-field-name="marital_status"
+                                          data-style-strategy="DCS-HeroUI"
+                                          data-density="spacious"
+                                        >
+                                          <div
+                                            class="form-field-inner relative w-full flex flex-col gap-1.5"
+                                            data-align="left"
+                                            data-error="false"
+                                          >
+                                            <div
+                                              class="form-field-inner__label-zone w-full"
+                                            >
+                                              <div
+                                                class="flex justify-between items-center w-full mb-1.5 min-h-[1.5rem]"
+                                              >
+                                                <label
+                                                  for="marital_status"
+                                                  data-part="label"
+                                                  class="text-sm font-bold text-foreground/80 tracking-tight mb-2 group-hover:text-primary group-focus-within:text-primary transition-colors"
+                                                  >Marital Status</label
+                                                >
+                                              </div>
+                                            </div>
+                                            <div
+                                              class="form-field-inner__content-zone relative min-w-0 flex flex-col gap-2 w-full"
+                                            >
+                                              <div
+                                                class="relative w-full overflow-visible"
+                                              >
+                                                <div
+                                                  class="form-field-ensemble group relative w-full flex flex-col min-w-0"
+                                                  data-density="spacious"
+                                                >
+                                                  <div
+                                                    class="form-field-surface flex transition-all duration-500 min-w-0 items-center focus-within:border-primary focus-within:ring-4 focus-within:ring-primary/10 focus-within:shadow-glow px-6 py-4 gap-4 dark:bg-black/20 overflow-hidden isolation-auto flex items-center border border-border/60 bg-white/50 backdrop-blur-sm text-foreground shadow-sm transition-all duration-200 hover:border-primary/40 hover:shadow-md focus-within:ring-4 focus-within:ring-primary/10 focus-within:border-primary outline-none scale-[1.01] rounded-[var(--radius-md)]"
+                                                    data-unit="input-wrapper"
+                                                  >
+                                                    <div
+                                                      class="flex-grow min-w-0"
+                                                    >
+                                                      <div
+                                                        class="w-full min-w-0"
+                                                      >
+                                                        <div
+                                                          class="relative w-full h-full"
+                                                          data-field-root="marital_status"
+                                                          data-field-type="select"
+                                                          data-field-name="marital_status"
+                                                        >
+                                                          <div
+                                                            class="flex-1 w-full min-w-0"
+                                                            data-unit="select-trigger-container"
+                                                          >
+                                                            <button
+                                                              type="button"
+                                                              id="marital_status"
+                                                              role="combobox"
+                                                              aria-expanded="false"
+                                                              aria-haspopup="listbox"
+                                                              aria-controls="marital_status-menu"
+                                                              aria-label="Marital Status"
+                                                              data-id="marital_status"
+                                                              data-unit="select-trigger"
+                                                              data-is-open="false"
+                                                              data-selected-value="single"
+                                                              data-options-count="3"
+                                                              class="flex-row items-center justify-between cursor-pointer transition-all duration-300 outline-none min-h-[var(--space-12)] px-4 gap-4 ring-0 shadow-none min-w-0 border-none placeholder:text-foreground/30 text-sm text-foreground antialiased flex w-full border-transparent bg-transparent focus:ring-0"
+                                                            >
+                                                              <div
+                                                                class="flex items-center flex-nowrap gap-3 overflow-hidden min-w-0 flex-1"
+                                                                data-unit="select-value-container"
+                                                              >
+                                                                <span
+                                                                  data-unit="select-value"
+                                                                  class="font-medium tracking-tight truncate block text-foreground/90"
+                                                                  >Single</span
+                                                                >
+                                                              </div>
+                                                              <div
+                                                                class="text-foreground/30 shrink-0"
+                                                                style="
+                                                                  transform: none;
+                                                                "
+                                                              >
+                                                                <svg
+                                                                  xmlns="http://www.w3.org/2000/svg"
+                                                                  width="24"
+                                                                  height="24"
+                                                                  viewBox="0 0 24 24"
+                                                                  fill="none"
+                                                                  stroke="currentColor"
+                                                                  stroke-width="2"
+                                                                  stroke-linecap="round"
+                                                                  stroke-linejoin="round"
+                                                                  class="lucide lucide-chevron-down w-4 h-4"
+                                                                  aria-hidden="true"
+                                                                >
+                                                                  <path
+                                                                    d="m6 9 6 6 6-6"
+                                                                  ></path>
+                                                                </svg>
+                                                              </div>
+                                                            </button>
+                                                          </div>
+                                                        </div>
+                                                      </div>
+                                                    </div>
+                                                  </div>
+                                                </div>
+                                              </div>
+                                              <div class="w-full"></div>
+                                            </div>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                    <div
+                                      class="form-field-ensemble w-full origin-top transition-shadow col-span-1"
+                                      data-field-id="citizenship_status"
+                                      data-field-name="citizenship_status"
+                                    >
+                                      <div class="relative group/debug">
+                                        <div
+                                          class="absolute -inset-1 border border-dashed border-magenta-500/20 rounded pointer-events-none group-hover/debug:border-magenta-500/50 transition-colors"
+                                        ></div>
+                                        <div
+                                          class="absolute -top-3 left-2 bg-magenta-500 text-white text-[9px] px-1 rounded opacity-0 group-hover/debug:opacity-100 transition-opacity whitespace-nowrap z-50"
+                                        >
+                                          citizenship_status | select
+                                        </div>
+                                        <div
+                                          class="form-field-container form-field relative group w-full transition-all duration-300 flex flex-col opacity-100 mb-0 min-w-0"
+                                          data-field-id="citizenship_status"
+                                          data-field-name="citizenship_status"
+                                          data-style-strategy="DCS-HeroUI"
+                                          data-density="spacious"
+                                        >
+                                          <div
+                                            class="form-field-inner relative w-full flex flex-col gap-1.5"
+                                            data-align="left"
+                                            data-error="false"
+                                          >
+                                            <div
+                                              class="form-field-inner__label-zone w-full"
+                                            >
+                                              <div
+                                                class="flex justify-between items-center w-full mb-1.5 min-h-[1.5rem]"
+                                              >
+                                                <label
+                                                  for="citizenship_status"
+                                                  data-part="label"
+                                                  class="text-sm font-bold text-foreground/80 tracking-tight mb-2 group-hover:text-primary group-focus-within:text-primary after:content-['*'] after:ml-0.5 after:text-red-500 transition-colors"
+                                                  >Citizenship Status</label
+                                                >
+                                              </div>
+                                            </div>
+                                            <div
+                                              class="form-field-inner__content-zone relative min-w-0 flex flex-col gap-2 w-full"
+                                            >
+                                              <div
+                                                class="relative w-full overflow-visible"
+                                              >
+                                                <div
+                                                  class="form-field-ensemble group relative w-full flex flex-col min-w-0"
+                                                  data-density="spacious"
+                                                >
+                                                  <div
+                                                    class="form-field-surface flex transition-all duration-500 min-w-0 items-center focus-within:border-primary focus-within:ring-4 focus-within:ring-primary/10 focus-within:shadow-glow px-6 py-4 gap-4 dark:bg-black/20 overflow-hidden isolation-auto flex items-center border border-border/60 bg-white/50 backdrop-blur-sm text-foreground shadow-sm transition-all duration-200 hover:border-primary/40 hover:shadow-md focus-within:ring-4 focus-within:ring-primary/10 focus-within:border-primary outline-none scale-[1.01] rounded-[var(--radius-md)]"
+                                                    data-unit="input-wrapper"
+                                                  >
+                                                    <div
+                                                      class="flex items-center justify-center shrink-0 min-w-fit text-foreground/40 transition-colors group-focus-within:text-primary"
+                                                    >
+                                                      <svg
+                                                        xmlns="http://www.w3.org/2000/svg"
+                                                        width="16"
+                                                        height="16"
+                                                        viewBox="0 0 24 24"
+                                                        fill="none"
+                                                        stroke="currentColor"
+                                                        stroke-width="2.5"
+                                                        stroke-linecap="round"
+                                                        stroke-linejoin="round"
+                                                        class="lucide lucide-globe"
+                                                        aria-hidden="true"
+                                                      >
+                                                        <circle
+                                                          cx="12"
+                                                          cy="12"
+                                                          r="10"
+                                                        ></circle>
+                                                        <path
+                                                          d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"
+                                                        ></path>
+                                                        <path
+                                                          d="M2 12h20"
+                                                        ></path>
+                                                      </svg>
+                                                    </div>
+                                                    <div
+                                                      class="flex-grow min-w-0"
+                                                    >
+                                                      <div
+                                                        class="w-full min-w-0"
+                                                      >
+                                                        <div
+                                                          class="relative w-full h-full"
+                                                          data-field-root="citizenship_status"
+                                                          data-field-type="select"
+                                                          data-field-name="citizenship_status"
+                                                        >
+                                                          <div
+                                                            class="flex-1 w-full min-w-0"
+                                                            data-unit="select-trigger-container"
+                                                          >
+                                                            <button
+                                                              type="button"
+                                                              id="citizenship_status"
+                                                              role="combobox"
+                                                              aria-expanded="false"
+                                                              aria-haspopup="listbox"
+                                                              aria-controls="citizenship_status-menu"
+                                                              aria-label="Citizenship Status"
+                                                              data-id="citizenship_status"
+                                                              data-unit="select-trigger"
+                                                              data-is-open="false"
+                                                              data-options-count="3"
+                                                              class="flex-row items-center justify-between cursor-pointer transition-all duration-300 outline-none min-h-[var(--space-12)] px-4 gap-4 ring-0 shadow-none min-w-0 border-none placeholder:text-foreground/30 text-sm text-foreground antialiased flex w-full border-transparent bg-transparent focus:ring-0"
+                                                            >
+                                                              <div
+                                                                class="flex items-center flex-nowrap gap-3 overflow-hidden min-w-0 flex-1"
+                                                                data-unit="select-value-container"
+                                                              >
+                                                                <span
+                                                                  data-unit="select-value"
+                                                                  class="font-medium tracking-tight truncate block text-foreground/30"
+                                                                  >Identity
+                                                                  verification</span
+                                                                >
+                                                              </div>
+                                                              <div
+                                                                class="text-foreground/30 shrink-0"
+                                                                style="
+                                                                  transform: none;
+                                                                "
+                                                              >
+                                                                <svg
+                                                                  xmlns="http://www.w3.org/2000/svg"
+                                                                  width="24"
+                                                                  height="24"
+                                                                  viewBox="0 0 24 24"
+                                                                  fill="none"
+                                                                  stroke="currentColor"
+                                                                  stroke-width="2"
+                                                                  stroke-linecap="round"
+                                                                  stroke-linejoin="round"
+                                                                  class="lucide lucide-chevron-down w-4 h-4"
+                                                                  aria-hidden="true"
+                                                                >
+                                                                  <path
+                                                                    d="m6 9 6 6 6-6"
+                                                                  ></path>
+                                                                </svg>
+                                                              </div>
+                                                            </button>
+                                                          </div>
+                                                        </div>
+                                                      </div>
+                                                    </div>
+                                                  </div>
+                                                </div>
+                                              </div>
+                                              <div class="w-full"></div>
+                                            </div>
+                                          </div>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="form-footer" data-testid="form-footer">
+          <div
+            class="form-actions flex items-center w-full mt-8 flex-col gap-4"
+          >
+            <button
+              type="button"
+              class="base-btn w-full py-3.5 text-[var(--text-sm)] rounded-xl shadow-lg hover:shadow-primary/25 bg-primary text-primary-foreground transition-all duration-300"
+              data-part="submit-btn"
+            >
+              Complete Onboarding
+            </button>
+          </div>
+        </div>
+        <button
+          class="fixed bottom-4 right-4 bg-gray-900 text-white p-3 rounded-full shadow-lg hover:bg-gray-800 transition-all z-50"
+          title="Open Form DevTools"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="lucide lucide-bug"
+            aria-hidden="true"
+          >
+            <path d="M12 20v-9"></path>
+            <path
+              d="M14 7a4 4 0 0 1 4 4v3a6 6 0 0 1-12 0v-3a4 4 0 0 1 4-4z"
+            ></path>
+            <path d="M14.12 3.88 16 2"></path>
+            <path d="M21 21a4 4 0 0 0-3.81-4"></path>
+            <path d="M21 5a4 4 0 0 1-3.55 3.97"></path>
+            <path d="M22 13h-4"></path>
+            <path d="M3 21a4 4 0 0 1 3.81-4"></path>
+            <path d="M3 5a4 4 0 0 0 3.55 3.97"></path>
+            <path d="M6 13H2"></path>
+            <path d="m8 2 1.88 1.88"></path>
+            <path d="M9 7.13V6a3 3 0 1 1 6 0v1.13"></path>
+          </svg>
+        </button>
+        <div class="fixed inset-0 pointer-events-none z-[9999] overflow-hidden">
+          <div
+            class="absolute inset-x-0 h-full max-w-[1200px] mx-auto px-4 md:px-8"
+          >
+            <div class="grid grid-cols-12 gap-4 h-full">
+              <div
+                class="bg-blue-400/5 border-x border-blue-500/10 h-full"
+              ></div>
+              <div
+                class="bg-blue-400/5 border-x border-blue-500/10 h-full"
+              ></div>
+              <div
+                class="bg-blue-400/5 border-x border-blue-500/10 h-full"
+              ></div>
+              <div
+                class="bg-blue-400/5 border-x border-blue-500/10 h-full"
+              ></div>
+              <div
+                class="bg-blue-400/5 border-x border-blue-500/10 h-full"
+              ></div>
+              <div
+                class="bg-blue-400/5 border-x border-blue-500/10 h-full"
+              ></div>
+              <div
+                class="bg-blue-400/5 border-x border-blue-500/10 h-full"
+              ></div>
+              <div
+                class="bg-blue-400/5 border-x border-blue-500/10 h-full"
+              ></div>
+              <div
+                class="bg-blue-400/5 border-x border-blue-500/10 h-full"
+              ></div>
+              <div
+                class="bg-blue-400/5 border-x border-blue-500/10 h-full"
+              ></div>
+              <div
+                class="bg-blue-400/5 border-x border-blue-500/10 h-full"
+              ></div>
+              <div
+                class="bg-blue-400/5 border-x border-blue-500/10 h-full"
+              ></div>
+            </div>
+          </div>
+          <div
+            class="absolute top-4 right-4 bg-black/80 text-white text-[10px] px-2 py-1 rounded font-mono uppercase tracking-widest border border-white/20"
+          >
+            Debug Mode: Active
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

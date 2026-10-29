@@ -1,0 +1,160 @@
+import { Meta, Canvas } from "@storybook/addon-docs/blocks";
+
+<Meta title="Getting Started" />
+
+# Getting Started
+
+This guide will help you set up and start using the Zenith Design System in your project.
+
+## Prerequisites
+
+- Node.js 18+
+- pnpm 9+
+- React 19+
+- TypeScript 5+
+
+## Installation
+
+```bash
+# Using pnpm (recommended)
+pnpm add @zenith/design-system
+
+# Using npm
+npm install @zenith/design-system
+
+# Using yarn
+yarn add @zenith/design-system
+```
+
+## Peer Dependencies
+
+Ensure you have the required peer dependencies installed:
+
+```bash
+pnpm add react@19 react-dom@19 @radix-ui/react-slot class-variance-authority clsx tailwind-merge lucide-react
+```
+
+## Tailwind CSS Setup
+
+The design system requires Tailwind CSS v4. Add the following to your `tailwind.config.ts`:
+
+```ts
+import type { Config } from "tailwindcss";
+
+export default {
+  content: [
+    "./src/**/*.{js,ts,jsx,tsx}",
+    "./node_modules/@zenith/design-system/**/*.{js,ts,jsx,tsx}",
+  ],
+  theme: {
+    extend: {
+      colors: {
+        // Your custom colors
+      },
+    },
+  },
+  plugins: [],
+} satisfies Config;
+```
+
+## CSS Import
+
+Import the base styles in your global CSS file:
+
+```css
+@import "tailwindcss";
+@import "@zenith/design-system/styles.css";
+
+/* Or if using the CSS-first approach */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+```
+
+## Provider Setup
+
+Wrap your application with the required providers:
+
+```tsx
+// providers.tsx
+import { I18nextProvider } from "react-i18next";
+import i18n from "@/shared/i18n";
+import { ThemeProvider } from "@/shared/theme/ThemeProvider";
+
+export function Providers({ children }: { children: React.ReactNode }) {
+  return (
+    <I18nextProvider i18n={i18n}>
+      <ThemeProvider>{children}</ThemeProvider>
+    </I18nextProvider>
+  );
+}
+
+// App.tsx
+import { Providers } from "./providers";
+
+export default function App() {
+  return (
+    <Providers>
+      <YourApp />
+    </Providers>
+  );
+}
+```
+
+## First Component
+
+Create your first component using Zenith primitives:
+
+```tsx
+// MyCard.tsx
+import { Box, Flex, Text, Button } from "@zenith/design-system";
+
+export function MyCard() {
+  return (
+    <Box variant="card" p="lg">
+      <Flex gap="md" align="center" justify="between">
+        <VStack gap="xs">
+          <Text variant="h3">Card Title</Text>
+          <Text variant="body" color="textMuted">Card description goes here</Text>
+        </VStack>
+        <Button variant="primary">Action</Button>
+      </Flex>
+    </Box>
+  );
+}
+```
+
+## Using with Storybook
+
+Start Storybook to explore all components:
+
+```bash
+pnpm storybook
+```
+
+This will start Storybook at `http://localhost:6006`.
+
+## TypeScript Configuration
+
+Ensure your `tsconfig.json` includes the necessary settings:
+
+```json
+{
+  "compilerOptions": {
+    "jsx": "react-jsx",
+    "moduleResolution": "bundler",
+    "resolveJsonModule": true,
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "strict": true,
+    "skipLibCheck": true
+  }
+}
+```
+
+## Next Steps
+
+- Explore [Layout Primitives](/docs/layout-primitives)
+- Learn about [Form System](/docs/form-system)
+- Check out [Component Patterns](/docs/patterns)
+- Read [Theming Guide](/docs/theming)

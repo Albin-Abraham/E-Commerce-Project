@@ -1,0 +1,21 @@
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+
+interface {{properCase name}}State {
+  value: number;
+}
+
+const initialState: {{properCase name}}State = {
+  value: 0,
+};
+
+export const {{camelCase name}}Slice = createSlice({
+  name: '{{name}}',
+  initialState,
+  reducers: {
+    increment: (state) => { state.value += 1 },
+    decrement: (state) => { state.value -= 1 },
+    setValue: (state, action: PayloadAction<number>) => { state.value = action.payload },
+  },
+});
+
+export const { increment, decrement, setValue } = {{camelCase name}}Slice.actions;

@@ -1,0 +1,55 @@
+{
+  "brand": {
+    "name": "ZenOS",
+    "subtitle": "Plattform"
+  },
+  "footer": {
+    "copyright": "© {{year}} ZenOS Modulare Monolith-Architektur. 10/10 Enterprise-Bereit.",
+    "platformTerms": "Plattform-Bedingungen"
+  },
+  "header": {
+    "allProducts": "Alle Produkte",
+    "allProductsDesc": "Durchsuchen Sie den gesamten Industriekatalog.",
+    "analytics": "Analytik",
+    "analyticsDesc": "Leistungsmetriken und Einblicke.",
+    "builder": "Builder",
+    "builderDesc": "Erstellen und konfigurieren Sie benutzerdefinierte Module.",
+    "platform": "Plattform",
+    "products": "Produkte",
+    "signIn": "Anmelden",
+    "signOut": "Abmelden",
+    "signOutDesc": "Sitzung beenden und Anmeldedaten löschen",
+    "workspace": "Arbeitsbereich",
+    "workspaceContext": "Arbeitsbereichskontext",
+    "workspaceContextDesc": "Aktives Unternehmen & Niederlassung wechseln"
+  },
+  "menu": {
+    "cart": "Mein Warenkorb",
+    "dashboard": "Dashboard",
+    "logout": "Abmelden",
+    "profile": "Profil",
+    "shop": "Produkte",
+    "toggle": "Menü"
+  },
+  "sections": {
+    "navigation": "Navigationssystem",
+    "utilities": "Plattform-Dienstprogramme"
+  },
+  "sidebar": {
+    "allProducts": "Alle Produkte",
+    "analytics": "Analytik",
+    "authPortal": "Authentifizierungsportal",
+    "branchConfig": "Niederlassungskonfiguration",
+    "employeeWizard": "Mitarbeiter-Assistent",
+    "formBuilder": "Formular-Builder",
+    "identityAccounts": "Identität & Konten",
+    "interactiveTable": "Interaktive Tabelle",
+    "inventory": "Inventar",
+    "multiStepForm": "Mehrstufiges Formular",
+    "productsCatalog": "Produktkatalog",
+    "securitySettings": "Sicherheitseinstellungen",
+    "showcaseTemplates": "Showcase-Vorlagen",
+    "userProfile": "Benutzerprofil",
+    "workspace": "Arbeitsbereich"
+  }
+}

@@ -1,0 +1,65 @@
+{
+  "analytics": {
+    "activeListings": "Listados Activos",
+    "activeProducts": "Productos Activos",
+    "conversionRate": "Tasa de Conversión",
+    "engine": "Motor de Inteligencia de Ingresos",
+    "grossSales": "Ventas Brutas",
+    "marketShare": "Cuota de Mercado",
+    "offline": "Desconectado",
+    "subtitle": "Telemetría de inventario e ingresos en tiempo real.",
+    "title": "Analítica de Productos",
+    "topPerformers": "Mejores Rendimientos",
+    "totalRevenue": "Ingresos Totales",
+    "variant": "Variante de Producto Alpha-{{id}}",
+    "viewReport": "Ver Informe Completo"
+  },
+  "detail": {
+    "error": "Error al cargar los metadatos del producto.",
+    "loading": "Cargando producto...",
+    "retailPrice": "Precio de Venta",
+    "title": "Especificaciones del Producto"
+  },
+  "cart": {
+    "continueShopping": "Continuar Comprando",
+    "emptySubtitle": "Parece que aún no has agregado nada.",
+    "emptyTitle": "Tu cesta está vacía",
+    "free": "Gratis",
+    "itemsSecured": "{{count}} Artículos Asegurados",
+    "secureCheckout": "Pago Seguro",
+    "shipping": "Envío",
+    "sslSecured": "Cifrado SSL de 256 bits",
+    "subtotal": "Subtotal",
+    "title": "Tu Carrito",
+    "total": "Total"
+  },
+  "catalog": {
+    "emptyState": "Ningún producto coincide con su búsqueda.",
+    "exportPdf": "Exportar Top 10 PDF",
+    "generatingPdf": "Generando PDF...",
+    "searchPlaceholder": "Buscar colecciones...",
+    "subtitle": "Hardware y componentes industriales de alta fidelidad construidos para escalar.",
+    "syncingState": "El catálogo se está sincronizando actualmente.",
+    "title": "Nuestras Colecciones",
+    "viewDetails": "Ver Detalles"
+  },
+  "inventory": {
+    "inStock": "En Stock",
+    "initializeAudit": "Iniciar Auditoría de Existencias",
+    "liveInventory": "Inventario en Vivo",
+    "reorderLevel": "Nivel de Reorden",
+    "sku": "SKU",
+    "title": "Inventario de Existencias"
+  },
+  "marketplace": {
+    "addToCart": "Añadir al Carrito",
+    "connectionError": "El mercado no se pudo sincronizar con el motor central.",
+    "connectionFailure": "Fallo de Conexión",
+    "discovering": "Descubriendo {{total}} artículos seleccionados para su tienda",
+    "productPolicy": "Política de Productos",
+    "syncFeed": "Sincronizar Feed",
+    "syncing": "Sincronizando con el Motor de Productos...",
+    "taxInc": "Imp. Inc.",
+    "title": "Mercado de Productos"
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "forbidden": {
+    "action": "Zur Startseite",
+    "code": "403",
+    "description": "Sie verfügen nicht über die erforderlichen Administratorrechte für diesen Bereich.",
+    "title": "Zugriff Verweigert"
+  },
+  "network": {
+    "action": "Erneut Verbinden",
+    "code": "NET_ERR",
+    "description": "Verbindung zum Server fehlgeschlagen. Bitte überprüfen Sie Ihre Internetverbindung.",
+    "title": "Netzwerk Nicht Verfügbar"
+  },
+  "notFound": {
+    "action": "Zurück zum Dashboard",
+    "code": "404",
+    "description": "Die angeforderte Ressource wurde nicht gefunden oder verschoben.",
+    "title": "Seite Nicht Gefunden"
+  },
+  "serverError": {
+    "action": "Verbindung Wiederholen",
+    "code": "500",
+    "description": "Beim Verarbeiten Ihrer Anfrage ist ein unerwarteter Serverfehler aufgetreten.",
+    "title": "Interner Serverfehler"
+  },
+  "timeout": {
+    "action": "Erneut Versuchen",
+    "code": "408",
+    "description": "Zeitüberschreitung der Anforderung. Bitte überprüfen Sie Ihre Netzwerkverbindung.",
+    "title": "Zeitüberschreitung"
+  }
+}

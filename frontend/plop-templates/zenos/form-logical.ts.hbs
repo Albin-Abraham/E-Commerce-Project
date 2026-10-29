@@ -1,0 +1,70 @@
+import type { ContentDefinition, EntityDefinition } from "@ui/form/types/application";
+
+export interface {{pascalCase name}}FormData extends Record<string, any> {
+  name: string;
+  description?: string;
+  status: string;
+}
+
+export const build{{pascalCase name}}Entity = (): EntityDefinition<{{pascalCase name}}FormData> => ({
+  id: "{{kebabCase name}}-entity",
+  name: "{{titleCase name}}",
+  content: {
+    id: "{{kebabCase name}}-content",
+    title: "{{titleCase name}}",
+    description: "Manage {{lowerCase name}} configuration and parameters.",
+    sections: [
+      {
+        id: "general",
+        title: "General Information",
+        layout: {
+          type: "card",
+          variant: "glass",
+          elevation: "sm",
+          gap: "lg",
+        },
+        fields: [
+          {
+            id: "name",
+            name: "name",
+            type: "string",
+            label: "Name",
+            required: true,
+            layout: { columnSpan: 12 },
+            placeholder: "Enter {{lowerCase name}} name...",
+            meta: {
+              ui: { component: "text", icon: "file-text" },
+            },
+          },
+          {
+            id: "status",
+            name: "status",
+            type: "string",
+            label: "Status",
+            required: true,
+            layout: { columnSpan: 6 },
+            options: [
+              { label: "Active", value: "active" },
+              { label: "Draft", value: "draft" },
+              { label: "Archived", value: "archived" },
+            ],
+            meta: {
+              ui: { component: "select", icon: "activity" },
+            },
+          },
+          {
+            id: "description",
+            name: "description",
+            type: "string",
+            label: "Description",
+            layout: { columnSpan: 12 },
+            placeholder: "Optional notes or details...",
+            meta: {
+              ui: { component: "textarea" },
+            },
+          },
+        ],
+      },
+    ],
+  },
+});

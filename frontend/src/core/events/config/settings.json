@@ -1,0 +1,34 @@
+{
+  "keybindings": [
+    {
+      "id": "platform-logout",
+      "key": "alt+q",
+      "command": "platform:logout",
+      "description": "Sign Out of Platform"
+    },
+    {
+      "id": "platform-home",
+      "key": "alt+h",
+      "command": "platform:go-home",
+      "description": "Navigate to Dashboard"
+    },
+    {
+      "id": "platform-search",
+      "key": ["ctrl+k", "meta+k"],
+      "command": "platform:focus-search",
+      "description": "Focus Global Search"
+    },
+    {
+      "id": "platform-sidebar",
+      "key": ["ctrl+b", "meta+b"],
+      "command": "platform:toggle-sidebar",
+      "description": "Toggle Sidebar Navigation"
+    },
+    {
+      "id": "platform-dev-tools",
+      "key": ["ctrl+shift+d", "meta+shift+d"],
+      "command": "platform:toggle-form-devtools",
+      "description": "Toggle Form DevTools Inspector"
+    }
+  ]
+}

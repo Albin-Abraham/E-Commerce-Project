@@ -1,0 +1,47 @@
+/* ============================================================
+   ZENITH FORM RADIO & SEGMENTED CONTROL TOKENS
+   ============================================================ */
+
+@theme {
+  --color-form-radio-border: color-mix(in srgb, var(--color-border) 80%, transparent);
+  --color-form-radio-border-hover: color-mix(in srgb, var(--color-primary) 60%, transparent);
+  --color-form-radio-border-checked: var(--color-primary);
+
+  --color-form-radio-bg: var(--color-surface);
+  --color-form-radio-bg-checked: var(--color-background);
+  --color-form-radio-dot: var(--color-primary);
+
+  --color-form-radio-card-bg: var(--color-surface);
+  --color-form-radio-card-bg-hover: color-mix(in srgb, var(--color-surface-elevated) 70%, transparent);
+  --color-form-radio-card-bg-checked: color-mix(in srgb, var(--color-primary) 5%, transparent);
+  --color-form-radio-card-border: color-mix(in srgb, var(--color-border) 70%, transparent);
+  --color-form-radio-card-border-hover: color-mix(in srgb, var(--color-primary) 40%, transparent);
+  --color-form-radio-card-border-checked: var(--color-primary);
+
+  --color-form-radio-segmented-bg: color-mix(in srgb, var(--color-muted) 40%, transparent);
+  --color-form-radio-segmented-border: color-mix(in srgb, var(--color-border) 50%, transparent);
+  --color-form-radio-segmented-active-bg: var(--color-background);
+  --color-form-radio-segmented-active-border: color-mix(in srgb, var(--color-border) 60%, transparent);
+}
+
+.dark {
+  --color-form-radio-border: var(--color-border-strong);
+  --color-form-radio-border-hover: color-mix(in srgb, var(--color-primary) 70%, transparent);
+  --color-form-radio-border-checked: var(--color-primary);
+
+  --color-form-radio-bg: color-mix(in srgb, var(--color-surface) 40%, transparent);
+  --color-form-radio-bg-checked: var(--color-surface);
+  --color-form-radio-dot: var(--color-primary);
+
+  --color-form-radio-card-bg: color-mix(in srgb, var(--color-surface) 40%, transparent);
+  --color-form-radio-card-bg-hover: color-mix(in srgb, var(--color-surface-elevated) 30%, transparent);
+  --color-form-radio-card-bg-checked: color-mix(in srgb, var(--color-primary) 10%, transparent);
+  --color-form-radio-card-border: var(--color-border-strong);
+  --color-form-radio-card-border-hover: color-mix(in srgb, var(--color-primary) 40%, transparent);
+  --color-form-radio-card-border-checked: var(--color-primary);
+
+  --color-form-radio-segmented-bg: color-mix(in srgb, var(--color-muted) 20%, transparent);
+  --color-form-radio-segmented-border: var(--color-border-strong);
+  --color-form-radio-segmented-active-bg: var(--color-surface-elevated);
+  --color-form-radio-segmented-active-border: var(--color-border-strong);
+}

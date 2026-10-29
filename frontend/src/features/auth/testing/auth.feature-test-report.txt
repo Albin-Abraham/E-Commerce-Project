@@ -1,0 +1,48 @@
+################################################################################
+# DOMAIN TEST CONTEXT REPORT: FEATURES/AUTH
+# Domain Key:          features/auth
+# Layer Group:         Features
+# Report File:         auth.feature-test-report.txt
+# Generated At:        2026-09-26T21:01:59.278Z
+# Total Test Suites:   1
+# Tracked Issues (1):  ISSUE-AUTH-WORKSPACE
+# Defended Bugs (2):   BUG-DETAIL-ENVELOPE; Defect Guard: Backend Detail Envelope Unwrapping
+################################################################################
+
+================================================================================
+TEST FILE:             src/features/auth/__tests__/auth-and-workspace.msw.test.ts
+ARCH LAYER:            Infrastructure
+DOMAIN:                features/auth
+TARGET:                auth-and-workspace.msw
+HARNESS:               MSW
+FIXTURES:              None
+TRACKED ISSUES:        ISSUE-AUTH-WORKSPACE
+BUGS & DEFECTS:        BUG-DETAIL-ENVELOPE; Defect Guard: Backend Detail Envelope Unwrapping
+TAGS:                  None
+--------------------------------------------------------------------------------
+PRIMARY RESPONSIBILITY:
+Authentication & Workspace Session Flow — MSW Integration Tests
+Validates real server response contracts without mocking React hooks:
+1. Login Token Exchange (POST /api/v1/auth/login/)
+
+TEST SUITES & SCENARIOS:
+- describe("MSW Integration: Login & Workspace Response Flows")
+- describe("1. Login Success & Session Seeding")
+  • it("exchanges credentials for tokens and seeds session context from profile")
+- describe("2. Login Failure & Error Boundary Resiliency")
+- describe("3. Workspace Session API Endpoints (Org Queries)")
+  • it("fetches company, business unit, and branch hierarchies with envelopes")
+  • it("successfully unwraps backend detail envelope: { status: 200, message, detail: [...] }")
+- describe("4. Workspace Cascading Referential Integrity & 2-Tier Stability")
+  • it("resets child selections when switching companies to prevent cross-tenant corruption")
+
+HTTP / MSW INTERACTIONS:
+- POST */api/v1/auth/login/
+- GET */api/v1/auth/profile/
+- POST */api/v1/auth/login/
+- GET */api/v1/sessions/user/companies/
+- GET */api/v1/sessions/user/business-units/
+- GET */api/v1/sessions/user/branches/
+- GET */api/v1/sessions/user/companies/
+================================================================================
+

@@ -1,0 +1,507 @@
+/* ============================================================
+   ZENITH BASE CSS - Industrial Component Framework
+   ============================================================ */
+
+:root {
+  /* --- Component-Level Tokens (Single Truth) --- */
+
+  /* Cards */
+  --z-card-bg: var(--color-surface);
+  --z-card-border: var(--color-border);
+  --z-card-radius: var(--radius-xl);
+  --z-card-shadow: var(--elevation-low);
+  --z-card-padding: var(--space-md);
+
+  /* Buttons */
+  --z-btn-height: 3.5rem;
+  --z-btn-padding: 0 var(--space-6);
+  --z-btn-radius: var(--radius-md);
+  --z-btn-bg: var(--color-primary);
+  --z-btn-text: #ffffff;
+  --z-btn-hover-bg: var(--color-primary-700);
+
+  /* Inputs */
+  --z-input-bg: var(--color-background);
+  --z-input-border: var(--color-border);
+  --z-input-focus: var(--color-primary);
+  --z-input-radius: var(--radius-md);
+  --z-input-height: 2.75rem;
+
+  /* Modals */
+  --z-modal-bg: var(--color-surface);
+  --z-modal-shadow: var(--elevation-high);
+}
+
+/* --- 1. Layout Foundations --- */
+
+/**
+ * z-section
+ * The semantic vertical block orchestrator.
+ */
+.z-section {
+  position: relative;
+  overflow: hidden;
+  padding-top: var(--space-lg);
+  padding-bottom: var(--space-lg);
+}
+
+@media (min-width: 1024px) {
+  .z-section {
+    padding-top: var(--space-xl);
+    padding-bottom: var(--space-xl);
+  }
+}
+
+.z-section--hero {
+  padding-top: var(--space-xl);
+  padding-bottom: var(--space-xl);
+}
+
+/**
+ * z-container
+ * The structural integrity boundary.
+ */
+.z-container {
+  margin-left: auto;
+  margin-right: auto;
+  width: 100%;
+  max-width: var(--container-max-width);
+  padding-left: var(--space-md);
+  padding-right: var(--space-md);
+}
+
+@media (min-width: 640px) {
+  .z-container {
+    padding-left: var(--space-lg);
+    padding-right: var(--space-lg);
+  }
+}
+
+@media (min-width: 1024px) {
+  .z-container {
+    padding-left: var(--space-xl);
+    padding-right: var(--space-xl);
+  }
+}
+
+/**
+ * z-layout-boundary
+ * Prevents Layout Shift by reserving space for dynamic content.
+ * Override --z-boundary-min on the element to set a specific reservation.
+ */
+.z-layout-boundary {
+  contain: layout;
+  overflow: hidden;
+  position: relative;
+  min-height: var(--z-boundary-min, 0px);
+}
+
+/* --- 2. Component Blocks --- */
+
+/**
+ * z-card
+ * The base primitive for information units.
+ */
+@utility z-card {
+  background-color: var(--z-card-bg);
+  border: 1px solid var(--z-card-border);
+  border-radius: var(--z-card-radius);
+  overflow: hidden;
+  transition: all var(--motion-medium) var(--ease-in-out);
+  box-shadow: var(--z-card-shadow);
+}
+
+@utility z-card--glass {
+  --z-card-bg: var(--glass-bg);
+  --z-card-border: var(--glass-border);
+  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur));
+  box-shadow: var(--shadow-premium);
+}
+
+@utility z-card--hover {
+  &:hover {
+    transform: translateY(-8px);
+    border-color: color-mix(
+      in srgb,
+      var(--color-primary) 30%,
+      var(--z-card-border)
+    );
+    box-shadow: var(--shadow-floating);
+  }
+}
+
+/**
+ * z-btn
+ * The primary interaction primitive.
+ */
+@utility z-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: var(--z-btn-height);
+  padding: var(--z-btn-padding);
+  border-radius: var(--z-btn-radius);
+  background-color: var(--z-btn-bg);
+  color: var(--z-btn-text);
+  font-weight: var(--font-bold);
+  border: 1px solid transparent;
+  transition: all var(--motion-fast) var(--ease-out);
+  cursor: pointer;
+  white-space: nowrap;
+  gap: var(--gap-xs);
+
+  &:hover {
+    background-color: var(--z-btn-hover-bg);
+    transform: translateY(-1px);
+    box-shadow: var(--elevation-medium);
+  }
+
+  &:active {
+    transform: translateY(0);
+    filter: brightness(0.95);
+  }
+}
+
+@utility z-btn--ghost {
+  --z-btn-bg: transparent;
+  --z-btn-text: var(--color-foreground);
+  --z-btn-hover-bg: var(--color-surface-raised);
+}
+
+@utility z-btn--outline {
+  --z-btn-bg: transparent;
+  --z-btn-text: var(--color-foreground);
+  --z-btn-hover-bg: transparent;
+  border-color: var(--color-border);
+
+  &:hover {
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+  }
+}
+
+/**
+ * z-input
+ * Standard form element block.
+ */
+@utility z-input {
+  width: 100%;
+  height: var(--z-input-height);
+  background-color: var(--z-input-bg);
+  border: 1px solid var(--z-input-border);
+  border-radius: var(--z-input-radius);
+  padding-left: var(--space-4);
+  padding-right: var(--space-4);
+  color: var(--color-foreground);
+  transition: all var(--motion-fast) var(--ease-in-out);
+  outline: none;
+
+  &:focus {
+    border-color: var(--z-input-focus);
+    box-shadow: 0 0 0 var(--focus-ring-width)
+      color-mix(in srgb, var(--z-input-focus) 20%, transparent);
+  }
+}
+
+/**
+ * z-badge
+ * Metadata and status visualization.
+ */
+@utility z-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.375rem 1rem;
+  font-size: var(--text-xs);
+  font-weight: var(--font-black);
+  text-transform: uppercase;
+  letter-spacing: var(--tracking-widest);
+  border-radius: var(--radius-full);
+  border: 1px solid transparent;
+  transition: all var(--motion-fast) var(--ease-in-out);
+}
+
+@utility z-badge--primary {
+  background-color: color-mix(in srgb, var(--color-primary) 10%, transparent);
+  color: var(--color-primary);
+  border-color: color-mix(in srgb, var(--color-primary) 20%, transparent);
+}
+
+@utility z-badge--secondary {
+  background-color: color-mix(in srgb, var(--color-secondary) 10%, transparent);
+  color: var(--color-secondary);
+  border-color: color-mix(in srgb, var(--color-secondary) 20%, transparent);
+}
+
+@utility z-badge--success {
+  background-color: color-mix(in srgb, var(--color-success) 10%, transparent);
+  color: var(--color-success);
+  border-color: color-mix(in srgb, var(--color-success) 20%, transparent);
+}
+
+@utility z-badge--warning {
+  background-color: color-mix(in srgb, var(--color-warning) 10%, transparent);
+  color: var(--color-warning);
+  border-color: color-mix(in srgb, var(--color-warning) 20%, transparent);
+}
+
+@utility z-badge--danger {
+  background-color: color-mix(in srgb, var(--color-danger) 10%, transparent);
+  color: var(--color-danger);
+  border-color: color-mix(in srgb, var(--color-danger) 20%, transparent);
+}
+
+@utility z-badge--info {
+  background-color: color-mix(in srgb, var(--color-info) 10%, transparent);
+  color: var(--color-info);
+  border-color: color-mix(in srgb, var(--color-info) 20%, transparent);
+}
+
+@utility z-badge--pulse {
+  animation: pulse 2s var(--ease-in-out) infinite;
+}
+
+/* --- 3. Typography Blocks --- */
+
+@utility z-heading-1 {
+  font-size: var(--text-3xl);
+  font-weight: var(--font-black);
+  letter-spacing: var(--tracking-tightest);
+  line-height: var(--leading-tight);
+}
+
+@utility z-heading-2 {
+  font-size: var(--text-2xl);
+  font-weight: var(--font-bold);
+  letter-spacing: var(--tracking-tight);
+  line-height: var(--leading-snug);
+}
+
+@utility z-heading-3 {
+  font-size: var(--text-xl);
+  font-weight: var(--font-semibold);
+  letter-spacing: var(--tracking-normal);
+  line-height: var(--leading-snug);
+}
+
+@utility z-label {
+  font-size: var(--text-sm);
+  font-weight: var(--font-medium);
+  color: var(--color-foreground);
+}
+
+@utility z-body {
+  font-size: var(--text-base);
+  font-weight: var(--font-regular);
+  line-height: var(--leading-normal);
+  opacity: 0.8;
+}
+
+/* --- 4. Utilities & Adaptive Density --- */
+
+@utility z-flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@utility z-text-gradient {
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  background-image: linear-gradient(
+    to right,
+    var(--color-primary),
+    var(--color-secondary)
+  );
+}
+
+/**
+ * z-adaptive-density
+ * Adjusts spacing based on viewport to handle high-density data.
+ */
+@utility z-density-compact {
+  --z-card-padding: var(--space-2);
+  --z-btn-height: 2.5rem;
+  --z-btn-padding: 0 var(--space-3);
+  font-size: var(--text-sm);
+}
+
+@utility z-density-comfortable {
+  --z-card-padding: var(--space-4);
+  --z-btn-height: 3rem;
+  --z-btn-padding: 0 var(--space-5);
+  font-size: var(--text-base);
+}
+
+@utility z-density-spacious {
+  --z-card-padding: var(--space-8);
+  --z-btn-height: 4rem;
+  --z-btn-padding: 0 var(--space-8);
+  font-size: var(--text-lg);
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+/* --- 5. App Shell Blocks --- */
+
+@utility z-shell {
+  display: flex;
+  flex: 1;
+  width: 100%;
+  overflow: hidden;
+  transition: background-color var(--motion-slow) var(--ease-in-out);
+}
+
+@utility z-shell__main {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+@utility z-shell__header {
+  height: 5rem;
+  background-color: color-mix(in srgb, var(--color-surface) 80%, transparent);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--color-border);
+  position: sticky;
+  top: 0;
+  z-index: var(--z-header);
+  display: flex;
+  align-items: center;
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+}
+
+@utility z-shell__sidebar {
+  width: 18rem;
+  background-color: var(--color-surface);
+  border-right: 1px solid var(--color-border);
+  display: none;
+  flex-direction: column;
+  flex-shrink: 0;
+  transition: background-color var(--motion-slow) var(--ease-in-out);
+
+  @media (min-width: 1024px) {
+    display: flex;
+  }
+}
+
+@utility z-shell__content {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  scroll-behavior: smooth;
+  overflow-anchor: auto; /* Prevents layout jumps when slots hydrate above viewport */
+}
+
+/**
+ * z-scroll-lock
+ * Used for modals and overlays to prevent background movement.
+ */
+@utility z-scroll-lock {
+  overflow: hidden !important;
+  overscroll-behavior: contain;
+}
+
+/* --- 6. Hero & Visual Blocks --- */
+
+@utility z-hero {
+  position: relative;
+  z-index: var(--z-accent);
+}
+
+@utility z-hero__mockup {
+  position: relative;
+  width: 100%;
+  background-color: var(--glass-bg);
+  backdrop-filter: blur(var(--glass-blur));
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-premium);
+  overflow: hidden;
+  transition: all 0.7s ease;
+
+  &:hover {
+    transform: translateY(-1rem);
+    box-shadow: var(--shadow-floating);
+  }
+}
+
+@utility z-hero__blob {
+  position: absolute;
+  width: 24rem;
+  height: 24rem;
+  border-radius: var(--radius-full);
+  filter: blur(120px);
+  pointer-events: none;
+}
+
+@utility z-hero__blob--primary {
+  background-color: color-mix(in srgb, var(--color-primary) 40%, transparent);
+  top: -6rem;
+  left: -6rem;
+}
+
+@utility z-hero__blob--secondary {
+  background-color: color-mix(in srgb, var(--color-secondary) 50%, transparent);
+  bottom: -6rem;
+  right: -6rem;
+}
+
+/* --- 7. Trust & Branding Blocks --- */
+
+@utility z-trust {
+  padding-top: 3rem;
+  padding-bottom: 3rem;
+  position: relative;
+  overflow: hidden;
+}
+
+@utility z-trust__mask {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 8rem;
+  z-index: var(--z-accent);
+  pointer-events: none;
+}
+
+@utility z-trust__mask--left {
+  left: 0;
+  background: linear-gradient(to right, var(--color-background), transparent);
+}
+
+@utility z-trust__mask--right {
+  right: 0;
+  background: linear-gradient(to left, var(--color-background), transparent);
+}
+
+@utility z-trust__track {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 2.5rem;
+  opacity: 0.5;
+  filter: grayscale(100%);
+  transition: all 1s ease;
+
+  @media (min-width: 768px) {
+    gap: 5rem;
+  }
+
+  &:hover {
+    filter: grayscale(0);
+    opacity: 1;
+  }
+}

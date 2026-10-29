@@ -1,0 +1,27 @@
+{
+  "components": {
+    "button": {
+      "borderRadius": { "$value": "{primitives.radius.md}", "$type": "dimension" },
+      "fontWeight": { "$value": "{primitives.typography.fontWeight.semibold}", "$type": "fontWeight" },
+      "primary": {
+        "background": { "$value": "{semantic.color.primary}", "$type": "color" },
+        "color": { "$value": "{semantic.color.primaryForeground}", "$type": "color" }
+      },
+      "secondary": {
+        "background": { "$value": "{semantic.color.secondary}", "$type": "color" },
+        "color": { "$value": "{semantic.color.secondaryForeground}", "$type": "color" }
+      },
+      "danger": {
+        "background": { "$value": "{semantic.color.danger}", "$type": "color" },
+        "color": { "$value": "#ffffff", "$type": "color" }
+      }
+    },
+    "table": {
+      "borderRadius": { "$value": "{primitives.radius.xl}", "$type": "dimension" },
+      "background": { "$value": "{semantic.color.surface}", "$type": "color" },
+      "borderColor": { "$value": "{semantic.color.border}", "$type": "color" },
+      "headerBackground": { "$value": "{semantic.color.subtle}", "$type": "color" },
+      "rowHoverBackground": { "$value": "{primitives.color.primary.50}", "$type": "color" }
+    }
+  }
+}

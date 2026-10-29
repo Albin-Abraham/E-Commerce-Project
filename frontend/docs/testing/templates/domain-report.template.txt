@@ -1,0 +1,12 @@
+################################################################################
+# DOMAIN TEST CONTEXT REPORT: {{DOMAIN_TITLE}}
+# Domain Key:          {{DOMAIN_KEY}}
+# Layer Group:         {{DOMAIN_GROUP}}
+# Report File:         {{REPORT_FILE_NAME}}
+# Generated At:        {{GENERATED_AT}}
+# Total Test Suites:   {{TOTAL_FILES}}
+# Tracked Issues ({{ISSUES_COUNT}}):  {{TRACKED_ISSUES_LIST}}
+# Defended Bugs ({{BUGS_COUNT}}):   {{DEFENDED_BUGS_LIST}}
+################################################################################
+
+{{FILE_ENTRIES}}

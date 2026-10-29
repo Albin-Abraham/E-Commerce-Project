@@ -1,0 +1,809 @@
+################################################################################
+# DOMAIN TEST CONTEXT REPORT: SHARED/TESTING
+# Domain Key:          shared/testing
+# Layer Group:         Shared
+# Report File:         testing.shared-test-report.txt
+# Generated At:        2026-09-26T21:01:59.289Z
+# Total Test Suites:   23
+# Tracked Issues (0):  None
+# Defended Bugs (1):   Defect Guard: URL Sync Infinite Loop Shield
+################################################################################
+
+================================================================================
+TEST FILE:             src/shared/testing/__tests__/AuthPortalSchema.test.tsx
+ARCH LAYER:            Interface / Driver
+DOMAIN:                shared/testing
+TARGET:                AuthPortalSchema
+HARNESS:               RTL + Driver
+FIXTURES:              None
+TRACKED ISSUES:        None
+BUGS & DEFECTS:        None
+TAGS:                  None
+--------------------------------------------------------------------------------
+PRIMARY RESPONSIBILITY:
+AuthPortalSchema — Verifies the schema-driven AuthPortal refactor.
+The AuthPortalPage is now a thin V4 wrapper: ALL form chrome lives in the
+fused FormDefinition (mode toggle, split brand panel, header, divider,
+
+TEST SUITES & SCENARIOS:
+- describe("Auth Portal: Schema-Driven Chrome")
+  • it("fuses login schema with split layout + chrome fields")
+  • it("renders the split panes, brand panel, mode toggle and schema chrome")
+  • it("fuses signup schema with chrome + 4 data fields")
+  • it("shows validation errors inside the reserved slots")
+  • it("routes mode changes through the schema-delivered toggle")
+
+HTTP / MSW INTERACTIONS:
+None
+================================================================================
+
+================================================================================
+TEST FILE:             src/shared/testing/__tests__/CreateBranch.test.tsx
+ARCH LAYER:            Interface / Driver
+DOMAIN:                shared/testing
+TARGET:                CreateBranch
+HARNESS:               Driver
+FIXTURES:              branch-scenarios.json
+TRACKED ISSUES:        None
+BUGS & DEFECTS:        None
+TAGS:                  None
+--------------------------------------------------------------------------------
+PRIMARY RESPONSIBILITY:
+Validates behavioral invariants for CreateBranch: Modernized Infrastructure Suite (v2.1).
+
+TEST SUITES & SCENARIOS:
+- describe("CreateBranch: Modernized Infrastructure Suite (v2.1)")
+  • it("should enforce validation rules and 5V Vitality")
+- describe("Scenario Fidelity (Data-Driven)")
+  • it("should validate Premium Aesthetic (Density & Glassmorphism)")
+  • it("should handle namespaced side-effects (Fusion Logic)")
+  • it("should orchestrate conditional visibility for logistics across steps")
+
+HTTP / MSW INTERACTIONS:
+None
+================================================================================
+
+================================================================================
+TEST FILE:             src/shared/testing/__tests__/Debug.test.tsx
+ARCH LAYER:            Domain
+DOMAIN:                shared/testing
+TARGET:                Debug
+HARNESS:               Driver
+FIXTURES:              None
+TRACKED ISSUES:        None
+BUGS & DEFECTS:        None
+TAGS:                  None
+--------------------------------------------------------------------------------
+PRIMARY RESPONSIBILITY:
+Validates behavioral invariants for Form System Debug.
+
+TEST SUITES & SCENARIOS:
+- describe("Form System Debug")
+  • it("lists all field IDs")
+
+HTTP / MSW INTERACTIONS:
+None
+================================================================================
+
+================================================================================
+TEST FILE:             src/shared/testing/__tests__/FormDevTools.test.tsx
+ARCH LAYER:            Interface / Driver
+DOMAIN:                shared/testing
+TARGET:                FormDevTools
+HARNESS:               Driver
+FIXTURES:              None
+TRACKED ISSUES:        None
+BUGS & DEFECTS:        None
+TAGS:                  None
+--------------------------------------------------------------------------------
+PRIMARY RESPONSIBILITY:
+Validates behavioral invariants for Developer Tools: Style Debugger.
+
+TEST SUITES & SCENARIOS:
+- describe("Developer Tools: Style Debugger")
+  • it("should render a complete style trace for an input field")
+  • it("should show density indicators correctly in the trace")
+  • it("should toggle FormDevTools visibility when PlatformCommand.ToggleFormDevTools is emitted")
+
+HTTP / MSW INTERACTIONS:
+None
+================================================================================
+
+================================================================================
+TEST FILE:             src/shared/testing/__tests__/FormHeadlessEngine.test.tsx
+ARCH LAYER:            Domain
+DOMAIN:                shared/testing
+TARGET:                FormHeadlessEngine
+HARNESS:               Pure Vitest (Zero Mocks, Zero DOM)
+FIXTURES:              ProgrammaticControlsFixture
+TRACKED ISSUES:        None
+BUGS & DEFECTS:        None
+TAGS:                  None
+--------------------------------------------------------------------------------
+PRIMARY RESPONSIBILITY:
+FormHeadlessEngine.test.tsx
+UNIT TESTS — FormCore (headless, no React, no DOM)
+Tests the engine in isolation: setValue pipeline, 5V state slices,
+
+TEST SUITES & SCENARIOS:
+- describe("FormCore — Engine Instantiation")
+  • it("initializes all 5V state slices on construction")
+  • it("accepts initialValues and populates V1 correctly")
+  • it("resolves fields by key (key = id = name)")
+- describe("FormCore — setValue Pipeline")
+  • it("updates V1 values after setValue")
+  • it("sets vitality.dirty = true after setValue")
+  • it("notifies subscribers after setValue")
+  • it("does NOT notify if value is unchanged (stable reference)")
+- describe("FormCore — Visibility Cascading")
+  • it("hides province and state by default (visible: false in schema)")
+  • it("shows province when country = ")
+  • it("shows state when country = ")
+  • it("hides again when country is cleared")
+- describe("FormCore — Validation")
+  • it("marks required field as invalid on submit when empty")
+  • it("returns true on submit when all required fields are filled")
+  • it("marks all touched on submit")
+  • it("setErrors injects server errors into V2 validity")
+  • it("respects maxLength validation on notes field")
+- describe("FormCore — Middleware Chain")
+  • it("middleware fires after every setValue")
+  • it("middleware can set a dependent field value")
+  • it("multiple middleware run in registration order")
+- describe("FormCore — subscribeToField")
+  • it("subscribeToField is defined and returns an unsubscribe function")
+  • it("unsubscribe stops the listener from being called")
+- describe("FormCore — reset()")
+  • it("resets all values to initial state")
+  • it("resets vitality (touched/dirty) to false")
+  • it("keepValues preserves specific field values across reset")
+
+HTTP / MSW INTERACTIONS:
+None
+================================================================================
+
+================================================================================
+TEST FILE:             src/shared/testing/__tests__/FormLayout.test.tsx
+ARCH LAYER:            Domain
+DOMAIN:                shared/testing
+TARGET:                FormLayout
+HARNESS:               Driver
+FIXTURES:              None
+TRACKED ISSUES:        None
+BUGS & DEFECTS:        None
+TAGS:                  None
+--------------------------------------------------------------------------------
+PRIMARY RESPONSIBILITY:
+Validates behavioral invariants for Form Styling and Layout Integration.
+
+TEST SUITES & SCENARIOS:
+- describe("Form Styling and Layout Integration")
+- describe("PageShell Modes")
+  • it("should render in Portal mode with centering and glassmorphism")
+  • it("should render in Dashboard mode with max-width container")
+- describe("Grid and Columns")
+  • it("should apply correct 12-column grid spans to fields")
+  • it("should support custom grid gaps and density")
+- describe("Visual Variants")
+  • it("should correctly apply ")
+  • it("should correctly apply ")
+- describe("Structural Elements")
+  • it("should render sections as cards when configured")
+- describe("Grid Orchestration Details")
+  • it("should correctly render 50/50 split fields")
+  • it("should support ")
+
+HTTP / MSW INTERACTIONS:
+None
+================================================================================
+
+================================================================================
+TEST FILE:             src/shared/testing/__tests__/FormRenderEngine.test.tsx
+ARCH LAYER:            Domain
+DOMAIN:                shared/testing
+TARGET:                FormRenderEngine
+HARNESS:               Driver
+FIXTURES:              None
+TRACKED ISSUES:        None
+BUGS & DEFECTS:        None
+TAGS:                  None
+--------------------------------------------------------------------------------
+PRIMARY RESPONSIBILITY:
+Test Suite A: Grid Auto-Flow Orchestration
+Ensures fields occupy correct column spans in the 12-col grid.
+
+TEST SUITES & SCENARIOS:
+- describe("Form Render Engine (v2.1.0) Integration Audit")
+- describe("Grid Orchestration")
+  • it("should correctly apply 12-column and 6-column spans at the DOM level")
+  • it("should apply grid gap from layout configuration")
+- describe("Recursive Nesting & Context")
+  • it("should pass parent layout context to deeply nested children")
+  • it("should render CardField with correct elevation and surface")
+- describe("Shell Unification")
+  • it("should render themed FormHeader with standard borders in Dashboard mode")
+  • it("should yield FormHeader to PageShell in Portal mode")
+  • it("should render sections as cards in dashboard mode")
+- describe("Enterprise Profile Audit")
+  • it("should correctly render the 8/4 grid split for organization details")
+  • it("should apply ")
+  • it("should demonstrate custom action labels")
+
+HTTP / MSW INTERACTIONS:
+None
+================================================================================
+
+================================================================================
+TEST FILE:             src/shared/testing/__tests__/FormSystem.test.tsx
+ARCH LAYER:            Domain
+DOMAIN:                shared/testing
+TARGET:                FormSystem
+HARNESS:               Driver
+FIXTURES:              None
+TRACKED ISSUES:        None
+BUGS & DEFECTS:        None
+TAGS:                  None
+--------------------------------------------------------------------------------
+PRIMARY RESPONSIBILITY:
+Validates behavioral invariants for Form Engine: Composite Expansion (DCS/ECS).
+
+TEST SUITES & SCENARIOS:
+- describe("Form Engine: Composite Expansion (DCS/ECS)")
+  • it("should expand address-group metadata into a functional UI")
+  • it("should isolate state between different instances of the same composite")
+  • it("should handle mixed nesting and deep namespacing")
+
+HTTP / MSW INTERACTIONS:
+None
+================================================================================
+
+================================================================================
+TEST FILE:             src/shared/testing/__tests__/LogicBranching.test.tsx
+ARCH LAYER:            Domain
+DOMAIN:                shared/testing
+TARGET:                LogicBranching
+HARNESS:               Driver
+FIXTURES:              None
+TRACKED ISSUES:        None
+BUGS & DEFECTS:        None
+TAGS:                  None
+--------------------------------------------------------------------------------
+PRIMARY RESPONSIBILITY:
+Validates behavioral invariants for Logic Branching Engine Verification.
+
+TEST SUITES & SCENARIOS:
+- describe("Logic Branching Engine Verification")
+  • it("navigates Path A correctly")
+  • it("navigates Path B correctly (Logic Jump)")
+  • it("maintains a stable History Stack for backtracking")
+
+HTTP / MSW INTERACTIONS:
+None
+================================================================================
+
+================================================================================
+TEST FILE:             src/shared/testing/__tests__/LoginPortal.test.tsx
+ARCH LAYER:            Interface / Driver
+DOMAIN:                shared/testing
+TARGET:                LoginPortal
+HARNESS:               RTL + Driver
+FIXTURES:              None
+TRACKED ISSUES:        None
+BUGS & DEFECTS:        None
+TAGS:                  None
+--------------------------------------------------------------------------------
+PRIMARY RESPONSIBILITY:
+LoginPortalDriver - Specialized Expert for Authentication UI
+
+TEST SUITES & SCENARIOS:
+- describe("Form Engine: Login Portal Orchestration")
+  • it("should hydrate section-ref and maintain layout fidelity")
+  • it("should render static components (header/divider) with correct content")
+
+HTTP / MSW INTERACTIONS:
+None
+================================================================================
+
+================================================================================
+TEST FILE:             src/shared/testing/__tests__/OnboardingForm.test.tsx
+ARCH LAYER:            Domain
+DOMAIN:                shared/testing
+TARGET:                OnboardingForm
+HARNESS:               Driver
+FIXTURES:              None
+TRACKED ISSUES:        None
+BUGS & DEFECTS:        None
+TAGS:                  None
+--------------------------------------------------------------------------------
+PRIMARY RESPONSIBILITY:
+Validates behavioral invariants for Onboarding Form: Modernized Infrastructure Suite (v2.1).
+
+TEST SUITES & SCENARIOS:
+- describe("Onboarding Form: Modernized Infrastructure Suite (v2.1)")
+  • it("should complete the ")
+  • it("should reveal and validate the ")
+  • it("should reveal and validate the ")
+  • it("should enforce Linear Wizard flow and Premium Aesthetic")
+
+HTTP / MSW INTERACTIONS:
+None
+================================================================================
+
+================================================================================
+TEST FILE:             src/shared/testing/__tests__/PolymorphicInteractions.test.tsx
+ARCH LAYER:            Interface / Driver
+DOMAIN:                shared/testing
+TARGET:                PolymorphicInteractions
+HARNESS:               RTL + Driver
+FIXTURES:              None
+TRACKED ISSUES:        None
+BUGS & DEFECTS:        None
+TAGS:                  None
+--------------------------------------------------------------------------------
+PRIMARY RESPONSIBILITY:
+Validates behavioral invariants for Polymorphic Interactions (BaseDriver).
+
+TEST SUITES & SCENARIOS:
+- describe("Polymorphic Interactions (BaseDriver)")
+  • it("should set and get values for standard text inputs")
+  • it("should set and get values for radio groups")
+  • it("should set and get values for checkboxes")
+  • it("should set values for custom selects via portal interaction")
+  • it("should provide storage power tools")
+  • it("should mock BOM interactions")
+
+HTTP / MSW INTERACTIONS:
+None
+================================================================================
+
+================================================================================
+TEST FILE:             src/shared/testing/__tests__/PrimitiveFields.test.tsx
+ARCH LAYER:            Interface / Driver
+DOMAIN:                shared/testing
+TARGET:                PrimitiveFields
+HARNESS:               RTL + Driver
+FIXTURES:              None
+TRACKED ISSUES:        None
+BUGS & DEFECTS:        None
+TAGS:                  None
+--------------------------------------------------------------------------------
+PRIMARY RESPONSIBILITY:
+Test Suite A: TextField (Text/Number/Email)
+Focuses on live typing and validation metadata.
+
+TEST SUITES & SCENARIOS:
+- describe("Primitive Fields Interaction & State Audit")
+- describe("TextField Interaction")
+  • it("should update values on change and reflect ARIA required state")
+- describe("SelectField Orchestration")
+  • it("should open menu and allow selecting options")
+- describe("TextareaField Layout")
+  • it("should render with correct rows and placeholder")
+- describe("CheckboxField Toggling")
+  • it("should toggle state when label or input is clicked")
+- describe("Interaction Branding")
+  • it("should apply focus ring to the outer wrapper on input focus")
+
+HTTP / MSW INTERACTIONS:
+None
+================================================================================
+
+================================================================================
+TEST FILE:             src/shared/testing/__tests__/ProgrammaticHooks.test.tsx
+ARCH LAYER:            Interface / Driver
+DOMAIN:                shared/testing
+TARGET:                ProgrammaticHooks
+HARNESS:               RTL
+FIXTURES:              None
+TRACKED ISSUES:        None
+BUGS & DEFECTS:        None
+TAGS:                  None
+--------------------------------------------------------------------------------
+PRIMARY RESPONSIBILITY:
+ProgrammaticHooks.test.tsx
+INTEGRATION TESTS — useWatch, useWatchFields, useController, useFormContext<T>
+Each test renders a consumer component inside `renderWithForm`, then drives
+
+TEST SUITES & SCENARIOS:
+- describe("useWatch — Reactive Field Value Subscription")
+  • it("returns null initially for an unset field")
+  • it("updates reactively when the engine changes the value")
+  • it("resolves by key — key = name = id")
+  • it("does NOT re-render when a different field changes")
+  • it("watches a boolean field (checkbox) correctly")
+- describe("useWatchFields — Multi-Field Reactive Subscription")
+  • it("returns an object keyed by the field keys")
+  • it("updates both fields when either changes")
+- describe("useController — Full Controlled Field Hook")
+  • it("renders with an empty value initially")
+  • it("reflects value set via the engine")
+  • it("propagates onChange back to the engine")
+  • it("exposes error and errorMessage after failed validation")
+  • it("exposes the field definition via .field")
+  • it("resolves field by key — key = name = id")
+- describe("useFormContext<T> — Typed Engine Access")
+  • it("provides a live form instance inside a provider")
+  • it("reflects isDirty = true after a field is changed")
+  • it("reflects isValid = false after a failed submit")
+  • it("throws a clear error when used outside a provider")
+  • it("exposes form.values with correct type via generic")
+  • it("can call form.setValue imperatively from inside a hook consumer")
+- describe("Key-Based Addressing — id = name = key")
+  • it("useWatch resolves a key-based field (all three point to the same field)")
+  • it("useController resolves by key, id, and name interchangeably for same field")
+  • it("V1 (values) and V2 (validity) are consistent for key-addressed field")
+
+HTTP / MSW INTERACTIONS:
+None
+================================================================================
+
+================================================================================
+TEST FILE:             src/shared/testing/__tests__/StyleSystem.test.tsx
+ARCH LAYER:            Domain
+DOMAIN:                shared/testing
+TARGET:                StyleSystem
+HARNESS:               Driver
+FIXTURES:              None
+TRACKED ISSUES:        None
+BUGS & DEFECTS:        None
+TAGS:                  None
+--------------------------------------------------------------------------------
+PRIMARY RESPONSIBILITY:
+Validates behavioral invariants for Style System: HeroUI Engine.
+
+TEST SUITES & SCENARIOS:
+- describe("Style System: HeroUI Engine")
+- describe("Logic: buildHeroUIClasses")
+  • it("should resolve default classes for a standard text field")
+  • it("should correctly parse heuristic classes into slots")
+  • it("should apply density overlays correctly")
+- describe("Regression: Double Surface (Ghost Rectangles)")
+  • it("should ensure a singular surface in Dashboard mode")
+  • it("should maintain layout boundaries in side-label mode")
+- describe("Integration: withAtom Style Injection")
+  • it("should inject internal padding into the inputWrapper via density")
+
+HTTP / MSW INTERACTIONS:
+None
+================================================================================
+
+================================================================================
+TEST FILE:             src/shared/testing/__tests__/VerticalDOMElements.test.tsx
+ARCH LAYER:            Interface / Driver
+DOMAIN:                shared/testing
+TARGET:                VerticalDOMElements
+HARNESS:               RTL + Driver
+FIXTURES:              ProgrammaticControlsFixture
+TRACKED ISSUES:        None
+BUGS & DEFECTS:        None
+TAGS:                  None
+--------------------------------------------------------------------------------
+PRIMARY RESPONSIBILITY:
+VerticalDOMElements.test.tsx
+INTEGRATION TESTS — Accordion, Fieldset, Group, Tabs
+Tests the new vertical DOM structural field types by rendering a full <Form>
+
+TEST SUITES & SCENARIOS:
+- describe("AccordionField — Collapsible Structural Container")
+  • it("renders with correct data-unit and data-field-id")
+  • it("starts closed (defaultOpen: false in schema)")
+  • it("trigger button has aria-expanded=false when closed")
+  • it("opens on trigger click and sets aria-expanded=true")
+  • it("reveals child field (timeout) after opening")
+  • it("closes again on second trigger click")
+  • it("displays the field label as the accordion trigger text")
+- describe("FieldsetField — Semantic HTML Fieldset + Legend")
+  • it("renders a native <fieldset> element")
+  • it("renders a <legend> with the field label")
+  • it("renders child fields (street, city) inside the fieldset")
+  • it("renders description text below the legend")
+  • it("child inputs are semantically associated via fieldset grouping")
+- describe("GroupField — Inline Horizontal Row with Shared Label")
+  • it("renders with role=group for accessibility")
+  • it("renders the group label in a labelled span")
+  • it("shows required marker (*) for required group")
+  • it("renders child fields (first_name, last_name) in a flex row")
+  • it("group row container has flex layout")
+  • it("aria-labelledby on group points to the group label element")
+- describe("TabsField — ARIA Tab Panel Renderer")
+  • it("renders a tablist with the correct number of tabs")
+  • it("first tab is active by default (aria-selected=true)")
+  • it("tab labels match the schema section labels")
+  • it("clicking a tab activates it (aria-selected switches)")
+  • it("tab panel renders its child fields")
+  • it("switching tabs renders the new panel")
+  • it("keyboard ArrowRight moves focus to next tab")
+  • it("tabpanel has correct aria-labelledby pointing to its tab")
+- describe("DividerField — Labeled Divider")
+  • it("renders a labeled divider when field.label is set")
+  • it("renders a plain <hr> when no label is set")
+
+HTTP / MSW INTERACTIONS:
+None
+================================================================================
+
+================================================================================
+TEST FILE:             src/shared/testing/__tests__/WizardOrchestration.test.tsx
+ARCH LAYER:            Interface / Driver
+DOMAIN:                shared/testing
+TARGET:                WizardOrchestration
+HARNESS:               RTL + Driver
+FIXTURES:              None
+TRACKED ISSUES:        None
+BUGS & DEFECTS:        None
+TAGS:                  None
+--------------------------------------------------------------------------------
+PRIMARY RESPONSIBILITY:
+Test Suite A: Step Isolation
+Ensures that only the current step's fields are mounted.
+
+TEST SUITES & SCENARIOS:
+- describe("Wizard Orchestration & Navigation Audit")
+- describe("Step Transition Logic")
+  • it("should mount Step 1 by default and transition to Step 2 on ")
+  • it("should allow navigating back to a previous step")
+- describe("Stepper Synchronization")
+  • it("should highlight the active step in the sidebar")
+- describe("Termination Logic")
+  • it("should show ")
+
+HTTP / MSW INTERACTIONS:
+None
+================================================================================
+
+================================================================================
+TEST FILE:             src/shared/testing/__tests__/ZenithTable.core.test.tsx
+ARCH LAYER:            Interface / Driver
+DOMAIN:                shared/testing
+TARGET:                ZenithTable.core
+HARNESS:               Driver
+FIXTURES:              None
+TRACKED ISSUES:        None
+BUGS & DEFECTS:        None
+TAGS:                  None
+--------------------------------------------------------------------------------
+PRIMARY RESPONSIBILITY:
+ZenithTable — Core Behaviour Tests
+Validates the contract of the ZenithTable compound component system:
+- Renders correct data & structure
+
+TEST SUITES & SCENARIOS:
+- describe("ZenithTable – Rendering")
+  • it("mounts without errors on empty data")
+  • it("renders all rows when data fits on one page")
+  • it("renders all column headers")
+  • it("renders correct cell values")
+  • it("renders the full provided dataset — paging is server-owned")
+- describe("ZenithTable – Pagination display label")
+  • it("shows the current page of rows when client data has no totalCount override")
+  • it("shows correct label after navigating to page 2")
+  • it("shows correct label on last (partial) page")
+- describe("ZenithTable – Pagination navigation")
+  • it("previous button is disabled on first page")
+  • it("next button is disabled on last page")
+  • it("navigates forward and back correctly")
+  • it("jumps to specific page via numbered button")
+  • it("renders no page navigation group when data fits one page")
+- describe("ZenithTable – Pagination page size selector")
+  • it("shows page-size selector when enabled in meta")
+  • it("hides page-size selector when disabled in meta (default)")
+- describe("ZenithTable – Meta resolution")
+  • it("applies default pageSize of 10 when not specified")
+  • it("merges custom pagination.labels with defaults")
+  • it("throws if meta.id is empty")
+
+HTTP / MSW INTERACTIONS:
+None
+================================================================================
+
+================================================================================
+TEST FILE:             src/shared/testing/__tests__/ZenithTable.edgecases.test.tsx
+ARCH LAYER:            Interface / Driver
+DOMAIN:                shared/testing
+TARGET:                ZenithTable.edgecases
+HARNESS:               RTL + Driver
+FIXTURES:              None
+TRACKED ISSUES:        None
+BUGS & DEFECTS:        None
+TAGS:                  None
+--------------------------------------------------------------------------------
+PRIMARY RESPONSIBILITY:
+ZenithTable — TDD Edge Case Suite
+TDD CONTRACT: every `it` block documents the RED state in its description.
+Run this file BEFORE implementing the feature — confirm RED, then fix → GREEN.
+
+TEST SUITES & SCENARIOS:
+- describe("A — Pagination helpers (pure unit)")
+- describe("getPageNumbers")
+  • it("RED→GREEN: returns [] for 0 total pages")
+  • it("RED→GREEN: returns [1] for 1 total page")
+  • it("RED→GREEN: returns all pages when total ≤ maxVisible (no ellipsis)")
+  • it("RED→GREEN: shows ellipsis after page 1 when window is far from start")
+  • it("RED→GREEN: shows ellipsis before last page when window is far from end")
+  • it("RED→GREEN: always includes first and last page regardless of current")
+  • it("RED→GREEN: no duplicate numbers in output")
+- describe("getPageRange")
+  • it("RED→GREEN: from=0 to=0 when total is 0")
+  • it("RED→GREEN: page 1 of 25 rows, size 10 → from=1, to=10")
+  • it("RED→GREEN: page 3 of 25 rows, size 10 → from=21, to=25 (partial last page)")
+  • it("RED→GREEN: exactly full last page (30 rows, size 10, page 3) → to=30")
+- describe("B — Global search resets pagination to page 1")
+  • it("RED: navigate to page 3, type search → should show page 1 rows")
+- describe("C — SortUrlCategory serialization round-trip")
+  • it("RED→GREEN: serialize single asc sort → [")
+  • it("RED→GREEN: serialize single desc sort → [")
+  • it("RED→GREEN: serialize multi-sort preserves order")
+  • it("RED→GREEN: serialize [] → []")
+  • it("RED→GREEN: deserialize compact format")
+  • it("RED→GREEN: deserialize legacy format")
+  • it("RED→GREEN: round-trip serialize → deserialize is lossless")
+- describe("D — Selection physics store edge cases")
+  • it("RED→GREEN: PAGE mode — setBulkSelection marks mode as PAGE")
+  • it("RED→GREEN: ALL mode — toggleSelection adds to excludedRows, not selectedRows")
+  • it("RED→GREEN: ALL mode — toggling excluded row twice removes it from exclusion")
+  • it("RED→GREEN: single-type selection — toggling new row clears previous")
+  • it("RED→GREEN: resetSelection clears selectedRows, excludedRows, and resets mode to MANUAL")
+  • it("RED→GREEN: two stores are fully isolated (multi-table on same page)")
+  • it("RED→GREEN: setTotalCount does not mutate selection state")
+- describe("E — Server source fetcher receives correct params")
+  • it("RED→GREEN: fetcher called on mount with page=0, pageSize=10")
+  • it("RED→GREEN: navigating to page 2 calls fetcher with page=1")
+- describe("F — FilterModule unit")
+  • it("RED→GREEN: public API surface is stable (no context needed for contract check)")
+  • it("RED→GREEN: debounce ms defaults to 300 when not specified")
+- describe("G — InlineEditModule lifecycle")
+  • it("returns columnSchemas built from column definitions")
+  • it("returns an empty columnSchemas when columns have no fieldSchema")
+  • it("returns a stable Provider component reference across re-renders with same inputs")
+  • it("Provider renders children without crashing")
+- describe("H — ExportModule CSV escape")
+  • it("RED→GREEN: _escapeCsvValue wraps strings containing commas in quotes")
+  • it("RED→GREEN: _escapeCsvValue escapes internal double-quotes")
+- describe("I — ParsePipeline graceful degradation")
+  • it("RED→GREEN: malformed page (non-numeric) falls back to default page 0")
+  • it("RED→GREEN: negative page value falls back to default page 0")
+  • it("RED→GREEN: malformed sort string is skipped, no crash")
+  • it("RED→GREEN: excessively long search string is truncated or rejected")
+  • it("RED→GREEN: completely empty URLSearchParams returns all defaults")
+  • it("RED→GREEN: params from another table")
+- describe("J — Physics store density scoping")
+  • it("RED→GREEN: setDensity ")
+  • it("RED→GREEN: setDensity ")
+  • it("RED→GREEN: two tables with different densities do not share CSS state")
+
+HTTP / MSW INTERACTIONS:
+None
+================================================================================
+
+================================================================================
+TEST FILE:             src/shared/testing/__tests__/ZenithTable.regression.test.tsx
+ARCH LAYER:            Regression
+DOMAIN:                shared/testing
+TARGET:                ZenithTable.regression
+HARNESS:               Driver
+FIXTURES:              None
+TRACKED ISSUES:        None
+BUGS & DEFECTS:        Defect Guard: URL Sync Infinite Loop Shield
+TAGS:                  None
+--------------------------------------------------------------------------------
+PRIMARY RESPONSIBILITY:
+ZenithTable — Render Loop Regression Tests
+Validates the three root causes of the infinite render loop / crash:
+Bug 1: resolveTableMeta() not memoized in useTableController → new object
+
+TEST SUITES & SCENARIOS:
+- describe("Bug 1 – resolveTableMeta memoization in useTableController")
+  • it("should mount without crashing when meta is provided inline")
+  • it("should not throw TypeError: Cannot convert undefined or null to object")
+  • it("should still resolve the meta correctly after memoization")
+- describe("Bug 2 – TableMetaProvider useMemo keyed on meta.id not meta ref")
+  • it("should not re-resolve meta on every render cycle")
+  • it("should survive multiple re-renders without crashing ZenithTablePagination")
+- describe("Bug 3 – useReactRouter adapter object stability")
+  • it("should not trigger an infinite loop when urlSync is enabled")
+  • it("should display correct rows after urlSync pagination interaction")
+
+HTTP / MSW INTERACTIONS:
+None
+================================================================================
+
+================================================================================
+TEST FILE:             src/shared/testing/__tests__/ZenithTable.url.test.tsx
+ARCH LAYER:            Interface / Driver
+DOMAIN:                shared/testing
+TARGET:                ZenithTable.url
+HARNESS:               RTL
+FIXTURES:              None
+TRACKED ISSUES:        None
+BUGS & DEFECTS:        Defect Guard: URL Sync Infinite Loop Shield
+TAGS:                  None
+--------------------------------------------------------------------------------
+PRIMARY RESPONSIBILITY:
+ZenithTable URL — URL Sync & Adapter Tests
+Validates the TableUrl infrastructure independently of the full table mount:
+- ParsePipeline: correct extraction of page, size, sort, filter, search
+
+TEST SUITES & SCENARIOS:
+- describe("TableUrlKeyResolver")
+  • it("namespaces page key with meta.id")
+  • it("namespaces size key")
+  • it("namespaces search key")
+  • it("namespaces sort key")
+  • it("generates filter key for column id")
+  • it("generates filterPrefix")
+  • it("ownedKeys returns only keys belonging to this table")
+- describe("ParsePipeline.extractAll")
+  • it("extracts default state from empty params")
+  • it("extracts pageIndex from URL (1-based → 0-based)")
+  • it("extracts pageSize from URL")
+  • it("extracts search string from URL")
+  • it("extracts single sort column from URL")
+  • it("extracts descending sort from URL")
+  • it("does not have parse errors for clean URL params")
+- describe("AppendPipeline")
+  • it("sets a single key and builds params")
+  • it("clears null values (omits default state from URL)")
+  • it("appendAll stores multiple sort values under same key")
+  • it("clears owned keys from a previous snapshot before writing new ones")
+- describe("TableUrlAdapters.createMock")
+  • it("get returns null for missing key")
+  • it("set stores a value and get retrieves it")
+  • it("set with array stores all values and getAll retrieves them")
+  • it("snapshot returns a URLSearchParams instance")
+  • it("delete removes a key")
+- describe("TableUrlAdapters.useReactRouter – object stability")
+  • it("returns the SAME adapter object across multiple renders")
+
+HTTP / MSW INTERACTIONS:
+None
+================================================================================
+
+================================================================================
+TEST FILE:             src/shared/testing/__tests__/form-styles-integrity.test.tsx
+ARCH LAYER:            Domain
+DOMAIN:                shared/testing
+TARGET:                form-styles-integrity
+HARNESS:               Driver
+FIXTURES:              None
+TRACKED ISSUES:        None
+BUGS & DEFECTS:        None
+TAGS:                  None
+--------------------------------------------------------------------------------
+PRIMARY RESPONSIBILITY:
+Validates behavioral invariants for Form Styles Integrity Integration.
+
+TEST SUITES & SCENARIOS:
+- describe("Form Styles Integrity Integration")
+  • it("should render the personal details header with text-center class")
+  • it("should apply glassmorphic styles to the Status & Citizenship container")
+  • it("should scale spans correctly in the 2-column container")
+
+HTTP / MSW INTERACTIONS:
+None
+================================================================================
+
+================================================================================
+TEST FILE:             src/shared/testing/__tests__/production-schemas.test.ts
+ARCH LAYER:            Interface / Driver
+DOMAIN:                shared/testing
+TARGET:                production-schemas
+HARNESS:               Pure Vitest (Zero Mocks, Zero DOM)
+FIXTURES:              None
+TRACKED ISSUES:        None
+BUGS & DEFECTS:        None
+TAGS:                  None
+--------------------------------------------------------------------------------
+PRIMARY RESPONSIBILITY:
+Validates behavioral invariants for Production Form Schemas Architectural Validation.
+
+TEST SUITES & SCENARIOS:
+- describe("Production Form Schemas Architectural Validation")
+- describe("${name}")
+  • it("should be successfully generated by the schema factory")
+  • it("should pass SchemaNormalizer to build a valid UI Tree")
+  • it("should construct a flat FieldRegistry without circular dependencies")
+
+HTTP / MSW INTERACTIONS:
+None
+================================================================================
+

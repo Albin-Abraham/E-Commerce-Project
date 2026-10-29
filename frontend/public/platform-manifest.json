@@ -1,0 +1,24 @@
+{
+  "routes": [
+    {
+      "path": "/products",
+      "meta": {
+        "title": "Zenith Real-Time Shop Catalog (Server-Driven)",
+        "description": "Server-driven dynamically configured product registry with 0ms transition latency."
+      }
+    },
+    {
+      "path": "/products/analytics",
+      "meta": {
+        "title": "Zenith Dynamic Intelligence & Live Metrics (Server-Driven)"
+      }
+    }
+  ],
+  "slots": [
+    {
+      "name": "footer-links",
+      "component": "dynamic-terms-footer",
+      "priority": 25
+    }
+  ]
+}

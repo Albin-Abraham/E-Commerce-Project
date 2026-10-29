@@ -1,0 +1,33 @@
+{
+  "semantic": {
+    "density": {
+      "compact": {
+        "input": {
+          "minHeight": { "$value": "2rem", "$type": "dimension" },
+          "paddingY": { "$value": "0.375rem", "$type": "dimension" },
+          "paddingX": { "$value": "0.75rem", "$type": "dimension" },
+          "fontSize": { "$value": "{primitives.typography.fontSize.xs}", "$type": "dimension" },
+          "gap": { "$value": "{primitives.spacing.2}", "$type": "dimension" }
+        }
+      },
+      "comfortable": {
+        "input": {
+          "minHeight": { "$value": "2.5rem", "$type": "dimension" },
+          "paddingY": { "$value": "0.625rem", "$type": "dimension" },
+          "paddingX": { "$value": "1rem", "$type": "dimension" },
+          "fontSize": { "$value": "{primitives.typography.fontSize.sm}", "$type": "dimension" },
+          "gap": { "$value": "{primitives.spacing.3}", "$type": "dimension" }
+        }
+      },
+      "spacious": {
+        "input": {
+          "minHeight": { "$value": "3.25rem", "$type": "dimension" },
+          "paddingY": { "$value": "1rem", "$type": "dimension" },
+          "paddingX": { "$value": "1.5rem", "$type": "dimension" },
+          "fontSize": { "$value": "{primitives.typography.fontSize.base}", "$type": "dimension" },
+          "gap": { "$value": "{primitives.spacing.4}", "$type": "dimension" }
+        }
+      }
+    }
+  }
+}

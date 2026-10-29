@@ -1,0 +1,17 @@
+{
+  "breadcrumbs": {
+    "checkout": "Checkout",
+    "home": "Home",
+    "onboarding": "Employee Onboarding",
+    "shop": "Store"
+  },
+  "pageTitles": {
+    "dashboard": "Zenith Dashboard",
+    "profile": "User Profile",
+    "settings": "System Settings"
+  },
+  "seo": {
+    "defaultTitle": "Absolute Zenith",
+    "description": "High-fidelity distributed enterprise architecture."
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "forbidden": {
+    "action": "Go to Home",
+    "code": "403",
+    "description": "You do not have the required administrative clearance to access this resource.",
+    "title": "Access Denied"
+  },
+  "network": {
+    "action": "Reconnect",
+    "code": "NET_ERR",
+    "description": "Could not connect to the remote host. Please verify your internet connection.",
+    "title": "Network Unavailable"
+  },
+  "notFound": {
+    "action": "Return to Dashboard",
+    "code": "404",
+    "description": "The requested resource could not be found or has been relocated.",
+    "title": "Page Not Found"
+  },
+  "serverError": {
+    "action": "Retry Connection",
+    "code": "500",
+    "description": "An unexpected exception occurred while executing your request.",
+    "title": "Internal Server Error"
+  },
+  "timeout": {
+    "action": "Try Again",
+    "code": "408",
+    "description": "The request timed out while waiting for a server response. Please check your network connection.",
+    "title": "Connection Timeout"
+  }
+}

@@ -1,0 +1,155 @@
+{
+  // audit-ci configuration - dependency advisory gate for pull requests.
+  //
+  // Policy (adopted 2026-10-24):
+  //   * HIGH and CRITICAL advisories block the PR.
+  //   * The entries below are the pre-existing baseline (62 unique GHSAs,
+  //     covering 75 advisory paths) captured when the gate was introduced.
+  //     They are grandfathered so the gate is meaningful from day one:
+  //     it fails only on NEW high/critical advisories.
+  //   * Burn-down order: runtime dependencies first (axios, react-router,
+  //     zod - these ship to users), then dev tooling. Upgrading a module
+  //     usually clears several entries at once; delete the stale lines
+  //     from this file in the same PR so "show-found" stays truthful.
+  //   * Do not add module-name allowlist records ("axios" as a bare string):
+  //     they suppress all future advisories for that module. GHSA IDs only.
+  //
+  // CI: .github/workflows/pr-validation.yml -> "Audit dependencies" step
+  //     (pnpm dlx audit-ci@7.1.0, pinned; runs before any pnpm install so a
+  //     compromised postinstall cannot execute before the scan).
+  // Local: pnpm deps:check
+  "$schema": "https://github.com/IBM/audit-ci/raw/main/docs/schema.json",
+  // Threshold: "high" fails the run on high or critical (moderate/low report only).
+  "high": true,
+  "package-manager": "pnpm",
+  "report-type": "important",
+  "allowlist": [
+    // ---- Runtime dependencies (ship in the production bundle) ----
+    // [high] axios - axios Vulnerable to Full Man-in-the-Middle via Prototype Pollution Gadge
+    "GHSA-35jp-ww65-95wh",
+    // [high] axios - axios Vulnerable to Credential Theft and Response Hijacking via Prototyp
+    "GHSA-3g43-6gmg-66jw",
+    // [high] axios - Axios: HTTP/2 adapter bypasses configured DNS lookup and proxy controls
+    "GHSA-3pq3-5fj3-cg6v",
+    // [high] axios - Axios: Denial of Service via Unhandled 'error' Event in HTTP/2 ClientHtt
+    "GHSA-542g-h47m-68v8",
+    // [high] axios - Axios: Header Injection via Prototype Pollution
+    "GHSA-6chq-wfr3-2hj9",
+    // [high] axios - Allocation of Resources Without Limits or Throttling in Axios
+    "GHSA-777c-7fjr-54vf",
+    // [high] axios - Axios: Regular Expression Denial of Service (ReDoS) via Cookie Name Inje
+    "GHSA-hfxv-24rg-xrqf",
+    // [high] axios - Axios: Proxy-Authorization header leaks to redirect target when proxy is
+    "GHSA-j5f8-grm9-p9fc",
+    // [high] axios - Axios: Proxy-Authorization Credential Leak to Origin Server Across HTTP-
+    "GHSA-p92q-9vqr-4j8v",
+    // [high] axios - Axios: Prototype Pollution Gadgets - Response Tampering, Data Exfiltrati
+    "GHSA-pf86-5x62-jrwf",
+    // [high] axios - Axios: Incomplete Fix for CVE-2025-62718 — NO_PROXY Protection Bypassed 
+    "GHSA-pmwg-cvhr-8vh7",
+    // [high] axios - Axios has prototype pollution read-side gadgets in HTTP adapter that all
+    "GHSA-q8qp-cvcw-x6jj",
+    // [high] form-data - form-data: CRLF injection in form-data via unescaped multipart field nam
+    "GHSA-hmw2-7cc7-3qxx",
+    // [high] react-router - React Router's vendored turbo-stream v2 allows arbitrary constructor inv
+    "GHSA-49rj-9fvp-4h2h",
+    // [high] react-router - React Router vulnerable to XSS in unstable RSC redirect handling via jav
+    "GHSA-8646-j5j9-6r62",
+    // [high] react-router - React Router vulnerable to DoS via unbounded path expansion in __manifes
+    "GHSA-8x6r-g9mw-2r78",
+    // [high] react-router - React Router: Unauthenticated Denial of Service via Inefficient Route Ma
+    "GHSA-chx6-hx7r-mcp5",
+    // [high] react-router - React Router: RSC Mode CSRF Bypass Allows Action Execution Before 400 Re
+    "GHSA-qwww-vcr4-c8h2",
+    // [high] react-router - React Router vulnerable to Denial of Service via reflected user input in
+    "GHSA-rxv8-25v2-qmq8",
+    // [high] zod - Zod can exhaust memory while validating oversized constrained collection
+    "GHSA-mrhx-c7xc-m3w5",
+    //
+    // ---- Build/test tooling (devDependencies, not shipped) ----
+    // [critical] @storybook/addon-vitest, storybook - Storybook: Missing origin validation in Storybook preview allows code in
+    "GHSA-f2ph-cmg5-wxc8",
+    // [high] @storybook/addon-vitest, storybook - Storybook dev server vulnerable to code injection from the local network
+    "GHSA-px85-f4q5-jh77",
+    // [critical] @vitest/browser - Vitest Browser: Exposed Browser Mode API Can Proxy CDP and Overwrite Con
+    "GHSA-g8mr-85jm-7xhm",
+    // [critical] @vitest/browser - @vitest/browser: Browser Mode provider commands bypass the file-access p
+    "GHSA-p63j-vcc4-9vmv",
+    // [high] brace-expansion - brace-expansion: DoS via exponential-time expansion of consecutive non-e
+    "GHSA-3jxr-9vmj-r5cp",
+    // [high] brace-expansion - brace-expansion: DoS via uncontrolled recursion in parseCommaParts causi
+    "GHSA-6j4f-fj2g-mc7p",
+    // [high] brace-expansion - brace-expansion: DoS via unbounded expansion length causing an out-of-me
+    "GHSA-mh99-v99m-4gvg",
+    // [high] brace-expansion - brace-expansion: DoS via uncontrolled recursion on nested brace groups c
+    "GHSA-qhr7-859c-m2p7",
+    // [high] brace-expansion - brace-expansion: DoS via unbounded intermediate arrays, bypassing the CV
+    "GHSA-rgw5-rvv9-x895",
+    // [high] browserslist - Browserslist: Uncaught crash / prototype write via untrusted browserslis
+    "GHSA-73wf-gq98-2v4g",
+    // [high] browserslist - Browserslist: Unbounded memory growth (no cache eviction) via distinct q
+    "GHSA-c83g-rgw3-j3cx",
+    // [high] flatted - flatted vulnerable to unbounded recursion DoS in parse() revive phase
+    "GHSA-25h7-pfq9-p65f",
+    // [high] flatted - Prototype Pollution via parse() in NodeJS flatted
+    "GHSA-rf6f-7fwh-wjgh",
+    // [critical] handlebars - Handlebars.js has JavaScript Injection via AST Type Confusion
+    "GHSA-2w6w-674q-4c4q",
+    // [high] handlebars - Handlebars.js has JavaScript Injection via AST Type Confusion by tamperi
+    "GHSA-3mfm-83xf-c92r",
+    // [critical] handlebars - Handlebars: JavaScript Injection via AST Type Confusion in compile (bypa
+    "GHSA-8r5x-fm3f-whwj",
+    // [high] handlebars - Handlebars.js has Denial of Service via Malformed Decorator Syntax in Te
+    "GHSA-9cx6-37pm-9jff",
+    // [critical] handlebars - Handlebars: JavaScript Injection via Own Property Check Bypass
+    "GHSA-p8wg-vrv2-v86f",
+    // [high] handlebars - Handlebars.js has JavaScript Injection via AST Type Confusion when passi
+    "GHSA-xhpv-hc6g-r9c6",
+    // [high] handlebars - Handlebars.js has JavaScript Injection in CLI Precompiler via Unescaped 
+    "GHSA-xjpj-3mr7-gcpf",
+    // [high] js-yaml - js-yaml: maxTotalMergeKeys does not limit CPU use for empty merge source
+    "GHSA-2883-xcg3-v3hh",
+    // [high] js-yaml - js-yaml: YAML merge-key chains can force quadratic CPU consumption
+    "GHSA-52cp-r559-cp3m",
+    // [high] js-yaml - JS-YAML: Quadratic CPU consumption in !!omap resolution (3.x and 4.x) — 
+    "GHSA-5p4m-2wfm-xmqj",
+    // [high] minimatch - minimatch ReDoS: nested *() extglobs generate catastrophically backtrack
+    "GHSA-23c5-xmqv-rm74",
+    // [high] minimatch - minimatch has a ReDoS via repeated wildcards with non-matching literal i
+    "GHSA-3ppc-4f35-3m26",
+    // [high] minimatch - minimatch has ReDoS: matchOne() combinatorial backtracking via multiple 
+    "GHSA-7r86-cg39-jmmj",
+    // [high] nanoid - nanoid: non-secure generators can loop indefinitely with negative size
+    "GHSA-28wg-ghj8-5hjv",
+    // [high] nanoid - nanoid: custom generators can loop indefinitely when size is zero
+    "GHSA-2v37-7h3g-55p8",
+    // [high] nanoid - nanoid: Integer Overflow or Wraparound
+    "GHSA-xwg4-73v4-xw9w",
+    // [high] picomatch - Picomatch has a ReDoS vulnerability via extglob quantifiers
+    "GHSA-c2c7-rcm5-vvqj",
+    // [high] postcss - PostCSS: Arbitrary file read and information disclosure via attacker-con
+    "GHSA-6g55-p6wh-862q",
+    // [high] postcss - PostCSS: Path Traversal in Previous Source Map Auto-Loading (sourceMappi
+    "GHSA-r28c-9q8g-f849",
+    // [high] rollup - Rollup 4 has Arbitrary File Write via Path Traversal
+    "GHSA-mw96-cpmx-2vgc",
+    // [high] source-map-js - source-map-js allows event-loop denial of service through indexed source
+    "GHSA-68fv-2mgg-jv7q",
+    // [critical] tinypool - Tinypool: Prototype Pollution gadget in worker options leads to Remote C
+    "GHSA-5gmw-xhrv-c9v3",
+    // [critical] tinypool - Tinypool: Prototype Pollution Gadget to RCE in run() options
+    "GHSA-85c8-ppgw-ccpr",
+    // [high] vite - launch-editor: `fs.existsSync()` existence check can be bypassed on Wind
+    "GHSA-587h-7wmj-h5pm",
+    // [high] vite - vite: `server.fs.deny` bypass on Windows alternate paths
+    "GHSA-fx2h-pf6j-xcff",
+    // [high] vite - Vite Vulnerable to Arbitrary File Read via Vite Dev Server WebSocket
+    "GHSA-p9ff-h696-f583",
+    // [high] vite - Vite: `server.fs.deny` bypassed with queries
+    "GHSA-v2wj-q39q-566r",
+    // [critical] vitest - When Vitest UI server is listening, arbitrary file can be read and execu
+    "GHSA-5xrq-8626-4rwp",
+    // [high] ws - ws: Memory exhaustion DoS from tiny fragments and data chunks
+    "GHSA-96hv-2xvq-fx4p"
+  ]
+}

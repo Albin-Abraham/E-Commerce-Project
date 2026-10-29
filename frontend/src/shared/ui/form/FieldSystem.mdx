@@ -1,0 +1,164 @@
+import { Meta } from "@storybook/addon-docs/blocks";
+
+<Meta title="Form/Field System & Theme Specification" />
+
+# 🛡️ Form & Field Design System
+
+**Status:** Production Standard  
+**Architecture:** ZenOS Design Component System (DCS) & 4-Tier Hierarchy  
+**Compliance:** Token-First (Zero Inline Tailwind in Controls), WAI-ARIA 1.2+, WCAG 2.1 AA  
+
+---
+
+## 1. Executive Summary & Core Principles
+
+The ZenOS Form & Field Ecosystem enforces a strict **Token-First Architecture** across all form controls, interactive inputs, layout structures, and detail presentation views.
+
+### Core Architecture Mandates:
+1. **Token-First Palette (Zero Inline Tailwind in Controls)**: Control atoms and input surfaces derive all layout, dimensions, borders, foregrounds, backgrounds, and opacities directly from design tokens in `src/shared/theme/tokens/forms.ts`.
+2. **Light & Dark Theme Parity**: Every control, card, surface, text label, and error state is engineered with explicit light and dark theme contrast adhering to the **30/20/10 rule**.
+3. **Deterministic Optical Baseline Alignment**: Single-line and multi-line control layouts (radio, switch, checkbox) eliminate baseline floating through mathematical cap-height optical alignment.
+4. **Dual-Mode Runtime (Managed vs Standalone)**: Components seamlessly function either as managed form fields inside `FieldShell` / `OuterWrapper` or as isolated, standalone React atoms with autonomous borders and backgrounds.
+5. **Strict Modular Package Structure**: Decoupled sub-index directories eliminate monolithic barrels, providing granular tree-shakable entry points.
+
+---
+
+## 2. The 4-Tier Field Hierarchy
+
+The ZenOS Field System organizes all interactive and presentation elements into a structured 4-tier taxonomy:
+
+```
+┌────────────────────────────────────────────────────────────────────────┐
+│  Tier 4: Autonomous Wrapped Fields                                     │
+│  FormTextField, FormRadioField, FormSwitchField, FormCodeInputField     │
+├────────────────────────────────────────────────────────────────────────┤
+│  Tier 3: Layout Structures & Wrapper Trinity                           │
+│  FieldShell, OuterWrapper, InputWrapper, CardField, TabsField, etc.    │
+├────────────────────────────────────────────────────────────────────────┤
+│  Tier 2: Headless Controls & Custom Atoms                              │
+│  RadioGroup, RadioControl, SwitchControl, CheckboxControl, Spinners    │
+├────────────────────────────────────────────────────────────────────────┤
+│  Tier 1: Primitive Input Atoms                                         │
+│  TextField, NumberInputField, TextareaField, CodeInputField, Button    │
+└────────────────────────────────────────────────────────────────────────┘
+```
+
+| Tier | Component Type | Primary Responsibility | Import Path |
+| :--- | :--- | :--- | :--- |
+| **Tier 1** | **Primitive Atoms** | Pure DOM input elements, accessibility attributes, keyboard handlers. | `@ui/form/fields/primitive` |
+| **Tier 2** | **Headless Controls** | Custom binary & selection controls with roving tabIndex and WAI-ARIA roles. | `@ui/form/fields/primitive/controls` |
+| **Tier 3** | **Wrapper Trinity** | Unified etched surfaces, floating labels, counters, slot adornments, and error feedback. | `@ui/form/structure` & `@ui/form/fields/structure` |
+| **Tier 4** | **Wrapped Fields** | Fully composed fields pre-wrapped with `withAtom` HOC for schema engines and storybooks. | `@ui/form/fields/wrapped-fields` |
+
+---
+
+## 3. Light & Dark Theme System Specifications
+
+All surfaces, borders, and foreground texts adhere to the **30/20/10 Rule**:
+- **30% Foundation**: Canvas background (`bg-background`), input surfaces (`bg-surface`, `bg-surface-elevated`), and neutral card fills.
+- **20% Structure**: Borders (`border-border`, `border-border-strong`), divider lines, and muted secondary text (`text-muted-foreground`).
+- **10% Brand & Accent**: Primary interactive brand colors (`bg-primary`, `text-primary`, `ring-primary/20`), focus rings, and status badges.
+
+### 3.1 Color & Surface Tokens
+
+| Semantic Token | Light Mode Hex | Dark Mode Hex (`.dark`) | Purpose in Form System |
+| :--- | :---: | :---: | :--- |
+| `--color-background` | `#f1f5f9` (Neutral-100) | `#0a0a0a` | Global canvas background |
+| `--color-surface` | `#ffffff` | `#171717` | Input field surface, cards, dropdown menus |
+| `--color-surface-elevated`| `#ffffff` | `#262626` | Hovered cards, focused digit boxes, spinners |
+| `--color-foreground` | `#0f172a` (Neutral-900) | `#fafafa` | Primary field labels, input text, headings |
+| `--color-muted-foreground` | `#475569` (Neutral-600) | `#a1a1aa` | Field descriptions, placeholders, slot icons |
+| `--color-border` | `#cbd5e1` (Neutral-300) | `#27272a` | Idle input borders, group dividers |
+| `--color-border-strong` | `#64748b` (Neutral-500) | `#3f3f46` | High-contrast borders in dark theme, active outlines |
+| `--color-primary` | `#2563eb` (Primary-600) | `#3b82f6` (Primary-500) | Active focus rings, checked toggles, submit buttons |
+| `--color-danger` | `#dc2626` (Danger-600) | `#ef4444` (Danger-500) | Validation error text, invalid input borders |
+
+### 3.2 Dark Theme Elevation Principle
+In dark themes, drop shadows are physically invisible against dark backgrounds. Elevation is communicated through **surface lightening**:
+- **Base Canvas**: `#0a0a0a`
+- **Field / Card Surface**: `#171717` (`bg-surface`)
+- **Focused / Elevated Element**: `#262626` (`bg-surface-elevated`)
+
+---
+
+## 4. Dual-Mode Runtime: Managed vs Standalone
+
+Form inputs operate in two distinct modes without duplicate markup:
+
+### 4.1 Managed Mode (Inside `FieldShell` / `withAtom`)
+When rendered inside a form engine or `FieldShell`:
+- `OuterWrapper` provides the single etched surface, outer border, hover/focus states, and icon slots.
+- Child primitive inputs render transparently (`bg-transparent border-none shadow-none focus:ring-0`) to eliminate the **Double Surface Problem**.
+
+### 4.2 Standalone Mode (Zero-Context Fallback)
+When an atomic input (`TextField`, `NumberInputField`, `TextareaField`, `CodeInputField`) is rendered outside `FieldShell` or without a form engine:
+- The component detects `!isManaged` via `useFieldCompositionContext()`.
+- It automatically applies `tokens.form.controls.standaloneInput` to provide full visual styling:
+  - Solid border (`border border-border/80 dark:border-border-strong`)
+  - Crisp surface background (`bg-surface dark:bg-surface/50`)
+  - Focus glow ring (`focus:border-primary focus:ring-2 focus:ring-primary/20`)
+  - Accessible padding and placeholder contrast
+
+---
+
+## 5. Optical Baseline Alignment Architecture
+
+Binary and selection controls (`RadioGroup`, `SwitchField`, `CheckboxField`) enforce deterministic baseline alignment:
+
+### The Physics: Cap-Height Alignment
+A standard 14px font (`text-sm`) with 20px line-height (`leading-snug`) places the font's optical cap-height between $y = 3\text{px}$ and $y = 17\text{px}$ within the 20px line box.
+
+- **Single-Line Labels**: `layout.singleLine` applies `items-center` for symmetrical balance.
+- **Multi-Line Labels (Title + Description)**: `layout.multiLine` applies `items-start` paired with `mt-0.5` (`layout.controlOffset`) to optically pin the top edge of the control to the font cap-height.
+- **Zero Compounded Gaps**: Legacy `space-x-3` + `ml-2.5` compounding is completely removed in favor of a clean `gap-3` (12px) flex container.
+
+---
+
+## 6. Verification Code & OTP Field Anatomy (`CodeInputField`)
+
+The `CodeInputField` component is engineered for multi-factor authentication codes and secure PINs:
+
+### Features:
+1. **Optical 3+3 Cluster Grouping (6-Digit OTP)**: Automatically splits 6-digit codes into two distinct 3-digit clusters separated by a rounded divider (`[ ][ ][ ] — [ ][ ][ ]`).
+2. **Centered PIN Cluster (4-Digit PIN)**: Centered layout with uniform digit spacing.
+3. **Auto-Advancing Focus**: Typing a character automatically moves focus to the adjacent digit box; pressing Backspace retreats to the prior box.
+4. **Smart Clipboard Paste**: Pasting a full code distributes characters sequentially across all boxes.
+5. **Theme-Adaptive Tokens**:
+   - Idle: `bg-surface dark:bg-surface/50 border-border/80 dark:border-border-strong`
+   - Focused: `bg-background dark:bg-surface-elevated border-primary ring-4 ring-primary/20 scale-105 z-10`
+   - Filled: `bg-primary/5 dark:bg-primary/15 border-primary/70 font-extrabold`
+   - Error: `border-destructive ring-4 ring-destructive/20 text-destructive`
+
+---
+
+## 7. Modular Package Organization
+
+The form subsystem is partitioned into decoupled sub-index barrels:
+
+```
+src/shared/ui/form/
+├── fields/
+│   ├── primitive/
+│   │   ├── index.ts          ── Primitive input atoms (btn, radio, codeinput, text, etc.)
+│   │   └── controls/         ── Headless controls (RadioControl, SwitchControl, CheckboxControl)
+│   ├── structure/
+│   │   └── index.ts          ── Container fields (CardField, TabsField, RepeaterField, etc.)
+│   └── index.ts              ── 4-tier field system aggregator
+├── structure/
+│   └── index.ts              ── Wrapper Trinity (FieldShell, InputWrapper, OuterWrapper)
+├── components/
+│   └── index.ts              ── Form UI elements (FormShell, FormSkeleton, ValidationSummary)
+├── context/
+│   └── index.ts              ── 22 reactive context providers and manager hooks
+└── index.ts                  ── Clean partitioned composition root
+```
+
+---
+
+## 8. Storybook Testing & Theme Verification
+
+To verify components across themes:
+1. **Storybook Toolbar Theme Switcher**: Toggle between **Light Mode** (sun icon) and **Dark Mode** (moon icon) directly in the Storybook toolbar.
+2. **Automated Vitest Conformance**:
+   - `ControlAtomsA11y.test.tsx`: Validates roving tabIndex, keyboard navigation, and ARIA roles.
+   - `StorybookLiveConformance.test.tsx`: Validates all stories across Default, Card, Segmented, Error, and Disabled states.

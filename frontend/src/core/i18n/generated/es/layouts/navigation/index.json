@@ -1,0 +1,55 @@
+{
+  "brand": {
+    "name": "ZenOS",
+    "subtitle": "Plataforma"
+  },
+  "footer": {
+    "copyright": "© {{year}} Arquitectura Monolítica Modular ZenOS. 10/10 Preparada para Empresas.",
+    "platformTerms": "Términos de la Plataforma"
+  },
+  "header": {
+    "allProducts": "Todos los Productos",
+    "allProductsDesc": "Explore el catálogo industrial completo.",
+    "analytics": "Analítica",
+    "analyticsDesc": "Métricas de rendimiento e inteligencia.",
+    "builder": "Constructor",
+    "builderDesc": "Cree y configure módulos personalizados.",
+    "platform": "Plataforma",
+    "products": "Productos",
+    "signIn": "Iniciar Sesión",
+    "signOut": "Cerrar Sesión",
+    "signOutDesc": "Finalizar sesión y borrar credenciales",
+    "workspace": "Espacio de Trabajo",
+    "workspaceContext": "Contexto del Espacio de Trabajo",
+    "workspaceContextDesc": "Cambiar empresa y sucursal activa"
+  },
+  "menu": {
+    "cart": "Mi Carrito",
+    "dashboard": "Panel de Control",
+    "logout": "Cerrar Sesión",
+    "profile": "Perfil",
+    "shop": "Productos",
+    "toggle": "Menú"
+  },
+  "sections": {
+    "navigation": "Sistema de Navegación",
+    "utilities": "Utilidades de la Plataforma"
+  },
+  "sidebar": {
+    "allProducts": "Todos los Productos",
+    "analytics": "Analítica",
+    "authPortal": "Portal de Autenticación",
+    "branchConfig": "Configuración de Sucursal",
+    "employeeWizard": "Asistente de Empleados",
+    "formBuilder": "Constructor de Formularios",
+    "identityAccounts": "Identidad y Cuentas",
+    "interactiveTable": "Tabla Interactiva",
+    "inventory": "Inventario",
+    "multiStepForm": "Formulario Multipaso",
+    "productsCatalog": "Catálogo de Productos",
+    "securitySettings": "Configuración de Seguridad",
+    "showcaseTemplates": "Plantillas de Muestra",
+    "userProfile": "Perfil de Usuario",
+    "workspace": "Espacio de Trabajo"
+  }
+}

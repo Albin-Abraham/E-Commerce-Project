@@ -1,0 +1,57 @@
+import { Meta } from "@storybook/addon-docs/blocks";
+
+<Meta title="01 — Foundations / 🌫️ Opacity" />
+
+# 🌫️ Opacity
+
+Opacity communicates interactive states, layer transparency, and visual disabled hierarchy.
+
+---
+
+## 01 — Principles
+
+### 1. State Clarity
+Never disable an element by solely reducing opacity without adjusting ARIA attributes (`aria-disabled="true"`) and pointer events (`pointer-events-none`).
+
+### 2. Backdrop Blurs
+Overlays combine opacity with backdrop filters (`backdrop-blur-md`) to ensure legible background separation.
+
+---
+
+## 02 — Specification
+
+| Token | Value | Role |
+| :--- | :---: | :--- |
+| `opacity.disabled` | `0.5` | Disabled interactive controls |
+| `opacity.overlay` | `0.6` | Modal backdrop overlay |
+| `opacity.hover` | `0.8` | Secondary button hover state |
+| `opacity.100` | `1.0` | Active, fully opaque elements |
+
+---
+
+## 03 — Tokens
+
+Defined in `tokens/primitives/opacity.json`:
+```json
+{
+  "primitives": {
+    "opacity": {
+      "disabled": { "$value": "0.50", "$type": "dimension" },
+      "overlay": { "$value": "0.60", "$type": "dimension" }
+    }
+  }
+}
+```
+
+---
+
+## 04 — Implementation
+
+```tsx
+<button
+  disabled={isDisabled}
+  className="disabled:opacity-50 disabled:pointer-events-none bg-primary text-white"
+>
+  Action
+</button>
+```

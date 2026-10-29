@@ -1,0 +1,50 @@
+import { queryOptions } from "@tanstack/react-query";
+import { createQueryKeys } from "@core/state/queryKeys";
+import { {{pascalCase name}}Repository } from "./{{kebabCase name}}.repository";
+import type { BaseHTTPClientService } from "@core/services";
+
+// Standardized Query Key Factory V2
+export const {{camelCase name}}Keys = createQueryKeys<"{{camelCase name}}">("{{camelCase name}}");
+
+export const {{camelCase name}}Queries = {
+  list: (http: BaseHTTPClientService) => {
+    const repository = new {{pascalCase name}}Repository(http);
+    return queryOptions({
+      queryKey: {{camelCase name}}Keys.lists,
+      queryFn: ({ signal }) => repository.getAll(),
+      staleTime: 5 * 60 * 1000, // 5 minutes
+    });
+  },
+
+  detail: (id: string, http: BaseHTTPClientService) => {
+    const repository = new {{pascalCase name}}Repository(http);
+    return queryOptions({
+      queryKey: {{camelCase name}}Keys.detail(id),
+      queryFn: ({ signal }) => repository.getById(id),
+      staleTime: 10 * 60 * 1000, // 10 minutes
+    });
+  }
+};
+{{#if includeMutations}}
+
+/**
+ * Standardized Create Mutation adapter hook conforming to V2 protocol
+ */
+export const useCreate{{pascalCase name}}Mutation = (
+  http: BaseHTTPClientService,
+  options?: Omit<Parameters<typeof import("@shared/hooks/useMutation").useMutation>[1], "loaderKey">
+) => {
+  return import("@shared/hooks/useMutation").useMutation(
+    (data: { name: string }) => ({
+      method: "POST",
+      url: "/{{kebabCase name}}",
+      data,
+    }),
+    {
+      loaderKey: "{{camelCase name}}-create",
+      invalidateKeys: [{{camelCase name}}Keys.lists],
+      ...options,
+    }
+  );
+};
+{{/if}}

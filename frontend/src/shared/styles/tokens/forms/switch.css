@@ -1,0 +1,29 @@
+/* ============================================================
+   ZENITH FORM SWITCH / TOGGLE TOKENS
+   ============================================================ */
+
+@theme {
+  --color-form-switch-track: color-mix(in srgb, var(--color-muted) 70%, transparent);
+  --color-form-switch-track-checked: var(--color-primary);
+  --color-form-switch-thumb: #ffffff;
+
+  --color-form-switch-card-bg: var(--color-surface);
+  --color-form-switch-card-bg-hover: color-mix(in srgb, var(--color-surface-elevated) 70%, transparent);
+  --color-form-switch-card-bg-checked: color-mix(in srgb, var(--color-primary) 5%, transparent);
+  --color-form-switch-card-border: color-mix(in srgb, var(--color-border) 70%, transparent);
+  --color-form-switch-card-border-hover: color-mix(in srgb, var(--color-primary) 40%, transparent);
+  --color-form-switch-card-border-checked: var(--color-primary);
+}
+
+.dark {
+  --color-form-switch-track: color-mix(in srgb, var(--color-muted) 40%, transparent);
+  --color-form-switch-track-checked: var(--color-primary);
+  --color-form-switch-thumb: var(--color-neutral-100);
+
+  --color-form-switch-card-bg: color-mix(in srgb, var(--color-surface) 40%, transparent);
+  --color-form-switch-card-bg-hover: color-mix(in srgb, var(--color-surface-elevated) 30%, transparent);
+  --color-form-switch-card-bg-checked: color-mix(in srgb, var(--color-primary) 10%, transparent);
+  --color-form-switch-card-border: var(--color-border-strong);
+  --color-form-switch-card-border-hover: color-mix(in srgb, var(--color-primary) 40%, transparent);
+  --color-form-switch-card-border-checked: var(--color-primary);
+}

@@ -1,0 +1,67 @@
+{
+  "about": {
+    "mission": "Notre Mission",
+    "missionText": "Donner aux ingénieurs les moyens de concevoir des applications web d'entreprise avec une modularité guidée par le domaine, des tokens stricts et zéro compromis.",
+    "subtitle": "Framework d'application d'entreprise distribuée conçu pour des systèmes web résilients.",
+    "title": "À Propos de la Plateforme Zenith",
+    "version": "Version de la Plateforme"
+  },
+  "createBranch": {
+    "badge": "Moteur de Formulaire MDAP • Gestion des Succursales",
+    "loading": "Chargement du Schéma de Succursale...",
+    "subtitle": "Configurez les paramètres opérationnels et l'identité réseau à l'aide du MetaSchema canonique.",
+    "title": "Créer une Succursale d'Entreprise"
+  },
+  "debug": {
+    "description": "Utilisez cette page pour tester les interactions, les règles de validation et le rendu de disposition.",
+    "submit": "Soumettre le Formulaire",
+    "title": "Débogueur du Système de Formulaires"
+  },
+  "formBuilder": {
+    "subtitle": "Concevez des formulaires sur canvas ou gérez les manifestes de routage pilotés par le serveur.",
+    "tabs": {
+      "canvas": "Canvas du Générateur",
+      "schema": "Formulaire de Méta-Schéma"
+    },
+    "title": "Studio de Schémas & Formulaires ZenOS"
+  },
+  "multiStep": {
+    "footer": {
+      "cancel": "Annuler",
+      "needHelp": "Besoin d'Aide ?"
+    },
+    "instructionsList": {
+      "continuousValidation": "Votre progression sera validée en continu.",
+      "legalNames": "Assurez-vous que tous les noms légaux correspondent exactement à votre pièce d'identité.",
+      "visaRequired": "Les informations de visa sont requises pour les non-citoyens."
+    },
+    "launchBtn": "Lancer le Portail d'Intégration",
+    "portalTitle": "Portail d'Intégration des Employés",
+    "tabs": {
+      "instructions": "Instructions et Politiques",
+      "wizard": "Assistant d'Intégration"
+    },
+    "welcomeText": "Veuillez compléter votre profil à l'aide de l'assistant. Assurez-vous d'avoir votre pièce d'identité officielle à portée de main.",
+    "welcomeTitle": "Bienvenue dans l'Équipe !"
+  },
+  "tableDemo": {
+    "addUser": "Ajouter un Utilisateur",
+    "bulk": {
+      "delete": "Supprimer la Sélection",
+      "exportCsv": "Exporter la Sélection (CSV)"
+    },
+    "exportFiltered": "Exporter la Vue Filtrée",
+    "exportModal": {
+      "failed": "Échec de l'Exportation",
+      "processing": "Exportation en cours...",
+      "ready": "Exportation Prête"
+    },
+    "subtitle": "Gérez les détails de paie de votre équipe en un seul endroit.",
+    "title": "Gestion de la Paie",
+    "views": {
+      "board": "Tableau",
+      "list": "Liste",
+      "table": "Tableau"
+    }
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "themes": {
+    "dark": {
+      "semantic": {
+        "color": {
+          "background": { "$value": "#0a0a0a", "$type": "color" },
+          "surface": { "$value": "#141414", "$type": "color" },
+          "surfaceElevated": { "$value": "#1e1e1e", "$type": "color" },
+          "foreground": { "$value": "#f8fafc", "$type": "color" },
+          "text": { "$value": "#f8fafc", "$type": "color" },
+          "primary": { "$value": "#3b82f6", "$type": "color" },
+          "secondary": { "$value": "#8b5cf6", "$type": "color" },
+          "border": { "$value": "#27272a", "$type": "color" },
+          "borderSoft": { "$value": "#18181b", "$type": "color" },
+          "borderStrong": { "$value": "#3f3f46", "$type": "color" },
+          "muted": { "$value": "#94a3b8", "$type": "color" },
+          "disabled": { "$value": "#3f3f46", "$type": "color" },
+          "subtle": { "$value": "#18181b", "$type": "color" },
+          "danger": { "$value": "#ef4444", "$type": "color" }
+        }
+      }
+    }
+  }
+}

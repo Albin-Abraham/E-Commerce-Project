@@ -1,0 +1,26 @@
+{
+  "status": 200,
+  "message": "Products fixture dataset",
+  "data": [
+    {
+      "id": 101,
+      "title": "Industrial Telemetry Sensor v4",
+      "sku": "SENS-IND-004",
+      "price": 1200,
+      "category": "Hardware",
+      "stock": 45,
+      "orgId": "zenith-hq",
+      "branchId": "tokyo"
+    },
+    {
+      "id": 102,
+      "title": "Precision Calibration Tool",
+      "sku": "TOOL-CALIB-02",
+      "price": 350,
+      "category": "Equipment",
+      "stock": 18,
+      "orgId": "zenith-hq",
+      "branchId": "tokyo"
+    }
+  ]
+}

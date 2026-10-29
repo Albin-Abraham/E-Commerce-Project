@@ -1,0 +1,76 @@
+# =============================================================================
+# Frontend container - Docker + nginx is the authoritative deploy target.
+# =============================================================================
+# Lives in docker/ next to the Dockerfile it builds. The build context is the
+# repository root (..) because that is where the application source is.
+#
+#   docker compose -f docker/docker-compose.yml up -d
+#   make up                      # wraps the same command
+#
+# Every variable below has a built-in default, so `docker compose config` can
+# never fail on an empty string. Override any of them with a gitignored
+# `.env.docker`:
+#
+#   docker compose -f docker/docker-compose.yml --env-file .env.docker up -d
+#
+# These are NOT Vite variables. Vite config lives in docker/env/<mode>.env and
+# is materialised into .env* at build time. Do not mix the two.
+#
+# NOTE: there is deliberately no `env_file:` and no `dist` volume mount.
+#   - env_file: .env made the Vite base config look like the container config
+#     and injected none of these variables anyway.
+#   - the dist mount shadowed the assets baked into the image and made the
+#     runtime env.js write fail on a read-only filesystem.
+
+services:
+  frontend:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+      # CI sets DOCKER_CACHE_FROM to the registry buildcache written by main
+      # branch builds, so ephemeral runners reuse the pnpm-install layer.
+      # Locally it defaults to the compose-built image itself: BuildKit treats
+      # a missing ref as a warning, never an error, so first builds are fine.
+      cache_from:
+        - ${DOCKER_CACHE_FROM:-react-vite-frontend:latest}
+    image: react-vite-frontend:latest
+    container_name: react-vite-frontend
+    restart: unless-stopped
+    ports:
+      - "${PORT:-8080}:80"
+    environment:
+      - NODE_ENV=${NODE_ENV:-production}
+      - VITE_APP_ENV=${VITE_APP_ENV:-production}
+      - VITE_API_URL=${VITE_API_URL:-}
+      - API_URL=${API_URL:-}
+      - BACKEND_HOST=${BACKEND_HOST:-host.docker.internal}
+      - BACKEND_PORT=${BACKEND_PORT:-8070}
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    healthcheck:
+      test: [
+          "CMD-SHELL",
+          # 127.0.0.1, not localhost: busybox wget resolves localhost to [::1]
+          # first and does not fall back to IPv4, so the check fails against an
+          # IPv4-only nginx listener.
+          "wget --no-verbose --tries=1 --spider http://127.0.0.1:80/ || exit 1",
+        ]
+      interval: ${HEALTHCHECK_INTERVAL:-30s}
+      timeout: ${HEALTHCHECK_TIMEOUT:-5s}
+      retries: ${HEALTHCHECK_RETRIES:-3}
+      start_period: ${HEALTHCHECK_START_PERIOD:-10s}
+    security_opt:
+      - no-new-privileges:true
+    deploy:
+      resources:
+        limits:
+          cpus: "${CONTAINER_CPU_LIMIT:-1}"
+          memory: "${CONTAINER_MEMORY_LIMIT:-512M}"
+        reservations:
+          cpus: "${CONTAINER_CPU_RESERV:-0.25}"
+          memory: "${CONTAINER_MEMORY_RESERV:-128M}"
+
+networks:
+  default:
+    name: frontend-network
+    driver: bridge

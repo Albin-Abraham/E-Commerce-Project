@@ -1,0 +1,37 @@
+/* ============================================================
+   ZENITH FORM CHECKBOX TOKENS
+   ============================================================ */
+
+@theme {
+  --color-form-checkbox-border: color-mix(in srgb, var(--color-border) 80%, transparent);
+  --color-form-checkbox-border-hover: color-mix(in srgb, var(--color-primary) 60%, transparent);
+  --color-form-checkbox-border-checked: var(--color-primary);
+
+  --color-form-checkbox-bg: var(--color-surface);
+  --color-form-checkbox-bg-checked: var(--color-primary);
+  --color-form-checkbox-icon: var(--color-primary-foreground);
+
+  --color-form-checkbox-card-bg: var(--color-surface);
+  --color-form-checkbox-card-bg-hover: color-mix(in srgb, var(--color-surface-elevated) 70%, transparent);
+  --color-form-checkbox-card-bg-checked: color-mix(in srgb, var(--color-primary) 5%, transparent);
+  --color-form-checkbox-card-border: color-mix(in srgb, var(--color-border) 70%, transparent);
+  --color-form-checkbox-card-border-hover: color-mix(in srgb, var(--color-primary) 40%, transparent);
+  --color-form-checkbox-card-border-checked: var(--color-primary);
+}
+
+.dark {
+  --color-form-checkbox-border: var(--color-border-strong);
+  --color-form-checkbox-border-hover: color-mix(in srgb, var(--color-primary) 70%, transparent);
+  --color-form-checkbox-border-checked: var(--color-primary);
+
+  --color-form-checkbox-bg: color-mix(in srgb, var(--color-surface) 40%, transparent);
+  --color-form-checkbox-bg-checked: var(--color-primary);
+  --color-form-checkbox-icon: var(--color-primary-foreground);
+
+  --color-form-checkbox-card-bg: color-mix(in srgb, var(--color-surface) 40%, transparent);
+  --color-form-checkbox-card-bg-hover: color-mix(in srgb, var(--color-surface-elevated) 30%, transparent);
+  --color-form-checkbox-card-bg-checked: color-mix(in srgb, var(--color-primary) 10%, transparent);
+  --color-form-checkbox-card-border: var(--color-border-strong);
+  --color-form-checkbox-card-border-hover: color-mix(in srgb, var(--color-primary) 40%, transparent);
+  --color-form-checkbox-card-border-checked: var(--color-primary);
+}

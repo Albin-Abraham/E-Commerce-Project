@@ -1,0 +1,67 @@
+{
+  "about": {
+    "mission": "Our Mission",
+    "missionText": "Empowering engineers to build enterprise-grade web applications with domain-driven modularity, strict design tokens, and zero runtime compromise.",
+    "subtitle": "Distributed enterprise application framework engineered for resilient web systems.",
+    "title": "About Zenith Platform",
+    "version": "Platform Version"
+  },
+  "createBranch": {
+    "badge": "MDAP Form Engine • Branch Management",
+    "loading": "Loading Branch Schema...",
+    "subtitle": "Configure localized operational parameters and network identity using canonical MetaSchema.",
+    "title": "Create Corporate Branch"
+  },
+  "debug": {
+    "description": "Use this page to test form interactions, validation rules, and layout rendering.",
+    "submit": "Submit Form",
+    "title": "Form System Debugger"
+  },
+  "formBuilder": {
+    "subtitle": "Design forms on canvas or manage live server-driven route layout manifests.",
+    "tabs": {
+      "canvas": "Form Builder Canvas",
+      "schema": "Metadata Schema Form"
+    },
+    "title": "ZenOS Form & Schema Studio"
+  },
+  "multiStep": {
+    "footer": {
+      "cancel": "Cancel",
+      "needHelp": "Need Help?"
+    },
+    "instructionsList": {
+      "continuousValidation": "Your progress will be validated continuously.",
+      "legalNames": "Ensure all legal names match your ID exactly.",
+      "visaRequired": "Visa details are required for non-citizens."
+    },
+    "launchBtn": "Launch Onboarding Portal",
+    "portalTitle": "Employee Onboarding Portal",
+    "tabs": {
+      "instructions": "Instructions & Policy",
+      "wizard": "Onboarding Wizard"
+    },
+    "welcomeText": "Please complete your onboarding profile using the wizard. Make sure you have your government-issued ID ready.",
+    "welcomeTitle": "Welcome to the Team!"
+  },
+  "tableDemo": {
+    "addUser": "Add User",
+    "bulk": {
+      "delete": "Delete Selected",
+      "exportCsv": "Export Selected (CSV)"
+    },
+    "exportFiltered": "Export Filtered View",
+    "exportModal": {
+      "failed": "Export Failed",
+      "processing": "Exporting...",
+      "ready": "Export Ready"
+    },
+    "subtitle": "Manage your team's payroll details, all in one place.",
+    "title": "Payroll Management",
+    "views": {
+      "board": "Board",
+      "list": "List",
+      "table": "Table"
+    }
+  }
+}

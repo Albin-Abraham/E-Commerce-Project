@@ -1,0 +1,15 @@
+/* ============================================================
+   ZENITH FORM TOOLTIP & HELP POPOVER TOKENS
+   ============================================================ */
+
+@theme {
+  --color-form-tooltip-bg: color-mix(in srgb, var(--color-surface-elevated) 98%, transparent);
+  --color-form-tooltip-border: color-mix(in srgb, var(--color-border) 80%, transparent);
+  --color-form-tooltip-arrow: var(--color-surface-elevated);
+}
+
+.dark {
+  --color-form-tooltip-bg: color-mix(in srgb, var(--color-surface-elevated) 98%, transparent);
+  --color-form-tooltip-border: var(--color-border-strong);
+  --color-form-tooltip-arrow: var(--color-surface-elevated);
+}

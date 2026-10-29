@@ -1,0 +1,52 @@
+{
+  "scenarios": [
+    {
+      "name": "Happy Path - Premium Office",
+      "data": {
+        "name": "Global HQ",
+        "code": "BR-001",
+        "type": "HQ",
+        "openingDate": "2024-05-20",
+        "address": {
+          "line1": "123 Tech Avenue",
+          "city": "San Francisco",
+          "state": "CA",
+          "zip": "94105"
+        },
+        "manager": "Alice Johnson",
+        "status": "active",
+        "contactEmail": "alice@company.com",
+        "contactPhone": "555-0199"
+      },
+      "expected": "success"
+    },
+    {
+      "name": "Validation Failure - Invalid Email & Code",
+      "data": {
+        "name": "Bad Branch",
+        "code": "INVALID-CODE",
+        "type": "SB",
+        "openingDate": "2024-01-01",
+        "contactEmail": "not-an-email",
+        "status": "active"
+      },
+      "expected": "validation_error"
+    },
+    {
+      "name": "Workflow - Construction Trigger",
+      "data": {
+        "name": "New Build",
+        "code": "BR-999",
+        "type": "WH",
+        "openingDate": "2025-10-10",
+        "status": "construction",
+        "address": {
+          "line1": "Construction Site 1",
+          "city": "Denver",
+          "state": "CO"
+        }
+      },
+      "expected": "visible_completion_date"
+    }
+  ]
+}

@@ -1,0 +1,30 @@
+import { defineRoute } from "@/core/router";
+import { BaseHTTPClientService } from "@core/services";
+import { {{camelCase name}}Queries } from "./services/{{kebabCase name}}.keys";
+
+export const {{camelCase name}}Routes = defineRoute({
+  path: "/{{kebabCase name}}/:id",
+  
+  // 1. Code-split and lazy-load the page bundle
+  lazy: async () => {
+    const mod = await import("./pages/{{pascalCase name}}DetailPage");
+    return {
+      Component: mod.{{pascalCase name}}DetailPage,
+    };
+  },
+
+  // 2. Coarse-grained authorization evaluations before mounting chunk
+  guards: [],
+
+  // 3. Dynamic Parallel Cache Pre-warming
+  loader: async (ctx) => {
+    const { id } = ctx.params;
+    const queryOpts = {{camelCase name}}Queries.detail(id, ctx.services.auth as BaseHTTPClientService);
+
+    // Prefetch into global queryClient cache asynchronously
+    await ctx.services.queryClient.prefetchQuery(queryOpts);
+
+    // Return warm data directly to act as authoritative single-source model
+    return ctx.services.queryClient.getQueryData(queryOpts.queryKey);
+  },
+});

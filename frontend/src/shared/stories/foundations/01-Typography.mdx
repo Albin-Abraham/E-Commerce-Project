@@ -1,0 +1,330 @@
+import { Meta } from "@storybook/addon-docs/blocks";
+
+<Meta title="01 — Foundations / 🔤 Typography" />
+
+# 🔤 Typography
+
+Typography is a foundational design primitive that defines how written information is **structured, prioritized, measured, displayed, and experienced** across the product.
+
+Typography establishes the visual language used by every layer of the system—from primitive text values to semantic text styles, components, patterns, and product interfaces.
+
+Components such as `Text`, `Button`, `Input`, `Card`, `Navigation`, `Table`, and `Heading` should consume typography tokens and semantic text styles rather than introducing arbitrary font properties.
+
+> **Typography should communicate hierarchy, meaning, and readability before decoration.**
+
+---
+
+# 01 — Overview
+
+## Purpose
+
+The typography system defines:
+- Font families
+- Font weights
+- Font sizes
+- Line heights
+- Letter spacing
+- Type scale
+- Text hierarchy
+- Semantic text styles
+- Responsive behavior
+- Text behavior
+- Accessibility
+- Localization
+- Figma implementation
+- Design tokens
+
+## Typography Architecture
+
+```
+Typography
+│
+├── Primitives
+│   ├── Font Family
+│   ├── Font Weight
+│   ├── Font Size
+│   ├── Line Height
+│   └── Letter Spacing
+│
+├── Type Scale
+│
+├── Semantic Styles
+│
+├── Behavior
+│   ├── Wrapping
+│   ├── Truncation
+│   ├── Overflow
+│   └── Alignment
+│
+├── Responsive
+│
+├── Accessibility
+│
+├── Localization
+│
+├── Tokens
+│
+└── Figma Implementation
+        ↓
+   Components
+        ↓
+    Patterns
+        ↓
+       UI
+```
+
+---
+
+# 02 — Typography Principles
+
+### 01. Hierarchy over decoration
+Typography should establish hierarchy through size, weight, spacing, and structure before relying on decorative styling.
+
+### 02. Consistency over arbitrary values
+A component should never introduce:
+```css
+font-size: 17px;
+font-weight: 550;
+```
+unless those values are intentionally part of the system.
+Prefer:
+```ts
+text.body.md
+```
+
+### 03. Semantic meaning over visual appearance
+Prefer:
+```ts
+text.heading.2
+```
+rather than:
+```ts
+text.large.bold
+```
+The first describes **purpose**; the second describes appearance.
+
+### 04. Content determines layout
+Text is dynamic. Components must accommodate:
+- Longer text
+- Multiple lines
+- Localization and expansion
+- Text scaling
+- User-generated content
+
+### 05. Readability before density
+The goal is not to fit the maximum amount of text into the minimum amount of space.
+
+### 06. Accessibility is foundational
+Accessibility should not be a component-level afterthought.
+
+---
+
+# 03 — Font Families
+
+## Primary UI Family
+The primary family is used throughout the product interface:
+```css
+typography.family.sans: Inter
+```
+
+## Monospace Family
+Used for code, technical identifiers, logs, developer tooling, and numerical data:
+```css
+typography.family.mono: JetBrains Mono
+```
+
+## Fallback Stack
+```css
+Inter,
+system-ui,
+-apple-system,
+BlinkMacSystemFont,
+"Segoe UI",
+Roboto,
+sans-serif
+```
+
+---
+
+# 04 — Font Metrics
+
+Two fonts can both be `16px` but appear completely different because of their metrics:
+- **Cap Height**: Height of capital letters
+- **X-Height**: Height of lowercase letters (determines perceived body text size)
+- **Ascender & Descender**: Extension above cap height and below baseline
+- **Line Gap**: Native breathing space
+- **Glyph Width**: Monospace vs proportional rhythm
+
+```
+Font Size + Font Metrics + Line Height ──► Perceived Typography
+```
+
+---
+
+# 05 — Font Weights
+
+The system uses only the weights necessary to establish clean hierarchy:
+
+| Token | Numeric Value | Primary Role |
+| :--- | :---: | :--- |
+| `typography.weight.regular` | `400` | Primary reading body copy & captions |
+| `typography.weight.medium` | `500` | Interactive controls, form labels, table headers |
+| `typography.weight.semibold` | `600` | Section headings, card titles, subheadings |
+| `typography.weight.bold` | `700` | Major page headings, display statements |
+
+---
+
+# 06 — Font Sizes
+
+Controlled, mathematical type scale:
+
+| Token | Value | Equivalent |
+| :--- | :---: | :--- |
+| `typography.size.xs` | `12px` | 0.75rem |
+| `typography.size.sm` | `14px` | 0.875rem |
+| `typography.size.md` | `16px` | 1rem |
+| `typography.size.lg` | `18px` | 1.125rem |
+| `typography.size.xl` | `20px` | 1.25rem |
+| `typography.size.2xl` | `24px` | 1.5rem |
+| `typography.size.3xl` | `30px` | 1.875rem |
+| `typography.size.4xl` | `36px` | 2.25rem |
+| `typography.size.5xl` | `48px` | 3rem |
+| `typography.size.6xl` | `60px` | 3.75rem |
+
+---
+
+# 07 — Line Height
+
+Controls vertical rhythm and reading fatigue:
+
+| Token | Ratio | Primary Role |
+| :--- | :---: | :--- |
+| `typography.lineHeight.tight` | `1.2` | Display text and large headings |
+| `typography.lineHeight.snug` | `1.3` | Subheadings, button text, and compact labels |
+| `typography.lineHeight.normal` | `1.5` | Standard paragraph body reading text |
+| `typography.lineHeight.relaxed` | `1.7` | Editorial long-form reading |
+
+---
+
+# 08 — Letter Spacing
+
+| Token | Value | Primary Role |
+| :--- | :---: | :--- |
+| `typography.letterSpacing.tight` | `-0.02em` | Large display titles and H1/H2 headings |
+| `typography.letterSpacing.normal` | `0` | Standard body text and labels |
+| `typography.letterSpacing.wide` | `0.02em` | Uppercase tracking and small captions |
+
+---
+
+# 09 — Type Scale Hierarchy
+
+```
+Display (48px / Bold / Tight)
+    ↓
+Heading 1 (36px / Bold / Tight)
+    ↓
+Heading 2 (30px / Bold / Tight)
+    ↓
+Heading 3 (24px / Semibold / Snug)
+    ↓
+Heading 4 (20px / Semibold / Snug)
+    ↓
+Body Large (18px / Regular / Relaxed)
+    ↓
+Body Medium (16px / Regular / Normal)
+    ↓
+Body Small (14px / Regular / Normal)
+    ↓
+Label Large (16px / Medium / Snug)
+    ↓
+Label Medium (14px / Medium / Snug)
+    ↓
+Label Small (12px / Medium / Snug / Wide)
+    ↓
+Caption (12px / Regular / Snug)
+    ↓
+Code (14px / Mono / Normal)
+```
+
+---
+
+# 10 — Semantic Text Styles (The 13 Canonical Styles)
+
+This is the primary interface consumed by UI components:
+
+```tsx
+// Consumed via <Text variant="..." />
+<Text variant="heading-1">Page Title</Text>
+<Text variant="body-md">Primary description</Text>
+<Text variant="label-sm">FORM FIELD LABEL</Text>
+```
+
+| Semantic Style | Font Family | Size | Weight | Line Height | Tracking |
+| :--- | :--- | :---: | :---: | :---: | :---: |
+| `text.display` | `sans` | `48px` | `700` | `1.2` | `-0.02em` |
+| `text.heading.1` | `sans` | `36px` | `700` | `1.2` | `-0.02em` |
+| `text.heading.2` | `sans` | `30px` | `700` | `1.2` | `-0.02em` |
+| `text.heading.3` | `sans` | `24px` | `600` | `1.3` | `0` |
+| `text.heading.4` | `sans` | `20px` | `600` | `1.3` | `0` |
+| `text.body.lg` | `sans` | `18px` | `400` | `1.7` | `0` |
+| `text.body.md` | `sans` | `16px` | `400` | `1.5` | `0` |
+| `text.body.sm` | `sans` | `14px` | `400` | `1.5` | `0` |
+| `text.label.lg` | `sans` | `16px` | `500` | `1.3` | `0` |
+| `text.label.md` | `sans` | `14px` | `500` | `1.3` | `0` |
+| `text.label.sm` | `sans` | `12px` | `500` | `1.3` | `0.02em` |
+| `text.caption` | `sans` | `12px` | `400` | `1.3` | `0` |
+| `text.code` | `mono` | `14px` | `400` | `1.5` | `0` |
+
+---
+
+# 11 — Text Behavior
+
+Typography defines **how text behaves**, not just how it looks:
+
+### Wrapping
+Text naturally wraps (`wrap: true` / `whitespace-normal`) unless deliberately constrained.
+
+### Truncation
+- **Single-line**: `<Text truncate>` renders `overflow: hidden; text-overflow: ellipsis; white-space: nowrap;`
+- **Multi-line**: `<Text truncate={2}>` clamps to 2 lines via `-webkit-line-clamp: 2;`
+
+### Alignment (Logical Properties)
+Uses logical alignment (`start`, `center`, `end`, `justify`) so layouts automatically adapt to RTL locales:
+```css
+text-align: start; /* Adapts to left in LTR, right in RTL */
+```
+
+---
+
+# 12 — Accessibility & Semantic HTML
+
+Visual styling is completely decoupled from document structure:
+```tsx
+// Renders an accessible <h2> while using text.heading.1 visual size
+<Heading level={2} variant="heading-1">Dashboard Overview</Heading>
+```
+- **Text Scaling**: Components use `min-height` rather than fixed `height` to survive 200% text zoom.
+- **Color Contrast**: 4.5:1 minimum contrast ratio for body text; 3:1 for large headings (WCAG 2.1 AA).
+- **Reduced Motion**: Any kinetic typography animation respects `prefers-reduced-motion`.
+
+---
+
+# 13 — Numerals & Tabular Data
+
+Tables, counters, statistics, and financial figures require fixed-width digits:
+```css
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum" 1, "cv02" 1;
+}
+```
+Consumed cleanly via `<Text tabularNums>$124,500.00</Text>`.
+
+---
+
+# 14 — Figma Implementation
+
+Figma variables mirror the code token structure:
+- **Collections**: `Typography / Family`, `Typography / Weight`, `Typography / Size`, `Typography / Line Height`, `Typography / Letter Spacing`.
+- **Text Styles**: `Text / Display`, `Text / Heading 1..4`, `Text / Body Large..Small`, `Text / Label Large..Small`, `Text / Caption`, `Text / Code`.
+- **Rule**: Designers never introduce arbitrary sizes like `17px / 550`—components consume the established text styles.

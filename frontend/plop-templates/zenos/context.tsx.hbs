@@ -1,0 +1,100 @@
+import React, { createContext, useContext, useRef, useSyncExternalStore } from "react";
+import { useSearchParams } from "react-router-dom";
+import { z } from "zod";
+import { parseSearchParams, serializeSearchParams } from "@core/utils/urlParams";
+
+// 1. Define URL State Machine Schema
+export const {{pascalCase name}}ViewSchema = z.object({
+  view: z.enum(["list", "detail", "edit"]).default("list"),
+  selectedId: z.string().uuid().nullable().catch(null),
+  page: z.coerce.number().int().positive().default(1),
+  searchQuery: z.string().default(""),
+});
+
+export type {{pascalCase name}}ViewParams = z.infer<typeof {{pascalCase name}}ViewSchema>;
+
+/**
+ * Lightweight Reactive Store for Context-Based Selectors
+ */
+class ViewStore {
+  private listeners = new Set<() => void>();
+  private state: {{pascalCase name}}ViewParams;
+
+  constructor(
+    initialState: {{pascalCase name}}ViewParams,
+    private onChange: (state: {{pascalCase name}}ViewParams) => void
+  ) {
+    this.state = initialState;
+  }
+
+  setState(updates: Partial<{{pascalCase name}}ViewParams>) {
+    this.state = { ...this.state, ...updates };
+    this.listeners.forEach((listener) => listener());
+    this.onChange(this.state);
+  }
+
+  getState() {
+    return this.state;
+  }
+
+  subscribe = (listener: () => void) => {
+    this.listeners.add(listener);
+    return () => this.listeners.delete(listener);
+  };
+}
+
+const StoreContext = createContext<ViewStore | null>(null);
+
+/**
+ * High-Performance URL Synced Context Provider V2
+ * 
+ * Manages URL search params with zero-unnecessary-re-renders by leveraging
+ * a custom reactive publisher pattern.
+ */
+export const {{pascalCase name}}ViewProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  const [searchParams, setSearchParams] = useSearchParams();
+  const initialParams = parseSearchParams({{pascalCase name}}ViewSchema, searchParams);
+
+  const storeRef = useRef<ViewStore | null>(null);
+  if (!storeRef.current) {
+    storeRef.current = new ViewStore(initialParams, (state) => {
+      setSearchParams(serializeSearchParams(state));
+    });
+  }
+
+  return (
+    <StoreContext.Provider value={storeRef.current}>
+      {children}
+    </StoreContext.Provider>
+  );
+};
+
+/**
+ * Performance-Optimized Selector Hook
+ * 
+ * Only triggers a re-render when the specific selected state slice changes.
+ */
+export function use{{pascalCase name}}Selector<T>(selector: (state: {{pascalCase name}}ViewParams) => T): T {
+  const store = useContext(StoreContext);
+  if (!store) {
+    throw new Error("use{{pascalCase name}}Selector must be used inside a {{pascalCase name}}ViewProvider");
+  }
+  return useSyncExternalStore(
+    store.subscribe,
+    () => selector(store.getState()),
+    () => selector(store.getState())
+  );
+}
+
+/**
+ * Action hook to update view store state parameters
+ */
+export function use{{pascalCase name}}Actions() {
+  const store = useContext(StoreContext);
+  if (!store) {
+    throw new Error("use{{pascalCase name}}Actions must be used inside a {{pascalCase name}}ViewProvider");
+  }
+  return {
+    setParams: (updates: Partial<{{pascalCase name}}ViewParams>) => store.setState(updates),
+  };
+}

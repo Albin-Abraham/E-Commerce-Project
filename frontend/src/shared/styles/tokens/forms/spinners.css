@@ -1,0 +1,17 @@
+/* ============================================================
+   ZENITH FORM STEPPER SPINNER TOKENS
+   ============================================================ */
+
+@theme {
+  --color-form-spinner-bg: color-mix(in srgb, var(--color-surface-elevated) 80%, transparent);
+  --color-form-spinner-border: color-mix(in srgb, var(--color-border) 50%, transparent);
+  --color-form-spinner-btn-hover: var(--color-muted);
+  --color-form-spinner-divider: color-mix(in srgb, var(--color-border) 60%, transparent);
+}
+
+.dark {
+  --color-form-spinner-bg: color-mix(in srgb, var(--color-surface-elevated) 90%, transparent);
+  --color-form-spinner-border: var(--color-border-strong);
+  --color-form-spinner-btn-hover: color-mix(in srgb, var(--color-muted) 40%, transparent);
+  --color-form-spinner-divider: var(--color-border-strong);
+}

@@ -1,0 +1,41 @@
+/* ============================================================
+   ZENITH FORM CODE / OTP INPUT TOKENS
+   ============================================================ */
+
+@theme {
+  --color-form-code-bg: var(--color-surface);
+  --color-form-code-bg-hover: color-mix(in srgb, var(--color-surface-elevated) 60%, transparent);
+  --color-form-code-bg-focus: var(--color-background);
+  --color-form-code-bg-filled: color-mix(in srgb, var(--color-primary) 5%, transparent);
+  --color-form-code-bg-disabled: color-mix(in srgb, var(--color-muted) 20%, transparent);
+
+  --color-form-code-border: color-mix(in srgb, var(--color-border) 80%, transparent);
+  --color-form-code-border-hover: color-mix(in srgb, var(--color-primary) 50%, transparent);
+  --color-form-code-border-focus: var(--color-primary);
+  --color-form-code-border-filled: color-mix(in srgb, var(--color-primary) 70%, transparent);
+  --color-form-code-border-error: var(--color-danger);
+  --color-form-code-border-disabled: color-mix(in srgb, var(--color-border) 40%, transparent);
+
+  --color-form-code-separator: color-mix(in srgb, var(--color-border) 80%, transparent);
+  --color-form-code-ring-focus: color-mix(in srgb, var(--color-primary) 20%, transparent);
+  --color-form-code-ring-error: color-mix(in srgb, var(--color-danger) 20%, transparent);
+}
+
+.dark {
+  --color-form-code-bg: color-mix(in srgb, var(--color-surface) 50%, transparent);
+  --color-form-code-bg-hover: color-mix(in srgb, var(--color-surface-elevated) 40%, transparent);
+  --color-form-code-bg-focus: var(--color-surface-elevated);
+  --color-form-code-bg-filled: color-mix(in srgb, var(--color-primary) 15%, transparent);
+  --color-form-code-bg-disabled: color-mix(in srgb, var(--color-muted) 10%, transparent);
+
+  --color-form-code-border: var(--color-border-strong);
+  --color-form-code-border-hover: color-mix(in srgb, var(--color-primary) 60%, transparent);
+  --color-form-code-border-focus: var(--color-primary);
+  --color-form-code-border-filled: var(--color-primary);
+  --color-form-code-border-error: var(--color-danger);
+  --color-form-code-border-disabled: color-mix(in srgb, var(--color-border) 30%, transparent);
+
+  --color-form-code-separator: var(--color-border-strong);
+  --color-form-code-ring-focus: color-mix(in srgb, var(--color-primary) 25%, transparent);
+  --color-form-code-ring-error: color-mix(in srgb, var(--color-danger) 25%, transparent);
+}

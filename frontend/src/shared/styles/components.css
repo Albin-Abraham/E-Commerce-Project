@@ -1,0 +1,27 @@
+/* Zenith Semantic Component Utilities (Tailwind 4) */
+
+/**
+ * NOTE: Core component blocks have been migrated to BEM in base.css:
+ *   .z-card, .z-card--glass  → replaces card-premium / glass-panel
+ *   .z-input                 → replaces input-zenith
+ *   .z-heading-1/2, .z-body  → replaces display-title
+ *   .z-section               → replaces section-wrapper / hero-spotlight
+ *
+ * Only navigation and interactive card utilities remain here.
+ */
+
+@utility card-interactive {
+  @apply z-card z-card--hover cursor-pointer;
+}
+
+/* Navigation Semantic Utilities */
+@utility nav-zenith {
+  @apply text-foreground/70 hover:text-primary font-medium transition-colors relative;
+  &.active {
+    @apply text-primary;
+    &::after {
+      content: "";
+      @apply absolute -bottom-1 left-0 w-full h-0.5 bg-primary rounded-full;
+    }
+  }
+}

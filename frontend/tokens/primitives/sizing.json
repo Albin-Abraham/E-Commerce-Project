@@ -1,0 +1,20 @@
+{
+  "primitives": {
+    "sizing": {
+      "none": { "$value": "0px", "$type": "dimension" },
+      "xs": { "$value": "1.5rem", "$type": "dimension", "$description": "24px" },
+      "sm": { "$value": "2rem", "$type": "dimension", "$description": "32px" },
+      "md": { "$value": "2.5rem", "$type": "dimension", "$description": "40px" },
+      "lg": { "$value": "3rem", "$type": "dimension", "$description": "48px" },
+      "xl": { "$value": "3.5rem", "$type": "dimension", "$description": "56px" },
+      "2xl": { "$value": "4rem", "$type": "dimension", "$description": "64px" },
+      "container": {
+        "sm": { "$value": "640px", "$type": "dimension" },
+        "md": { "$value": "768px", "$type": "dimension" },
+        "lg": { "$value": "1024px", "$type": "dimension" },
+        "xl": { "$value": "1280px", "$type": "dimension" },
+        "2xl": { "$value": "1536px", "$type": "dimension" }
+      }
+    }
+  }
+}

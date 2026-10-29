@@ -1,0 +1,65 @@
+import { Meta } from "@storybook/addon-docs/blocks";
+
+<Meta title="Foundations/12. Accessibility & ARIA" />
+
+# 12 — Accessibility (a11y), WAI-ARIA & Event Architecture
+
+> **"If an interface cannot be completely operated using only a keyboard and understood with the screen turned off, it is architecturally incomplete."**
+
+Enterprise UI systems treat **Accessibility**, **WAI-ARIA semantics**, and **Centralized Event Delegation** as architectural invariants spanning all 5 layers of the frontend stack.
+
+---
+
+## 🏛️ The 5-Layer UI & A11y Architecture
+
+```
+┌────────────────────────────────────────────────────────────────────────┐
+│  Layer 5: Semantic Testing & Automation Contract (data-*, testid)       │
+├────────────────────────────────────────────────────────────────────────┤
+│  Layer 4: Complex Interactive Composites (Modals, Comboboxes, Tables)  │
+├────────────────────────────────────────────────────────────────────────┤
+│  Layer 3: Compound Shells & ARIA Orchestration Engine (FieldShell)     │
+├────────────────────────────────────────────────────────────────────────┤
+│  Layer 2: Atomic Micro-Semantics & Molecular Atoms (Labels, Feedback)  │
+├────────────────────────────────────────────────────────────────────────┤
+│  Layer 1: Native Semantic HTML & Landmark Foundations (header, main)   │
+├────────────────────────────────────────────────────────────────────────┤
+│  Layer 0: Design Tokens & Sensory Foundations (Contrast, Focus, Motion)│
+└────────────────────────────────────────────────────────────────────────┘
+```
+
+---
+
+## ⚡ Core Event Engine Integration
+
+All keyboard navigation and mouse interactions route through the platform's central **Event Core**:
+
+1. **`EventDelegator`**: Central throttled event broker bound to the window, preventing duplicate listener memory leaks.
+2. **`KeyboardDelegationStrategy`**: Normalizes hotkeys (`Ctrl+K`, `Alt+H`), respects `activeScope`, and suppresses single-character hotkeys while typing in inputs.
+3. **`MouseDelegationStrategy`**: Executes delegated clicks while enforcing runtime accessibility (verifying `role="button"` and `tabindex="0"` in development).
+4. **`useEventRegistry`**: Dynamic Zustand store managing active scopes (`"global"`, `"page"`, `"overlay:modal"`, `"table:users"`).
+5. **`CommandBus`**: Decouples UI interactions from platform commands (`platform:focus-search`, `platform:toggle-sidebar`).
+
+---
+
+## 🏷️ Semantic DOM Attribute Contract
+
+Enterprise applications use standardized `data-*` attributes for styling, testing, and state reflection:
+
+| Attribute | Role | Example Values |
+| :--- | :--- | :--- |
+| `data-testid` | QA Automation | `field-email`, `btn-submit`, `modal-delete` |
+| `data-part` | Structural Slot | `label`, `input-wrapper`, `surface`, `feedback` |
+| `data-state` | Interaction State | `valid`, `invalid`, `open`, `closed` |
+| `data-disabled` | State Mirror | `""` (present) or omitted |
+| `data-density` | Spatial Token | `compact`, `comfortable`, `spacious` |
+
+---
+
+## 🎯 Contrast & Sensory Adaptation (WCAG 2.1 AA)
+
+- **Normal Text Contrast**: Minimum `4.5:1` against background.
+- **Large Text Contrast**: Minimum `3:1` against background.
+- **Focus Rings**: Minimum `3:1` contrast with a `2px` offset (`focus-visible:ring-2 focus-visible:ring-offset-2`).
+- **Touch Target Size**: Minimum `44x44px` on touch devices, `24x24px` on desktop with spacing.
+- **Reduced Motion**: Respects `prefers-reduced-motion` to collapse animations immediately.

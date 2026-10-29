@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script src="/env.js"></script>
+    <link rel="stylesheet" href="/src/shared/styles/error-boundary.css" />
+    <title>%VITE_APP_NAME% %VITE_APP_VERSION%</title>
+  </head>
+  <body>
+    <div id="root">
+      <!-- High-Fidelity ZenOS Splash Screen (Pre-rendered for Zero-Flash 3G Loading) -->
+      <div
+        id="zenos-boot-splash"
+        style="
+          position: fixed;
+          inset: 0;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          background-color: #020617;
+          color: #f8fafc;
+          font-family:
+            system-ui,
+            -apple-system,
+            sans-serif;
+          z-index: 9999;
+        "
+      >
+        <div
+          style="
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 24px;
+          "
+        >
+          <!-- Pulsing Ambient Glow -->
+          <div
+            style="
+              position: absolute;
+              width: 120px;
+              height: 120px;
+              border-radius: 50%;
+              background: radial-gradient(
+                circle,
+                rgba(99, 102, 241, 0.25) 0%,
+                rgba(99, 102, 241, 0) 70%
+              );
+              animation: zenos-glow 2s infinite ease-in-out;
+            "
+          ></div>
+          <!-- Tech Ring -->
+          <svg
+            width="80"
+            height="80"
+            viewBox="0 0 100 100"
+            style="animation: zenos-spin 3s linear infinite"
+          >
+            <circle
+              cx="50"
+              cy="50"
+              r="45"
+              stroke="rgba(255, 255, 255, 0.05)"
+              stroke-width="6"
+              fill="none"
+            />
+            <circle
+              cx="50"
+              cy="50"
+              r="45"
+              stroke="#6366f1"
+              stroke-width="6"
+              fill="none"
+              stroke-dasharray="283"
+              stroke-dashoffset="120"
+              stroke-linecap="round"
+            />
+          </svg>
+          <!-- Center Logo Element -->
+          <div
+            style="
+              position: absolute;
+              font-weight: 900;
+              font-size: 18px;
+              letter-spacing: -0.05em;
+              color: #6366f1;
+              text-shadow: 0 0 12px rgba(99, 102, 241, 0.5);
+            "
+          >
+            Z
+          </div>
+        </div>
+        <h1
+          style="
+            font-size: 14px;
+            font-weight: 800;
+            letter-spacing: 0.25em;
+            text-transform: uppercase;
+            margin: 0 0 8px 0;
+            opacity: 0.9;
+          "
+        >
+          ZenOS
+        </h1>
+        <p
+          style="
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 0.1em;
+            color: rgba(255, 255, 255, 0.5);
+            margin: 0;
+            animation: zenos-pulse 1.5s infinite ease-in-out;
+          "
+        >
+          Initializing Platform Core...
+        </p>
+
+        <style>
+          @keyframes zenos-spin {
+            100% {
+              transform: rotate(360deg);
+            }
+          }
+          @keyframes zenos-pulse {
+            0%,
+            100% {
+              opacity: 0.4;
+            }
+            50% {
+              opacity: 1;
+            }
+          }
+          @keyframes zenos-glow {
+            0%,
+            100% {
+              transform: scale(0.9);
+              opacity: 0.7;
+            }
+            50% {
+              transform: scale(1.2);
+              opacity: 1;
+            }
+          }
+        </style>
+      </div>
+    </div>
+    <div id="error" class="zenith-error-hidden">
+      <div class="zenith-error-shell">
+        <div class="zenith-error-card">
+          <div class="zenith-error-code">BOOT_FAILURE_CORE</div>
+          <h1 class="zenith-error-title">System Initialization Failed</h1>
+          <p class="zenith-error-message">
+            The Zenith application kernel failed to initialize. This usually
+            indicates a critical dependency failure or a corrupted application
+            bundle.
+          </p>
+          <button
+            class="zenith-error-action"
+            onclick="window.location.reload()"
+          >
+            Reinitialize Core
+          </button>
+        </div>
+      </div>
+    </div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

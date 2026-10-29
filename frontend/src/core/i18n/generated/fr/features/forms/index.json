@@ -1,0 +1,79 @@
+{
+  "onboarding": {
+    "badge": "Moteur MDAP • Intégration des Employés",
+    "description": "Profil professionnel du nouvel employé et autorisation de travail.",
+    "fields": {
+      "citizenship": {
+        "label": "Statut de Citoyenneté",
+        "options": {
+          "citizen": "Citoyen",
+          "permit": "Permis de Travail",
+          "pr": "Résident Permanent"
+        }
+      },
+      "department": {
+        "label": "Département",
+        "options": {
+          "eng": "Ingénierie",
+          "hr": "RH",
+          "sales": "Ventes"
+        }
+      },
+      "email": "Adresse Email",
+      "expiryDate": "Date d'Expiration",
+      "fullName": "Nom Complet",
+      "permitDetails": "Détails Spéciaux",
+      "permitNumber": "Numéro de Permis",
+      "phone": "Numéro de Téléphone",
+      "preview": "Aperçu de l'Employé"
+    },
+    "permitDetailsDesc": "Documentation requise pour les autorisations de travail temporaires.",
+    "previewCard": {
+      "awaitingName": "En attente du nom...",
+      "engDivision": "Division Ingénierie",
+      "engineState": "État du Moteur",
+      "hrDivision": "Division RH",
+      "pendingInput": "ENTRÉE EN ATTENTE",
+      "selectDepartment": "Sélectionner un département",
+      "validPayload": "DONNÉES VALIDES"
+    },
+    "sections": {
+      "employment": {
+        "description": "Département et statut de citoyenneté.",
+        "title": "Informations Professionnelles"
+      },
+      "personal": {
+        "description": "Coordonnées de base et identification.",
+        "title": "Intégration de l'Employé"
+      }
+    },
+    "submit": "Enregistrer l'Employé",
+    "title": "Inscription de l'Employé"
+  },
+  "validation": {
+    "alphaOnly": "{{label}} ne peut contenir que des lettres",
+    "alphanumeric": "{{label}} ne doit contenir que des lettres et des chiffres",
+    "digitsOnly": "{{label}} ne doit contenir que des chiffres",
+    "email": "Adresse email non valide",
+    "ip": "{{label}} doit être une adresse IP valide",
+    "max": "{{label}} doit être au maximum {{value}}",
+    "maxLength": "{{label}} doit comporter au maximum {{value}} caractères",
+    "min": "{{label}} doit comporter au moins {{value}} caractères",
+    "minLength": "{{label}} doit comporter au moins {{value}} caractères",
+    "pattern": "Format non valide pour {{label}}",
+    "phone": "Numéro de téléphone non valide",
+    "postalCode": "{{label}} doit être un code postal valide",
+    "required": "{{label}} est requis",
+    "summary_description": "Des erreurs ont été détectées. Veuillez vérifier les champs en surbrillance.",
+    "summary_title": "Veuillez corriger les erreurs avant de soumettre",
+    "url": "{{label}} doit être une URL valide"
+  },
+  "navigationGuard": {
+    "title": "Modifications non enregistrées dans {{domain_name}}",
+    "message": "Vous avez des modifications non enregistrées dans {{domain_name}}. Quitter cette page annulera tous vos changements.",
+    "confirm": "Ignorer et quitter",
+    "cancel": "Rester sur la page",
+    "toastTitle": "Navigation reprise",
+    "toastDescription": "Les modifications non enregistrées dans {{domain_name}} ont été ignorées."
+  }
+}

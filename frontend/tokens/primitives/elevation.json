@@ -1,0 +1,12 @@
+{
+  "primitives": {
+    "elevation": {
+      "level0": { "$value": "none", "$type": "shadow", "$description": "Flat surface at z=0" },
+      "level1": { "$value": "{primitives.shadow.sm}", "$type": "shadow", "$description": "Cards and shallow surfaces" },
+      "level2": { "$value": "{primitives.shadow.md}", "$type": "shadow", "$description": "Raised elements and dropdowns" },
+      "level3": { "$value": "{primitives.shadow.lg}", "$type": "shadow", "$description": "Floating navbars and sticky headers" },
+      "level4": { "$value": "{primitives.shadow.xl}", "$type": "shadow", "$description": "Dialogs and modals" },
+      "level5": { "$value": "{primitives.shadow.premium}", "$type": "shadow", "$description": "Top-level overlays and popovers" }
+    }
+  }
+}

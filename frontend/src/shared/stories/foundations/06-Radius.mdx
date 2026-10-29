@@ -1,0 +1,60 @@
+import { Meta } from "@storybook/addon-docs/blocks";
+
+<Meta title="01 — Foundations / ⭕ Radius" />
+
+# ⭕ Radius
+
+Border radius softens UI geometry and establishes visual harmony across controls and containers.
+
+---
+
+## 01 — Principles
+
+### 1. Nested Curvature Formula
+Inner element radius should equal `outer_radius - padding` to maintain concentric visual curves and prevent awkward gaps.
+
+### 2. Semantic Roles
+- `none`: Tables, split buttons, full-bleed containers.
+- `md` (8px): Inputs, buttons, form controls.
+- `xl` (16px): Cards, dialogs, floating popovers.
+- `full`: Badges, status pills, avatar circles.
+
+---
+
+## 02 — Specification
+
+| Token | Rem | Px | Usage |
+| :--- | :---: | :---: | :--- |
+| `radius.none` | `0` | `0px` | Squared controls, sharp edges |
+| `radius.sm` | `0.25rem` | `4px` | Tags, tooltips |
+| `radius.md` | `0.5rem` | `8px` | Standard controls (buttons, inputs) |
+| `radius.lg` | `0.75rem` | `12px` | Dropdowns, small panels |
+| `radius.xl` | `1rem` | `16px` | Modal dialogs, cards |
+| `radius.2xl` | `1.5rem` | `24px` | Hero feature cards |
+| `radius.full` | `9999px` | Pill | Toggle switches, badges |
+
+---
+
+## 03 — Tokens
+
+Defined in `tokens/primitives/radius.json`:
+```json
+{
+  "primitives": {
+    "radius": {
+      "md": { "$value": "0.5rem", "$type": "dimension" },
+      "full": { "$value": "9999px", "$type": "dimension" }
+    }
+  }
+}
+```
+
+---
+
+## 04 — Implementation
+
+```tsx
+<div className="rounded-[var(--radius-xl)] bg-surface p-6 shadow-md">
+  <button className="rounded-[var(--radius-md)] bg-primary px-4 py-2 text-white">Save</button>
+</div>
+```

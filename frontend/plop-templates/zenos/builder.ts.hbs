@@ -1,0 +1,50 @@
+import type { {{pascalCase name}} } from "./{{kebabCase name}}.repository";
+
+/**
+ * {{pascalCase name}} Fluent Domain Builder (GoF Builder Pattern)
+ * 
+ * Enforces transactional safety and normalization when constructing
+ * complex domain data transfer objects before mutations.
+ */
+export class {{pascalCase name}}Builder {
+  private record: Partial<{{pascalCase name}}> = {};
+
+  constructor() {}
+
+  /**
+   * Static instantiator to start standard fluent construction
+   */
+  static create(): {{pascalCase name}}Builder {
+    return new {{pascalCase name}}Builder();
+  }
+
+  withName(name: string): this {
+    this.record.name = name.trim();
+    return this;
+  }
+
+  withId(id: string): this {
+    this.record.id = id;
+    return this;
+  }
+
+  withCreatedAt(date: string): this {
+    this.record.createdAt = date;
+    return this;
+  }
+
+  /**
+   * Builds and validates entity properties
+   */
+  build(): Omit<{{pascalCase name}}, "id" | "createdAt"> & Partial<Pick<{{pascalCase name}}, "id" | "createdAt">> {
+    if (!this.record.name) {
+      throw new Error("Validation Error: 'name' is required to compile a valid {{pascalCase name}}");
+    }
+
+    return {
+      name: this.record.name,
+      ...(this.record.id && { id: this.record.id }),
+      ...(this.record.createdAt && { createdAt: this.record.createdAt }),
+    };
+  }
+}

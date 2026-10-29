@@ -1,0 +1,21 @@
+{
+  "buttons": {
+    "back": "Zurück",
+    "cancel": "Abbrechen",
+    "close": "Schließen",
+    "confirm": "Bestätigen",
+    "delete": "Löschen",
+    "edit": "Bearbeiten",
+    "next": "Nächster Schritt",
+    "reset": "Zurücksetzen",
+    "retry": "Wiederholen",
+    "save": "Änderungen speichern",
+    "submit": "Absenden"
+  },
+  "feedback": {
+    "error": "Ein Fehler ist aufgetreten",
+    "loading": "Wird geladen...",
+    "submitting": "Wird übermittelt...",
+    "success": "Vorgang erfolgreich"
+  }
+}

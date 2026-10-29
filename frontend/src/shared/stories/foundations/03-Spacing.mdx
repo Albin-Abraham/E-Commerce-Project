@@ -1,0 +1,69 @@
+import { Meta } from "@storybook/addon-docs/blocks";
+
+<Meta title="01 — Foundations / 📏 Spacing" />
+
+# 📏 Spacing
+
+Spacing controls the rhythm, density, and relationships between elements across ZenOS.
+
+---
+
+## 01 — Principles
+
+### 1. The 4px Base Grid
+All spacing is a multiple of **4px**. This ensures mathematical alignment across diverse device viewports and screen densities.
+
+### 2. Proximity Indicates Relationship
+- Elements that belong together are spaced closer (`space-1` to `space-3`).
+- Unrelated sections are separated by larger intervals (`space-8` to `space-16`).
+
+---
+
+## 02 — Specification
+
+| Token | Rem | Px | Role |
+| :--- | :---: | :---: | :--- |
+| `space.1` | `0.25rem` | `4px` | Micro spacing (icon-to-text gap) |
+| `space.2` | `0.5rem` | `8px` | Tight gap (compact lists, badges) |
+| `space.3` | `0.75rem` | `12px` | Standard inline gap |
+| `space.4` | `1rem` | `16px` | Standard element padding & card margins |
+| `space.6` | `1.5rem` | `24px` | Section sub-gap |
+| `space.8` | `2rem` | `32px` | Major component padding |
+| `space.12` | `3rem` | `48px` | Page section margins |
+| `space.16` | `4rem` | `64px` | Landing & hero vertical spacing |
+
+---
+
+## 03 — Tokens
+
+Defined in `tokens/primitives/spacing.json`:
+```json
+{
+  "primitives": {
+    "spacing": {
+      "1": { "$value": "0.25rem", "$type": "dimension" },
+      "2": { "$value": "0.5rem", "$type": "dimension" },
+      "4": { "$value": "1rem", "$type": "dimension" }
+    }
+  }
+}
+```
+
+---
+
+## 04 — Implementation
+
+### CSS Custom Properties
+```css
+--space-1: 0.25rem;
+--space-2: 0.5rem;
+--space-4: 1rem;
+```
+
+### Component Usage
+```tsx
+<div className="flex items-center gap-[var(--space-2)] p-[var(--space-4)]">
+  <Icon />
+  <Text>Aligned Content</Text>
+</div>
+```

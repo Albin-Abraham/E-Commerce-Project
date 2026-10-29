@@ -1,0 +1,63 @@
+import { useQuery } from "@tanstack/react-query";
+import { httpClient } from "@services/http.instance";
+import { BaseHTTPClientService } from "@core/services";
+import { {{camelCase name}}Queries } from "../services/{{kebabCase name}}.keys";
+
+{{#if includeUrlParams}}
+import { use{{pascalCase name}}Selector, use{{pascalCase name}}Actions } from "../context/{{pascalCase name}}ViewContext";
+{{/if}}
+
+{{#if includeMutations}}
+import { useCreate{{pascalCase name}}Mutation } from "../services/{{kebabCase name}}.keys";
+{{/if}}
+
+/**
+ * {{pascalCase name}} Facade Hook (GoF Facade Pattern)
+ * 
+ * Provides a singular, clean, and decoupled front-facing interface for
+ * presenter components. Shields UI views from TanStack query, mutations, 
+ * local contexts, and raw browser history parameter bindings.
+ */
+export function use{{pascalCase name}}Facade() {
+  {{#if includeUrlParams}}
+  // 1. Selector-driven local parameters (stops unwanted component re-renders)
+  const view = use{{pascalCase name}}Selector((state) => state.view);
+  const selectedId = use{{pascalCase name}}Selector((state) => state.selectedId);
+  const page = use{{pascalCase name}}Selector((state) => state.page);
+  const searchQuery = use{{pascalCase name}}Selector((state) => state.searchQuery);
+  const { setParams } = use{{pascalCase name}}Actions();
+  {{/if}}
+
+  // 2. Co-located list cache retrieval
+  const listQuery = useQuery(
+    {{camelCase name}}Queries.list(httpClient.auth as BaseHTTPClientService)
+  );
+
+  {{#if includeMutations}}
+  // 3. Mutation integrations
+  const createMutation = useCreate{{pascalCase name}}Mutation(httpClient.auth as BaseHTTPClientService);
+  {{/if}}
+
+  return {
+    // URL State & Selectors
+    {{#if includeUrlParams}}
+    view,
+    selectedId,
+    page,
+    searchQuery,
+    setParams,
+    {{/if}}
+
+    // Warm Cached Data Collections
+    records: listQuery.data || [],
+    isLoadingRecords: listQuery.isLoading,
+    isErrorRecords: listQuery.isError,
+
+    // Operations / Write Actions
+    {{#if includeMutations}}
+    createRecord: createMutation.mutate,
+    isCreatingRecord: createMutation.isSubmitting,
+    createError: createMutation.error,
+    {{/if}}
+  };
+}

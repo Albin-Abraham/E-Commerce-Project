@@ -1,0 +1,32 @@
+{
+  "forbidden": {
+    "action": "Aller à l'Accueil",
+    "code": "403",
+    "description": "Vous ne disposez pas des autorisations administratives requises pour accéder à cette ressource.",
+    "title": "Accès Refusé"
+  },
+  "network": {
+    "action": "Reconnecter",
+    "code": "NET_ERR",
+    "description": "Impossible de se connecter à l'hôte distant. Veuillez vérifier votre connexion Internet.",
+    "title": "Réseau Indisponible"
+  },
+  "notFound": {
+    "action": "Retourner au Tableau de Bord",
+    "code": "404",
+    "description": "La ressource demandée est introuvable ou a été déplacée.",
+    "title": "Page Non Trouvée"
+  },
+  "serverError": {
+    "action": "Réessayer la Connexion",
+    "code": "500",
+    "description": "Une exception inattendue s'est produite lors du traitement de votre demande.",
+    "title": "Erreur Interne du Serveur"
+  },
+  "timeout": {
+    "action": "Réessayer",
+    "code": "408",
+    "description": "Le délai d'attente de la requête a expiré. Veuillez vérifier votre réseau.",
+    "title": "Délai d'Attente Dépassé"
+  }
+}

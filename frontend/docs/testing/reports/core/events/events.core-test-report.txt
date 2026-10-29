@@ -1,0 +1,35 @@
+################################################################################
+# DOMAIN TEST CONTEXT REPORT: CORE/EVENTS
+# Domain Key:          core/events
+# Layer Group:         Core
+# Report File:         events.core-test-report.txt
+# Generated At:        2026-09-26T21:01:59.276Z
+# Total Test Suites:   1
+# Tracked Issues (0):  None
+# Defended Bugs (0):   None
+################################################################################
+
+================================================================================
+TEST FILE:             src/core/events/__tests__/KeyboardDelegationStrategy.test.ts
+ARCH LAYER:            Domain
+DOMAIN:                core/events
+TARGET:                KeyboardDelegationStrategy
+HARNESS:               Pure Vitest (Zero Mocks, Zero DOM)
+FIXTURES:              None
+TRACKED ISSUES:        None
+BUGS & DEFECTS:        None
+TAGS:                  None
+--------------------------------------------------------------------------------
+PRIMARY RESPONSIBILITY:
+Validates behavioral invariants for KeyboardDelegationStrategy.
+
+TEST SUITES & SCENARIOS:
+- describe("KeyboardDelegationStrategy")
+  • it("prevents default and executes command on global shortcut")
+  • it("prevents browser default when Ctrl+K is pressed inside an active input (double Ctrl+K scenario)")
+  • it("suppresses single-character hotkeys when an input is focused to allow typing")
+
+HTTP / MSW INTERACTIONS:
+None
+================================================================================
+

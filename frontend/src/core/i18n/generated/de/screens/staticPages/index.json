@@ -1,0 +1,67 @@
+{
+  "about": {
+    "mission": "Unsere Mission",
+    "missionText": "Entwickler zu befähigen, Unternehmensanwendungen mit domänengetriebener Modularität, strengen Design-Tokens und ohne Laufzeitkompromisse zu erstellen.",
+    "subtitle": "Framework für verteilte Unternehmensanwendungen, entwickelt für resiliente Websysteme.",
+    "title": "Über die Zenith-Plattform",
+    "version": "Plattformversion"
+  },
+  "createBranch": {
+    "badge": "MDAP Formular-Engine • Filialverwaltung",
+    "loading": "Filialschema wird geladen...",
+    "subtitle": "Konfigurieren Sie lokalisierte Betriebsparameter und Netzwerkidentität über das kanonische MetaSchema.",
+    "title": "Unternehmensfiliale Erstellen"
+  },
+  "debug": {
+    "description": "Verwenden Sie diese Seite, um Formularinteraktionen, Validierungsregeln und Layout-Rendering zu testen.",
+    "submit": "Formular Absenden",
+    "title": "Formularsystem-Debugger"
+  },
+  "formBuilder": {
+    "subtitle": "Entwerfen Sie Formulare auf der Arbeitsfläche oder verwalten Sie serverseitige Layout-Manifeste.",
+    "tabs": {
+      "canvas": "Formular-Builder Canvas",
+      "schema": "Metadaten-Schema-Formular"
+    },
+    "title": "ZenOS Formular- & Schema-Studio"
+  },
+  "multiStep": {
+    "footer": {
+      "cancel": "Abbrechen",
+      "needHelp": "Hilfe Benötigt?"
+    },
+    "instructionsList": {
+      "continuousValidation": "Ihr Fortschritt wird kontinuierlich validiert.",
+      "legalNames": "Stellen Sie sicher, dass alle offiziellen Namen exakt mit Ihrem Ausweis übereinstimmen.",
+      "visaRequired": "Visumangaben sind für Nicht-Staatsbürger erforderlich."
+    },
+    "launchBtn": "Onboarding-Portal Starten",
+    "portalTitle": "Mitarbeiter-Onboarding-Portal",
+    "tabs": {
+      "instructions": "Anweisungen & Richtlinien",
+      "wizard": "Onboarding-Assistent"
+    },
+    "welcomeText": "Bitte vervollständigen Sie Ihr Profil mithilfe des Assistenten. Halten Sie Ihren amtlichen Ausweis bereit.",
+    "welcomeTitle": "Willkommen im Team!"
+  },
+  "tableDemo": {
+    "addUser": "Benutzer Hinzufügen",
+    "bulk": {
+      "delete": "Ausgewählte Löschen",
+      "exportCsv": "Ausgewählte Exportieren (CSV)"
+    },
+    "exportFiltered": "Gefilterte Ansicht Exportieren",
+    "exportModal": {
+      "failed": "Export Fehlgeschlagen",
+      "processing": "Wird exportiert...",
+      "ready": "Export Bereit"
+    },
+    "subtitle": "Verwalten Sie die Gehaltsabrechnungsdaten Ihres Teams an einem zentralen Ort.",
+    "title": "Gehaltsabrechnungsverwaltung",
+    "views": {
+      "board": "Board",
+      "list": "Liste",
+      "table": "Tabelle"
+    }
+  }
+}

@@ -1,0 +1,65 @@
+{
+  "analytics": {
+    "activeListings": "Annonces Actives",
+    "activeProducts": "Produits Actifs",
+    "conversionRate": "Taux de Conversion",
+    "engine": "Moteur d'Intelligence des Revenus",
+    "grossSales": "Ventes Brutes",
+    "marketShare": "Part de Marché",
+    "offline": "Hors ligne",
+    "subtitle": "Télémétrie en temps réel des stocks et des revenus.",
+    "title": "Analytique des Produits",
+    "topPerformers": "Meilleures Performances",
+    "totalRevenue": "Revenu Total",
+    "variant": "Variante de Produit Alpha-{{id}}",
+    "viewReport": "Voir le Rapport Complet"
+  },
+  "detail": {
+    "error": "Erreur lors du chargement des métadonnées du produit.",
+    "loading": "Chargement du produit...",
+    "retailPrice": "Prix de Vente",
+    "title": "Spécifications du Produit"
+  },
+  "cart": {
+    "continueShopping": "Continuer les Achats",
+    "emptySubtitle": "Il semble que vous n'ayez encore rien ajouté.",
+    "emptyTitle": "Votre panier est vide",
+    "free": "Gratuit",
+    "itemsSecured": "{{count}} Articles Sécurisés",
+    "secureCheckout": "Paiement Sécurisé",
+    "shipping": "Livraison",
+    "sslSecured": "Cryptage SSL 256 bits",
+    "subtotal": "Sous-total",
+    "title": "Votre Panier",
+    "total": "Total"
+  },
+  "catalog": {
+    "emptyState": "Aucun produit ne correspond à votre recherche.",
+    "exportPdf": "Exporter le Top 10 PDF",
+    "generatingPdf": "Génération du PDF...",
+    "searchPlaceholder": "Rechercher dans les collections...",
+    "subtitle": "Matériel et composants industriels haute fidélité conçus pour évoluer.",
+    "syncingState": "Le catalogue est actuellement en cours de synchronisation.",
+    "title": "Nos Collections",
+    "viewDetails": "Voir les Détails"
+  },
+  "inventory": {
+    "inStock": "En Stock",
+    "initializeAudit": "Initialiser l'Audit des Stocks",
+    "liveInventory": "Inventaire en Direct",
+    "reorderLevel": "Seuil de Réapprovisionnement",
+    "sku": "SKU",
+    "title": "Inventaire des Stocks"
+  },
+  "marketplace": {
+    "addToCart": "Ajouter au Panier",
+    "connectionError": "Le marché n'a pas pu être synchronisé avec le moteur principal.",
+    "connectionFailure": "Échec de Connexion",
+    "discovering": "Découverte de {{total}} articles sélectionnés pour votre boutique",
+    "productPolicy": "Politique des Produits",
+    "syncFeed": "Synchroniser le Flux",
+    "syncing": "Synchronisation avec le Moteur de Produits...",
+    "taxInc": "Taxes Incl.",
+    "title": "Marché des Produits"
+  }
+}

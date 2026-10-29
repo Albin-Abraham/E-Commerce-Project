@@ -1,0 +1,54 @@
+import { Meta } from "@storybook/addon-docs/blocks";
+
+<Meta title="01 — Foundations / 📖 Overview" />
+
+# 01 — Foundations
+
+Foundations are the foundational primitives and rules upon which every component, pattern, and product interface across ZenOS is constructed.
+
+They establish visual coherence, mathematical hierarchy, accessibility, and predictability across the entire product ecosystem.
+
+---
+
+## 🏛️ The 11 Design System Foundations
+
+```
+01 — FOUNDATIONS
+│
+├── 📖 Foundations Overview
+│
+├── 🔤 Typography        ── Font families, weights, scales, semantic text styles, text behaviors
+├── 🎨 Color             ── 30/20/10 semantic distribution, status colors, dark mode, contrast
+├── 📏 Spacing           ── 4px base unit, spacing scale, component, and section vertical rhythm
+├── 📐 Sizing            ── Sizing scale, fixed/fluid dimensions, container bounds
+├── ▫️ Border            ── Widths, styles, focus rings, interactive states
+├── ⭕ Radius            ── Controlled curvature scale (none to full/pill)
+├── 🌫️ Opacity           ── State opacities (disabled, hover, overlay, decorative)
+├── 🌓 Elevation         ── Layering surfaces (level 0 to 5) and shadow scales
+├── ▦ Grid              ── 12-column layout grid, gutters, margins, and container queries
+├── 📱 Breakpoints       ── Responsive screen dimensions (mobile to ultra-wide)
+└── 🔢 Z-Index           ── Layering model (base, sticky, overlay, modal, toast, tooltip)
+```
+
+---
+
+## 📐 The 4-Layer Documentation Standard
+
+Every Foundation page in the ZenOS Design System adheres strictly to the **4-Layer Architectural Standard**:
+
+```
+FOUNDATION PAGE
+│
+├── 01 — Principles        ── Human factors, architectural philosophy, and invariants
+│
+├── 02 — Specification     ── Mathematical scales, metrics, states, and behaviors
+│
+├── 03 — Tokens            ── W3C DTCG-compliant JSON definitions & single source of truth
+│
+└── 04 — Implementation    ── Figma Variables, CSS Custom Properties, and Component Usage
+```
+
+### Why the 4-Layer Standard Matters
+1. **Consistency**: Engineers and designers follow the exact same structural roadmap across all design tokens.
+2. **Decoupling**: Visual specifications are separated from platform implementations, ensuring framework independence.
+3. **Traceability**: Every token maps directly from Figma variables to W3C DTCG JSON, to generated CSS variables and type-safe TypeScript constants.

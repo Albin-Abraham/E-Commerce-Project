@@ -1,0 +1,26 @@
+{
+  "actions": {
+    "launch": "Lanzar Entorno",
+    "reset": "Restablecer Selección"
+  },
+  "alerts": {
+    "ready": "Listo para iniciar — entorno configurado"
+  },
+  "fields": {
+    "branch": {
+      "label": "Sucursal",
+      "placeholder": "Seleccione una sucursal…"
+    },
+    "businessUnit": {
+      "label": "Unidad de Negocio",
+      "placeholder": "Seleccione una unidad de negocio…"
+    },
+    "company": {
+      "createAction": "Crear Empresa +",
+      "label": "Empresa",
+      "placeholder": "Seleccione una empresa…"
+    }
+  },
+  "subtitle": "Elija su empresa y unidad de negocio para continuar.",
+  "title": "Configuración del Espacio de Trabajo"
+}

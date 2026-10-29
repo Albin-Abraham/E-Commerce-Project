@@ -1,0 +1,15 @@
+################################################################################
+# ZENOS PLATFORM — MASTER TEST CONTEXT & ARCHITECTURE DIRECTORY
+# Generated At:        {{GENERATED_AT}}
+# Total Test Files:    {{TOTAL_FILES}}
+# Total Issues Tracked:{{TOTAL_ISSUES}}
+# Total Bugs Defended: {{TOTAL_BUGS}}
+#
+# ARCHITECTURE LAYER BREAKDOWN:
+{{LAYER_BREAKDOWN}}
+#
+# MODULAR DOMAIN & FEATURE REPORTS INDEX:
+{{MODULAR_REPORTS_INDEX}}
+################################################################################
+
+{{ALL_ENTRIES}}

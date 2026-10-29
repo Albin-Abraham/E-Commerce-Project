@@ -1,0 +1,67 @@
+import React from "react";
+import { use{{pascalCase name}}Facade } from "../hooks/use{{pascalCase name}}Facade";
+
+/**
+ * {{pascalCase name}} Detail Presenter View Component
+ * 
+ * High-performance, dumb rendering view coordinator. Fully decoupled
+ * from TanStack query cache keys, mutations, and context subscriptions
+ * by consuming them directly from the singular Facade Hook.
+ */
+export const {{pascalCase name}}DetailPage: React.FC = () => {
+  // Consumes from the singular module Facade
+  const { 
+    records, 
+    isLoadingRecords, 
+    isErrorRecords,
+    {{#if includeUrlParams}}
+    view,
+    page,
+    setParams,
+    {{/if}}
+  } = use{{pascalCase name}}Facade();
+
+  if (isErrorRecords) {
+    throw new Error("Failed to load {{name}} catalog data inside view coordinator");
+  }
+
+  if (isLoadingRecords) {
+    return (
+      <div className="flex flex-col gap-4 p-6 animate-pulse">
+        <div className="h-8 bg-muted rounded w-1/4" />
+        <div className="h-32 bg-muted rounded w-full" />
+      </div>
+    );
+  }
+
+  return (
+    <div className="flex flex-col gap-6 p-6">
+      <div className="flex items-center justify-between">
+        <h1 className="text-2xl font-bold tracking-tight">{{pascalCase name}} Overview Dashboard</h1>
+        {{#if includeUrlParams}}
+        <div className="flex items-center gap-2">
+          <span className="text-xs text-muted-foreground font-mono">Current Page: {page}</span>
+          <button 
+            onClick={() => setParams({ page: page + 1 })}
+            className="text-xs px-3 py-1 border rounded bg-card hover:bg-accent"
+          >
+            Next Page
+          </button>
+        </div>
+        {{/if}}
+      </div>
+
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+        {records.map((item) => (
+          <div key={item.id} className="rounded-lg border bg-card p-6 shadow-sm hover:shadow-md transition">
+            <h2 className="text-lg font-semibold mb-2">{item.name}</h2>
+            <p className="text-xs text-muted-foreground font-mono">ID: {item.id}</p>
+            <p className="text-xs text-muted-foreground mt-1">
+              Created: {new Date(item.createdAt).toLocaleDateString()}
+            </p>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};

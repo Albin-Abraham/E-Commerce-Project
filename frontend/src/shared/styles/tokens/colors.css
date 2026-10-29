@@ -1,0 +1,196 @@
+/* ============================================================
+   ZENITH COLOR PALETTE (Primitives, 30/20/10 Rules, Themes)
+   ============================================================ */
+
+@theme {
+  /* Brand Constants - Refined Zenith HSL Palette */
+  --primary-h: 217;
+  --primary-s: 91%;
+  --primary-l: 60%;
+
+  --color-primary-50: hsl(var(--primary-h), var(--primary-s), 95%);
+  --color-primary-100: hsl(var(--primary-h), var(--primary-s), 90%);
+  --color-primary-200: hsl(var(--primary-h), var(--primary-s), 80%);
+  --color-primary-300: hsl(var(--primary-h), var(--primary-s), 70%);
+  --color-primary-400: hsl(var(--primary-h), var(--primary-s), 60%);
+  --color-primary-500: hsl(var(--primary-h), var(--primary-s), 50%);
+  --color-primary-600: hsl(var(--primary-h), var(--primary-s), 45%);
+  --color-primary-700: hsl(var(--primary-h), var(--primary-s), 35%);
+  --color-primary-800: hsl(var(--primary-h), var(--primary-s), 25%);
+  --color-primary-900: hsl(var(--primary-h), var(--primary-s), 15%);
+
+  --color-secondary-500: #7c3aed; /* Deep Violet */
+  --color-accent-500: #0ea5e9; /* Sky Blue */
+
+  /* Neutral Ramp (30 Rule — Foundation Backbone) */
+  --color-neutral-50: #f8fafc;
+  --color-neutral-100: #f1f5f9;
+  --color-neutral-200: #e2e8f0;
+  --color-neutral-300: #cbd5e1;
+  --color-neutral-400: #94a3b8;
+  --color-neutral-500: #64748b;
+  --color-neutral-600: #475569;
+  --color-neutral-700: #334155;
+  --color-neutral-800: #1e293b;
+  --color-neutral-900: #0f172a;
+  --color-neutral-950: #020617;
+
+  /* Status Ramps (10 Rule — Accent & Feedback) */
+  --color-success-50: #ecfdf5;
+  --color-success-100: #d1fae5;
+  --color-success-200: #a7f3d0;
+  --color-success-300: #6ee7b7;
+  --color-success-400: #34d399;
+  --color-success-500: #10b981;
+  --color-success-600: #059669;
+  --color-success-700: #047857;
+  --color-success-800: #065f46;
+  --color-success-900: #064e3b;
+
+  --color-warning-50: #fffbeb;
+  --color-warning-100: #fef3c7;
+  --color-warning-200: #fde68a;
+  --color-warning-300: #fcd34d;
+  --color-warning-400: #fbbf24;
+  --color-warning-500: #f59e0b;
+  --color-warning-600: #d97706;
+  --color-warning-700: #b45309;
+  --color-warning-800: #92400e;
+  --color-warning-900: #78350f;
+
+  --color-danger-50: #fef2f2;
+  --color-danger-100: #fee2e2;
+  --color-danger-200: #fecaca;
+  --color-danger-300: #fca5a5;
+  --color-danger-400: #f87171;
+  --color-danger-500: #ef4444;
+  --color-danger-600: #dc2626;
+  --color-danger-700: #b91c1c;
+  --color-danger-800: #991b1b;
+  --color-danger-900: #7f1d1d;
+
+  --color-info-50: #eff6ff;
+  --color-info-100: #dbeafe;
+  --color-info-200: #bfdbfe;
+  --color-info-300: #93c5fd;
+  --color-info-400: #60a5fa;
+  --color-info-500: #3b82f6;
+  --color-info-600: #2563eb;
+  --color-info-700: #1d4ed8;
+  --color-info-800: #1e40af;
+  --color-info-900: #1e3a8a;
+
+  /* 30/20/10 Rule Color Palette */
+  /* 30 — Foundation */
+  --color-background: var(--color-neutral-100);
+  --color-foreground: var(--color-neutral-900);
+  --color-text: var(--color-foreground);
+  --color-surface: #ffffff;
+  --color-surface-elevated: #ffffff;
+  --color-muted: var(--color-neutral-600);
+  --color-muted-foreground: var(--color-neutral-600);
+  --color-disabled: var(--color-neutral-300);
+  --color-subtle: var(--color-neutral-50);
+  --color-border: var(--color-neutral-300);
+  --color-border-soft: var(--color-neutral-200);
+  --color-border-strong: var(--color-neutral-500);
+  --color-shadow: rgba(0, 0, 0, 0.08);
+
+  /* 20 — Brand */
+  --color-primary: var(--color-primary-600);
+  --color-primary-rgb: 37, 99, 235;
+  --primary-rgb: 37, 99, 235;
+  --color-secondary: var(--color-secondary-500);
+
+  /* 10 — Accent & Status */
+  --color-accent: var(--color-accent-500);
+  --color-success: var(--color-success-600);
+  --color-warning: var(--color-warning-600);
+  --color-danger: var(--color-danger-600);
+  --color-error: var(--color-danger);
+  --color-info: var(--color-info-600);
+
+  /* Overlay & Backdrops */
+  --color-overlay-25: rgba(15, 23, 42, 0.25);
+  --color-overlay-50: rgba(15, 23, 42, 0.5);
+  --color-overlay-75: rgba(15, 23, 42, 0.75);
+  --color-backdrop: rgba(0, 0, 0, 0.2);
+
+  /* Alpha Opacity Scales */
+  --alpha-5: 0.05;
+  --alpha-10: 0.1;
+  --alpha-20: 0.2;
+  --alpha-30: 0.3;
+  --alpha-50: 0.5;
+  --alpha-70: 0.7;
+  --alpha-80: 0.8;
+  --alpha-90: 0.9;
+
+  /* Component Identity Tokens */
+  --color-ring: var(--color-primary);
+  --color-primary-foreground: #ffffff;
+  --color-secondary-foreground: #ffffff;
+  --color-danger-foreground: #ffffff;
+  --color-success-foreground: #ffffff;
+  --color-warning-foreground: #ffffff;
+
+  /* Focus & Accessibility */
+  --focus-ring-width: 2px;
+  --focus-ring-color: var(--color-primary);
+  --focus-ring-offset: 2px;
+
+  /* Semantic Shading Layers */
+  --color-glass: rgba(255, 255, 255, 0.8);
+  --color-surface-raised: rgba(0, 0, 0, 0.02);
+  --color-surface-inset: rgba(0, 0, 0, 0.04);
+  --color-neon-glow: radial-gradient(
+    circle,
+    rgba(59, 130, 246, 0.1) 0%,
+    rgba(255, 255, 255, 0) 70%
+  );
+}
+
+/* ============================================================
+   DARK MODE OVERRIDES (.dark)
+   ============================================================ */
+.dark {
+  --color-primary: #3b82f6;
+  --color-secondary: #8b5cf6;
+  --color-accent: #0ea5e9;
+
+  --color-background: #0a0a0a;
+  --color-foreground: #fafafa;
+  --color-surface: #171717;
+  --color-surface-elevated: #262626;
+  --color-muted: #a1a1aa;
+  --color-muted-foreground: #a1a1aa;
+  --color-disabled: #27272a;
+  --color-subtle: #121212;
+
+  --color-border: #27272a;
+  --color-border-soft: #1f1f23;
+  --color-border-strong: #3f3f46;
+  --color-shadow: rgba(0, 0, 0, 0.4);
+  --color-primary-rgb: 59, 130, 246;
+  --primary-rgb: 59, 130, 246;
+
+  --color-overlay-25: rgba(0, 0, 0, 0.4);
+  --color-overlay-50: rgba(0, 0, 0, 0.6);
+  --color-overlay-75: rgba(0, 0, 0, 0.8);
+
+  --color-glass: rgba(255, 255, 255, 0.03);
+  --color-surface-raised: rgba(255, 255, 255, 0.05);
+  --color-surface-inset: rgba(0, 0, 0, 0.15);
+
+  --glass-bg: rgba(27, 29, 34, 0.7);
+  --glass-border: rgba(255, 255, 255, 0.1);
+  --glass-surface: rgba(255, 255, 255, 0.03);
+  --color-neon-glow: radial-gradient(
+    circle,
+    rgba(16, 113, 81, 0.15) 0%,
+    rgba(0, 0, 0, 0) 70%
+  );
+
+  --color-primary-foreground: #ffffff;
+  --color-warning-foreground: #ffffff;
+}

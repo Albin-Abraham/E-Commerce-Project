@@ -1,0 +1,132 @@
+/* ============================================================
+   ZENITH MOTION & ANIMATIONS (Durations, Easings, Keyframes)
+   ============================================================ */
+
+@theme {
+  --motion-instant: 0ms;
+  --motion-fast: 150ms;
+  --motion-medium: 300ms;
+  --motion-slow: 500ms;
+  --motion-stable: 700ms;
+  --motion-snail: 1000ms;
+
+  --duration-instant: var(--motion-instant);
+  --duration-fast: var(--motion-fast);
+  --duration-medium: var(--motion-medium);
+  --duration-slow: var(--motion-slow);
+  --duration-stable: var(--motion-stable);
+  --duration-snail: var(--motion-snail);
+
+  --ease-in: cubic-bezier(0.4, 0, 1, 1);
+  --ease-out: cubic-bezier(0, 0, 0.2, 1);
+  --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-spring: cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  --ease-elastic: cubic-bezier(0.68, -0.6, 0.32, 1.6);
+
+  --animate-fade-up: fade-up var(--motion-medium) var(--ease-out) both;
+  --animate-fade-down: fade-down var(--motion-medium) var(--ease-out) both;
+  --animate-scale-in: scale-in var(--motion-fast) var(--ease-out) both;
+  --animate-slide-up: slide-up var(--motion-medium) var(--ease-out) both;
+  --animate-slide-down: slide-down var(--motion-medium) var(--ease-out) both;
+  --animate-slide-left: slide-left var(--motion-medium) var(--ease-out) both;
+  --animate-slide-right: slide-right var(--motion-medium) var(--ease-out) both;
+  --animate-pulse-soft: pulse-soft 3s var(--ease-in-out) infinite;
+  --animate-float: float 6s ease-in-out infinite;
+
+  @keyframes fade-up {
+    from {
+      opacity: 0;
+      transform: translateY(16px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes fade-down {
+    from {
+      opacity: 0;
+      transform: translateY(-16px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes scale-in {
+    from {
+      opacity: 0;
+      transform: scale(0.95);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+
+  @keyframes slide-up {
+    from {
+      opacity: 0;
+      transform: translateY(24px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes slide-down {
+    from {
+      opacity: 0;
+      transform: translateY(-12px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes slide-left {
+    from {
+      opacity: 0;
+      transform: translateX(-24px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  @keyframes slide-right {
+    from {
+      opacity: 0;
+      transform: translateX(24px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+
+  @keyframes pulse-soft {
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.5;
+    }
+  }
+
+  @keyframes float {
+    0%,
+    100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-20px);
+    }
+  }
+}

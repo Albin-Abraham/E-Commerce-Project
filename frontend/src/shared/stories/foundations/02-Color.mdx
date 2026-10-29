@@ -1,0 +1,77 @@
+import { Meta } from "@storybook/addon-docs/blocks";
+
+<Meta title="01 — Foundations / 🎨 Color" />
+
+# 🎨 Color
+
+Color conveys hierarchy, state, feedback, and branding across ZenOS.
+
+---
+
+## 01 — Principles
+
+### 1. The 30/20/10 Rule
+- **30% Neutral Backgrounds**: High-contrast, clean base canvas (`background`, `surface`, `subtle`).
+- **20% Structural Elements**: Dividers, borders, muted copy, disabled fills (`border`, `muted`, `disabled`).
+- **10% Intent & Action Accents**: Primary actions, semantic statuses, focus rings (`primary`, `success`, `danger`, `warning`).
+
+### 2. Contrast & WCAG Compliance
+- Minimum **4.5:1** contrast ratio for regular body text.
+- Minimum **3:1** contrast ratio for large text and interactive UI elements.
+- Meaning is **never** conveyed exclusively through color; always accompanied by text or icons.
+
+---
+
+## 02 — Specification
+
+| Semantic Role | Light Mode Hex | Dark Mode Hex | Usage |
+| :--- | :---: | :---: | :--- |
+| `color.background` | `#f1f5f9` | `#0b0f17` | Canvas background |
+| `color.surface` | `#ffffff` | `#111827` | Cards, panels, inputs |
+| `color.foreground` | `#0f172a` | `#f8fafc` | Primary high-contrast text |
+| `color.muted` | `#475569` | `#94a3b8` | Secondary descriptive text |
+| `color.border` | `#cbd5e1` | `#1e293b` | Form and container borders |
+| `color.primary` | `#2563eb` | `#3b82f6` | Brand intent, primary CTA |
+| `color.danger` | `#dc2626` | `#ef4444` | Destructive actions, errors |
+| `color.warning` | `#d97706` | `#f59e0b` | Alerts, caution |
+| `color.success` | `#059669` | `#10b981` | Success states, confirmed |
+
+---
+
+## 03 — Tokens
+
+Tokens are defined in `tokens/primitives/color.json`, `tokens/semantic/color.json`, and `tokens/themes/dark.json`.
+
+```json
+{
+  "semantic": {
+    "color": {
+      "primary": { "$value": "{primitives.color.primary.600}", "$type": "color" },
+      "danger": { "$value": "{primitives.color.danger.600}", "$type": "color" }
+    }
+  }
+}
+```
+
+---
+
+## 04 — Implementation
+
+### CSS Custom Properties
+```css
+:root {
+  --color-primary: #2563eb;
+  --color-background: #f1f5f9;
+}
+.dark {
+  --color-primary: #3b82f6;
+  --color-background: #0b0f17;
+}
+```
+
+### Component Usage
+```tsx
+<div className="bg-surface text-foreground border border-border hover:border-primary">
+  <button className="bg-primary text-primary-foreground hover:bg-primary/90">Submit</button>
+</div>
+```

@@ -1,0 +1,17 @@
+{
+  "primitives": {
+    "grid": {
+      "columns": { "$value": "12", "$type": "dimension" },
+      "gutter": {
+        "compact": { "$value": "16px", "$type": "dimension" },
+        "comfortable": { "$value": "24px", "$type": "dimension" },
+        "spacious": { "$value": "32px", "$type": "dimension" }
+      },
+      "margin": {
+        "compact": { "$value": "16px", "$type": "dimension" },
+        "comfortable": { "$value": "24px", "$type": "dimension" },
+        "spacious": { "$value": "32px", "$type": "dimension" }
+      }
+    }
+  }
+}

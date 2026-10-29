@@ -1,0 +1,310 @@
+import { Meta, Canvas } from "@storybook/addon-docs/blocks";
+
+<Meta title="Form System" />
+
+# Form System
+
+The Zenith Form System is a powerful, declarative form framework built on React Hook Form principles with a JSON-schema-like definition format. It supports complex layouts, validation, conditional logic, and seamless integration with layout primitives.
+
+## Core Concepts
+
+### Form Definition
+
+Forms are defined as JSON-serializable objects:
+
+```tsx
+const formDefinition = {
+  id: "user-registration",
+  title: "Create Account",
+  description: "Fill in your details to get started",
+  settings: {
+    density: "comfortable",
+    layoutMode: "form",
+  },
+  sections: [
+    {
+      id: "personal",
+      title: "Personal Information",
+      layout: { type: "grid", columns: 12, gap: "md" },
+      fields: [
+        { id: "firstName", name: "firstName", type: "text", label: "First Name", required: true, layout: { columnSpan: 6 } },
+        { id: "lastName", name: "lastName", type: "text", label: "Last Name", required: true, layout: { columnSpan: 6 } },
+        { id: "email", name: "email", type: "email", label: "Email", required: true, layout: { columnSpan: 12 } },
+      ],
+    },
+  ],
+  submitLabel: "Create Account",
+  cancelLabel: "Cancel",
+};
+
+<Form definition={formDefinition} onSubmit={handleSubmit} />;
+```
+
+### Field Types
+
+The form system supports a wide range of field types:
+
+#### Primitive Fields
+- `text` - Single line text input
+- `textarea` - Multi-line text input
+- `email` - Email input with validation
+- `password` - Password input with visibility toggle
+- `number` - Numeric input with stepper
+- `phone` - Phone number with formatting
+- `search` - Search input with clear button
+- `url` - URL input with validation
+
+#### Selection Fields
+- `select` - Single select dropdown
+- `multiselect` - Multiple selection
+- `radio` - Radio button group
+- `checkbox` - Single checkbox
+- `switch` - Toggle switch
+- `autocomplete` - Searchable select with free text
+
+#### Advanced Fields
+- `file` - File upload with drag & drop
+- `image` - Image upload with preview
+- `date` - Date picker
+- `datetime` - Date and time picker
+- `range` - Slider input
+- `color` - Color picker
+- `richtext` - Rich text editor
+
+#### Structural Fields
+- `container` - Layout container with Box model
+- `card` - Card wrapper with variant support
+- `fieldset` - Fieldset with legend
+- `group` - Field group
+- `accordion` - Collapsible section
+- `tabs` - Tabbed interface
+- `repeater` - Dynamic field arrays
+
+### Layout System
+
+Fields support flexible layout through the `layout` property:
+
+```tsx
+{
+  layout: {
+    columnSpan: 6,           // Grid column span (1-12)
+    columnSpan: { base: 12, md: 6, lg: 3 }, // Responsive
+    rowSpan: 2,              // Grid row span
+  }
+}
+```
+
+### Section Layouts
+
+Sections support multiple layout modes:
+
+```tsx
+// Grid layout (default)
+{ layout: { type: "grid", columns: 12, gap: "md" } }
+
+// Card layout (wraps section in CardField)
+{ layout: { type: "card", variant: "outlined", gap: "md" } }
+
+// Container layout (uses ContainerField)
+{ layout: { type: "container", direction: "col", gap: "md" } }
+```
+
+## Validation
+
+### Built-in Validation
+
+```tsx
+{
+  type: "email",
+  validation: {
+    required: true,
+    pattern: "^[^@]+@[^@]+\\.[^@]+$",
+    minLength: 5,
+    maxLength: 100,
+  }
+}
+```
+
+### Custom Validation
+
+```tsx
+{
+  type: "text",
+  validate: (value, allValues) => {
+    if (value === "admin") return "Username not allowed";
+    if (allValues.password && value === allValues.password) return "Cannot match password";
+    return true;
+  }
+}
+```
+
+### Async Validation
+
+```tsx
+{
+  type: "email",
+  validateAsync: async (value) => {
+    const exists = await checkEmailExists(value);
+    if (exists) return "Email already registered";
+    return true;
+  }
+}
+```
+
+## Conditional Logic
+
+Fields can be conditionally shown/hidden based on other field values:
+
+```tsx
+{
+  id: "companySize",
+  type: "select",
+  label: "Company Size",
+  options: [{ value: "small", label: "1-10" }, { value: "large", label: "10+" }],
+},
+{
+  id: "department",
+  type: "select",
+  label: "Department",
+  showWhen: { companySize: "large" }, // Only show when companySize is "large"
+  options: [...]
+}
+```
+
+## Field Composition
+
+### Container Fields
+
+```tsx
+{
+  id: "addressGroup",
+  type: "container",
+  label: "Address",
+  layout: { columnSpan: 12 },
+  properties: { padding: "p-4", border: "border border-gray-200 rounded-lg" },
+  fields: [
+    { id: "street", type: "text", label: "Street", layout: { columnSpan: 12 } },
+    { id: "city", type: "text", label: "City", layout: { columnSpan: 6 } },
+    { id: "zip", type: "text", label: "ZIP", layout: { columnSpan: 6 } },
+  ]
+}
+```
+
+### Card Fields
+
+```tsx
+{
+  id: "paymentCard",
+  type: "card",
+  label: "Payment Method",
+  layout: { type: "card", variant: "outlined" },
+  fields: [
+    { id: "cardNumber", type: "text", label: "Card Number", layout: { columnSpan: 12 } },
+    { id: "expiry", type: "text", label: "Expiry", layout: { columnSpan: 6 } },
+    { id: "cvv", type: "text", label: "CVV", layout: { columnSpan: 6 } },
+  ]
+}
+```
+
+## Integration with Layout Primitives
+
+The form system seamlessly integrates with layout primitives:
+
+```tsx
+import { Box, Flex, Grid, VStack, GridItem } from "@zenith/design-system";
+import { Form } from "@zenith/design-system";
+
+export function FormWithCustomLayout() {
+  return (
+    <Box variant="card" p="xl" className="max-w-2xl">
+      <VStack gap="lg">
+        <Flex justify="between" align="center">
+          <Text variant="h2">Custom Form Layout</Text>
+          <Badge label="v2.0" color="primary" />
+        </Flex>
+
+        <Form
+          definition={{
+            id: "custom-form",
+            sections: [{
+              id: "main",
+              fields: [
+                { id: "name", type: "text", label: "Name" },
+                { id: "email", type: "email", label: "Email" },
+              ]
+            }],
+            submitLabel: "Save",
+          }}
+          onSubmit={handleSubmit}
+        />
+
+        <Flex justify="end" gap="md">
+          <Button variant="ghost">Cancel</Button>
+          <Button variant="primary">Save Changes</Button>
+        </Flex>
+      </VStack>
+    </Box>
+  );
+}
+```
+
+## Hooks
+
+### useForm
+
+```tsx
+import { useForm } from "@zenith/design-system";
+
+function MyForm() {
+  const { values, errors, setValue, validate, submit } = useForm({
+    definition: formDefinition,
+    initialData: { name: "John" },
+    onSubmit: handleSubmit,
+  });
+
+  return <Form definition={formDefinition} />;
+}
+```
+
+### useField
+
+```tsx
+import { useField } from "@zenith/design-system";
+
+function CustomField({ field, layout }) {
+  const { value, onChange, onBlur, error, touched } = useField(field.name);
+
+  return (
+    <div>
+      <input value={value} onChange={onChange} onBlur={onBlur} />
+      {touched && error && <span className="error">{error}</span>}
+    </div>
+  );
+}
+```
+
+## Best Practices
+
+1. **Keep definitions serializable** - Avoid functions in definitions; use `validateAsync` for async logic
+2. **Use sections for grouping** - Organize related fields into sections
+3. **Leverage layout system** - Use grid columns and responsive spans
+4. **Validate early** - Provide immediate feedback with `onBlur` validation
+5. **Compose with primitives** - Wrap forms in Box, Flex, Grid for custom layouts
+
+## Examples
+
+<Canvas>
+  <Story name="Form/Showcase/ModernArchitecture/HighDensityEnterprise" />
+</Canvas>
+
+<Canvas>
+  <Story name="Form/Showcase/ModernArchitecture/AdvancedFieldsShowcase" />
+</Canvas>
+
+<Canvas>
+  <Story name="Showcase/Form + Layout Integration/CompleteForm" />
+</Canvas>
+
+<Canvas>
+  <Story name="Showcase/Form + Layout Integration/FormInModal" />
+</Canvas>

@@ -1,0 +1,55 @@
+import { Meta } from "@storybook/addon-docs/blocks";
+
+<Meta title="01 — Foundations / ▫️ Border" />
+
+# ▫️ Border
+
+Borders define boundaries, group content, and emphasize focus states.
+
+---
+
+## 01 — Principles
+
+### 1. Subtle Framing
+Borders should frame content without drawing attention away from data. We use low-contrast borders (`border-soft`) for surface grouping and high-contrast borders (`border-strong`) for active controls.
+
+### 2. High-Contrast Focus Rings
+Focus rings must have a minimum **3:1** contrast ratio against surrounding backgrounds and an offset of at least **2px** to prevent clipping.
+
+---
+
+## 02 — Specification
+
+| Token | Value | Role |
+| :--- | :---: | :--- |
+| `border.width.thin` | `1px` | Standard dividers, card outlines |
+| `border.width.medium` | `2px` | Focus rings, active tabs, selected cards |
+| `border.width.thick` | `4px` | Accent callout borders |
+
+---
+
+## 03 — Tokens
+
+Defined in `tokens/primitives/border.json`:
+```json
+{
+  "primitives": {
+    "border": {
+      "width": {
+        "thin": { "$value": "1px", "$type": "dimension" },
+        "medium": { "$value": "2px", "$type": "dimension" }
+      }
+    }
+  }
+}
+```
+
+---
+
+## 04 — Implementation
+
+```tsx
+<div className="border border-border rounded-md focus-within:ring-2 focus-within:ring-primary focus-within:ring-offset-2">
+  <input className="w-full outline-none" />
+</div>
+```

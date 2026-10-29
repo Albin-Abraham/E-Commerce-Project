@@ -1,0 +1,33 @@
+{
+  "components": {
+    "form": {
+      "shell": {
+        "gap": { "$value": "{primitives.spacing.1_5}", "$type": "dimension" }
+      },
+      "label": {
+        "color": { "$value": "{semantic.color.foreground}", "$type": "color" },
+        "fontSize": { "$value": "{primitives.typography.fontSize.sm}", "$type": "dimension" },
+        "fontWeight": { "$value": "{primitives.typography.fontWeight.bold}", "$type": "fontWeight" },
+        "requiredColor": { "$value": "{semantic.color.danger}", "$type": "color" }
+      },
+      "input": {
+        "borderRadius": { "$value": "{primitives.radius.md}", "$type": "dimension" },
+        "background": { "$value": "{semantic.color.surface}", "$type": "color" },
+        "color": { "$value": "{semantic.color.foreground}", "$type": "color" },
+        "placeholderColor": { "$value": "{semantic.color.muted}", "$type": "color" },
+        "borderColor": { "$value": "{semantic.color.border}", "$type": "color" }
+      },
+      "ring": {
+        "idle": { "$value": "{semantic.color.border}", "$type": "color" },
+        "hover": { "$value": "{primitives.color.primary.400}", "$type": "color" },
+        "focus": { "$value": "{semantic.color.primary}", "$type": "color" },
+        "error": { "$value": "{semantic.color.danger}", "$type": "color" }
+      },
+      "feedback": {
+        "errorColor": { "$value": "{semantic.color.danger}", "$type": "color" },
+        "helperColor": { "$value": "{semantic.color.muted}", "$type": "color" },
+        "fontSize": { "$value": "{primitives.typography.fontSize.xs}", "$type": "dimension" }
+      }
+    }
+  }
+}

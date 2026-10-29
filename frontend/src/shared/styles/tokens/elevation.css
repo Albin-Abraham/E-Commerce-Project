@@ -1,0 +1,69 @@
+/* ============================================================
+   ZENITH ELEVATION & SHADOWS (Multi-Tier Shadows, Glassmorphism)
+   ============================================================ */
+
+@theme {
+  --elevation-low: var(--shadow-sm);
+  --elevation-medium: var(--shadow-md);
+  --elevation-high: var(--shadow-lg);
+
+  --shadow-sm: 0 1px 2px rgba(59, 130, 246, 0.05);
+  --shadow-md:
+    0 4px 6px -1px rgba(59, 130, 246, 0.1),
+    0 2px 4px -1px rgba(59, 130, 246, 0.06);
+  --shadow-lg:
+    0 10px 15px -3px rgba(59, 130, 246, 0.1),
+    0 4px 6px -2px rgba(59, 130, 246, 0.05);
+
+  /* Premium Multi-Layer Shadow Stack */
+  --shadow-premium:
+    0 1px 2px rgba(59, 130, 246, 0.05),
+    0 8px 16px rgba(59, 130, 246, 0.08),
+    0 16px 32px -4px rgba(59, 130, 246, 0.12),
+    0 40px 80px -12px rgba(59, 130, 246, 0.15),
+    inset 0 1px 1px rgba(255, 255, 255, 1);
+
+  --shadow-floating:
+    0 2px 4px rgba(59, 130, 246, 0.05),
+    0 12px 24px rgba(59, 130, 246, 0.1),
+    0 24px 48px rgba(59, 130, 246, 0.15),
+    0 60px 100px -20px rgba(59, 130, 246, 0.25);
+
+  --shadow-glow: 0 0 20px -5px var(--color-primary);
+  --shadow-etched:
+    inset 0 2px 4px rgba(0, 0, 0, 0.05),
+    0 1px 2px rgba(255, 255, 255, 1);
+
+  --icon-xs: 0.75rem;
+  --icon-sm: 1rem;
+  --icon-md: 1.25rem;
+  --icon-lg: 1.5rem;
+  --icon-xl: 2rem;
+
+  --glass-bg: rgba(255, 255, 255, 0.7);
+  --glass-border: rgba(0, 0, 0, 0.08);
+  --glass-blur: 40px;
+  --glass-surface: rgba(0, 0, 0, 0.02);
+}
+
+/* Dark Mode Shadow Overrides */
+.dark {
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.2);
+  --shadow-md:
+    0 4px 6px -1px rgba(0, 0, 0, 0.3),
+    0 2px 4px -1px rgba(0, 0, 0, 0.2);
+  --shadow-lg:
+    0 10px 15px -3px rgba(0, 0, 0, 0.4),
+    0 4px 6px -2px rgba(0, 0, 0, 0.2);
+  --shadow-premium:
+    0 1px 2px rgba(0, 0, 0, 0.2),
+    0 8px 16px rgba(0, 0, 0, 0.3),
+    0 16px 32px -4px rgba(0, 0, 0, 0.4),
+    0 40px 80px -12px rgba(0, 0, 0, 0.5),
+    inset 0 1px 1px rgba(255, 255, 255, 0.05);
+  --shadow-floating:
+    0 2px 4px rgba(0, 0, 0, 0.2),
+    0 12px 24px rgba(0, 0, 0, 0.3),
+    0 24px 48px rgba(0, 0, 0, 0.4),
+    0 60px 100px -20px rgba(0, 0, 0, 0.6);
+}

@@ -1,0 +1,29 @@
+{
+  "cookies": [
+    {
+      "name": "i18next",
+      "value": "en-US",
+      "domain": "localhost",
+      "path": "/",
+      "expires": -1,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Strict"
+    }
+  ],
+  "origins": [
+    {
+      "origin": "http://localhost:8090",
+      "localStorage": [
+        {
+          "name": "i18nextLng",
+          "value": "en-US"
+        },
+        {
+          "name": "auth-storage",
+          "value": "{\"state\":{\"user\":{\"user\":{\"id\":\"anWfsvNdxxJ9AebK2MkMDIXqeWLWPaqtNNo\",\"username\":\"Superadmin\",\"email\":\"admin@zenith.local\",\"fullName\":\"Root Administrator\",\"isStaff\":true},\"session\":{\"companyId\":\"yD7i1ilGBhThJ4C2ndB3x1EWn1daIz1W\",\"businessUnitId\":\"JoaTteLJKCj8d3P7y5a0zLzrgmuWjJVX\",\"branchId\":\"7pv0lvh9NEqF9xy8Qz6mSSRpkTV0DmjK\"},\"permissions\":[]},\"isAuthenticated\":true,\"accessToken\":\"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxODE5NTI2OTkzLCJpYXQiOjE3ODc5OTA5OTMsImp0aSI6IjJhZjRiOTZiMzZlNjRkZmY5NThlM2QyMjI4NzAzZGYzIiwidXNlcl9pZCI6ImFuV2Zzdk5keHhKOUFlYksyTWtNRElYcWVXTFdQYXF0Tk5vIiwiY29tcGFueV9pZCI6InlEN2kxaWxHQmhUaEo0QzJuZEIzeDFFV24xZGFJejFXIiwiYnVzaW5lc3NfdW5pdF9pZCI6IkpvYVR0ZUxKS0NqOGQzUDd5NWEwekx6cmdtdVdqSlZYIiwiYnJhbmNoX2lkIjoiN3B2MGx2aDlORXFGOXh5OFF6Nm1TU1Jwa1RWMERtaksifQ.DtsIuZsCjPCZaA3WKa0asolNQ6A2bB0Do0jcJIXZE1I\",\"refreshToken\":\"eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoicmVmcmVzaCIsImV4cCI6MjY1ODkwMjk5MywiaWF0IjoxNzg3OTkwOTkzLCJqdGkiOiI5YmM4NTVmMTNjNWU0MzI2OGI2YWI2MmI2ZGQ1NjM4MiIsInVzZXJfaWQiOiJhbldmc3ZOZHh4SjlBZWJLMk1rTURJWHFlV0xXUGFxdE5ObyIsImNvbXBhbnlfaWQiOiJ5RDdpMWlsR0JoVGhKNEMybmRCM3gxRVduMWRhSXoxVyIsImJ1c2luZXNzX3VuaXRfaWQiOiJKb2FUdGVMSktDajhkM1A3eTVhMHpMenJnbXVXakpWWCIsImJyYW5jaF9pZCI6IjdwdjBsdmg5TkVxRjl4eThRejZtU1NScGtUVjBEbWpLIn0._tMTPOUVgyAjq6AKvHCEkrJ7SJfEEF1OAy_jJAt-SZ8\",\"tokenExpiry\":1819526993,\"sessionContext\":{\"company\":{\"id\":\"yD7i1ilGBhThJ4C2ndB3x1EWn1daIz1W\",\"name\":\"\",\"code\":\"\"},\"businessUnit\":{\"id\":\"JoaTteLJKCj8d3P7y5a0zLzrgmuWjJVX\",\"name\":\"\",\"code\":\"\",\"companyId\":\"yD7i1ilGBhThJ4C2ndB3x1EWn1daIz1W\"},\"branch\":{\"id\":\"7pv0lvh9NEqF9xy8Qz6mSSRpkTV0DmjK\",\"name\":\"\",\"code\":\"\",\"businessUnitId\":\"JoaTteLJKCj8d3P7y5a0zLzrgmuWjJVX\"},\"isStable\":false}},\"version\":0}"
+        }
+      ]
+    }
+  ]
+}

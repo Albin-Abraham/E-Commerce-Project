@@ -1,0 +1,17 @@
+{
+  "status": 200,
+  "message": "Auth fixture dataset",
+  "data": {
+    "user": {
+      "id": 101,
+      "email": "alex@zenos.io",
+      "username": "alex",
+      "role": "platform_admin",
+      "permissions": ["all"]
+    },
+    "tokens": {
+      "access": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE5OTk5OTk5OTksInVzZXJfaWQiOjEwMSwiZW1haWwiOiJhbGV4QHplbm9zLmlvIn0.signature",
+      "refresh": "mock-refresh-token-xyz-12345"
+    }
+  }
+}

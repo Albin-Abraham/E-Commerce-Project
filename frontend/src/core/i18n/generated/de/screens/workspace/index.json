@@ -1,0 +1,26 @@
+{
+  "actions": {
+    "launch": "Umgebung Starten",
+    "reset": "Auswahl Zurücksetzen"
+  },
+  "alerts": {
+    "ready": "Bereit zum Starten — Umgebung konfiguriert"
+  },
+  "fields": {
+    "branch": {
+      "label": "Filiale",
+      "placeholder": "Filiale auswählen…"
+    },
+    "businessUnit": {
+      "label": "Geschäftseinheit",
+      "placeholder": "Geschäftseinheit auswählen…"
+    },
+    "company": {
+      "createAction": "Unternehmen Erstellen +",
+      "label": "Unternehmen",
+      "placeholder": "Unternehmen auswählen…"
+    }
+  },
+  "subtitle": "Wählen Sie Ihr Unternehmen und Ihre Geschäftseinheit aus, um fortzufahren.",
+  "title": "Arbeitsbereichskonfiguration"
+}

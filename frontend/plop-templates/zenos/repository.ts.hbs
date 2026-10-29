@@ -1,0 +1,52 @@
+import { z } from "zod";
+import type { BaseHTTPClientService } from "@core/services";
+
+// Domain Model Schema
+export const {{pascalCase name}}Schema = z.object({
+  id: z.string().uuid(),
+  name: z.string(),
+  createdAt: z.string().datetime(),
+});
+
+export type {{pascalCase name}} = z.infer<typeof {{pascalCase name}}Schema>;
+
+/**
+ * {{pascalCase name}} Repository
+ * 
+ * Enforces strict DTO-to-Domain mapping. Decoupled from React UI rendering.
+ */
+export class {{pascalCase name}}Repository {
+  constructor(private http: BaseHTTPClientService) {}
+
+  /**
+   * Fetches all {{name}} records with strict runtime mapping and validation
+   */
+  async getAll(): Promise<{{pascalCase name}}[]> {
+    const response = await this.http.get<unknown[]>("/{{kebabCase name}}", {
+      transformResponse: { casing: "camel" },
+    });
+    return z.array({{pascalCase name}}Schema).parse(response.data);
+  }
+
+  /**
+   * Fetches a single {{name}} record by its identifier
+   */
+  async getById(id: string): Promise<{{pascalCase name}}> {
+    const response = await this.http.get<unknown>(`/{{kebabCase name}}/${id}`, {
+      transformResponse: { casing: "camel" },
+    });
+    return {{pascalCase name}}Schema.parse(response.data);
+  }
+  {{#if includeMutations}}
+
+  /**
+   * Creates a new {{name}} record
+   */
+  async create(data: Omit<{{pascalCase name}}, "id" | "createdAt">): Promise<{{pascalCase name}}> {
+    const response = await this.http.post<unknown>("/{{kebabCase name}}", data, {
+      transformResponse: { casing: "camel" },
+    });
+    return {{pascalCase name}}Schema.parse(response.data);
+  }
+  {{/if}}
+}

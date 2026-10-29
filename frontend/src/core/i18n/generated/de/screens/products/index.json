@@ -1,0 +1,65 @@
+{
+  "analytics": {
+    "activeListings": "Aktive Angebote",
+    "activeProducts": "Aktive Produkte",
+    "conversionRate": "Konversionsrate",
+    "engine": "Umsatz-Intelligence-Engine",
+    "grossSales": "Bruttoumsatz",
+    "marketShare": "Marktanteil",
+    "offline": "Offline",
+    "subtitle": "Echtzeit-Telemetrie für Bestand und Umsatz.",
+    "title": "Produktanalytik",
+    "topPerformers": "Top-Performer",
+    "totalRevenue": "Gesamtumsatz",
+    "variant": "Produktvariante Alpha-{{id}}",
+    "viewReport": "Vollständigen Bericht Anzeigen"
+  },
+  "detail": {
+    "error": "Fehler beim Laden der Produktmetadaten.",
+    "loading": "Produkt wird geladen...",
+    "retailPrice": "Verkaufspreis",
+    "title": "Produktspezifikationen"
+  },
+  "cart": {
+    "continueShopping": "Weiter Einkaufen",
+    "emptySubtitle": "Sieht so aus, als hätten Sie noch nichts hinzugefügt.",
+    "emptyTitle": "Ihr Warenkorb ist leer",
+    "free": "Kostenlos",
+    "itemsSecured": "{{count}} Artikel Gesichert",
+    "secureCheckout": "Sicherer Checkout",
+    "shipping": "Versand",
+    "sslSecured": "SSL-gesicherte 256-Bit-Verschlüsselung",
+    "subtotal": "Zwischensumme",
+    "title": "Ihr Warenkorb",
+    "total": "Gesamtsumme"
+  },
+  "catalog": {
+    "emptyState": "Keine Produkte entsprechen Ihrer Suchanfrage.",
+    "exportPdf": "Top 10 PDF Exportieren",
+    "generatingPdf": "PDF Wird Generiert...",
+    "searchPlaceholder": "Kollektionen durchsuchen...",
+    "subtitle": "Hochpräzise Industriehardware und Komponenten für Skalierbarkeit.",
+    "syncingState": "Der Katalog wird derzeit synchronisiert.",
+    "title": "Unsere Kollektionen",
+    "viewDetails": "Details Anzeigen"
+  },
+  "inventory": {
+    "inStock": "Auf Lager",
+    "initializeAudit": "Bestandsprüfung Initialisieren",
+    "liveInventory": "Live-Inventar",
+    "reorderLevel": "Nachbestellgrenze",
+    "sku": "SKU",
+    "title": "Lagerbestand"
+  },
+  "marketplace": {
+    "addToCart": "In den Warenkorb",
+    "connectionError": "Der Marktplatz konnte nicht mit der Core-Engine synchronisiert werden.",
+    "connectionFailure": "Verbindungsfehler",
+    "discovering": "{{total}} kuratierte Artikel für Ihren Shop werden entdeckt",
+    "productPolicy": "Produkt-Richtlinien",
+    "syncFeed": "Feed Synchronisieren",
+    "syncing": "Synchronisierung mit der Produkt-Engine...",
+    "taxInc": "Inkl. MwSt.",
+    "title": "Produkt-Marktplatz"
+  }
+}

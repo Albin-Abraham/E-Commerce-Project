@@ -1,0 +1,67 @@
+{
+  "about": {
+    "mission": "Nuestra Misión",
+    "missionText": "Capacitar a los desarrolladores para crear aplicaciones web empresariales con modularidad guiada por el dominio, tokens de diseño estrictos y cero compromisos en tiempo de ejecución.",
+    "subtitle": "Marco de aplicaciones empresariales distribuidas diseñado para sistemas web resilientes.",
+    "title": "Acerca de la Plataforma Zenith",
+    "version": "Versión de la Plataforma"
+  },
+  "createBranch": {
+    "badge": "Motor de Formularios MDAP • Gestión de Sucursales",
+    "loading": "Cargando Esquema de Sucursal...",
+    "subtitle": "Configure parámetros operativos localizados e identidad de red mediante MetaSchema canónico.",
+    "title": "Crear Sucursal Corporativa"
+  },
+  "debug": {
+    "description": "Utilice esta página para probar interacciones de formularios, reglas de validación y renderizado de diseño.",
+    "submit": "Enviar Formulario",
+    "title": "Depurador del Sistema de Formularios"
+  },
+  "formBuilder": {
+    "subtitle": "Diseñe formularios en lienzo o gestione manifiestos de diseño de rutas dirigidos por el servidor.",
+    "tabs": {
+      "canvas": "Lienzo del Constructor",
+      "schema": "Formulario de Esquema de Metadatos"
+    },
+    "title": "Estudio de Formularios y Esquemas ZenOS"
+  },
+  "multiStep": {
+    "footer": {
+      "cancel": "Cancelar",
+      "needHelp": "¿Necesita Ayuda?"
+    },
+    "instructionsList": {
+      "continuousValidation": "Su progreso se validará continuamente.",
+      "legalNames": "Asegúrese de que todos los nombres legales coincidan exactamente con su documento de identidad.",
+      "visaRequired": "Los datos de la visa son obligatorios para los no ciudadanos."
+    },
+    "launchBtn": "Iniciar Portal de Incorporación",
+    "portalTitle": "Portal de Incorporación de Empleados",
+    "tabs": {
+      "instructions": "Instrucciones y Políticas",
+      "wizard": "Asistente de Incorporación"
+    },
+    "welcomeText": "Complete su perfil de incorporación mediante el asistente. Asegúrese de tener a mano su documento de identidad oficial.",
+    "welcomeTitle": "¡Bienvenido al Equipo!"
+  },
+  "tableDemo": {
+    "addUser": "Agregar Usuario",
+    "bulk": {
+      "delete": "Eliminar Seleccionados",
+      "exportCsv": "Exportar Seleccionados (CSV)"
+    },
+    "exportFiltered": "Exportar Vista Filtrada",
+    "exportModal": {
+      "failed": "Error en la Exportación",
+      "processing": "Exportando...",
+      "ready": "Exportación Lista"
+    },
+    "subtitle": "Gestione los detalles de la nómina de su equipo en un solo lugar.",
+    "title": "Gestión de Nóminas",
+    "views": {
+      "board": "Tablero",
+      "list": "Lista",
+      "table": "Tabla"
+    }
+  }
+}

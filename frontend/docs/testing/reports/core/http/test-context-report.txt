@@ -1,0 +1,103 @@
+################################################################################
+# DOMAIN TEST CONTEXT REPORT: CORE/HTTP
+# Domain Key:          core/http
+# Layer Group:         Core
+# Report File:         http.core-test-report.txt
+# Generated At:        2026-09-26T21:01:59.277Z
+# Total Test Suites:   3
+# Tracked Issues (1):  FEAT-CORE-HTTP
+# Defended Bugs (2):   BUG-DETAIL-ENVELOPE; Defect Guard: Backend Detail Envelope Unwrapping
+################################################################################
+
+================================================================================
+TEST FILE:             src/core/http/__tests__/http.error.test.ts
+ARCH LAYER:            Domain
+DOMAIN:                core/http
+TARGET:                http.error
+HARNESS:               Pure Vitest (Zero Mocks, Zero DOM)
+FIXTURES:              None
+TRACKED ISSUES:        None
+BUGS & DEFECTS:        None
+TAGS:                  None
+--------------------------------------------------------------------------------
+PRIMARY RESPONSIBILITY:
+Validates behavioral invariants for HttpError & ApiErrorParser Backend Compatibility.
+
+TEST SUITES & SCENARIOS:
+- describe("HttpError & ApiErrorParser Backend Compatibility")
+  • it("parses DEBUG=False ResponseFactory.envelope format with meta")
+  • it("parses DEBUG=True PlatformException structure with meta")
+  • it("extracts direct field errors from metadata when field_errors key is omitted (DRF debug mode)")
+
+HTTP / MSW INTERACTIONS:
+None
+================================================================================
+
+================================================================================
+TEST FILE:             src/core/http/__tests__/http.response.factory.test.ts
+ARCH LAYER:            Domain
+DOMAIN:                core/http
+TARGET:                http.response.factory
+HARNESS:               Pure Vitest (Zero Mocks, Zero DOM)
+FIXTURES:              None
+TRACKED ISSUES:        FEAT-CORE-HTTP
+BUGS & DEFECTS:        BUG-DETAIL-ENVELOPE; Defect Guard: Backend Detail Envelope Unwrapping
+TAGS:                  None
+--------------------------------------------------------------------------------
+PRIMARY RESPONSIBILITY:
+HTTP Response Factory & Envelope Unwrapping Test Suite
+Validates backend envelope compatibility across:
+1. Raw JSON payloads with { status, message, detail: [...] }
+
+TEST SUITES & SCENARIOS:
+- describe("ResponseFactory")
+- describe("UnWrap")
+  • it("unwraps backend detail envelope from raw JSON")
+  • it("unwraps backend detail envelope from HttpResponse object")
+  • it("unwraps standard data envelope: { success: true, data: [...] }")
+  • it("unwraps results envelope from DRF")
+  • it("preserves casing when casing is set to ")
+  • it("handles plain arrays directly")
+  • it("extracts custom dataPath when specified")
+- describe("ResponseParser.parsePaginated")
+  • it("extracts items from detail envelope")
+  • it("extracts items from results envelope")
+- describe("ResponseParser.parseEnvelope")
+  • it("extracts data from detail envelope")
+
+HTTP / MSW INTERACTIONS:
+None
+================================================================================
+
+================================================================================
+TEST FILE:             src/core/http/__tests__/http.transformer.test.ts
+ARCH LAYER:            Domain
+DOMAIN:                core/http
+TARGET:                http.transformer
+HARNESS:               Pure Vitest (Zero Mocks, Zero DOM)
+FIXTURES:              None
+TRACKED ISSUES:        None
+BUGS & DEFECTS:        Defect Guard: Backend Detail Envelope Unwrapping
+TAGS:                  None
+--------------------------------------------------------------------------------
+PRIMARY RESPONSIBILITY:
+Validates behavioral invariants for HttpTransformer.
+
+TEST SUITES & SCENARIOS:
+- describe("HttpTransformer")
+- describe("toCamelCase")
+  • it("should correctly convert snake_case keys to camelCase")
+- describe("toSnakeCase")
+  • it("should correctly convert camelCase keys to snake_case for outgoing payloads")
+- describe("unwrapEnvelope")
+  • it("should unwrap a standard B2B API envelope containing ")
+  • it("should fallback gracefully if ")
+  • it("should return the raw response if no envelope is detected")
+  • it("should unwrap backend detail envelope: { status, message, detail }")
+  • it("should unwrap Django/paginated results envelope: { results, count }")
+  • it("should unwrap items envelope: { items, total }")
+
+HTTP / MSW INTERACTIONS:
+None
+================================================================================
+

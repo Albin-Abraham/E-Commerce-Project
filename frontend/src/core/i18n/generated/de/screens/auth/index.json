@@ -1,0 +1,70 @@
+{
+  "brand": {
+    "title": "ZenOS",
+    "slides": {
+      "slide1": {
+        "allocations": "Aktive Arbeitsbereiche",
+        "description": "ZenOS bietet Ihnen eine einheitliche Kommandozentrale mit umfassender Telemetrie und 360°-Sicht auf Ihr gesamtes Unternehmen.",
+        "growth": "Systemdurchsatz",
+        "title": "Einheitliche Plattform für intelligente Industrieabläufe",
+        "yield": "Echtzeit-Telemetrie-Engine"
+      },
+      "slide2": {
+        "branches": "42 Aktive Niederlassungen",
+        "deployments": "Kürzliche Bereitstellungen",
+        "description": "Überwachen Sie weltweite Niederlassungsleistung, Lieferkettenflüsse und operative Echtzeit-Metriken in Ihrem gesamten Unternehmen nahtlos.",
+        "efficiency": "Effizienz-Score",
+        "nodes": "Globale Knoten",
+        "title": "Intelligente Niederlassungs- und Logistikorchestrierung"
+      },
+      "slide3": {
+        "description": "Basierend auf Zero-Trust-Prinzipien mit automatisierter Compliance-Prüfung für absolute Sicherheit Ihrer geschützten Daten.",
+        "encrypted": "Ende-zu-Ende-Verschlüsselt",
+        "title": "Militärische Sicherheit und Souveräne Compliance",
+        "zeroTrust": "Zero Trust"
+      }
+    }
+  },
+  "common": {
+    "confirmPassword": "Passwort Bestätigen",
+    "confirmPasswordPlaceholder": "Bestätigen Sie Ihr Passwort",
+    "divider": "Oder fortfahren mit",
+    "emailPlaceholder": "Geben Sie Ihre E-Mail-Adresse ein",
+    "footer": "© {{year}} ZenOS-Plattform. Alle Rechte vorbehalten",
+    "namePlaceholder": "Geben Sie Ihren vollständigen Namen ein",
+    "passwordPlaceholder": "Geben Sie Ihr Passwort ein",
+    "privacy": "Datenschutz",
+    "signInTab": "Anmelden",
+    "signUpTab": "Registrieren",
+    "socialAuth": "Soziale Authentifizierung",
+    "terms": "AGB"
+  },
+  "login": {
+    "email": "E-Mail-Adresse",
+    "header": "Willkommen bei ZenOS",
+    "password": "Passwort",
+    "submit": "Anmelden",
+    "subtitle": "Melden Sie sich an, um fortzufahren.",
+    "switchRegister": "Sie haben noch kein Konto? Registrieren",
+    "title": "Willkommen zurück"
+  },
+  "override": {
+    "roles": {
+      "admin": "Plattform-Administrator",
+      "auditor": "Sicherheitsprüfer",
+      "operator": "Systemoperator"
+    },
+    "subtitle": "Wählen Sie eine vorkonfigurierte Rolle oder geben Sie ein benutzerdefiniertes Token für Tests an.",
+    "title": "Authentifizierung / Rollenüberschreibung"
+  },
+  "register": {
+    "email": "Geschäftliche E-Mail",
+    "header": "Willkommen bei ZenOS",
+    "name": "Vollständiger Name",
+    "password": "Passwort",
+    "submit": "Konto Erstellen",
+    "subtitle": "Erstellen Sie Ihr Konto, um zu beginnen.",
+    "switchLogin": "Sie haben bereits ein Konto? Anmelden",
+    "title": "Konto Erstellen"
+  }
+}

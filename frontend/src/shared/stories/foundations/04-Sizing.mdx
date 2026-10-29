@@ -1,0 +1,59 @@
+import { Meta } from "@storybook/addon-docs/blocks";
+
+<Meta title="01 — Foundations / 📐 Sizing" />
+
+# 📐 Sizing
+
+Sizing defines the scale of interactive targets, icons, avatars, inputs, and container boundaries.
+
+---
+
+## 01 — Principles
+
+### 1. Touch Target Accessibility
+Every interactive target (button, checkbox, switch, link) must have a minimum target size of at least **44x44px** (WCAG 2.5.5 / 2.5.8 Target Size).
+
+### 2. Fluid vs Fixed Sizing
+- Form controls use fluid width (`w-full`) constrained by max-width containers.
+- Heights are governed by density tokens (`compact: 32px`, `comfortable: 40px`, `spacious: 52px`).
+
+---
+
+## 02 — Specification
+
+| Token | Dimension | Role |
+| :--- | :---: | :--- |
+| `sizing.xs` | `24px` | Small badges, sub-icons |
+| `sizing.sm` | `32px` | Compact button/input height |
+| `sizing.md` | `40px` | Comfortable standard control height |
+| `sizing.lg` | `48px` | Spacious button height, avatars |
+| `sizing.xl` | `56px` | Large modal headers, hero inputs |
+| `sizing.container.lg` | `1024px` | Standard page reading width |
+| `sizing.container.xl` | `1280px` | Wide dashboard container |
+
+---
+
+## 03 — Tokens
+
+Defined in `tokens/primitives/sizing.json`:
+```json
+{
+  "primitives": {
+    "sizing": {
+      "sm": { "$value": "2rem", "$type": "dimension" },
+      "md": { "$value": "2.5rem", "$type": "dimension" }
+    }
+  }
+}
+```
+
+---
+
+## 04 — Implementation
+
+### CSS Custom Properties
+```css
+--size-sm: 2rem;
+--size-md: 2.5rem;
+--size-container-lg: 1024px;
+```

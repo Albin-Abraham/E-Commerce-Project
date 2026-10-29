@@ -1,0 +1,100 @@
+{
+  "semantic": {
+    "color": {
+      "background": {
+        "$value": "{primitives.color.neutral.100}",
+        "$type": "color",
+        "$description": "Root page background color"
+      },
+      "foreground": {
+        "$value": "{primitives.color.neutral.900}",
+        "$type": "color",
+        "$description": "Primary high-contrast foreground text color"
+      },
+      "text": {
+        "$value": "{semantic.color.foreground}",
+        "$type": "color"
+      },
+      "surface": {
+        "$value": "#ffffff",
+        "$type": "color",
+        "$description": "Card, panel, and input container surface"
+      },
+      "surfaceElevated": {
+        "$value": "#ffffff",
+        "$type": "color",
+        "$description": "Dropdowns, popovers, and elevated modal panels"
+      },
+      "muted": {
+        "$value": "{primitives.color.neutral.600}",
+        "$type": "color",
+        "$description": "Muted secondary descriptive text"
+      },
+      "disabled": {
+        "$value": "{primitives.color.neutral.300}",
+        "$type": "color",
+        "$description": "Disabled input fill and text"
+      },
+      "subtle": {
+        "$value": "{primitives.color.neutral.50}",
+        "$type": "color",
+        "$description": "Subtle fill for filled inputs and table alternating rows"
+      },
+      "border": {
+        "$value": "{primitives.color.neutral.300}",
+        "$type": "color",
+        "$description": "Default structural borders"
+      },
+      "borderSoft": {
+        "$value": "{primitives.color.neutral.200}",
+        "$type": "color"
+      },
+      "borderStrong": {
+        "$value": "{primitives.color.neutral.500}",
+        "$type": "color"
+      },
+      "primary": {
+        "$value": "{primitives.color.primary.600}",
+        "$type": "color",
+        "$description": "Brand primary interactive and focus color"
+      },
+      "primaryForeground": {
+        "$value": "#ffffff",
+        "$type": "color"
+      },
+      "secondary": {
+        "$value": "{primitives.color.secondary.500}",
+        "$type": "color"
+      },
+      "secondaryForeground": {
+        "$value": "#ffffff",
+        "$type": "color"
+      },
+      "accent": {
+        "$value": "{primitives.color.accent.500}",
+        "$type": "color"
+      },
+      "success": {
+        "$value": "{primitives.color.success.600}",
+        "$type": "color"
+      },
+      "warning": {
+        "$value": "{primitives.color.warning.600}",
+        "$type": "color"
+      },
+      "danger": {
+        "$value": "{primitives.color.danger.600}",
+        "$type": "color",
+        "$description": "Validation errors and destructive actions"
+      },
+      "error": {
+        "$value": "{semantic.color.danger}",
+        "$type": "color"
+      },
+      "info": {
+        "$value": "{primitives.color.info.600}",
+        "$type": "color"
+      }
+    }
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "primitives": {
+    "zIndex": {
+      "hide": { "$value": "-1", "$type": "dimension" },
+      "auto": { "$value": "auto", "$type": "dimension" },
+      "base": { "$value": "0", "$type": "dimension" },
+      "dropdown": { "$value": "1000", "$type": "dimension" },
+      "sticky": { "$value": "1100", "$type": "dimension" },
+      "header": { "$value": "1200", "$type": "dimension" },
+      "overlay": { "$value": "1300", "$type": "dimension" },
+      "modal": { "$value": "1400", "$type": "dimension" },
+      "popover": { "$value": "1500", "$type": "dimension" },
+      "toast": { "$value": "1600", "$type": "dimension" },
+      "tooltip": { "$value": "1700", "$type": "dimension" }
+    }
+  }
+}

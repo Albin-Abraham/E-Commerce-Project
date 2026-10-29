@@ -1,0 +1,61 @@
+import { Meta } from "@storybook/addon-docs/blocks";
+
+<Meta title="01 — Foundations / 🔢 Z-Index" />
+
+# 🔢 Z-Index
+
+Z-Index establishes the vertical stacking order of overlapping surfaces, navigation, modals, and overlays.
+
+---
+
+## 01 — Principles
+
+### 1. Zero Arbitrary Stacking
+No component may introduce ad-hoc values like `z-index: 9999` or `z-index: 999999`. All stacking orders must reference the established z-index layer scale.
+
+### 2. Contextual Isolation
+Portaled elements (modals, tooltips, dialogs) mount at the root body layer to prevent parent `overflow: hidden` clipping.
+
+---
+
+## 02 — Specification
+
+| Layer Token | Value | Primary Role |
+| :--- | :---: | :--- |
+| `zIndex.hide` | `-1` | Hidden beneath background |
+| `zIndex.base` | `0` | Default document canvas |
+| `zIndex.dropdown` | `1000` | Floating select & action menus |
+| `zIndex.sticky` | `1100` | Sticky table headers, local banners |
+| `zIndex.header` | `1200` | Global fixed navigation bar |
+| `zIndex.overlay` | `1300` | Backdrop shading |
+| `zIndex.modal` | `1400` | Modal dialogs |
+| `zIndex.popover` | `1500` | Floating context popovers |
+| `zIndex.toast` | `1600` | Floating alert toasts |
+| `zIndex.tooltip` | `1700` | Topmost hover tooltips |
+
+---
+
+## 03 — Tokens
+
+Defined in `tokens/primitives/z-index.json`:
+```json
+{
+  "primitives": {
+    "zIndex": {
+      "modal": { "$value": "1400", "$type": "dimension" },
+      "toast": { "$value": "1600", "$type": "dimension" }
+    }
+  }
+}
+```
+
+---
+
+## 04 — Implementation
+
+```tsx
+<div className="fixed inset-0 bg-black/60 z-[var(--z-overlay)] backdrop-blur-sm" />
+<div className="fixed inset-x-0 top-20 z-[var(--z-modal)] mx-auto max-w-lg bg-surface p-6 rounded-xl shadow-xl">
+  <Heading level={2}>Modal Dialog</Heading>
+</div>
+```

@@ -1,0 +1,70 @@
+{
+  "brand": {
+    "title": "ZenOS",
+    "slides": {
+      "slide1": {
+        "allocations": "Espacios de Trabajo Activos",
+        "description": "ZenOS le brinda un centro de comando unificado, ofreciendo telemetría profunda y una vista de 360° de toda su organización.",
+        "growth": "Rendimiento del Sistema",
+        "title": "Centro Unificado para Operaciones Industriales Inteligentes",
+        "yield": "Motor de Telemetría en Tiempo Real"
+      },
+      "slide2": {
+        "branches": "42 Sucursales Activas",
+        "deployments": "Despliegues Recientes",
+        "description": "Supervise el rendimiento global de sucursales, flujo de cadena de suministro y métricas operativas en tiempo real en toda su organización sin problemas.",
+        "efficiency": "Puntuación de Eficiencia",
+        "nodes": "Nodos Globales",
+        "title": "Orquestación Inteligente de Sucursales y Logística"
+      },
+      "slide3": {
+        "description": "Construido sobre principios de confianza cero con auditoría de cumplimiento automatizada para garantizar que sus datos permanezcan absolutamente seguros.",
+        "encrypted": "Cifrado de Extremo a Extremo",
+        "title": "Seguridad de Grado Militar y Cumplimiento Soberano",
+        "zeroTrust": "Confianza Cero"
+      }
+    }
+  },
+  "common": {
+    "confirmPassword": "Confirmar Contraseña",
+    "confirmPasswordPlaceholder": "Confirme su contraseña",
+    "divider": "O continúe con",
+    "emailPlaceholder": "Ingrese su correo electrónico",
+    "footer": "© {{year}} Plataforma ZenOS. Todos los Derechos Reservados",
+    "namePlaceholder": "Ingrese su nombre completo",
+    "passwordPlaceholder": "Ingrese su contraseña",
+    "privacy": "Privacidad",
+    "signInTab": "Iniciar Sesión",
+    "signUpTab": "Registrarse",
+    "socialAuth": "Autenticación Social",
+    "terms": "Términos"
+  },
+  "login": {
+    "email": "Correo Electrónico",
+    "header": "Bienvenido a ZenOS",
+    "password": "Contraseña",
+    "submit": "Iniciar Sesión",
+    "subtitle": "Inicie sesión en su cuenta para continuar.",
+    "switchRegister": "¿No tiene una cuenta? Regístrese",
+    "title": "Bienvenido de Nuevo"
+  },
+  "override": {
+    "roles": {
+      "admin": "Administrador de la Plataforma",
+      "auditor": "Auditor de Seguridad",
+      "operator": "Operador del Sistema"
+    },
+    "subtitle": "Seleccione un rol preconfigurado o proporcione un token personalizado para pruebas.",
+    "title": "Autenticación / Anulación de Rol"
+  },
+  "register": {
+    "email": "Correo Electrónico de Trabajo",
+    "header": "Bienvenido a ZenOS",
+    "name": "Nombre Completo",
+    "password": "Contraseña",
+    "submit": "Crear Cuenta",
+    "subtitle": "Cree su cuenta para comenzar.",
+    "switchLogin": "¿Ya tiene una cuenta? Inicie sesión",
+    "title": "Crear Cuenta"
+  }
+}
