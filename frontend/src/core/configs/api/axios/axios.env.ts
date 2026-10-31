@@ -160,7 +160,7 @@ export const createApiEnvironments = (env: EnvProvider) => ({
    * moderate retry attempts for debugging.
    */
   development: {
-    baseURL: env.get("VITE_API_URL"),
+    baseURL: env.get("VITE_API_URL") || "/api/v1",
     timeout: parseNumber(env.get("VITE_API_TIMEOUT"), 8000),
     interceptorConfig: {
       enableRequestLogs: parseBoolean(
@@ -192,7 +192,7 @@ export const createApiEnvironments = (env: EnvProvider) => ({
    * conservative retry attempts.
    */
   production: {
-    baseURL: env.get("VITE_API_URL"),
+    baseURL: env.get("VITE_API_URL") || "/api/v1",
     timeout: parseNumber(env.get("VITE_API_TIMEOUT"), 15000),
     interceptorConfig: {
       enableRequestLogs: false,
@@ -215,7 +215,7 @@ export const createApiEnvironments = (env: EnvProvider) => ({
    * and moderate retry attempts.
    */
   staging: {
-    baseURL: env.get("VITE_API_URL"),
+    baseURL: env.get("VITE_API_URL") || "/api/v1",
     timeout: parseNumber(env.get("VITE_API_TIMEOUT"), 10000),
     interceptorConfig: {
       enableRequestLogs: true,
@@ -238,7 +238,7 @@ export const createApiEnvironments = (env: EnvProvider) => ({
    * no retries, and fast timeouts.
    */
   testing: {
-    baseURL: env.get("VITE_API_URL"),
+    baseURL: env.get("VITE_API_URL") || "/api/v1",
     timeout: parseNumber(env.get("VITE_API_TIMEOUT"), 5000),
     interceptorConfig: {
       enableRequestLogs: false,
