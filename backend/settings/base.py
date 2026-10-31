@@ -180,44 +180,16 @@ CELERY_TASK_RATE_LIMIT = env.str("CELERY_TASK_RATE_LIMIT", default="50/m")
 
 
 # --- OpenAPI / Swagger Configuration ---
-# SPECTACULAR_SETTINGS = {
-#     'TITLE': 'Zenith Healthcare Platform API',
-#     'DESCRIPTION': (
-#         'Industrialized Backend-RestFul architecture featuring '
-#         'Multi-tenant context, Rules Engine validation, and '
-#         'Hybrid JWT/Session authentication.'
-#     ),
-#     'VERSION': '1.0.0',
-#     'SERVE_INCLUDE_SCHEMA': False,
-#     'SERVE_PERMISSIONS': ['rest_framework.permissions.AllowAny'],
-#     'SERVE_AUTHENTICATION': [],
-#     'COMPONENT_SPLIT_PATCH': True,
-#     'COMPONENT_SPLIT_REQUEST': True,
-#     'SECURITY': [
-#         {'jwtAuth': []},
-#         {'SessionAuth': []},
-#         {'csrfAuth': []},
-#     ],
-#     'APPEND_COMPONENTS': {
-#         'securitySchemes': {
-#             'jwtAuth': {
-#                 'type': 'http',
-#                 'scheme': 'bearer',
-#                 'bearerFormat': 'JWT',
-#             },
-#             'SessionAuth': {
-#                 'type': 'apiKey',
-#                 'in': 'cookie',
-#                 'name': 'sessionid',
-#             },
-#             'csrfAuth': {
-#                 'type': 'apiKey',
-#                 'in': 'header',
-#                 'name': 'X-CSRFToken',
-#             },
-#         }
-#     },
-# }
+SPECTACULAR_SETTINGS = {
+    "TITLE": "ZenOS Unified Commerce API",
+    "DESCRIPTION": (
+        "Modular Monolith architecture for Omnichannel E-Commerce, POS, "
+        "Procurement, Inventory, and Financial Accounting featuring "
+        "Multi-Tenant Context, Rules Engine validation, and "
+        "Hybrid JWT/Session authentication."
+    ),
+    "VERSION": "1.0.0",
+}
 AUTHENTICATION_BACKENDS = [
     "core.admin.authentication.MultiFieldAuthBackend",
     "django.contrib.auth.backends.ModelBackend",

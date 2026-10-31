@@ -1,4 +1,4 @@
-# SaaS Platform Overview
+# ZenOS Unified Commerce Platform
 
 ## Architecture Pattern
 *   **Container-Oriented Modular Monolith**
@@ -13,7 +13,6 @@
 | **Async** | Celery |
 | **Broker** | Redis |
 | **Primary DB** | PostgreSQL |
-| **Legacy DB** | MySQL |
 | **Admin Panel** | Django Admin + Adminer |
 | **Scheduler** | Celery Beat |
 | **Monitoring** | Flower |

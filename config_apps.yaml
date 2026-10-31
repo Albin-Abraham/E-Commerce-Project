@@ -1,4 +1,13 @@
 discovered_apps:
-- apps.users
+- apps.knowledgebase
+- apps.accounting
+- apps.procurement_pos
+- apps.core_documents
+- apps.payments
 - apps.shop
-total_count: 2
+- apps.customers
+- apps.users
+- apps.access_control
+- core.admin
+- core.base_models
+total_count: 11

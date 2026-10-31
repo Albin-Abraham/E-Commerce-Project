@@ -1,4 +1,4 @@
-APP_NAME=backend-restful
+APP_NAME=zenos-commerce
 COMPOSE=docker compose
 ENV?=dev
 ENV_FILE=.env
