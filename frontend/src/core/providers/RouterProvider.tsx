@@ -50,6 +50,9 @@ const TestMultiStepFormModel = React.lazy(
 const TableDemoPage = React.lazy(
   () => import("@pages/static-pages/TableDemoPage")
 );
+const DetailShowcasePage = React.lazy(
+  () => import("@pages/static-pages/DetailShowcasePage")
+);
 
 import { useTranslation } from "react-i18next";
 
@@ -221,6 +224,16 @@ function buildBaseRoutes(): AppRoute[] {
                   "[Kernel: onLeave] Disposing Table Physics memory and active Workers."
                 );
               },
+            },
+            {
+              id: "showcase.detail",
+              path: AppPaths.Showcase.Detail.replace(
+                AppPaths.Showcase.Root + "/",
+                ""
+              ),
+              label: "Detail Renderer",
+              breadcrumb: "Detail Renderer",
+              page: DetailShowcasePage,
             },
           ],
         },

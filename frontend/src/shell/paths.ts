@@ -15,6 +15,7 @@ export const AppPaths = {
     Branch: "/showcase/branch",
     Wizard: "/showcase/wizard",
     Table: "/showcase/table",
+    Detail: "/showcase/detail",
   },
   Account: {
     Root: "/account",

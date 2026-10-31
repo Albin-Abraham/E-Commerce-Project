@@ -28,6 +28,73 @@ class SupplierViewSet(BaseAPIView):
     )
 
 
+class VendorRegistrationView(BaseAPIView):
+    """
+    Public Endpoint for Self-Registration of B2B Vendors & Suppliers.
+    """
+
+    entity_name = "Supplier Registration"
+    http_method_names = ["post"]
+    permission_classes = []
+    authentication_classes = []
+
+    def post(self, request, *args, **kwargs):
+        from apps.procurement_pos.services.vendor_registration_service import (
+            VendorRegistrationService,
+        )
+
+        company_name = request.data.get("company_name")
+        representative_name = (
+            request.data.get("name")
+            or request.data.get("representative_name")
+            or request.data.get("full_name")
+            or company_name
+        )
+        email = request.data.get("email")
+        password = request.data.get("password")
+        username = request.data.get("username")
+        tax_id = request.data.get("tax_id")
+        phone = request.data.get("phone")
+        address = request.data.get("address")
+        category = request.data.get("category", "DISTRIBUTOR")
+
+        if not company_name or not email or not password:
+            return ResponseFactory.error(
+                message="Company name, email, and password are required.",
+                status_code=status.HTTP_400_BAD_REQUEST,
+            )
+
+        try:
+            user, supplier = VendorRegistrationService.register_vendor(
+                company_name=company_name,
+                representative_name=representative_name,
+                email=email,
+                username=username,
+                password=password,
+                tax_id=tax_id,
+                phone=phone,
+                address=address,
+                category=category,
+            )
+            return ResponseFactory.success(
+                data={
+                    "user_id": str(user.id),
+                    "username": user.username,
+                    "supplier_id": str(supplier.id),
+                    "supplier_code": supplier.code,
+                    "company_name": supplier.name,
+                },
+                message=f"Vendor '{supplier.name}' registered successfully!",
+                status_code=status.HTTP_201_CREATED,
+            )
+        except ValueError as exc:
+            return ResponseFactory.error(
+                message=str(exc),
+                status_code=status.HTTP_400_BAD_REQUEST,
+            )
+
+
+
 class PurchaseOrderViewSet(BaseAPIView):
     """
     Purchase Order API ViewSet.

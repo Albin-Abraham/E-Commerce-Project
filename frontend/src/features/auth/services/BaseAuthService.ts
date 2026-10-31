@@ -163,6 +163,20 @@ export class BaseAuthService implements IAuthClass {
     }
   }
 
+  public async registerVendor(data: Record<string, any>): Promise<any> {
+    try {
+      const response = await this.repository.registerVendor(data);
+      const identifier = data.email || data.username;
+      if (identifier && data.password) {
+        return await this.login({ email: identifier, password: data.password });
+      }
+      return response;
+    } catch (err) {
+      this.clearTokens();
+      throw ApiErrorParser.from(err);
+    }
+  }
+
   public async getCurrentUser(): Promise<AuthUser> {
     try {
       const user = await this.repository.getCurrentUser();

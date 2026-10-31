@@ -45,6 +45,23 @@ export const AuthValidationRules = {
         },
       ],
     } as ValidationSettings,
+
+    company_name: {
+      rules: [
+        { type: "required", message: "Company name is required" },
+        {
+          type: "min",
+          value: 2,
+          message: "Company name must be at least 2 characters",
+        },
+      ],
+    } as ValidationSettings,
+
+    tax_id: {
+      rules: [
+        { type: "required", message: "Tax / VAT / GST ID is required" },
+      ],
+    } as ValidationSettings,
   },
 
   // ── Event Handlers (Side Effects / Transformers) ──────────────────────────

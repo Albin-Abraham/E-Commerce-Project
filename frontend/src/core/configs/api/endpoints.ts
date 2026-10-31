@@ -7,6 +7,7 @@ export const ApiEndpoints = {
   Auth: {
     Login: "/api/v1/auth/login/",
     Register: "/api/v1/auth/register/",
+    VendorRegister: "/api/v1/procurement/suppliers/register/",
     ForgotPassword: "/api/v1/auth/forgot-password/",
     Logout: "/api/v1/auth/logout/",
     Me: "/api/v1/auth/profile/",

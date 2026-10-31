@@ -5,6 +5,9 @@ import { AppPaths } from "@shell/paths";
 
 // Public Pages
 const About = React.lazy(() => import("@pages/static-pages/About"));
+const DetailShowcasePage = React.lazy(
+  () => import("@pages/static-pages/DetailShowcasePage")
+);
 
 /**
  * Shared Public Routes
@@ -19,6 +22,11 @@ export const sharedPublicRoutes: AppRoute[] = [
     path: AppPaths.About,
     page: About,
     // Add layout: RootLayout here if you want it applied to the About page everywhere!
+  },
+  {
+    id: "showcase.detail",
+    path: AppPaths.Showcase.Detail,
+    page: DetailShowcasePage,
   },
   // In the future, add Pricing, Privacy Policy, Terms of Service, etc., here.
 ];

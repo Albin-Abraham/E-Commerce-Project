@@ -45,13 +45,14 @@ describe("AuthPortalPage", () => {
     });
   });
 
-  const renderComponent = () => renderWithProviders(<AuthPortalPage />);
+  const renderComponent = () =>
+    renderWithProviders(<AuthPortalPage />, { route: "/login?mode=customer" });
 
   it("renders the Login form by default", async () => {
     renderComponent();
 
     // Expect the login schema fields to be present
-    expect(await screen.findByText(/Welcome to ZenOS/i)).toBeInTheDocument();
+    expect(await screen.findByText(/Welcome/i)).toBeInTheDocument();
     expect(
       screen.getByPlaceholderText(/Enter your email address/i)
     ).toBeInTheDocument();

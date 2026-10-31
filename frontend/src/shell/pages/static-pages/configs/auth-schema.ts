@@ -79,25 +79,49 @@ export function compileEntityToFormDef<T extends Record<string, any>>(
 export const buildLoginSchema = (
   toggleProps?: AuthModeToggleProps,
   t?: AuthTranslator
-) =>
-  compileEntityToFormDef(
+) => {
+  const persona = toggleProps?.persona || "customer";
+  const defaultLabel =
+    persona === "staff"
+      ? "Authorize & Sign In"
+      : persona === "partner"
+      ? "Partner Sign In"
+      : t
+      ? t("login.submit")
+      : "Sign In";
+
+  const formId = persona === "customer" ? "auth-login" : `auth-login-${persona}`;
+
+  return compileEntityToFormDef(
     buildLoginEntity(toggleProps || { mode: "login", onModeChange: () => {} }, t),
-    "auth-login",
-    t ? t("login.submit") : "Sign In"
+    formId,
+    defaultLabel
   );
+};
 
 export const buildSignupSchema = (
   toggleProps?: AuthModeToggleProps,
   t?: AuthTranslator
-) =>
-  compileEntityToFormDef(
+) => {
+  const persona = toggleProps?.persona || "customer";
+  const defaultLabel =
+    persona === "partner"
+      ? "Complete Vendor Registration"
+      : t
+      ? t("register.submit")
+      : "Create Account";
+
+  const formId = persona === "customer" ? "auth-signup" : `auth-signup-${persona}`;
+
+  return compileEntityToFormDef(
     buildSignupEntity(
       toggleProps || { mode: "signup", onModeChange: () => {} },
       t
     ),
-    "auth-signup",
-    t ? t("register.submit") : "Create Account"
+    formId,
+    defaultLabel
   );
+};
 
 export const buildForgotPasswordSchema = (
   toggleProps?: AuthModeToggleProps,

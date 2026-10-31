@@ -1,13 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
-import { useNavigate, useLocation } from "react-router-dom";
-
 import { ApiErrorParser } from "@core/http";
-import { AppPaths } from "@shell/paths";
 import { Form } from "@ui/form/Form";
-
 import { toastError, toastSuccess } from "@shared/ui/Toast";
-
 import { useAuth } from "@shared/hooks/auth/useAuth";
 
 import {
@@ -15,66 +10,120 @@ import {
   buildSignupSchema,
   buildForgotPasswordSchema,
 } from "./configs/auth-schema";
-import type { AuthMode, AuthModeToggleProps } from "./configs/auth-types";
+import type { AuthModeToggleProps } from "./configs/auth-types";
+import { useAuthPersona } from "./hooks/useAuthPersona";
+import { useAuthNavigation } from "./hooks/useAuthNavigation";
+import { AuthPortalHeader } from "./components/auth-portal/AuthPortalHeader";
+import { PersonaSelectionView } from "./components/auth-portal/PersonaSelectionView";
+import { AuthPortalFooter } from "./components/auth-portal/AuthPortalFooter";
 
 /**
- * AuthPortalPage — Flagship Login, Register & Forgot Password Showcase
+ * AuthPortalPage — Unified Multi-Persona Authentication Portal
  *
- * Uses the ZenOS Form Architecture and MDAP Entity compilation for all
- * identity flows. Zero ad-hoc form HTML or unmanaged state.
+ * 2-Level Routing Architecture:
+ * - Level 1: /login (no mode param) -> PersonaSelectionView (NO auth form rendered!)
+ * - Level 2: /login?mode=customer|partner|staff -> Dedicated 50:50 Auth Surface
+ *
+ * Powered by ZenOS Clean Architecture:
+ * - Backed by PlatformUrlPort & PlatformUrlAdapters (UrlSyncPlatform)
+ * - Push history on deliberate persona selection (replace: false)
+ * - Replace history on automatic redirects & normalization (replace: true)
  */
 const AuthPortalPage: React.FC = () => {
   const { t } = useTranslation("screens/auth");
-  const { login, register, forgotPassword } = useAuth();
-  const navigate = useNavigate();
-  const location = useLocation();
+  const { login, register, registerVendor, forgotPassword } = useAuth();
 
-  const getInitialMode = (pathname: string): AuthMode => {
-    if (pathname === AppPaths.Register) return "signup";
-    if (pathname === AppPaths.ForgotPassword) return "forgot-password";
-    return "login";
-  };
+  // 1. Synchronize Persona with UrlSyncPlatform
+  const {
+    persona,
+    config,
+    isPersonaSelection,
+    selectPersona,
+    clearPersona,
+    urlPort,
+  } = useAuthPersona();
 
-  const [mode, setMode] = useState<AuthMode>(() => getInitialMode(location.pathname));
+  // 2. Manage Mode Navigation & Security Redirections
+  const { mode, handleModeChange, navigatePostAuth, navigateGuestStorefront } =
+    useAuthNavigation({ persona, urlPort });
+
   const [isSwapping, setIsSwapping] = useState(false);
 
-  useEffect(() => {
-    const targetMode = getInitialMode(location.pathname);
-    if (targetMode !== mode) {
-      setMode(targetMode);
-    }
-  }, [location.pathname]);
-
+  // Unconditional toggle props for form schema compiler
   const toggleProps: AuthModeToggleProps = {
     mode,
+    persona: persona || "customer",
     isSwapping,
     onModeChange: (newMode) => {
-      setIsSwapping(true);
-      setTimeout(() => {
-        setMode(newMode);
-        setIsSwapping(false);
-        if (newMode === "login" && location.pathname !== AppPaths.Login) {
-          navigate(AppPaths.Login, { replace: true });
-        } else if (newMode === "signup" && location.pathname !== AppPaths.Register) {
-          navigate(AppPaths.Register, { replace: true });
-        } else if (newMode === "forgot-password" && location.pathname !== AppPaths.ForgotPassword) {
-          navigate(AppPaths.ForgotPassword, { replace: true });
-        }
-      }, 400); // Allow skeleton to mount and mask the form swap
+      handleModeChange(newMode);
     },
+    onPersonaChange: (newPersona) => {
+      if (newPersona === persona) return;
+      setIsSwapping(true);
+      selectPersona(newPersona);
+      setTimeout(() => {
+        setIsSwapping(false);
+      }, 200);
+    },
+    onGuestBypass: navigateGuestStorefront,
   };
 
+  // Compile schema unconditionally so hook counts remain invariant
   const schema = React.useMemo(() => {
+    if (!persona) return null;
     if (mode === "login") return buildLoginSchema(toggleProps, t);
     if (mode === "signup") return buildSignupSchema(toggleProps, t);
     return buildForgotPasswordSchema(toggleProps, t);
-  }, [mode, t]);
+  }, [mode, persona, t, isSwapping]);
+
+  // ── LEVEL 1: Persona Selection Page (/login) ──────────────────────────────
+  // When no persona is selected, render ONLY the Persona Selection Screen!
+  if (isPersonaSelection || !persona || !config || !schema) {
+    return (
+      <PersonaSelectionView
+        onSelectPersona={selectPersona}
+        onGuestBypass={navigateGuestStorefront}
+      />
+    );
+  }
+
+  // ── LEVEL 2: Persona Authentication Page (/login?mode=customer|partner|staff)
+  const badgeTheme = {
+    customer: "bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border-indigo-500/20",
+    partner: "bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/20",
+    staff: "bg-slate-500/15 text-slate-700 dark:text-slate-300 border-slate-500/30",
+  }[persona];
 
   return (
-    <div className="min-h-screen flex flex-col p-3 sm:p-4 bg-background text-foreground bg-architectural-grid overflow-y-auto overflow-x-hidden">
-      {/* m-auto centers vertically and horizontally without clipping the top when viewport is too small */}
-      <div className="m-auto w-full flex justify-center">
-        {/* Form Engine — receives clean, server-ready schema */}
+    <div className="min-h-screen flex flex-col p-3 sm:p-6 bg-background text-foreground bg-architectural-grid overflow-y-auto overflow-x-hidden">
+      {/* 1. Minimal Enterprise Brand Header */}
+      <AuthPortalHeader />
+
+      {/* 2. Level 2 Back to Portal Selection Navigation Bar */}
+      <div className="w-full max-w-6xl mx-auto mb-3 sm:mb-4 flex items-center justify-between px-1">
+        <button
+          type="button"
+          onClick={clearPersona}
+          className="inline-flex items-center gap-2 text-xs sm:text-sm font-bold text-muted-foreground hover:text-foreground transition-colors cursor-pointer group focus:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded-lg px-2 py-1"
+        >
+          <span aria-hidden="true" className="transition-transform group-hover:-translate-x-1">
+            ←
+          </span>
+          <span>Back to Portal Selection</span>
+        </button>
+
+        <div className="flex items-center gap-2">
+          <span className="text-xs text-muted-foreground hidden sm:inline">
+            Active Portal:
+          </span>
+          <span className={`text-xs font-bold px-2.5 py-0.5 rounded-full border ${badgeTheme}`}>
+            {config.icon} {config.title}
+          </span>
+        </div>
+      </div>
+
+      {/* 3. Professional 50:50 Authentication Surface */}
+      <main className="w-full flex justify-center my-auto">
         <Form<any>
           definition={schema as any}
           onSubmit={async (data) => {
@@ -88,25 +137,52 @@ const AuthPortalPage: React.FC = () => {
                   rememberMe: data.rememberMe,
                 };
                 await login(credentials as any);
-                navigate(AppPaths.Root, { replace: true });
+                navigatePostAuth();
               } else if (mode === "signup") {
-                const nameParts = (data.name || "").trim().split(/\s+/);
-                const firstName = nameParts[0] || "";
-                const lastName = nameParts.slice(1).join(" ") || "";
-                const registerPayload = {
-                  ...data,
-                  name: data.name,
-                  firstName,
-                  lastName,
-                  email: data.email || data.username,
-                  username: data.username || data.email,
-                  password: data.password,
-                  confirmPassword:
-                    data.confirm_password || data.confirmPassword,
-                  confirm_password: data.confirm_password,
-                };
-                await register(registerPayload as any);
-                navigate(AppPaths.Root, { replace: true });
+                if (persona === "partner") {
+                  // Dedicated Vendor Self-Service Registration
+                  const partnerPayload = {
+                    company_name: data.company_name || data.name,
+                    representative_name: data.name,
+                    name: data.name,
+                    email: data.email || data.username,
+                    username:
+                      data.username || (data.email ? data.email.split("@")[0] : ""),
+                    tax_id: data.tax_id,
+                    phone: data.phone,
+                    category: data.category || "DISTRIBUTOR",
+                    password: data.password,
+                    confirm_password: data.confirm_password,
+                  };
+                  if (registerVendor) {
+                    await registerVendor(partnerPayload);
+                  } else {
+                    await register(partnerPayload as any);
+                  }
+                  toastSuccess(
+                    "Vendor Application Submitted",
+                    "Your business account has been initialized and submitted for compliance verification."
+                  );
+                  navigatePostAuth();
+                } else {
+                  // Standard Customer Registration
+                  const nameParts = (data.name || "").trim().split(/\s+/);
+                  const firstName = nameParts[0] || "";
+                  const lastName = nameParts.slice(1).join(" ") || "";
+                  const registerPayload = {
+                    ...data,
+                    name: data.name,
+                    firstName,
+                    lastName,
+                    email: data.email || data.username,
+                    username: data.username || data.email,
+                    password: data.password,
+                    confirmPassword: data.confirm_password || data.confirmPassword,
+                    confirm_password: data.confirm_password,
+                  };
+                  await register(registerPayload as any);
+                  navigatePostAuth();
+                }
               } else if (mode === "forgot-password") {
                 const email = data.email || data.username;
                 await forgotPassword(email);
@@ -114,22 +190,17 @@ const AuthPortalPage: React.FC = () => {
                   "Password Reset Dispatched",
                   "If an account exists for this email, recovery instructions have been sent."
                 );
-                navigate(AppPaths.Login);
+                handleModeChange("login");
               }
             } catch (err) {
               const apiError = ApiErrorParser.from(err);
               const fieldErrors: Record<string, string> = {};
 
-              // Accumulate non-field messages from both nonFieldErrors and any aliases in fieldErrors
               const nonFieldMessages: string[] = [
                 ...(apiError.nonFieldErrors || []),
               ];
 
-              // 1. Extract field errors with bidirectional email/username mapping
-              if (
-                apiError.fieldErrors &&
-                Object.keys(apiError.fieldErrors).length > 0
-              ) {
+              if (apiError.fieldErrors && Object.keys(apiError.fieldErrors).length > 0) {
                 for (const [key, val] of Object.entries(apiError.fieldErrors)) {
                   const messages = Array.isArray(val) ? val : [String(val)];
                   const firstMsg = messages.join(", ");
@@ -148,7 +219,6 @@ const AuthPortalPage: React.FC = () => {
                 }
               }
 
-              // 2. Extract non-field errors (e.g. invalid credentials)
               if (nonFieldMessages.length > 0) {
                 const message = nonFieldMessages.join(", ");
                 toastError(
@@ -160,12 +230,10 @@ const AuthPortalPage: React.FC = () => {
                 return fieldErrors;
               }
 
-              // 3. If field errors exist, return them for inline display
               if (Object.keys(fieldErrors).length > 0) {
                 return fieldErrors;
               }
 
-              // 4. All other errors: toast and mark credential field
               const displayMsg =
                 apiError.getDisplayMessage() ||
                 "Authentication failed. Please check your credentials.";
@@ -177,7 +245,10 @@ const AuthPortalPage: React.FC = () => {
             }
           }}
         />
-      </div>
+      </main>
+
+      {/* 4. Minimal Enterprise Footer */}
+      <AuthPortalFooter />
     </div>
   );
 };

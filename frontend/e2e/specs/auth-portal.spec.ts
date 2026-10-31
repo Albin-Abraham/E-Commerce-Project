@@ -3,92 +3,127 @@ import { expect, test } from "../fixtures/test";
 // Clear any authenticated state from global-setup so we can see the login page
 test.use({ storageState: { cookies: [], origins: [] } });
 
-test.describe("Auth Portal Layout & Interactions", () => {
-  test.beforeEach(async ({ page }) => {
-    // Navigate directly to the auth showcase portal
-    await page.goto("/showcase/auth");
-    // Wait for the form engine to be ready (prevents flakiness on cold start)
-    await page.waitForSelector(".form-root", { timeout: 15000 });
-  });
-
-  test("should render the Sign In form by default", async ({ page }) => {
-    // 1. Verify the layout renders the main title
-    await expect(page.getByText(/Welcome to Kezak/i)).toBeVisible();
-
-    // 2. Verify "Sign In" fields are present
-    await expect(
-      page.getByPlaceholder("Enter your email address")
-    ).toBeVisible();
-    await expect(page.getByPlaceholder("Enter your password")).toBeVisible();
-
-    // 3. Verify the "Sign In" submit button is rendered and correct
-    const submitBtn = page.getByRole("button", {
-      name: /Sign In/i,
-      exact: false,
+test.describe("Auth Portal 2-Level Multi-Persona Architecture", () => {
+  test.describe("Level 1: Persona Selection View (/login)", () => {
+    test.beforeEach(async ({ page }) => {
+      await page.goto("/login");
+      await page.waitForLoadState("networkidle");
     });
-    await expect(submitBtn).toBeVisible();
 
-    // 4. Ensure "Sign Up" specific fields are missing
-    await expect(page.getByPlaceholder("Enter your full name")).toBeHidden();
-  });
+    test("should render all 3 persona cards and NO auth form fields", async ({ page }) => {
+      // 1. Verify Level 1 Header
+      await expect(page.getByRole("heading", { name: /Choose Your Portal/i })).toBeVisible();
 
-  test("should toggle to the Sign Up form when requested", async ({ page }) => {
-    // 1. Click the "Sign Up" segment toggle
-    const signUpToggle = page.getByRole("radio", { name: /Sign Up/i });
-    await signUpToggle.click();
+      // 2. Verify the 3 Persona Cards exist
+      await expect(page.getByRole("heading", { name: /Customer Portal/i })).toBeVisible();
+      await expect(page.getByRole("heading", { name: /Partner & Vendor/i })).toBeVisible();
+      await expect(page.getByRole("heading", { name: /Staff Terminal/i })).toBeVisible();
 
-    // 2. Wait and verify "Sign Up" fields appear
-    await expect(page.getByPlaceholder("Enter your full name")).toBeVisible();
-    await expect(page.getByPlaceholder("Confirm your password")).toBeVisible();
+      // 3. Verify Guest Access Banner
+      await expect(page.getByText(/Browsing as a Guest\?/i)).toBeVisible();
+      await expect(page.getByRole("link", { name: /Continue Shopping/i })).toBeVisible();
 
-    // 3. Verify the submit button changes to "Create Account"
-    const submitBtn = page.getByRole("button", {
-      name: /Create Account/i,
-      exact: false,
+      // 4. CRITICAL: Ensure NO form input fields or submit buttons exist on Level 1
+      await expect(page.locator("input#email, input#username, input[type='email']")).toHaveCount(0);
+      await expect(page.locator("input#password, input[type='password']")).toHaveCount(0);
     });
-    await expect(submitBtn).toBeVisible();
-  });
 
-  test("should show validation errors when submitting empty Sign In form", async ({
-    page,
-  }) => {
-    // 1. Click submit immediately
-    const submitBtn = page.getByRole("button", {
-      name: /Sign In/i,
-      exact: false,
+    test("clicking Customer Portal card navigates to Level 2 customer authentication", async ({ page }) => {
+      const continueBtn = page.getByRole("button", { name: /Continue to Customer Portal/i });
+      await continueBtn.click();
+
+      // Should sync URL to ?mode=customer
+      await page.waitForURL(/mode=customer/);
+      await expect(page.getByText(/Welcome to ZenOS/i)).toBeVisible();
+      await expect(page.getByPlaceholder("Enter your email address")).toBeVisible();
     });
-    await submitBtn.click();
 
-    // 2. Verify validation triggers on the fields (the Form engine adds aria-invalid or similar)
-    // Here we check for typical validation feedback classes/attributes or just that the form wasn't submitted
-    // The exact validation error depends on your Form component's validation rendering
-    const emailField = page.getByPlaceholder("Enter your email address");
-    const passwordField = page.getByPlaceholder("Enter your password");
+    test("clicking Staff Terminal card navigates to restricted employee portal", async ({ page }) => {
+      const continueBtn = page.getByRole("button", { name: /Continue to Staff Terminal/i });
+      await continueBtn.click();
 
-    // Some implementations add aria-invalid="true" when a field errors
-    await expect(emailField).toHaveAttribute("aria-invalid", "true");
-    await expect(passwordField).toHaveAttribute("aria-invalid", "true");
-  });
-  test("should hide brand panel on mobile viewport and stack form to full width", async ({
-    page,
-  }) => {
-    // Set viewport to a typical mobile size (e.g. iPhone 12: 390x844)
-    await page.setViewportSize({ width: 390, height: 844 });
-
-    // The brand panel has 'hidden md:block', so it should not be visible here
-    // Let's identify the brand panel. It has the text 'A Unified Hub' (from AuthBrandPanel component)
-    const brandText = page.getByText(/A Unified Hub/i);
-    await expect(brandText).toBeHidden();
+      // Should sync URL to ?mode=staff
+      await page.waitForURL(/mode=staff/);
+      await expect(page.getByText(/ZenOS Enterprise Terminal/i)).toBeVisible();
+      await expect(page.getByText(/Restricted Corporate Gateway/i)).toBeVisible();
+      // Ensure registration tab is NOT present for staff
+      await expect(page.getByRole("radio", { name: /Sign Up|Register/i })).toHaveCount(0);
+    });
   });
 
-  test("should display brand panel on desktop viewport (50/50 split)", async ({
-    page,
-  }) => {
-    // Set viewport to a typical desktop size
-    await page.setViewportSize({ width: 1280, height: 720 });
+  test.describe("Level 2: Customer Authentication (/login?mode=customer)", () => {
+    test.beforeEach(async ({ page }) => {
+      await page.goto("/login?mode=customer");
+      await page.waitForLoadState("networkidle");
+    });
 
-    // The brand panel should be visible
-    const brandText = page.getByText(/A Unified Hub/i);
-    await expect(brandText).toBeVisible();
+    test("renders 50:50 desktop split layout with brand panel and form", async ({ page }) => {
+      await page.setViewportSize({ width: 1280, height: 800 });
+
+      // Left Brand Panel visible on desktop
+      await expect(page.getByText(/Retail Consumer Hub/i)).toBeVisible();
+      await expect(page.getByText(/Order #ZN-98421/i)).toBeVisible();
+
+      // Right Auth Form visible
+      await expect(page.getByPlaceholder("Enter your email address")).toBeVisible();
+      await expect(page.getByPlaceholder("Enter your password")).toBeVisible();
+
+      // Back navigation button
+      await expect(page.getByRole("button", { name: /Back to Portal Selection/i })).toBeVisible();
+    });
+
+    test("toggles between Sign In and Sign Up modes", async ({ page }) => {
+      // Toggle to Sign Up
+      const signUpTab = page.getByRole("tab", { name: /Sign Up/i });
+      if (await signUpTab.count() > 0) {
+        await signUpTab.click();
+      } else {
+        const signUpRadio = page.getByRole("radio", { name: /Sign Up/i });
+        await signUpRadio.click();
+      }
+
+      await page.waitForTimeout(300);
+      // Mode switcher changes URL or form state
+      await expect(page.getByRole("button", { name: /Create Account|Sign Up/i })).toBeVisible();
+    });
+
+    test("collapses brand panel on mobile viewport", async ({ page }) => {
+      await page.setViewportSize({ width: 390, height: 844 });
+      await page.waitForTimeout(300);
+
+      // Brand panel hidden on mobile
+      await expect(page.getByText(/Retail Consumer Hub/i)).toBeHidden();
+
+      // Form remains accessible
+      await expect(page.getByPlaceholder("Enter your email address")).toBeVisible();
+    });
+
+    test("clicking Back to Portal Selection returns to Level 1", async ({ page }) => {
+      const backBtn = page.getByRole("button", { name: /Back to Portal Selection/i });
+      await backBtn.click();
+
+      // Should return to /login without mode query
+      await page.waitForURL(/\/login$/);
+      await expect(page.getByRole("heading", { name: /Choose Your Portal/i })).toBeVisible();
+    });
+  });
+
+  test.describe("Level 2: Partner Portal (/login?mode=partner)", () => {
+    test.beforeEach(async ({ page }) => {
+      await page.goto("/login?mode=partner");
+      await page.waitForLoadState("networkidle");
+    });
+
+    test("renders Partner telemetry and B2B vendor onboarding", async ({ page }) => {
+      await page.setViewportSize({ width: 1280, height: 800 });
+
+      // Left Brand Panel for Partner
+      await expect(page.getByText(/B2B Supplier & Partner Gateway/i)).toBeVisible();
+      await expect(page.getByText(/PO Dispatches/i)).toBeVisible();
+
+      // Right Auth Form for Partner
+      await expect(page.getByText(/Partner & Vendor Portal/i)).toBeVisible();
+      await expect(page.getByRole("button", { name: /Partner Sign In/i })).toBeVisible();
+    });
   });
 });

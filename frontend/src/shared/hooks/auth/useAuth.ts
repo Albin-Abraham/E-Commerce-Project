@@ -36,6 +36,12 @@ export const useAuth = () => {
       authService.register(credentials),
   });
 
+  // 2b. Mutation: Register Vendor / Partner
+  const registerVendorMutation = useMutation({
+    mutationFn: (vendorData: Record<string, any>) =>
+      authService.registerVendor(vendorData),
+  });
+
   // 3. Mutation: Logout
   const logoutMutation = useMutation({
     mutationFn: () => authService.logout(),
@@ -71,6 +77,16 @@ export const useAuth = () => {
       return await registerMutation.mutateAsync(credentials);
     },
     [registerMutation]
+  );
+
+  /**
+   * Register a new B2B Vendor / Partner
+   */
+  const registerVendor = useCallback(
+    async (vendorData: Record<string, any>) => {
+      return await registerVendorMutation.mutateAsync(vendorData);
+    },
+    [registerVendorMutation]
   );
 
   /**
@@ -115,6 +131,7 @@ export const useAuth = () => {
     // Actions
     login,
     register,
+    registerVendor,
     forgotPassword,
     logout,
     refreshProfile,

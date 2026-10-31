@@ -86,6 +86,36 @@ export class AuthRepository {
   }
 
   /**
+   * Registers a B2B partner / vendor
+   */
+  async registerVendor(data: Record<string, any>): Promise<any> {
+    const result = await this.publicHttp.requestSafe<any>({
+      url: ApiEndpoints.Auth.VendorRegister,
+      method: "POST",
+      data,
+      transformRequest: { casing: "snake" },
+      transformResponse: { casing: "camel", autoEnvelope: true },
+    });
+
+    if (!result.success) throw ApiErrorParser.from(result.error);
+    const resData = ResponseFactory.unwrap(result.data);
+
+    if (
+      resData &&
+      typeof resData === "object" &&
+      (("status" in resData && typeof (resData as any).status === "number" && (resData as any).status >= 400) ||
+       ("status_code" in resData && typeof (resData as any).status_code === "number" && (resData as any).status_code >= 400) ||
+       ("error" in resData && (resData as any).error))
+    ) {
+      const statusCode = (resData as any).status || (resData as any).status_code || 400;
+      const message = (resData as any).message || (resData as any).error?.message || "Validation failed";
+      throw ApiErrorParser.from(new HttpError(message, statusCode, "", resData));
+    }
+
+    return resData;
+  }
+
+  /**
    * Requests a password reset link for the provided email address
    */
   async forgotPassword(email: string): Promise<{ message?: string }> {

@@ -21,8 +21,8 @@ async function globalSetup(config: FullConfig) {
   const page = await browser.newPage();
 
   try {
-    console.log(`Navigating to ${baseURL}/showcase/auth...`);
-    await page.goto(`${baseURL}/showcase/auth`);
+    console.log(`Navigating to ${baseURL}/login?mode=customer...`);
+    await page.goto(`${baseURL}/login?mode=customer`);
 
     // Fill credentials (using robust selectors to catch various form structures)
     await page.fill(

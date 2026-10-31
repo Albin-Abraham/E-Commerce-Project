@@ -8,10 +8,17 @@ from apps.procurement_pos.views import (
     POSTransactionViewSet,
     PurchaseOrderViewSet,
     SupplierViewSet,
+    VendorRegistrationView,
 )
 
 urlpatterns = [
     # Procurement
+    path(
+        "suppliers/register/",
+        VendorRegistrationView.as_view(),
+        {"HTTP_METHOD": ["POST"]},
+        name="procurement-vendor-register",
+    ),
     path(
         "suppliers/",
         SupplierViewSet.as_view(),
