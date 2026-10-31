@@ -94,10 +94,10 @@ seed-config:
 	$(COMPOSE) --env-file $(ENV_FILE) run --rm web python manage.py seeds_data --section system_config
 
 seed-admin:
-	$(COMPOSE) --env-file $(ENV_FILE) run --rm web python manage.py seeds_data --section superadmin
+	$(COMPOSE) --env-file $(ENV_FILE) run --rm django-web python manage.py seeds_data --section superadmin
 
 seed-dummy:
-	$(COMPOSE) --env-file $(ENV_FILE) run --rm web python manage.py seed_dummy_data
+	$(COMPOSE) --env-file $(ENV_FILE) run --rm django-web python manage.py seed_dummy_data
 
 seed-all: seed-modules seed-config seed-admin
 
@@ -106,11 +106,11 @@ logs:
 	$(COMPOSE) --env-file $(ENV_FILE) logs -f
 
 shell:
-	$(COMPOSE) --env-file $(ENV_FILE) exec web /bin/sh
+	$(COMPOSE) --env-file $(ENV_FILE) exec django-web /bin/sh
 
 # Ping a service to check network connectivity
 ping:
-	$(COMPOSE) --env-file $(ENV_FILE) run --rm web sh -c "ping -c 4 $(svc)"
+	$(COMPOSE) --env-file $(ENV_FILE) run --rm django-web sh -c "ping -c 4 $(svc)"
 
 # --- Quality & Linting ---
 fitness:
@@ -129,7 +129,7 @@ ci:
 	./tools/quality/orchestrator/check.sh ci
 
 test:
-	$(COMPOSE) --env-file $(ENV_FILE) run --rm web python -m pytest
+	$(COMPOSE) --env-file $(ENV_FILE) exec -T django-web pytest
 
 # Kubernetes
 k8-apply:

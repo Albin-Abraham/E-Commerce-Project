@@ -22,7 +22,6 @@ class RoleViewSet(BaseAPIView):
     supports_soft_delete = False
 
     search_fields = ["name", "description"]
-    filter_fields = [("name", "name")]
     filter_schema = FilterSchema(
         name=FilterField(type=str, lookups=["exact", "icontains"]),
         description=FilterField(type=str, lookups=["icontains"]),

@@ -180,7 +180,6 @@ class QueryMixin(SerializerMixin):
     model: Model | None = None
     orderby: str = "-created_at"
     search_fields: list[str] = []
-    filter_fields: list[tuple[str, str]] = []
     filter_schema = None  # FilterSchema instance for type coercion and validation
     paginate: bool = False
     page_size: int = 20
@@ -230,7 +229,6 @@ class QueryMixin(SerializerMixin):
             queryset,
             search_fields=getattr(self, "search_fields", []),
             search_query=search_query,
-            filter_fields=getattr(self, "filter_fields", []),
             filter_schema=getattr(self, "filter_schema", None),
             field_search=field_search,
             sort_query=sort_query,

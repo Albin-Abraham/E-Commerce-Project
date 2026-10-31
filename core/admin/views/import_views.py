@@ -1,6 +1,7 @@
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
+from core.admin.helpers.query_helpers import FilterField, FilterSchema
 from core.admin.models.import_engine import (
     ImportJob,
     ImportPackage,
@@ -127,7 +128,10 @@ class StagingRecordViewSet(BaseAPIView):
 
     paginate = True
     search_fields = ["target_model", "status", "idempotency_hash"]
-    filter_fields = [("status", "status"), ("target_model", "target_model")]
+    filter_schema = FilterSchema(
+        status=FilterField(type=str),
+        target_model=FilterField(type=str),
+    )
     orderby = "row_number"
 
 
@@ -139,7 +143,11 @@ class ImportJobViewSet(BaseAPIView):
 
     paginate = True
     search_fields = ["job_name", "target_model", "status", "source_type"]
-    filter_fields = [("status", "status"), ("target_model", "target_model")]
+    filter_schema = FilterSchema(
+        status=FilterField(type=str),
+        target_model=FilterField(type=str),
+        source_type=FilterField(type=str),
+    )
     orderby = "-created_at"
 
 
@@ -151,7 +159,10 @@ class ImportPackageViewSet(BaseAPIView):
 
     paginate = True
     search_fields = ["package_name", "package_version", "status", "source_type"]
-    filter_fields = [("status", "status")]
+    filter_schema = FilterSchema(
+        status=FilterField(type=str),
+        source_type=FilterField(type=str),
+    )
     orderby = "-created_at"
 
     @action(detail=True, methods=["post"])

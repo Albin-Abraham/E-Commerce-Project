@@ -14,6 +14,9 @@ layers:
     prefix: "core.configuration"
     description: "Configuration"
   - layer: 1
+    prefix: "core.context"
+    description: "Context Engine"
+  - layer: 1
     prefix: "core.base_models"
     description: "Base Models & Mixins"
   - layer: 2
@@ -22,12 +25,24 @@ layers:
   - layer: 2
     prefix: "core.admin.utils"
     description: "Admin Utils"
+  - layer: 2
+    prefix: "core.authorization"
+    description: "Authorization Policy Engine"
+  - layer: 2
+    prefix: "core.tenancy"
+    description: "Tenancy Scoping Strategies"
   - layer: 3
     prefix: "core.admin.helpers"
     description: "Admin Helpers"
   - layer: 3
     prefix: "core.admin.services"
     description: "Admin Services"
+  - layer: 3
+    prefix: "core.repositories"
+    description: "Repositories"
+  - layer: 3
+    prefix: "core.security"
+    description: "Security"
   - layer: 4
     prefix: "core.base_serializers"
     description: "Base Serializers"

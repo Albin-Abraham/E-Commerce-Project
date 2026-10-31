@@ -39,10 +39,9 @@ class ModelMethodVisitor(ast.NodeVisitor):
         # Look for model classes (inheriting from models.Model or BaseModel)
         base_names = [b.id for b in node.bases if isinstance(b, ast.Name)]
         base_attrs = [b.attr for b in node.bases if isinstance(b, ast.Attribute)]
-        
+
         is_model = any(
-            name in ("Model", "BaseModel", "AbstractBaseUser")
-            for name in (base_names + base_attrs)
+            name in ("Model", "BaseModel", "AbstractBaseUser") for name in (base_names + base_attrs)
         )
 
         if is_model:
@@ -81,7 +80,7 @@ def main() -> int:
     for py_file in scan_targets:
         scanned_files += 1
         try:
-            with open(py_file, "r", encoding="utf-8") as f:
+            with open(py_file, encoding="utf-8") as f:
                 tree = ast.parse(f.read(), filename=str(py_file))
             visitor = ModelMethodVisitor(py_file)
             visitor.visit(tree)
@@ -97,7 +96,9 @@ def main() -> int:
         print(f"\nTotal violations: {len(total_violations)}", file=sys.stderr)
         return 1
 
-    print("✅ All domain models conform to ADR-011 Dumb Model standards (zero business logic in ORM models).")
+    print(
+        "✅ All domain models conform to ADR-011 Dumb Model standards (zero business logic in ORM models)."
+    )
     return 0
 
 

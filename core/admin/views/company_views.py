@@ -1,6 +1,7 @@
 # core/admin/views/company_views.py
 from rest_framework.permissions import AllowAny
 
+from core.admin.helpers.query_helpers import FilterField, FilterSchema
 from core.admin.models.company import Company
 from core.admin.serializers.company_serializers import CompanySerializer
 from core.base_views.api_views import BaseAPIView
@@ -26,5 +27,10 @@ class CompanyViewSet(BaseAPIView):
 
     # Search and Filter Configuration
     search_fields = ["name", "code", "email"]
-    filter_fields = ["code", "name", "email"]
+    filter_schema = FilterSchema(
+        code=FilterField(type=str),
+        name=FilterField(type=str),
+        email=FilterField(type=str),
+        is_active=FilterField(type=bool),
+    )
     orderby = "name"

@@ -179,19 +179,22 @@ class GatewayResolutionTestSuite(TestCase):
         When no domain, system, or env config exists, resolver raises GatewayNotConfiguredError.
         API returns HTTP 503 SERVICE_UNAVAILABLE.
         """
-        with self.assertRaises(GatewayNotConfiguredError):
-            PaymentGatewayConfigResolver.resolve_gateway("RAZORPAY")
+        with mock.patch.dict(
+            os.environ, {"RAZORPAY_KEY_ID": "", "RAZORPAY_KEY_SECRET": ""}, clear=False
+        ):
+            with self.assertRaises(GatewayNotConfiguredError):
+                PaymentGatewayConfigResolver.resolve_gateway("RAZORPAY")
 
-        res = self.client.post(
-            "/api/v1/payments/transactions/initiate/",
-            {
-                "customer_id": str(self.customer.id),
-                "amount": "50.00",
-                "currency": "USD",
-                "gateway_type": "RAZORPAY",
-            },
-        )
-        self.assertEqual(res.status_code, status.HTTP_503_SERVICE_UNAVAILABLE)
+            res = self.client.post(
+                "/api/v1/payments/transactions/initiate/",
+                {
+                    "customer_id": str(self.customer.id),
+                    "amount": "50.00",
+                    "currency": "USD",
+                    "gateway_type": "RAZORPAY",
+                },
+            )
+            self.assertEqual(res.status_code, status.HTTP_503_SERVICE_UNAVAILABLE)
 
     def test_secret_redaction_in_resolved_config(self):
         """

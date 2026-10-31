@@ -56,7 +56,11 @@ def main() -> int:
             parts = py_file.parts
             # Check services, views, application layers (exclude tests and migrations)
             if any(p in ("services", "application", "views", "interface") for p in parts):
-                if not py_file.name.startswith(".") and "tests" not in parts and "migrations" not in parts:
+                if (
+                    not py_file.name.startswith(".")
+                    and "tests" not in parts
+                    and "migrations" not in parts
+                ):
                     scan_targets.append(py_file)
 
     scanned_files = 0
@@ -65,7 +69,7 @@ def main() -> int:
     for py_file in scan_targets:
         scanned_files += 1
         try:
-            with open(py_file, "r", encoding="utf-8") as f:
+            with open(py_file, encoding="utf-8") as f:
                 tree = ast.parse(f.read(), filename=str(py_file))
             visitor = TenantQueryVisitor(py_file)
             visitor.visit(tree)

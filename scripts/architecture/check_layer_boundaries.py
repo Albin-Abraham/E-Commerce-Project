@@ -7,7 +7,6 @@ Enforces Clean Architecture:
 """
 
 import ast
-import os
 import sys
 from pathlib import Path
 
@@ -47,7 +46,7 @@ class ImportVisitor(ast.NodeVisitor):
 
 def main() -> int:
     scan_targets = []
-    
+
     # 1. Scan shared_domain
     shared_domain = BASE_DIR / "shared_domain"
     if shared_domain.exists():
@@ -69,7 +68,7 @@ def main() -> int:
             continue
         scanned_files += 1
         try:
-            with open(py_file, "r", encoding="utf-8") as f:
+            with open(py_file, encoding="utf-8") as f:
                 tree = ast.parse(f.read(), filename=str(py_file))
             visitor = ImportVisitor(py_file)
             visitor.visit(tree)

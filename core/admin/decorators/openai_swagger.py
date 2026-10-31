@@ -1,3 +1,5 @@
+from datetime import date, datetime, time
+from decimal import Decimal
 from functools import wraps
 
 from django.db import models
@@ -582,7 +584,11 @@ def auto_extend_schema(cls):
                 str: OpenApiTypes.STR,
                 int: OpenApiTypes.INT,
                 float: OpenApiTypes.FLOAT,
+                Decimal: OpenApiTypes.DECIMAL,
                 bool: OpenApiTypes.BOOL,
+                datetime: OpenApiTypes.DATETIME,
+                date: OpenApiTypes.DATE,
+                time: OpenApiTypes.TIME,
             }
             # Collect already-documented param names to avoid duplicates
             documented_params = {p.name for p in parameters}

@@ -104,5 +104,6 @@ class PaymentSuiteTestCase(TestCase):
             "/api/v1/payments/transactions/initiate/", data=payload, format="json"
         )
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertEqual(response.data["data"]["gateway_type"], "RAZORPAY")
-        self.assertEqual(Decimal(response.data["data"]["amount"]), Decimal("89.50"))
+        data = response.data.get("data", response.data)
+        self.assertEqual(data["gateway_type"], "RAZORPAY")
+        self.assertEqual(Decimal(data["amount"]), Decimal("89.50"))

@@ -29,10 +29,6 @@ class ApprovalChainViewSet(BaseAPIView):
     detail_serializer_class = ApprovalChainDetailSerializer
     create_serializer_class = ApprovalChainCreateSerializer
     update_serializer_class = ApprovalChainCreateSerializer
-    filter_fields = [
-        ("name", "name"),
-        ("approval_type", "approval_type"),
-    ]
     filter_schema = FilterSchema(
         name=FilterField(type=str, lookups=["exact", "icontains"]),
         approval_type=FilterField(type=str, lookups=["exact"]),
@@ -53,11 +49,6 @@ class ApprovalRequestViewSet(BaseAPIView):
     model = ApprovalRequest
     list_serializer_class = ApprovalRequestListSerializer
     detail_serializer_class = ApprovalRequestDetailSerializer
-    filter_fields = [
-        ("status", "status"),
-        ("approval_type", "chain__approval_type"),
-        ("submitter", "submitter_id"),
-    ]
     filter_schema = FilterSchema(
         status=FilterField(type=str, lookups=["exact"]),
         approval_type=FilterField(type=str, lookups=["exact"]),
