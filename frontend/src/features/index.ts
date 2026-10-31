@@ -3,6 +3,7 @@ import { navigationRegistry } from "@core/router/registries/navigation.registry"
 import { tableRouteBindingRegistry } from "@core/router/registries/table-route-binding.registry";
 
 import { registerAuth } from "./auth/register";
+import { registerCustomers } from "./customers/register";
 import { registerProducts } from "./products/register";
 
 /**
@@ -17,5 +18,6 @@ export const registerAllFeatures = () => {
   tableRouteBindingRegistry.reset();
 
   registerAuth();
+  registerCustomers();
   registerProducts();
 };

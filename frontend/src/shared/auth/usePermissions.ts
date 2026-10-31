@@ -4,7 +4,7 @@
 
 import { useContext } from "react";
 import { PermissionContext } from "./PermissionProvider";
-import { permissionEvaluator } from "@platform/authorization";
+import { permissionEvaluator } from "@platform/authorization/permission-evaluator";
 import type { IPermissionClass } from "./types";
 
 export const usePermissions = (): IPermissionClass => {

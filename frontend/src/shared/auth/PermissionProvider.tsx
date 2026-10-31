@@ -3,7 +3,7 @@
  */
 
 import React, { createContext, useMemo } from "react";
-import { permissionEvaluator } from "@platform/authorization";
+import { permissionEvaluator } from "@platform/authorization/permission-evaluator";
 import type { IPermissionClass } from "./types";
 
 export const PermissionContext = createContext<IPermissionClass | null>(null);

@@ -7,7 +7,7 @@
  * props object so the page only supplies state, never chrome.
  */
 
-export type AuthMode = "login" | "signup";
+export type AuthMode = "login" | "signup" | "forgot-password";
 
 export interface AuthModeToggleProps {
   mode: AuthMode;

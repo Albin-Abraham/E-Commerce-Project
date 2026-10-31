@@ -27,6 +27,10 @@ export interface SignupFormData extends Record<string, any> {
   confirm_password: string;
 }
 
+export interface ForgotPasswordFormData extends Record<string, any> {
+  username: string;
+}
+
 export type AuthTranslator = (key: string, options?: any) => string;
 
 // ── LAYER 1: UI FIELD TOKENS (Shared) ────────────────────────────────────────
@@ -134,6 +138,14 @@ const buildLoginContent = (t?: AuthTranslator): ContentDefinition<AuthFormData> 
             required: true,
             validation: AuthValidationRules.validations.password,
             ...sharedUI.password("login"),
+          },
+          {
+            id: "forgot-password-link",
+            type: "html",
+            layout: { columnSpan: 12 },
+            label: "",
+            initialValue:
+              `<div class="flex justify-end -mt-1 mb-1"><a href="/forgot-password" class="text-xs font-semibold text-primary hover:underline">Forgot password?</a></div>`,
           },
           {
             id: "submit-btn",
@@ -342,5 +354,105 @@ export const buildSignupEntity = (
   content: buildSignupContent(t),
   behavior: SignupBehavior,
   surface: buildAuthSurface("signup", toggleProps, t),
+  presentation: buildAuthPresentation(),
+});
+
+// ── Forgot Password MDAP Entity ─────────────────────────────────────────────
+
+const buildForgotPasswordContent = (
+  t?: AuthTranslator
+): ContentDefinition<ForgotPasswordFormData> => {
+  const sharedUI = getSharedFieldUI(t);
+  const currentYear = new Date().getFullYear();
+  const footerCopyright = t
+    ? t("common.footer", { year: currentYear })
+    : `© ${currentYear} ZenOS Platform. All Rights Reserved`;
+
+  return {
+    id: "auth-forgot-password-content",
+    title: "",
+    sections: [
+      {
+        id: "forgot-password-fields",
+        title: "",
+        fields: [
+          {
+            id: "header",
+            type: "header",
+            layout: { columnSpan: 12 },
+            label: "Reset Your Password",
+            description:
+              "Enter your account email to receive secure password recovery instructions.",
+            className: "mb-1 sm:mb-1.5",
+            properties: { alignment: "center" },
+            meta: { ui: { variant: "h2" } },
+          },
+          {
+            id: "username",
+            name: "username",
+            type: "text",
+            label: "Registered Email Address",
+            required: true,
+            aliases: ["login", "email", "user"],
+            ...sharedUI.username("login"),
+            validation: AuthValidationRules.validations.username,
+            onChange: AuthValidationRules.events.username.onChange,
+          },
+          {
+            id: "submit-btn",
+            type: "button",
+            label: "Send Reset Link",
+            layout: { columnSpan: 12 },
+            properties: { submit: true },
+            meta: {
+              ui: {
+                classNames: {
+                  base: "mt-4 inline-flex items-center justify-center font-bold transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none w-full py-2 sm:py-2.5 text-sm rounded-xl bg-gradient-to-r from-primary to-primary/90 shadow-md shadow-primary/25 hover:shadow-lg hover:shadow-primary/35 hover:scale-[1.01] active:scale-[0.99] text-primary-foreground",
+                },
+              },
+            },
+          },
+          {
+            id: "back-link",
+            type: "html",
+            layout: { columnSpan: 12 },
+            label: "",
+            initialValue:
+              `<div class="text-center text-xs font-semibold text-foreground/80 mt-3"><a href="/login" class="text-primary font-bold hover:underline">← Return to Sign In</a></div>`,
+          },
+          {
+            id: "auth-footer",
+            type: "html",
+            layout: { columnSpan: 12 },
+            label: "",
+            initialValue:
+              `<div class="text-center text-xs font-semibold text-foreground/60 mt-4 space-x-1"><span>${footerCopyright}</span></div>`,
+          },
+        ],
+      },
+    ],
+  };
+};
+
+const ForgotPasswordBehavior: BehaviorDefinition<ForgotPasswordFormData> = {
+  pipeline: {
+    middleware: [
+      (formData) => {
+        if (formData.username)
+          formData.username = formData.username.toLowerCase();
+      },
+    ],
+  },
+};
+
+export const buildForgotPasswordEntity = (
+  toggleProps: AuthModeToggleProps,
+  t?: AuthTranslator
+): EntityDefinition<ForgotPasswordFormData> => ({
+  id: "entity-auth-forgot-password",
+  name: "Forgot Password Form",
+  content: buildForgotPasswordContent(t),
+  behavior: ForgotPasswordBehavior,
+  surface: buildAuthSurface("forgot-password", toggleProps, t),
   presentation: buildAuthPresentation(),
 });

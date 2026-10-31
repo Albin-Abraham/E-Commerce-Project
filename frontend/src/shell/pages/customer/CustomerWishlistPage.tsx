@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { Heart, Trash2, ShoppingBag, ArrowRight } from "lucide-react";
-import { useWishlistStore } from "@features/shop/modules/wishlist";
+import { useWishlistStore } from "@features/shop/modules/wishlist/wishlist.store";
 import { ProductCard } from "@features/shop/presentation/storefront/ProductCard";
 
 export const CustomerWishlistPage: React.FC = () => {

@@ -27,7 +27,7 @@ export function buildAuthPresentation(): PresentationDefinition {
 // ── LAYER 3: SURFACE SCHEMA ─────────────────────────────────────────────────
 
 export function buildAuthSurface(
-  mode: "login" | "signup",
+  mode: "login" | "signup" | "forgot-password",
   toggleProps: AuthModeToggleProps,
   t?: AuthTranslator
 ): SurfaceDefinition {
@@ -45,13 +45,13 @@ export function buildAuthSurface(
         {
           node: "surface",
           type: "card",
-          colSpan: toggleProps.mode === "login"
-            ? { base: 12, md: 6 }
-            : { base: 12, lg: 4 },
+          colSpan: toggleProps.mode === "signup"
+            ? { base: 12, lg: 4 }
+            : { base: 12, md: 6 },
           config: { elevation: "none" },
-          className: toggleProps.mode === "login"
-            ? "hidden md:block relative h-full min-h-[460px] overflow-hidden animate-slide-left motion-reduce:animate-none bg-surface-raised/40"
-            : "hidden lg:block relative h-full min-h-[460px] overflow-hidden animate-slide-left motion-reduce:animate-none bg-surface-raised/40",
+          className: toggleProps.mode === "signup"
+            ? "hidden lg:block relative h-full min-h-[460px] overflow-hidden animate-slide-left motion-reduce:animate-none bg-surface-raised/40"
+            : "hidden md:block relative h-full min-h-[460px] overflow-hidden animate-slide-left motion-reduce:animate-none bg-surface-raised/40",
           children: [
             {
               node: "content",
@@ -63,9 +63,9 @@ export function buildAuthSurface(
         {
           node: "surface",
           type: "card",
-          colSpan: toggleProps.mode === "login"
-            ? { base: 12, md: 6 }
-            : { base: 12, lg: 8 },
+          colSpan: toggleProps.mode === "signup"
+            ? { base: 12, lg: 8 }
+            : { base: 12, md: 6 },
           config: { elevation: "none" },
           className:
             "relative flex flex-col p-3.5 sm:p-4 lg:p-5 justify-center animate-slide-right motion-reduce:animate-none bg-surface overflow-y-auto overflow-x-hidden",
@@ -73,29 +73,33 @@ export function buildAuthSurface(
             {
               node: "layout",
               type: "box",
-              className: `w-full ${toggleProps.mode === "login" ? "max-w-sm" : "max-w-2xl"} mx-auto flex flex-col justify-center`,
+              className: `w-full ${toggleProps.mode === "signup" ? "max-w-2xl" : "max-w-sm"} mx-auto flex flex-col justify-center`,
               children: [
-                {
-                  node: "layout",
-                  type: "box",
-                  className: `w-full border-b border-border/60 mb-1.5 pb-1 max-w-sm mx-auto`,
-                  children: [
-                    {
-                      node: "content",
-                      type: "segmented",
-                      className: "w-full max-w-sm mx-auto",
-                      options: [
-                        { label: signInLabel, value: "login" },
-                        { label: signUpLabel, value: "signup" },
-                      ],
-                      value: toggleProps.mode,
-                      onChange: (value) =>
-                        toggleProps.onModeChange(
-                          value as AuthModeToggleProps["mode"]
-                        ),
-                    },
-                  ],
-                },
+                ...(toggleProps.mode !== "forgot-password"
+                  ? [
+                      {
+                        node: "layout",
+                        type: "box",
+                        className: `w-full border-b border-border/60 mb-1.5 pb-1 max-w-sm mx-auto`,
+                        children: [
+                          {
+                            node: "content",
+                            type: "segmented",
+                            className: "w-full max-w-sm mx-auto",
+                            options: [
+                              { label: signInLabel, value: "login" },
+                              { label: signUpLabel, value: "signup" },
+                            ],
+                            value: toggleProps.mode,
+                            onChange: (value: any) =>
+                              toggleProps.onModeChange(
+                                value as AuthModeToggleProps["mode"]
+                              ),
+                          },
+                        ],
+                      } as ShellNode,
+                    ]
+                  : []),
                 toggleProps.isSwapping
                   ? {
                       node: "content",

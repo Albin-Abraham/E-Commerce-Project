@@ -1,7 +1,8 @@
 /**
- * Inventory Bounded Context Public API
+ * Inventory Module
+ *
+ * NOTE: Barrel re-exports are intentionally avoided.
+ * Import directly from concrete module paths:
+ * - Application Port: @features/inventory/application/ports/inventory-query.port
  */
-
-export { InventoryItemAggregate, type InventoryItemProps } from "./domain/inventory-item.aggregate";
-export type { InventoryQueryPort, BranchStockResult } from "./application/ports/inventory-query.port";
-export { DjangoInventoryRepository, inventoryRepository } from "./infrastructure/django-inventory.repository";
+export {};

@@ -33,6 +33,16 @@ const authRoutes: AppRoute[] = [
     page: AuthPortalPage,
   }),
   defineRoute({
+    id: "auth.portal.register",
+    path: AppPaths.Register,
+    page: AuthPortalPage,
+  }),
+  defineRoute({
+    id: "auth.portal.forgot-password",
+    path: AppPaths.ForgotPassword,
+    page: AuthPortalPage,
+  }),
+  defineRoute({
     id: "auth.portal.root",
     path: AppPaths.Root,
     page: AuthPortalPage,

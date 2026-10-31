@@ -50,15 +50,6 @@ const TestMultiStepFormModel = React.lazy(
 const TableDemoPage = React.lazy(
   () => import("@pages/static-pages/TableDemoPage")
 );
-const CustomerProfilePage = React.lazy(
-  () => import("@shell/pages/customer/CustomerProfilePage")
-);
-const CustomerOrdersPage = React.lazy(
-  () => import("@shell/pages/customer/CustomerOrdersPage")
-);
-const CustomerWishlistPage = React.lazy(
-  () => import("@shell/pages/customer/CustomerWishlistPage")
-);
 
 import { useTranslation } from "react-i18next";
 
@@ -71,30 +62,6 @@ const FooterTermsLink = () => {
     >
       {t("footer.platformTerms")}
     </Link>
-  );
-};
-
-const AccountProfilePage = () => {
-  const { t } = useTranslation("layouts/navigation");
-  return (
-    <div {...Zenith.container("profile-view")}>
-      <h1 className={Zenith.text("h1")}>{t("sidebar.userProfile")}</h1>
-      <p className={Zenith.text("body", false)}>
-        {t("sidebar.identityAccounts")}
-      </p>
-    </div>
-  );
-};
-
-const AccountSettingsPage = () => {
-  const { t } = useTranslation("layouts/navigation");
-  return (
-    <div {...Zenith.container("settings-view")}>
-      <h1 className={Zenith.text("h1")}>{t("sidebar.securitySettings")}</h1>
-      <p className={Zenith.text("body", false)}>
-        {t("sidebar.identityAccounts")}
-      </p>
-    </div>
   );
 };
 
@@ -132,9 +99,19 @@ function buildBaseRoutes(): AppRoute[] {
       page: React.lazy(() => import("@pages/static-pages/WorkspacePage")),
     }),
     defineRoute({
-      id: "login.redirect",
+      id: "auth.login",
       path: AppPaths.Login,
-      redirectTo: AppPaths.Root,
+      page: AuthPortalPage,
+    }),
+    defineRoute({
+      id: "auth.register",
+      path: AppPaths.Register,
+      page: AuthPortalPage,
+    }),
+    defineRoute({
+      id: "auth.forgot-password",
+      path: AppPaths.ForgotPassword,
+      page: AuthPortalPage,
     }),
     defineRoute({
       id: "forbidden",
@@ -183,32 +160,6 @@ function buildBaseRoutes(): AppRoute[] {
           page: FormDebugPage,
         },
         ...sharedPublicRoutes,
-        {
-          id: "account",
-          path: AppPaths.Account.Root,
-          children: [
-            {
-              id: "account.profile",
-              path: AppPaths.Account.Profile.replace("/account/", ""),
-              page: CustomerProfilePage,
-            },
-            {
-              id: "account.orders",
-              path: AppPaths.Account.Orders.replace("/account/", ""),
-              page: CustomerOrdersPage,
-            },
-            {
-              id: "account.wishlist",
-              path: AppPaths.Account.Wishlist.replace("/account/", ""),
-              page: CustomerWishlistPage,
-            },
-            {
-              id: "account.settings",
-              path: AppPaths.Account.Settings.replace("/account/", ""),
-              page: AccountSettingsPage,
-            },
-          ],
-        },
         {
           id: "showcase",
           path: AppPaths.Showcase.Root,

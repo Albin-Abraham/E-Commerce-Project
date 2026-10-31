@@ -86,6 +86,21 @@ export class AuthRepository {
   }
 
   /**
+   * Requests a password reset link for the provided email address
+   */
+  async forgotPassword(email: string): Promise<{ message?: string }> {
+    const result = await this.publicHttp.requestSafe<{ message?: string }>({
+      url: ApiEndpoints.Auth.ForgotPassword,
+      method: "POST",
+      data: { email },
+      transformResponse: { casing: "camel", autoEnvelope: true },
+    });
+
+    if (!result.success) throw ApiErrorParser.from(result.error);
+    return ResponseFactory.unwrap(result.data);
+  }
+
+  /**
    * Exchanges a refresh token for a new access token
    */
   async refresh(

@@ -1,13 +1,10 @@
 import { describe, expect, it } from "vitest";
-import {
-  OrderAggregate,
-  OrderItemEntity,
-  OrderNumber,
-  OrderStatus,
-  orderRepository,
-  GetCustomerOrdersQuery,
-  GetOrderTrackingQuery,
-} from "../index";
+import { OrderAggregate } from "../domain/aggregates/order.aggregate";
+import { OrderItemEntity } from "../domain/entities/order-item.entity";
+import { OrderNumber } from "../domain/value-objects/order-number.vo";
+import { OrderStatus } from "../domain/value-objects/order-status.vo";
+import { orderRepository } from "../infrastructure/repositories/django-order.repository";
+import { GetCustomerOrdersQuery, GetOrderTrackingQuery } from "../application/queries/get-customer-orders.query";
 
 describe("Orders Bounded Context", () => {
   describe("1. Order Status Lifecycle", () => {

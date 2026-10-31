@@ -41,7 +41,12 @@ export const useAuth = () => {
     mutationFn: () => authService.logout(),
   });
 
-  // 4. Query: Me (Profile)
+  // 4. Mutation: Forgot Password
+  const forgotPasswordMutation = useMutation({
+    mutationFn: (email: string) => authService.forgotPassword(email),
+  });
+
+  // 5. Query: Me (Profile)
   const profileQuery = useQuery({
     queryKey: ["auth", "me"],
     queryFn: () => authService.getCurrentUser(),
@@ -76,6 +81,16 @@ export const useAuth = () => {
   }, [logoutMutation]);
 
   /**
+   * Request password reset instructions
+   */
+  const forgotPassword = useCallback(
+    async (email: string) => {
+      return await forgotPasswordMutation.mutateAsync(email);
+    },
+    [forgotPasswordMutation]
+  );
+
+  /**
    * Refresh current user profile
    */
   const refreshProfile = useCallback(async () => {
@@ -100,6 +115,7 @@ export const useAuth = () => {
     // Actions
     login,
     register,
+    forgotPassword,
     logout,
     refreshProfile,
 

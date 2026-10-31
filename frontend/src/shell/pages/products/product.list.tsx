@@ -1,6 +1,8 @@
 import React from "react";
 import { useQuery } from "@tanstack/react-query";
-import { productRepository, GetProductsQuery, type ProductListItemModel } from "@features/shop/modules/products";
+import { productRepository } from "@features/shop/modules/products/infrastructure/repositories/django-product.repository";
+import { GetProductsQuery } from "@features/shop/modules/products/application/queries/get-products.query";
+import type { ProductListItemModel } from "@features/shop/modules/products/application/read-models/product-list-item.model";
 import { ProductGrid } from "@features/shop/presentation/storefront/ProductGrid";
 import { Zenith } from "@shared/theme";
 

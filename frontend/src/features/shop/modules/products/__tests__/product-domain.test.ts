@@ -1,14 +1,12 @@
 import { describe, expect, it } from "vitest";
-import {
-  Money,
-  SKU,
-  StockLevel,
-  ProductStatus,
-  ProductAggregate,
-  productRepository,
-  GetProductsQuery,
-  GetProductDetailsQuery,
-} from "../index";
+import { Money } from "../domain/value-objects/money.vo";
+import { SKU } from "../domain/value-objects/sku.vo";
+import { StockLevel } from "../domain/value-objects/stock-level.vo";
+import { ProductStatus } from "../domain/value-objects/product-status.vo";
+import { ProductAggregate } from "../domain/aggregates/product.aggregate";
+import { productRepository } from "../infrastructure/repositories/django-product.repository";
+import { GetProductsQuery } from "../application/queries/get-products.query";
+import { GetProductDetailsQuery } from "../application/queries/get-product-details.query";
 
 describe("Product Bounded Context: Domain & Application Queries", () => {
   describe("1. Money Value Object", () => {

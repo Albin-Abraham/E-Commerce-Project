@@ -3,7 +3,12 @@ import type { FormDefinition } from "@ui/form/types";
 import type { EntityDefinition } from "@ui/form/types/application";
 import { fuseSchema } from "@ui/form/utils/schema-fusion";
 
-import { buildLoginEntity, buildSignupEntity, type AuthTranslator } from "./auth-logical";
+import {
+  buildLoginEntity,
+  buildSignupEntity,
+  buildForgotPasswordEntity,
+  type AuthTranslator,
+} from "./auth-logical";
 import type { AuthModeToggleProps } from "./auth-types";
 
 /**
@@ -94,6 +99,20 @@ export const buildSignupSchema = (
     t ? t("register.submit") : "Create Account"
   );
 
+export const buildForgotPasswordSchema = (
+  toggleProps?: AuthModeToggleProps,
+  t?: AuthTranslator
+) =>
+  compileEntityToFormDef(
+    buildForgotPasswordEntity(
+      toggleProps || { mode: "forgot-password", onModeChange: () => {} },
+      t
+    ),
+    "auth-forgot-password",
+    "Send Reset Link"
+  );
+
 // Auto-register so dynamic hooks can find them
 schemaRegistry.register("auth-login", buildLoginSchema as any);
 schemaRegistry.register("auth-signup", buildSignupSchema as any);
+schemaRegistry.register("auth-forgot-password", buildForgotPasswordSchema as any);

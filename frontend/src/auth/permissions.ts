@@ -4,11 +4,9 @@
  * Core permission contracts and implementations are now centralized in `@shared/auth`.
  */
 
-export * from "@shared/auth";
-
-// Legacy class re-export for compatibility
-import { permissionEvaluator } from "@platform/authorization";
-import type { IPermissionClass } from "@shared/auth";
+// Legacy class implementation for compatibility
+import { permissionEvaluator } from "@platform/authorization/permission-evaluator";
+import type { IPermissionClass } from "@shared/auth/types";
 
 export class PermissionChecker implements IPermissionClass {
   can(permission: string, attributes?: Record<string, unknown>): boolean {

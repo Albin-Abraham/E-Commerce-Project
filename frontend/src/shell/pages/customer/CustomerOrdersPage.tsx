@@ -2,7 +2,8 @@ import React from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "react-router-dom";
 import { ShoppingBag, ArrowLeft, PackageCheck } from "lucide-react";
-import { orderRepository, GetCustomerOrdersQuery } from "@features/orders";
+import { orderRepository } from "@features/orders/infrastructure/repositories/django-order.repository";
+import { GetCustomerOrdersQuery } from "@features/orders/application/queries/get-customer-orders.query";
 import { OrderCard } from "@features/orders/presentation/OrderCard";
 
 const getOrdersQuery = new GetCustomerOrdersQuery(orderRepository);

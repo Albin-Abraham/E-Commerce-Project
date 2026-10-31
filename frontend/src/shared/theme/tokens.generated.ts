@@ -1,7 +1,7 @@
 /**
  * ZenOS Design Tokens - Type-Safe Constants
  * DO NOT EDIT DIRECTLY - GENERATED FROM tokens/ DIRECTORY
- * Stamped at: 2026-10-31T08:14:49.932Z
+ * Stamped at: 2026-10-31T09:14:35.411Z
  */
 
 export const generatedTokens = {

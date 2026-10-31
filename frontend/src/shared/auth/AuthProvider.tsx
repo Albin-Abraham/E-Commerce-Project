@@ -9,7 +9,7 @@ import {
   type UserSession,
   type LoginCredentials,
 } from "@platform/identity";
-import { permissionEvaluator } from "@platform/authorization";
+import { permissionEvaluator } from "@platform/authorization/permission-evaluator";
 
 export interface AuthContextValue {
   user: UserProfile | null;

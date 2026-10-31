@@ -115,6 +115,17 @@ export class BaseAuthService implements IAuthClass {
     }
   }
 
+  /**
+   * Performs the forgot password request flow
+   */
+  public async forgotPassword(email: string): Promise<{ message?: string }> {
+    try {
+      return await this.repository.forgotPassword(email);
+    } catch (err) {
+      throw ApiErrorParser.from(err);
+    }
+  }
+
   public async register(credentials: RegisterRequest): Promise<LoginResponse> {
     try {
       const data = await this.repository.register(credentials);

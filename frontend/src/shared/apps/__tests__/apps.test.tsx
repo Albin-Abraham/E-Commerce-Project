@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { render, screen } from "@testing-library/react";
 import { appRegistry, AppGuard } from "../index";
-import { permissionEvaluator } from "@platform/authorization";
+import { permissionEvaluator } from "@platform/authorization/permission-evaluator";
 
 describe("Shared Apps Presentation & Registry", () => {
   it("provides active app and available apps list", () => {

@@ -1,36 +1,49 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 import { ApiErrorParser } from "@core/http";
 import { AppPaths } from "@shell/paths";
 import { Form } from "@ui/form/Form";
 
-import { toastError } from "@shared/ui/Toast";
+import { toastError, toastSuccess } from "@shared/ui/Toast";
 
-import { useAuth } from "@hooks/auth/useAuth";
+import { useAuth } from "@shared/hooks/auth/useAuth";
 
-import { buildLoginSchema, buildSignupSchema } from "./configs/auth-schema";
+import {
+  buildLoginSchema,
+  buildSignupSchema,
+  buildForgotPasswordSchema,
+} from "./configs/auth-schema";
 import type { AuthMode, AuthModeToggleProps } from "./configs/auth-types";
 
 /**
- * AuthPortalPage — Flagship Login Showcase
+ * AuthPortalPage — Flagship Login, Register & Forgot Password Showcase
  *
- * This component owns the V4 (View State): the `mode` toggle between
- * Sign In and Sign Up. It swaps a lean, server-clean Form schema based
- * on mode — zero UI-control variables leak into the form payload.
- *
- * All form chrome (mode toggle, header, divider, social buttons, footer
- * links, split brand panel, submit button) is schema-driven via fuseSchema.
- * The toggle is a typed `segmented` content primitive (radio semantics) in
- * the split container's `topContent`; the page only supplies its state routing.
+ * Uses the ZenOS Form Architecture and MDAP Entity compilation for all
+ * identity flows. Zero ad-hoc form HTML or unmanaged state.
  */
 const AuthPortalPage: React.FC = () => {
   const { t } = useTranslation("screens/auth");
-  const { login, register } = useAuth();
+  const { login, register, forgotPassword } = useAuth();
   const navigate = useNavigate();
-  const [mode, setMode] = useState<AuthMode>("login");
+  const location = useLocation();
+
+  const getInitialMode = (pathname: string): AuthMode => {
+    if (pathname === AppPaths.Register) return "signup";
+    if (pathname === AppPaths.ForgotPassword) return "forgot-password";
+    return "login";
+  };
+
+  const [mode, setMode] = useState<AuthMode>(() => getInitialMode(location.pathname));
   const [isSwapping, setIsSwapping] = useState(false);
+
+  useEffect(() => {
+    const targetMode = getInitialMode(location.pathname);
+    if (targetMode !== mode) {
+      setMode(targetMode);
+    }
+  }, [location.pathname]);
 
   const toggleProps: AuthModeToggleProps = {
     mode,
@@ -40,24 +53,28 @@ const AuthPortalPage: React.FC = () => {
       setTimeout(() => {
         setMode(newMode);
         setIsSwapping(false);
+        if (newMode === "login" && location.pathname !== AppPaths.Login) {
+          navigate(AppPaths.Login, { replace: true });
+        } else if (newMode === "signup" && location.pathname !== AppPaths.Register) {
+          navigate(AppPaths.Register, { replace: true });
+        } else if (newMode === "forgot-password" && location.pathname !== AppPaths.ForgotPassword) {
+          navigate(AppPaths.ForgotPassword, { replace: true });
+        }
       }, 400); // Allow skeleton to mount and mask the form swap
     },
   };
 
-  const schema = React.useMemo(
-    () =>
-      mode === "login"
-        ? buildLoginSchema(toggleProps, t)
-        : buildSignupSchema(toggleProps, t),
-    [mode, t]
-  ); // toggleProps is derived from mode and setMode (which is stable)
+  const schema = React.useMemo(() => {
+    if (mode === "login") return buildLoginSchema(toggleProps, t);
+    if (mode === "signup") return buildSignupSchema(toggleProps, t);
+    return buildForgotPasswordSchema(toggleProps, t);
+  }, [mode, t]);
 
   return (
     <div className="min-h-screen flex flex-col p-3 sm:p-4 bg-background text-foreground bg-architectural-grid overflow-y-auto overflow-x-hidden">
       {/* m-auto centers vertically and horizontally without clipping the top when viewport is too small */}
       <div className="m-auto w-full flex justify-center">
-        {/* Form Engine — receives clean, server-ready schema. The Sign In /
-            Sign Up toggle is embedded on the card via the schema's topContent. */}
+        {/* Form Engine — receives clean, server-ready schema */}
         <Form<any>
           definition={schema as any}
           onSubmit={async (data) => {
@@ -71,7 +88,8 @@ const AuthPortalPage: React.FC = () => {
                   rememberMe: data.rememberMe,
                 };
                 await login(credentials as any);
-              } else {
+                navigate(AppPaths.Root, { replace: true });
+              } else if (mode === "signup") {
                 const nameParts = (data.name || "").trim().split(/\s+/);
                 const firstName = nameParts[0] || "";
                 const lastName = nameParts.slice(1).join(" ") || "";
@@ -88,8 +106,16 @@ const AuthPortalPage: React.FC = () => {
                   confirm_password: data.confirm_password,
                 };
                 await register(registerPayload as any);
+                navigate(AppPaths.Root, { replace: true });
+              } else if (mode === "forgot-password") {
+                const email = data.email || data.username;
+                await forgotPassword(email);
+                toastSuccess(
+                  "Password Reset Dispatched",
+                  "If an account exists for this email, recovery instructions have been sent."
+                );
+                navigate(AppPaths.Login);
               }
-              navigate(AppPaths.Root, { replace: true });
             } catch (err) {
               const apiError = ApiErrorParser.from(err);
               const fieldErrors: Record<string, string> = {};

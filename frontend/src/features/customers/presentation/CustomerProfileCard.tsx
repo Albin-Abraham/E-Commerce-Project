@@ -1,15 +1,55 @@
 /**
  * Customer Presentation: Customer Profile Card
+ *
+ * Utilizes the core DetailRenderer.Grid for declarative, accessible
+ * key-value telemetry without reinventing ad-hoc cards or styles.
  */
 
 import React from "react";
 import { Mail, Phone, Hash, CreditCard } from "lucide-react";
 import type { CustomerAggregate } from "../domain/aggregates/customer.aggregate";
 import { CustomerTierBadge } from "./CustomerTierBadge";
+import { DetailRenderer } from "@shared/ui/detail/DetailRenderer";
+import type { DetailSchema } from "@shared/ui/detail/detail.types";
 
 export interface CustomerProfileCardProps {
   customer: CustomerAggregate;
 }
+
+const customerDetailSchema: DetailSchema<CustomerAggregate> = {
+  id: "customer-profile-details",
+  fields: [
+    {
+      id: "customerCode",
+      label: "Customer Code",
+      icon: <Hash className="w-3.5 h-3.5 text-primary" />,
+      format: "mono",
+      value: (c) => c.customerCode.value,
+    },
+    {
+      id: "email",
+      label: "Official Email",
+      icon: <Mail className="w-3.5 h-3.5 text-primary" />,
+      format: "text",
+      value: (c) => c.email,
+    },
+    {
+      id: "phone",
+      label: "Phone Contact",
+      icon: <Phone className="w-3.5 h-3.5 text-primary" />,
+      format: "text",
+      value: (c) => c.phone || "Not Specified",
+    },
+    {
+      id: "creditLimit",
+      label: "Commercial Credit",
+      icon: <CreditCard className="w-3.5 h-3.5 text-primary" />,
+      format: "currency",
+      currency: "USD",
+      value: (c) => c.creditLimit || 0,
+    },
+  ],
+};
 
 export const CustomerProfileCard: React.FC<CustomerProfileCardProps> = ({ customer }) => {
   return (
@@ -28,47 +68,13 @@ export const CustomerProfileCard: React.FC<CustomerProfileCardProps> = ({ custom
         <CustomerTierBadge tier={customer.tier} />
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 text-xs">
-        <div className="p-3.5 rounded-xl bg-surface-muted/50 border border-border/60 space-y-1">
-          <div className="flex items-center gap-1.5 font-bold text-muted">
-            <Hash className="w-3.5 h-3.5 text-primary" />
-            <span>Customer Code</span>
-          </div>
-          <span className="font-mono font-bold text-foreground text-sm">
-            {customer.customerCode.value}
-          </span>
-        </div>
-
-        <div className="p-3.5 rounded-xl bg-surface-muted/50 border border-border/60 space-y-1">
-          <div className="flex items-center gap-1.5 font-bold text-muted">
-            <Mail className="w-3.5 h-3.5 text-primary" />
-            <span>Official Email</span>
-          </div>
-          <span className="font-medium text-foreground truncate block text-sm">
-            {customer.email}
-          </span>
-        </div>
-
-        <div className="p-3.5 rounded-xl bg-surface-muted/50 border border-border/60 space-y-1">
-          <div className="flex items-center gap-1.5 font-bold text-muted">
-            <Phone className="w-3.5 h-3.5 text-primary" />
-            <span>Phone Contact</span>
-          </div>
-          <span className="font-medium text-foreground text-sm tabular-nums">
-            {customer.phone || "Not Specified"}
-          </span>
-        </div>
-
-        <div className="p-3.5 rounded-xl bg-surface-muted/50 border border-border/60 space-y-1">
-          <div className="flex items-center gap-1.5 font-bold text-muted">
-            <CreditCard className="w-3.5 h-3.5 text-primary" />
-            <span>Commercial Credit</span>
-          </div>
-          <span className="font-bold text-foreground text-sm tabular-nums">
-            ${customer.creditLimit ? customer.creditLimit.toLocaleString() : "0"} USD
-          </span>
-        </div>
-      </div>
+      {/* Core DetailRenderer Grid */}
+      <DetailRenderer.Grid
+        schema={customerDetailSchema}
+        data={customer}
+        columns={4}
+        variant="card"
+      />
     </div>
   );
 };

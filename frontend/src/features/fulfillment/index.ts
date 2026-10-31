@@ -1,9 +1,9 @@
 /**
- * Fulfillment Bounded Context Public API
+ * Fulfillment Feature Module
+ *
+ * NOTE: Barrel re-exports are intentionally avoided.
+ * Import directly from concrete module paths:
+ * - Domain: @features/fulfillment/domain/...
+ * - Application: @features/fulfillment/application/...
  */
-
-export { FulfillmentMethod, type FulfillmentType } from "./domain/fulfillment-method.vo";
-export {
-  EvaluateBopisEligibilityQuery,
-  type BopisEligibilityResult,
-} from "./application/evaluate-bopis-eligibility.query";
+export {};

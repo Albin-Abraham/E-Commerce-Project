@@ -2,6 +2,8 @@ export const AppPaths = {
   Root: "/",
   Workspace: "/workspace",
   Login: "/login",
+  Register: "/register",
+  ForgotPassword: "/forgot-password",
   About: "/about",
   Builder: "/builder",
   NotFound: "*",

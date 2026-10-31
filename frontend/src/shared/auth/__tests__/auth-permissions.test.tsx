@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { render, screen } from "@testing-library/react";
 import { PermissionProvider, PermissionGuard } from "../index";
-import { permissionEvaluator } from "@platform/authorization";
+import { permissionEvaluator } from "@platform/authorization/permission-evaluator";
 
 describe("Shared Auth Presentation Layer", () => {
   it("renders children when user has permission", () => {

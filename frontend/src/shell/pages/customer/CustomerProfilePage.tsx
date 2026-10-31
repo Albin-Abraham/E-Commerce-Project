@@ -1,25 +1,105 @@
 import React, { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { Plus, MapPin } from "lucide-react";
-import {
-  customerRepository,
-  GetCustomerProfileQuery,
-  SaveCustomerAddressCommand,
-  type CustomerAddressEntity,
-} from "@features/customers";
+import { Plus, MapPin, X } from "lucide-react";
+
+import { customerRepository } from "@features/customers/infrastructure/repositories/django-customer.repository";
+import { GetCustomerProfileQuery } from "@features/customers/application/queries/get-customer-profile.query";
+import { SaveCustomerAddressCommand } from "@features/customers/application/commands/save-customer-address.command";
 import { CustomerProfileCard } from "@features/customers/presentation/CustomerProfileCard";
 import { AddressCard } from "@features/customers/presentation/AddressCard";
+
+import { Form } from "@ui/form/Form";
+import type { FormDefinition } from "@ui/form/types";
 
 const getProfileQuery = new GetCustomerProfileQuery(customerRepository);
 const saveAddressCmd = new SaveCustomerAddressCommand(customerRepository);
 
+const newAddressFormDef: FormDefinition = {
+  id: "customer-new-address-form",
+  title: "New Facility or Delivery Address",
+  description: "Provide shipping or billing location details.",
+  submitLabel: "Save Address",
+  sections: [
+    {
+      id: "address-fields",
+      title: "",
+      fields: [
+        {
+          id: "recipientName",
+          name: "recipientName",
+          type: "text",
+          label: "Recipient or Facility Name",
+          required: true,
+          layout: { columnSpan: 12 },
+          properties: { placeholder: "e.g. Acme Receiving Dept / John Doe" },
+        },
+        {
+          id: "street1",
+          name: "street1",
+          type: "text",
+          label: "Street Address",
+          required: true,
+          layout: { columnSpan: 12 },
+          properties: { placeholder: "e.g. 100 Enterprise Way, Suite 400" },
+        },
+        {
+          id: "city",
+          name: "city",
+          type: "text",
+          label: "City",
+          required: true,
+          layout: { columnSpan: 6 },
+          properties: { placeholder: "e.g. San Francisco" },
+        },
+        {
+          id: "state",
+          name: "state",
+          type: "text",
+          label: "State / Province",
+          required: true,
+          layout: { columnSpan: 6 },
+          properties: { placeholder: "e.g. California" },
+        },
+        {
+          id: "postalCode",
+          name: "postalCode",
+          type: "text",
+          label: "Postal Code",
+          required: true,
+          layout: { columnSpan: 6 },
+          properties: { placeholder: "e.g. 94105" },
+        },
+        {
+          id: "country",
+          name: "country",
+          type: "text",
+          label: "Country",
+          required: true,
+          layout: { columnSpan: 6 },
+          properties: { placeholder: "e.g. United States" },
+        },
+        {
+          id: "submit-btn",
+          type: "button",
+          label: "Save Address",
+          layout: { columnSpan: 12 },
+          properties: { submit: true },
+          meta: {
+            ui: {
+              classNames: {
+                base: "mt-3 inline-flex items-center justify-center font-bold px-4 py-2 text-xs rounded-xl bg-primary text-primary-foreground hover:bg-primary/90 transition-all",
+              },
+            },
+          },
+        },
+      ],
+    },
+  ],
+};
+
 export const CustomerProfilePage: React.FC = () => {
   const queryClient = useQueryClient();
   const [isAddingAddress, setIsAddingAddress] = useState(false);
-  const [formRecipient, setFormRecipient] = useState("");
-  const [formStreet, setFormStreet] = useState("");
-  const [formCity, setFormCity] = useState("");
-  const [formPostal, setFormPostal] = useState("");
 
   const { data: customer, isLoading } = useQuery({
     queryKey: ["customer", "profile"],
@@ -40,10 +120,6 @@ export const CustomerProfilePage: React.FC = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["customer", "profile"] });
       setIsAddingAddress(false);
-      setFormRecipient("");
-      setFormStreet("");
-      setFormCity("");
-      setFormPostal("");
     },
   });
 
@@ -57,17 +133,14 @@ export const CustomerProfilePage: React.FC = () => {
     );
   }
 
-  const handleSaveNewAddress = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!formRecipient || !formStreet || !formCity || !formPostal) return;
-
-    addAddressMutation.mutate({
-      recipientName: formRecipient,
-      street1: formStreet,
-      city: formCity,
-      state: "Tokyo",
-      postalCode: formPostal,
-      country: "Japan",
+  const handleSaveNewAddress = async (formData: Record<string, any>) => {
+    await addAddressMutation.mutateAsync({
+      recipientName: formData.recipientName,
+      street1: formData.street1,
+      city: formData.city,
+      state: formData.state || "CA",
+      postalCode: formData.postalCode,
+      country: formData.country || "United States",
       isDefaultShipping: customer.addresses.length === 0,
       isDefaultBilling: customer.addresses.length === 0,
     });
@@ -84,7 +157,7 @@ export const CustomerProfilePage: React.FC = () => {
         </p>
       </div>
 
-      {/* Customer Account Summary Card */}
+      {/* Customer Account Summary Card (rendered via DetailRenderer.Grid) */}
       <CustomerProfileCard customer={customer} />
 
       {/* Address Book Section */}
@@ -100,85 +173,19 @@ export const CustomerProfilePage: React.FC = () => {
             onClick={() => setIsAddingAddress(!isAddingAddress)}
             className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-primary text-primary-foreground text-xs font-semibold hover:bg-primary/90 transition-all shadow-xs"
           >
-            <Plus className="w-4 h-4" />
-            <span>Add New Address</span>
+            {isAddingAddress ? <X className="w-4 h-4" /> : <Plus className="w-4 h-4" />}
+            <span>{isAddingAddress ? "Cancel" : "Add New Address"}</span>
           </button>
         </div>
 
-        {/* Inline Add Address Form Modal */}
+        {/* Address Creation Form via ZenOS Form Architecture */}
         {isAddingAddress && (
-          <form
-            onSubmit={handleSaveNewAddress}
-            className="p-5 rounded-xl border border-primary/40 bg-surface shadow-md space-y-4 max-w-xl"
-          >
-            <h4 className="text-sm font-bold text-foreground">New Delivery Address</h4>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
-              <div>
-                <label className="block text-muted font-semibold mb-1">Recipient Name</label>
-                <input
-                  type="text"
-                  required
-                  value={formRecipient}
-                  onChange={(e) => setFormRecipient(e.target.value)}
-                  placeholder="e.g. John Doe / Receiving Dept"
-                  className="w-full px-3 py-2 rounded-lg border border-border bg-background text-foreground"
-                />
-              </div>
-
-              <div>
-                <label className="block text-muted font-semibold mb-1">Street Address</label>
-                <input
-                  type="text"
-                  required
-                  value={formStreet}
-                  onChange={(e) => setFormStreet(e.target.value)}
-                  placeholder="e.g. 100 Main St"
-                  className="w-full px-3 py-2 rounded-lg border border-border bg-background text-foreground"
-                />
-              </div>
-
-              <div>
-                <label className="block text-muted font-semibold mb-1">City</label>
-                <input
-                  type="text"
-                  required
-                  value={formCity}
-                  onChange={(e) => setFormCity(e.target.value)}
-                  placeholder="e.g. Tokyo"
-                  className="w-full px-3 py-2 rounded-lg border border-border bg-background text-foreground"
-                />
-              </div>
-
-              <div>
-                <label className="block text-muted font-semibold mb-1">Postal Code</label>
-                <input
-                  type="text"
-                  required
-                  value={formPostal}
-                  onChange={(e) => setFormPostal(e.target.value)}
-                  placeholder="e.g. 100-0001"
-                  className="w-full px-3 py-2 rounded-lg border border-border bg-background text-foreground"
-                />
-              </div>
-            </div>
-
-            <div className="flex items-center justify-end gap-2 pt-2">
-              <button
-                type="button"
-                onClick={() => setIsAddingAddress(false)}
-                className="px-3 py-1.5 rounded-lg text-xs font-semibold text-muted hover:text-foreground"
-              >
-                Cancel
-              </button>
-              <button
-                type="submit"
-                disabled={addAddressMutation.isPending}
-                className="px-4 py-1.5 rounded-lg text-xs font-semibold bg-primary text-primary-foreground hover:bg-primary/90"
-              >
-                {addAddressMutation.isPending ? "Saving..." : "Save Address"}
-              </button>
-            </div>
-          </form>
+          <div className="p-6 rounded-2xl border border-primary/40 bg-surface shadow-md max-w-2xl animate-in fade-in duration-300">
+            <Form<any>
+              definition={newAddressFormDef as any}
+              onSubmit={handleSaveNewAddress}
+            />
+          </div>
         )}
 
         {/* Addresses Grid */}

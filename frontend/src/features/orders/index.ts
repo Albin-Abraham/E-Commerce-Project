@@ -1,24 +1,12 @@
 /**
- * Orders Bounded Context Public API
+ * Orders Feature Module
+ *
+ * NOTE: Barrel re-exports are intentionally avoided to maintain Clean Architecture layer
+ * boundaries and prevent tree-shaking regressions.
+ * Import directly from concrete module paths:
+ * - Domain: @features/orders/domain/...
+ * - Application: @features/orders/application/...
+ * - Infrastructure: @features/orders/infrastructure/...
+ * - Presentation: @features/orders/presentation/...
  */
-
-// Domain
-export { OrderAggregate, type OrderAggregateProps } from "./domain/aggregates/order.aggregate";
-export { OrderItemEntity, type OrderItemProps } from "./domain/entities/order-item.entity";
-export { OrderNumber } from "./domain/value-objects/order-number.vo";
-export { OrderStatus, type OrderLifecycleState } from "./domain/value-objects/order-status.vo";
-
-// Application
-export type {
-  OrderRepositoryPort,
-  OrderTrackingResult,
-  OrderTrackingTimelineStep,
-} from "./application/ports/order-repository.port";
-export {
-  GetCustomerOrdersQuery,
-  GetOrderTrackingQuery,
-} from "./application/queries/get-customer-orders.query";
-
-// Infrastructure
-export { DjangoOrderRepository, orderRepository } from "./infrastructure/repositories/django-order.repository";
-export { OrderMapper } from "./infrastructure/mappers/order.mapper";
+export {};

@@ -2,9 +2,13 @@ import React, { useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { ChevronRight, ShieldCheck, Truck, ArrowLeft } from "lucide-react";
-import { productRepository, GetProductDetailsQuery } from "@features/shop/modules/products";
+
+import { productRepository } from "@features/shop/modules/products/infrastructure/repositories/django-product.repository";
+import { GetProductDetailsQuery } from "@features/shop/modules/products/application/queries/get-product-details.query";
 import { ProductImageGallery } from "@features/shop/presentation/shopping/ProductImageGallery";
 import { ProductDetailBuyBox } from "@features/shop/presentation/shopping/ProductDetailBuyBox";
+import { DetailRenderer } from "@shared/ui/detail/DetailRenderer";
+import type { DetailSchema } from "@shared/ui/detail/detail.types";
 
 const getProductDetailsQuery = new GetProductDetailsQuery(productRepository);
 
@@ -131,16 +135,42 @@ export const ProductDetailPage: React.FC = () => {
         </div>
 
         {activeTab === "specs" && (
-          <div className="bg-surface border border-border rounded-2xl p-6">
-            <h3 className="text-base font-bold text-foreground mb-4">Detailed Specifications</h3>
-            <div className="divide-y divide-border/60">
-              {Object.entries(product.specifications).map(([key, val]) => (
-                <div key={key} className="py-2.5 flex flex-col sm:flex-row sm:items-center justify-between gap-1 text-sm">
-                  <span className="font-semibold text-muted">{key}</span>
-                  <span className="font-medium text-foreground">{val}</span>
-                </div>
-              ))}
-            </div>
+          <div className="bg-surface border border-border rounded-2xl p-6 space-y-4">
+            <h3 className="text-base font-bold text-foreground">Detailed Specifications</h3>
+            <DetailRenderer.Grid
+              schema={{
+                id: `product-specs-${product.id}`,
+                fields: [
+                  {
+                    id: "sku",
+                    label: "Master SKU",
+                    format: "mono",
+                    value: () => product.sku,
+                  },
+                  {
+                    id: "brand",
+                    label: "Brand / Manufacturer",
+                    format: "text",
+                    value: () => product.brandName || "ZenOS Certified",
+                  },
+                  {
+                    id: "category",
+                    label: "Taxonomy Classification",
+                    format: "text",
+                    value: () => product.categoryName || "General Merchandise",
+                  },
+                  ...Object.entries(product.specifications).map(([key, val]) => ({
+                    id: `spec-${key}`,
+                    label: key,
+                    format: "text" as const,
+                    value: () => String(val),
+                  })),
+                ],
+              }}
+              data={product}
+              columns={2}
+              variant="subtle"
+            />
           </div>
         )}
 

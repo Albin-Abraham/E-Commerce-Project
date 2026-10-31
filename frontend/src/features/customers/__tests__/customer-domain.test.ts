@@ -1,13 +1,11 @@
 import { describe, expect, it } from "vitest";
-import {
-  CustomerAggregate,
-  CustomerAddressEntity,
-  CustomerCode,
-  CustomerType,
-  customerRepository,
-  GetCustomerProfileQuery,
-  SaveCustomerAddressCommand,
-} from "../index";
+import { CustomerAggregate } from "../domain/aggregates/customer.aggregate";
+import { CustomerAddressEntity } from "../domain/entities/customer-address.entity";
+import { CustomerCode } from "../domain/value-objects/customer-code.vo";
+import { CustomerType } from "../domain/value-objects/customer-type.vo";
+import { customerRepository } from "../infrastructure/repositories/django-customer.repository";
+import { GetCustomerProfileQuery } from "../application/queries/get-customer-profile.query";
+import { SaveCustomerAddressCommand } from "../application/commands/save-customer-address.command";
 
 describe("Customer Bounded Context", () => {
   describe("1. Customer Domain Invariants", () => {

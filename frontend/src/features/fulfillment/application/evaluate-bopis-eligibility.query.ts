@@ -6,7 +6,7 @@
  * Product -> Variant -> Inventory Availability (via Inventory Port) -> Branch Context -> BOPIS Result
  */
 
-import type { InventoryQueryPort } from "@features/inventory";
+import type { InventoryQueryPort } from "@features/inventory/application/ports/inventory-query.port";
 
 export interface BopisEligibilityResult {
   eligible: boolean;

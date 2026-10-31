@@ -11,6 +11,7 @@ export interface IAuthClass {
 
   login(credentials: LoginRequest): Promise<LoginResponse>;
   logout(): Promise<void>;
+  forgotPassword?(email: string): Promise<{ message?: string }>;
 
   saveTokens(tokens: LoginResponse): void;
   clearTokens(): void;

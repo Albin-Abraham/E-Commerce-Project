@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { EvaluateBopisEligibilityQuery } from "../index";
-import type { InventoryQueryPort } from "@features/inventory";
+import { EvaluateBopisEligibilityQuery } from "../application/evaluate-bopis-eligibility.query";
+import type { InventoryQueryPort } from "@features/inventory/application/ports/inventory-query.port";
 
 describe("Fulfillment Bounded Context: BOPIS Eligibility Flow", () => {
   it("evaluates BOPIS as eligible when target branch has positive stock", async () => {
