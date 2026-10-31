@@ -29,19 +29,56 @@ LOOKUP_OPERATORS = frozenset(
         "in",
         "range",
         "isnull",
+        "date",
+        "year",
+        "month",
+        "day",
     ]
 )
+
+TYPE_DEFAULT_LOOKUPS = {
+    int: frozenset(["exact", "gt", "gte", "lt", "lte", "range", "in", "isnull"]),
+    float: frozenset(["exact", "gt", "gte", "lt", "lte", "range", "in", "isnull"]),
+    Decimal: frozenset(["exact", "gt", "gte", "lt", "lte", "range", "in", "isnull"]),
+    datetime: frozenset(
+        ["exact", "gt", "gte", "lt", "lte", "range", "date", "year", "month", "day", "isnull"]
+    ),
+    date: frozenset(["exact", "gt", "gte", "lt", "lte", "range", "year", "month", "day", "isnull"]),
+    time: frozenset(["exact", "gt", "gte", "lt", "lte", "range", "isnull"]),
+    str: frozenset(
+        [
+            "exact",
+            "iexact",
+            "contains",
+            "icontains",
+            "startswith",
+            "istartswith",
+            "endswith",
+            "iendswith",
+            "in",
+            "isnull",
+        ]
+    ),
+    bool: frozenset(["exact", "isnull"]),
+}
 
 
 class FilterField:
     """
     Metadata for a single filterable field.
     Declares type coercion, allowed lookup operators, and relation traversal.
+    Automatically assigns appropriate operators based on field type if not specified.
     """
 
-    def __init__(self, type=str, lookups=None, default_lookup="exact", related=None):
+    def __init__(self, type=str, lookups=None, default_lookup="exact", related=None, is_json=False):
         self.type = type
-        self.lookups = frozenset(lookups or ["exact"])
+        self.is_json = (
+            is_json or type is dict or (isinstance(type, str) and type.lower() in ("json", "jsonb"))
+        )
+        if lookups is not None:
+            self.lookups = frozenset(lookups)
+        else:
+            self.lookups = TYPE_DEFAULT_LOOKUPS.get(type, frozenset(["exact", "isnull"]))
         self.default_lookup = default_lookup
         self.related = related  # e.g., "company" for company__name traversal
 
@@ -54,7 +91,7 @@ class FilterField:
         # Check bool before int (since bool is a subclass of int)
         if self.type is bool:
             if isinstance(value, str):
-                return value.lower() in ("true", "1", "yes")
+                return value.lower() in ("true", "1", "yes", "t")
             return bool(value)
         if self.type is int:
             # Handle bool→int conversion explicitly
@@ -67,7 +104,13 @@ class FilterField:
             return Decimal(str(value))
         if self.type is datetime:
             if isinstance(value, str):
-                return parse_datetime(value)
+                parsed = parse_datetime(value)
+                if parsed is None:
+                    # Fallback: parse as date and convert to start-of-day datetime if needed
+                    parsed_d = parse_date(value)
+                    if parsed_d:
+                        return datetime.combine(parsed_d, time.min)
+                return parsed
             return value
         if self.type is date:
             if isinstance(value, str):
@@ -86,6 +129,59 @@ class FilterField:
 
         return value  # str or anything else passes through
 
+    def coerce_lookup(self, lookup: str, raw_value):
+        """
+        Coerce value specifically for the designated lookup operator.
+        Handles collection/range splitting, isnull booleans, and date shortcuts.
+        """
+        if lookup == "isnull":
+            if isinstance(raw_value, str):
+                return raw_value.lower() in ("true", "1", "yes", "t")
+            return bool(raw_value)
+
+        if lookup == "in":
+            if raw_value is None or raw_value == "":
+                return []
+            if isinstance(raw_value, str):
+                items = [v.strip() for v in raw_value.split(",") if v.strip()]
+            elif isinstance(raw_value, (list, tuple, set)):
+                items = list(raw_value)
+            else:
+                items = [raw_value]
+            return [self.coerce(item) for item in items]
+
+        if lookup == "range":
+            if isinstance(raw_value, str):
+                parts = [v.strip() for v in raw_value.split(",")]
+            elif isinstance(raw_value, (list, tuple)):
+                parts = list(raw_value)
+            else:
+                raise ValueError(
+                    f"Range lookup expects two comma-separated values, got: {raw_value}"
+                )
+            if len(parts) != 2:
+                raise ValueError(
+                    f"Range lookup expects exactly 2 comma-separated values [min,max], got {len(parts)}: {raw_value}"
+                )
+            start_val = self.coerce(parts[0])
+            end_val = self.coerce(parts[1])
+            if start_val is None or end_val is None:
+                raise ValueError(f"Failed to coerce range values: {parts}")
+            return (start_val, end_val)
+
+        if lookup == "date":
+            if isinstance(raw_value, str):
+                parsed = parse_date(raw_value)
+                if parsed is None:
+                    raise ValueError(f"Invalid date format for date lookup: {raw_value}")
+                return parsed
+            return raw_value
+
+        if lookup in ("year", "month", "day"):
+            return int(raw_value)
+
+        return self.coerce(raw_value)
+
 
 class FilterSchema:
     """
@@ -96,7 +192,8 @@ class FilterSchema:
         filter_schema = FilterSchema(
             name=FilterField(type=str, lookups=["exact", "icontains"]),
             is_active=FilterField(type=bool),
-            created_at=FilterField(type=datetime, lookups=["exact", "gte", "lte"]),
+            price=FilterField(type=Decimal),  # automatically includes gt, gte, lt, lte, range, in
+            created_at=FilterField(type=datetime),  # automatically includes range, gte, lte, date
             company__name=FilterField(type=str, lookups=["exact", "icontains"], related="company"),
         )
     """
@@ -114,37 +211,58 @@ class FilterSchema:
     def get_field(self, param_name):
         """
         Resolve a query param name to its FilterField.
-        Handles lookup suffixes: 'name__icontains' -> field='name', lookup='icontains'
+        Handles lookup suffixes: 'price__gte' -> field='price', lookup='gte'
         Supports JSONField deep key paths (e.g., 'metadata__specs__ram', 'attributes__color__icontains')
         Returns (FilterField, resolved_lookup, model_field) or (None, None, None) if not found.
         """
         # 1. Try exact match first (e.g., param "name" -> field "name")
         if param_name in self.fields:
-            return self.fields[param_name], "exact", param_name
+            field = self.fields[param_name]
+            return field, field.default_lookup, param_name
 
         # 2. Try splitting single lookup suffix (e.g., "name__icontains" -> base="name", lookup="icontains")
         parts = param_name.rsplit("__", 1)
         if len(parts) == 2:
             base, lookup = parts
-            if base in self.fields:
+            if base in self.fields and lookup in LOOKUP_OPERATORS:
                 field = self.fields[base]
                 if lookup in field.lookups:
                     return field, lookup, base
 
-        # 3. Handle multi-level JSON key paths (e.g., "attributes__color__icontains", "metadata__specs__ram")
+        # 3. Handle multi-level JSON key paths or related paths (e.g., "company__name__icontains")
         if "__" in param_name:
             segments = param_name.split("__")
             root_field = segments[0]
+            last_segment = segments[-1]
+
+            if last_segment in LOOKUP_OPERATORS:
+                candidate_field = "__".join(segments[:-1])
+                lookup = last_segment
+            else:
+                candidate_field = param_name
+                lookup = "exact"
+
+            if candidate_field in self.fields:
+                field = self.fields[candidate_field]
+                if lookup in field.lookups:
+                    return field, lookup, candidate_field
+
+            # Deep JSON field fallback where root is registered and declared as json
             if root_field in self.fields:
                 field_meta = self.fields[root_field]
-                last_segment = segments[-1]
-                if last_segment in LOOKUP_OPERATORS:
-                    lookup = last_segment
-                    resolved_field = "__".join(segments[:-1])
-                else:
-                    lookup = "exact"
-                    resolved_field = param_name
-                return field_meta, lookup, resolved_field
+                if getattr(field_meta, "is_json", False) or root_field in (
+                    "metadata",
+                    "attributes",
+                    "extensions",
+                ):
+                    resolved_field = (
+                        "__".join(segments[:-1]) if last_segment in LOOKUP_OPERATORS else param_name
+                    )
+                    return (
+                        field_meta,
+                        last_segment if last_segment in LOOKUP_OPERATORS else "exact",
+                        resolved_field,
+                    )
 
         return None, None, None
 
@@ -261,68 +379,45 @@ def filter_queryset(
     # 2. Dynamic Field Filtering with Schema
     if field_search:
         filters = Q()
-        allowed_legacy = dict(filter_fields) if filter_fields else {}
 
         for raw_key, raw_value in field_search.items():
-            if not raw_value and raw_value is not False:
+            if raw_value is None or raw_value == "":
                 continue
-
-            model_field = raw_key
-            coerced_value = raw_value
 
             if filter_schema:
                 # Schema-driven: parse lookup, validate, coerce
                 field_meta, lookup, resolved_field = filter_schema.get_field(raw_key)
 
                 if field_meta is None:
-                    # Check if it's a legacy mapping
-                    if raw_key in allowed_legacy:
-                        model_field = allowed_legacy[raw_key]
-                    else:
-                        if _log:
-                            _log.warning(
-                                f"Filter field '{raw_key}' not in schema or legacy mappings. Skipping."
-                            )
-                        continue
-                else:
-                    # Schema matched — build lookup
-                    model_field = (
-                        resolved_field if lookup == "exact" else f"{resolved_field}__{lookup}"
-                    )
-                    # Handle __in lookups — split before coercion
-                    if lookup == "in" and isinstance(raw_value, str) and "," in raw_value:
-                        items = [v.strip() for v in raw_value.split(",")]
-                        coerced_value = []
-                        for item in items:
-                            try:
-                                coerced_value.append(field_meta.coerce(item))
-                            except (ValueError, TypeError, InvalidOperation) as e:
-                                if _log:
-                                    _log.warning(
-                                        f"Coercion failed for {raw_key} item '{item}': {e}"
-                                    )
-                                continue
-                    else:
-                        try:
-                            coerced_value = field_meta.coerce(raw_value)
-                        except (ValueError, TypeError, InvalidOperation) as e:
-                            if _log:
-                                _log.warning(f"Coercion failed for {raw_key}={raw_value}: {e}")
-                            continue
+                    if _log:
+                        _log.warning(
+                            f"Filter field '{raw_key}' not permitted in filter_schema. Skipping."
+                        )
+                    continue
 
-            elif allowed_legacy:
-                # Legacy fallback: map param to model field
-                model_field = allowed_legacy.get(raw_key, raw_key)
+                try:
+                    coerced_value = field_meta.coerce_lookup(lookup, raw_value)
+                except (ValueError, TypeError, InvalidOperation) as e:
+                    if _log:
+                        _log.warning(
+                            f"Coercion failed for filter '{raw_key}' with value '{raw_value}': {e}"
+                        )
+                    continue
 
-            # Handle __in lookups with comma-separated values
-            if isinstance(coerced_value, str) and "," in coerced_value and "__in" in model_field:
-                coerced_value = [v.strip() for v in coerced_value.split(",")]
+                model_field = resolved_field if lookup == "exact" else f"{resolved_field}__{lookup}"
 
-            try:
-                filters = filters & Q(**{model_field: coerced_value})
-            except Exception as e:
+                try:
+                    filters &= Q(**{model_field: coerced_value})
+                except Exception as e:
+                    if _log:
+                        _log.warning(
+                            f"Filter application failed for {model_field}={coerced_value}: {e}"
+                        )
+            else:
                 if _log:
-                    _log.warning(f"Filter failed for {model_field}={coerced_value}: {e}")
+                    _log.warning(
+                        f"No filter_schema configured on viewset. Skipping filter param '{raw_key}'."
+                    )
 
         if filters:
             queryset = queryset.filter(filters)
@@ -345,7 +440,6 @@ def filter_queryset(
             def __init__(self, filter_fields=None, filter_schema=None):
                 self.filter_fields = filter_fields
                 self.filter_schema = filter_schema
-                self.allowed_legacy = dict(filter_fields) if filter_fields else {}
 
             def parse(self, node):
                 if not isinstance(node, dict):
@@ -361,37 +455,17 @@ def filter_queryset(
                 return q_obj
 
             def handle_standard(self, key, value):
-                base_key = key.split("__")[0]
-
-                # Check schema first
                 if self.filter_schema:
                     field_meta, lookup, resolved = self.filter_schema.get_field(key)
                     if field_meta is not None:
                         model_field = resolved if lookup == "exact" else f"{resolved}__{lookup}"
                         try:
-                            coerced = field_meta.coerce(value)
-                        except (ValueError, TypeError):
+                            coerced = field_meta.coerce_lookup(lookup, value)
+                        except (ValueError, TypeError, InvalidOperation):
                             coerced = value
                         return Q(**{model_field: coerced})
-                    # Not in schema — check if it's a legacy mapping
-                    if base_key in self.allowed_legacy:
-                        model_field = self.allowed_legacy.get(key) or self.allowed_legacy.get(
-                            base_key
-                        )
-                        if model_field and base_key != model_field:
-                            key = model_field + key[len(base_key) :]
-                        return Q(**{key: value})
-                    raise ValidationError({key: f"Filtering on '{base_key}' is not permitted."})
-
-                # Legacy fallback
-                if self.allowed_legacy:
-                    if base_key not in self.allowed_legacy and key not in self.allowed_legacy:
-                        raise ValidationError({key: f"Filtering on '{base_key}' is not permitted."})
-                    model_field = self.allowed_legacy.get(key) or self.allowed_legacy.get(base_key)
-                    if model_field and base_key != model_field:
-                        key = model_field + key[len(base_key) :]
-
-                return Q(**{key: value})
+                    raise ValidationError({key: f"Filtering on '{key}' is not permitted."})
+                raise ValidationError({"query": "Filtering requires a declared filter_schema."})
 
         try:
             parsed_json = json.loads(query) if isinstance(query, str) else query

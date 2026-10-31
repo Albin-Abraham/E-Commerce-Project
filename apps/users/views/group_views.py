@@ -22,7 +22,6 @@ class GroupViewSet(BaseAPIView):
     supports_soft_delete = False
 
     search_fields = ["name"]
-    filter_fields = [("name", "name")]
     filter_schema = FilterSchema(
         name=FilterField(type=str, lookups=["exact", "icontains"]),
         created_at=FilterField(type=datetime, lookups=["exact", "gte", "lte"]),

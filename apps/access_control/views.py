@@ -22,7 +22,6 @@ class FieldAccessPolicyAPIView(BaseAPIView):
     supports_soft_delete = False
 
     search_fields = ["name", "field_name"]
-    filter_fields = [("name", "name"), ("is_active", "is_active")]
     filter_schema = FilterSchema(
         name=FilterField(type=str, lookups=["exact", "icontains"]),
         field_name=FilterField(type=str, lookups=["exact", "icontains"]),
@@ -44,7 +43,6 @@ class PolicyConfigurationAPIView(BaseAPIView):
     paginate = True
     supports_soft_delete = False
 
-    filter_fields = [("status", "status"), ("version", "version"), ("action", "action")]
     filter_schema = FilterSchema(
         status=FilterField(type=str, lookups=["exact"]),
         version=FilterField(type=int, lookups=["exact", "gte", "lte"]),

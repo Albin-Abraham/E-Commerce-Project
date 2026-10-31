@@ -29,7 +29,11 @@ class TagDefinitionViewSet(BaseAPIView):
 
     paginate = True
     search_fields = ["name", "code", "badge_label"]
-    filter_fields = [("code", "code"), ("is_active", "is_active")]
+    filter_schema = FilterSchema(
+        code=FilterField(type=str),
+        name=FilterField(type=str),
+        is_active=FilterField(type=bool),
+    )
     orderby = "name"
 
 
@@ -40,7 +44,10 @@ class EntityTagViewSet(BaseAPIView):
     view_id = "SHOP_ENTITY_TAG_MGMT"
 
     paginate = True
-    filter_fields = [("tag_definition", "tag_definition_id"), ("object_id", "object_id")]
+    filter_schema = FilterSchema(
+        tag_definition=FilterField(type=str),
+        object_id=FilterField(type=str),
+    )
     orderby = "-created_at"
 
 
@@ -54,12 +61,11 @@ class CatalogViewSet(BaseAPIView):
     supports_soft_delete = True
 
     search_fields = ["name", "code", "slug"]
-    filter_fields = [("code", "code"), ("is_active", "is_active")]
     orderby = "name"
 
     filter_schema = FilterSchema(
-        name=FilterField(type=str, lookups=["exact", "icontains"]),
-        code=FilterField(type=str, lookups=["exact"]),
+        name=FilterField(type=str),
+        code=FilterField(type=str),
         is_active=FilterField(type=bool),
     )
 
@@ -74,17 +80,11 @@ class CatalogItemViewSet(BaseAPIView):
     supports_soft_delete = True
 
     search_fields = ["override_name", "product__name", "product__sku"]
-    filter_fields = [
-        ("catalog", "catalog_id"),
-        ("product", "product_id"),
-        ("is_new_arrival", "is_new_arrival"),
-        ("is_budget_friendly", "is_budget_friendly"),
-        ("is_published", "is_published"),
-    ]
     orderby = "sort_order"
 
     filter_schema = FilterSchema(
-        catalog=FilterField(type=str, lookups=["exact"]),
+        catalog=FilterField(type=str),
+        product=FilterField(type=str),
         is_new_arrival=FilterField(type=bool),
         is_budget_friendly=FilterField(type=bool),
         is_published=FilterField(type=bool),
@@ -109,16 +109,12 @@ class CatalogCollectionViewSet(BaseAPIView):
     supports_soft_delete = True
 
     search_fields = ["name", "slug"]
-    filter_fields = [
-        ("catalog", "catalog_id"),
-        ("collection_type", "collection_type"),
-        ("is_active", "is_active"),
-    ]
     orderby = "name"
 
     filter_schema = FilterSchema(
-        catalog=FilterField(type=str, lookups=["exact"]),
-        collection_type=FilterField(type=str, lookups=["exact"]),
+        catalog=FilterField(type=str),
+        name=FilterField(type=str),
+        collection_type=FilterField(type=str),
         is_active=FilterField(type=bool),
     )
 
@@ -139,12 +135,13 @@ class CatalogPublicationViewSet(BaseAPIView):
     paginate = True
 
     search_fields = ["channel"]
-    filter_fields = [
-        ("catalog", "catalog_id"),
-        ("channel", "channel"),
-        ("is_active", "is_active"),
-    ]
     orderby = "-published_at"
+
+    filter_schema = FilterSchema(
+        catalog=FilterField(type=str),
+        channel=FilterField(type=str),
+        is_active=FilterField(type=bool),
+    )
 
     @action(detail=True, methods=["post"])
     def publish(self, request, pk=None):

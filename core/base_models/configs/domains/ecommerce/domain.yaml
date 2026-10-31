@@ -1,0 +1,127 @@
+domain:
+  code: ecommerce
+  name: "E-Commerce"
+  version: "1.0.0"
+  enabled: true
+  description: >
+    Complete e-commerce domain initialization
+    covering catalog, inventory, pricing, customers,
+    checkout, and order configurations.
+  scope:
+    supported:
+      - global
+      - tenant
+  execution:
+    transaction_mode: domain_atomic
+    idempotent: true
+    validate_dependencies: true
+    stop_on_error: true
+
+  modules:
+    - name: brands
+      section: catalog
+      enabled: true
+      file: catalog/brands.yaml
+
+    - name: categories
+      section: catalog
+      enabled: true
+      file: catalog/categories.yaml
+
+    - name: category_edges
+      section: catalog
+      enabled: true
+      file: catalog/category_edges.yaml
+      depends_on:
+        - categories
+
+    - name: attributes
+      section: catalog
+      enabled: true
+      file: catalog/attributes.yaml
+
+    - name: products
+      section: catalog
+      enabled: true
+      file: catalog/products.yaml
+      depends_on:
+        - brands
+        - categories
+        - attributes
+
+    - name: product_variants
+      section: catalog
+      enabled: true
+      file: catalog/product_variants.yaml
+      depends_on:
+        - products
+
+    - name: product_media
+      section: catalog
+      enabled: true
+      file: catalog/product_media.yaml
+      depends_on:
+        - products
+
+    - name: warehouses
+      section: inventory
+      enabled: true
+      file: inventory/warehouses.yaml
+
+    - name: storage_locations
+      section: inventory
+      enabled: true
+      file: inventory/storage_locations.yaml
+      depends_on:
+        - warehouses
+
+    - name: stock
+      section: inventory
+      enabled: true
+      file: inventory/stock.yaml
+      depends_on:
+        - product_variants
+        - warehouses
+
+    - name: price_lists
+      section: pricing
+      enabled: true
+      file: pricing/price_lists.yaml
+
+    - name: pricing_rules
+      section: pricing
+      enabled: true
+      file: pricing/pricing_rules.yaml
+      depends_on:
+        - price_lists
+        - products
+
+    - name: customer_groups
+      section: customers
+      enabled: true
+      file: customers/customer_groups.yaml
+
+    - name: customer_segments
+      section: customers
+      enabled: true
+      file: customers/customer_segments.yaml
+
+    - name: payment_methods
+      section: checkout
+      enabled: true
+      file: checkout/payment_methods.yaml
+
+    - name: shipping_methods
+      section: checkout
+      enabled: true
+      file: checkout/shipping_methods.yaml
+
+    - name: order_statuses
+      section: orders
+      enabled: true
+      file: orders/order_statuses.yaml
+
+    - name: cancellation_reasons
+      section: orders
+      enabled: true
+      file: orders/cancellation_reasons.yaml

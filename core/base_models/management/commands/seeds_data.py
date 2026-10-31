@@ -15,13 +15,68 @@ class Command(BaseCommand):
         parser.add_argument(
             "--section",
             type=str,
-            help="Section to seed: modules, system_config, or superadmin",
-            required=True,
+            help="Section to seed: modules, system_config, superadmin, master_data, or subdomain filter",
+            required=False,
+            default=None,
+        )
+        parser.add_argument(
+            "--domain",
+            type=str,
+            help="Domain to seed (e.g. ecommerce)",
+            required=False,
+            default=None,
+        )
+        parser.add_argument(
+            "--module",
+            type=str,
+            help="Specific module within domain to seed (e.g. products, stock)",
+            required=False,
+            default=None,
+        )
+        parser.add_argument(
+            "--scope",
+            type=str,
+            choices=["global", "tenant"],
+            default="global",
+            help="Target scope for seed data: global or tenant",
+        )
+        parser.add_argument(
+            "--company",
+            type=str,
+            help="Company code or ID for tenant-scoped execution",
+            required=False,
+            default=None,
+        )
+        parser.add_argument(
+            "--validate-only",
+            action="store_true",
+            help="Validate configuration files and DAG dependencies without writing to the database",
+        )
+        parser.add_argument(
+            "--dry-run",
+            action="store_true",
+            help="Simulate execution in a transaction and rollback at the end",
         )
 
     def handle(self, *args, **options):
         setattr(settings, "BYPASS_VALIDATION_GUARD", True)
-        section = options["section"]
+        domain = options.get("domain")
+        section = options.get("section")
+
+        # 1. New Modular Domain-Based Engine
+        if domain:
+            self.handle_domain_seed(domain, options)
+            return
+
+        # 2. Legacy Section-Based Seed Handling
+        if not section:
+            self.stderr.write(
+                self.style.ERROR(
+                    "Either --domain (e.g. ecommerce) or --section (e.g. modules, superadmin) must be provided."
+                )
+            )
+            return
+
         config_dir = os.path.join(settings.BASE_DIR, "core", "base_models", "configs")
 
         if section in ["modules", "Set-Module"]:
@@ -34,6 +89,56 @@ class Command(BaseCommand):
             self.seed_master_data(config_dir)
         else:
             self.stderr.write(self.style.ERROR(f"Unknown section: {section}"))
+
+    def handle_domain_seed(self, domain: str, options: dict) -> None:
+        # Import domain registry and runners
+        import core.base_models.seed_data.domains.ecommerce  # noqa: F401
+        from core.admin.models.company import Company
+        from core.base_models.seed_data.engine import SeedContext, SeedDomainRegistry
+
+        company_obj = None
+        scope = options.get("scope", "global")
+        company_arg = options.get("company")
+
+        if scope == "tenant":
+            if company_arg:
+                company_obj = (
+                    Company.objects.filter(code=company_arg).first()
+                    or Company.objects.filter(id=company_arg).first()
+                )
+                if not company_obj:
+                    self.stderr.write(
+                        self.style.WARNING(
+                            f"Company '{company_arg}' not found. Falling back to default system company."
+                        )
+                    )
+            if not company_obj:
+                company_obj = (
+                    Company.objects.filter(code="sys-001").first() or Company.objects.first()
+                )
+
+        context = SeedContext(
+            scope=scope,
+            company=company_obj,
+            dry_run=options.get("dry_run", False),
+            validate_only=options.get("validate_only", False),
+            stdout=self.stdout,
+            stderr=self.stderr,
+        )
+
+        target_sections = [options["section"]] if options.get("section") else None
+        target_modules = [options["module"]] if options.get("module") else None
+
+        try:
+            runner = SeedDomainRegistry.get_runner(domain)
+            runner.run(
+                context,
+                target_sections=target_sections,
+                target_modules=target_modules,
+            )
+        except Exception as e:
+            self.stderr.write(self.style.ERROR(f"Error executing domain '{domain}' seed: {str(e)}"))
+            raise
 
     def seed_modules(self, config_dir):
         # Support both a monolithic file and sharded files in the 'modules' subdirectory

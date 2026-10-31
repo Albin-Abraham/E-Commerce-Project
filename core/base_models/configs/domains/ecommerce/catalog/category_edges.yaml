@@ -1,0 +1,14 @@
+category_edges:
+  - from_category: "computers-laptops"
+    to_category: "smartphones-accessories"
+    relation_type: "related_to"
+    weight: 1.5
+    metadata:
+      recommendation_context: "ecosystem_cross_sell"
+
+  - from_category: "home-office-automation"
+    to_category: "electronics"
+    relation_type: "belongs_to"
+    weight: 1.0
+    metadata:
+      hierarchy: "secondary"

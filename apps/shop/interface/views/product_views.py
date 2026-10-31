@@ -1,3 +1,6 @@
+from datetime import datetime
+from decimal import Decimal
+
 from django.db.models import Count, Max, Min, Q
 from rest_framework import permissions
 from rest_framework.response import Response
@@ -12,6 +15,7 @@ from apps.shop.infrastructure.serializers.product_serializers import (
     ProductVariantSerializer,
 )
 from apps.shop.infrastructure.serializers.shop_serializers import BrandSerializer
+from apps.shop.selectors.product_selectors import get_storefront_catalog_qs
 from apps.shop.services.storefront_access_service import StorefrontAccessService
 from core.admin.helpers.query_helpers import LOOKUP_OPERATORS, FilterField, FilterSchema
 from core.admin.permissions.drf_permissions import CustomPermissionClass
@@ -60,39 +64,29 @@ class ProductViewSet(BaseAPIView):
     supports_soft_delete = True
 
     search_fields = ["name", "sku", "slug"]
-    filter_fields = [
-        ("name", "name"),
-        ("sku", "sku"),
-        ("status", "status"),
-        ("is_active", "is_active"),
-        ("category", "category_id"),
-        ("brand", "brand_id"),
-    ]
     orderby = "name"
 
     filter_schema = FilterSchema(
-        name=FilterField(type=str, lookups=["exact", "icontains"]),
-        sku=FilterField(type=str, lookups=["exact", "icontains"]),
-        status=FilterField(type=str, lookups=["exact"]),
+        name=FilterField(type=str),
+        sku=FilterField(type=str),
+        status=FilterField(type=str),
         is_active=FilterField(type=bool),
-        category=FilterField(type=str, lookups=["exact"]),
-        brand=FilterField(type=str, lookups=["exact"]),
-        price=FilterField(type=float, lookups=["exact", "gte", "lte", "gt", "lt"]),
+        category=FilterField(type=str),
+        brand=FilterField(type=str),
+        price=FilterField(type=Decimal),
+        created_at=FilterField(type=datetime),
         metadata=FilterField(type=str, lookups=LOOKUP_OPERATORS),
     )
 
     def get_base_queryset(self):
-        qs = Product.objects.select_related("brand", "category").prefetch_related(
-            "variants__inventory_records", "legacy_inventory_records"
-        )
         request = getattr(self, "request", None)
         user = getattr(request, "user", None) if request else None
 
-        # Layer 1 & 3: Authorization & Storefront Scoping (Staff sees all, customers see ACTIVE)
-        if not StorefrontAccessService.can_view_internal_fields(user):
-            qs = qs.filter(is_active=True, status="ACTIVE")
-
-        return qs
+        # Delegate query building to core domain selector (returns un-evaluated qs)
+        if StorefrontAccessService.can_view_internal_fields(user):
+            # Staff can see inactive/draft items
+            return Product.objects.with_relations()
+        return get_storefront_catalog_qs()
 
 
 class ProductVariantViewSet(BaseAPIView):
@@ -110,10 +104,10 @@ class ProductVariantViewSet(BaseAPIView):
     paginate = True
     search_fields = ["sku", "barcode"]
     filter_schema = FilterSchema(
-        sku=FilterField(type=str, lookups=["exact", "icontains"]),
-        status=FilterField(type=str, lookups=["exact"]),
+        sku=FilterField(type=str),
+        status=FilterField(type=str),
         is_active=FilterField(type=bool),
-        price=FilterField(type=float, lookups=["exact", "gte", "lte"]),
+        price=FilterField(type=Decimal),
         attributes=FilterField(type=str, lookups=LOOKUP_OPERATORS),
     )
 

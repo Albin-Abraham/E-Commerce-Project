@@ -1,0 +1,12 @@
+customer_segments:
+  - code: "HIGH_VALUE_VIP"
+    name: "High Value VIP"
+    criteria: "Lifetime gross spend > $10,000"
+
+  - code: "REPEAT_BUYER"
+    name: "Repeat Buyer"
+    criteria: "More than 3 completed orders in 90 days"
+
+  - code: "NEW_REGISTERED"
+    name: "New Registered Customer"
+    criteria: "Account created within past 30 days, 0 orders"

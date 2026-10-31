@@ -12,6 +12,8 @@ from .events import DomainEventOutbox
 from .facility import Facility, FacilityInventory, StorageLocation
 from .graph import BOMEdge, EntityEdge
 from .inventory import Batch, Inventory, SerialNumber, StockMovement, StockTransfer
+from .order import Order
+from .order_item import OrderItem
 from .polymorphic import ActivityLog, Media, ProductComment, ProductTestimonial, Review
 from .pricing import PriceList, PricingRule
 from .product import Product
@@ -36,6 +38,8 @@ __all__ = [
     "ItemUOM",
     "PriceList",
     "PricingRule",
+    "Order",
+    "OrderItem",
     "Warehouse",
     "Facility",
     "StorageLocation",

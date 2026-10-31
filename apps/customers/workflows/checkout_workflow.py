@@ -100,6 +100,7 @@ class CustomerCheckoutService:
         sales_order = SalesOrder.objects.create(
             order_number=order_number,
             customer=cart.customer,
+            company=cart.customer.company,
             delivery_address=address,
             status="CONFIRMED",
             total_amount=tax_result.gross_amount,

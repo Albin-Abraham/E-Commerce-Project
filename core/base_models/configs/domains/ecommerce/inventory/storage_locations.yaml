@@ -1,0 +1,18 @@
+storage_locations:
+  - code: "LOC-A1-01"
+    name: "Aisle A1 Bin 01"
+    warehouse_code: "WH-CENTRAL-01"
+    location_type: "SHELF"
+    is_active: true
+
+  - code: "LOC-B2-04"
+    name: "Zone B Bulk Storage 04"
+    warehouse_code: "WH-CENTRAL-01"
+    location_type: "PALLET"
+    is_active: true
+
+  - code: "LOC-E1-01"
+    name: "East Hub Fast Pick 01"
+    warehouse_code: "WH-EAST-02"
+    location_type: "FAST_PICK"
+    is_active: true

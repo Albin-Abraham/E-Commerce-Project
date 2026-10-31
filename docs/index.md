@@ -1,6 +1,6 @@
 # 📖 Project Documentation
 
-Welcome to the **Backend-RestFul** architectural core documentation. This system is built as a **Metadata-Driven SaaS Platform** using Clean Architecture and Formal Logic.
+Welcome to the **ZenOS Unified Commerce Platform** architectural core documentation. This system is built as an **Omnichannel Modular Monolith** combining E-Commerce, POS, Procurement, and Financial Accounting using Clean Architecture, Domain-Driven Design, and Formal Logic.
 
 ## 🏛️ Architecture blueprints
 - [**Architectural Integrity**](file:///c:/dev/Backend-RestFul/docs/architecture/architectural_integrity.md): Mathematical and logical foundations.

@@ -22,7 +22,6 @@ class UserManagementViewSet(BaseAPIView):
     supports_soft_delete = True
 
     search_fields = ["email", "username", "full_name"]
-    filter_fields = [("is_active", "is_active"), ("is_staff", "is_staff")]
     filter_schema = FilterSchema(
         is_active=FilterField(type=bool),
         is_staff=FilterField(type=bool),

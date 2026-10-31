@@ -17,7 +17,7 @@ MIDDLEWARE = [
 # Database
 DATABASES = {
     "default": env.db_url(
-        "DATABASE_URL", default="postgres://postgres:pstgres@localhost:5432/legacy_db"
+        "DATABASE_URL", default="postgres://postgres:postgres@localhost:5432/backend_db"
     ),
 }
 if env("REPLICA_DATABASE_URL", default=""):
@@ -59,10 +59,11 @@ CORS_EXPOSE_HEADERS = (
 )
 # Django REST Framework
 SPECTACULAR_SETTINGS = {
-    "TITLE": "Zenith Platform API",
+    "TITLE": "ZenOS Unified Commerce API",
     "DESCRIPTION": (
-        "Industrialized Backend-RestFul architecture featuring "
-        "Multi-tenant context, Rules Engine validation, and "
+        "Modular Monolith architecture for Omnichannel E-Commerce, POS, "
+        "Procurement, Inventory, and Financial Accounting featuring "
+        "Multi-Tenant Context, Rules Engine validation, and "
         "Hybrid JWT/Session authentication."
     ),
     "VERSION": "1.0.0",

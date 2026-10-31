@@ -1,6 +1,7 @@
 from django.db import models
 from django.utils.text import slugify
 
+from apps.shop.infrastructure.queries.product_queryset import ProductQuerySet
 from apps.shop.valuesets import PRODUCT_STATUS_VALUESET
 from core.base_models.fields.boolean_fields import CustomBooleanField
 from core.base_models.fields.char_fields import CustomCharField
@@ -20,6 +21,8 @@ class Product(BaseModel, TenantModelMixin, PartyReferenceMixin):
     """
 
     id = CustomShortUUIDField(primary_key=True, prefix="prod_")
+
+    objects = models.Manager.from_queryset(ProductQuerySet)()
 
     sku = CustomCharField(
         max_length=50,

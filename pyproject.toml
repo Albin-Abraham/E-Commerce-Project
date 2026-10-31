@@ -3,7 +3,8 @@ requires = ["setuptools"]
 build-backend = "setuptools.backends._legacy:_Backend"
 
 [project]
-name = "backend-restful"
+name = "zenos-commerce"
+description = "ZenOS Unified Commerce Platform - Enterprise Modular Monolith for E-Commerce, POS, Procurement, and Financial Accounting"
 dynamic = ["version"]
 
 # ===========================================================================
@@ -74,7 +75,6 @@ ignore = [
 DJANGO_SETTINGS_MODULE = "backend.settings.test"
 python_files = ["tests.py", "test_*.py", "*_tests.py"]
 addopts = "--reuse-db --durations=10"
-timeout = 45
 markers = [
     "system: system integration tests",
     "feature: feature tests",

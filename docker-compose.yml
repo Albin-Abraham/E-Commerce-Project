@@ -1,11 +1,10 @@
 
-name: E-platform
+name: zenos-commerce
 
 x-common-env: &common-env
   TZ: ${TZ:-UTC}
   TIME_ZONE: ${TIME_ZONE:-UTC}
   DATABASE_URL: ${DATABASE_URL:-postgres://postgres:postgres@postgres:5432/backend_db}
-  LEGACY_DATABASE_URL: ${LEGACY_DATABASE_URL:-postgres://legacy_user:legacy_password@postgres_legacy:5432/legacy_db}
   REDIS_URL: ${REDIS_URL:-redis://redis:6379/0}
   CACHE_URL: ${CACHE_URL:-redis://redis:6379/1}
   CELERY_BROKER_URL: ${REDIS_URL:-redis://redis:6379/0}
@@ -26,7 +25,6 @@ networks:
 volumes:
   postgres_data:
   redis_data:
-  postgres_legacy_data:
 
 services:
 
@@ -37,18 +35,6 @@ services:
       - "8081:8080"
     environment:
       TZ: ${TZ:-UTC}
-    logging: *default-logging
-
-  postgres_legacy:
-    image: postgres:15
-    networks: [platform]
-    environment:
-      POSTGRES_DB: ${LEGACY_POSTGRES_DB:-legacy_db}
-      POSTGRES_USER: ${LEGACY_POSTGRES_USER:-legacy_user}
-      POSTGRES_PASSWORD: ${LEGACY_POSTGRES_PASSWORD:-legacy_password}
-      TZ: ${TZ:-UTC}
-    volumes:
-      - postgres_legacy_data:/var/lib/postgresql/data
     logging: *default-logging
 
   redis:

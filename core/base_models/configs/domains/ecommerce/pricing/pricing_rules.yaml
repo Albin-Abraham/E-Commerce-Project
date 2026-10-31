@@ -1,0 +1,16 @@
+pricing_rules:
+  - name: "Bulk Server Purchase 5+ Discount"
+    price_list_code: "WHOLESALE-TIER1"
+    product_sku: "PROD-ZTH-SERVER-R1"
+    rule_type: "PERCENTAGE_DISCOUNT"
+    value: 12.50
+    min_quantity: 5
+    is_active: true
+
+  - name: "Lumina Hub Enterprise Volume 20+ Break"
+    price_list_code: "VIP-ENTERPRISE"
+    product_sku: "PROD-LUM-SMART-HUB"
+    rule_type: "PERCENTAGE_DISCOUNT"
+    value: 20.00
+    min_quantity: 20
+    is_active: true

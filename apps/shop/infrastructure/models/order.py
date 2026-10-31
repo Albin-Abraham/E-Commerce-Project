@@ -1,5 +1,6 @@
 from django.db import models
 
+from apps.shop.infrastructure.queries.order_queryset import OrderQuerySet
 from apps.shop.valuesets import SHOP_ORDER_STATUS_VALUESET
 from core.base_models.fields.char_fields import CustomCharField
 from core.base_models.fields.numeric_fields import CustomDecimalField
@@ -18,6 +19,8 @@ class Order(BaseModel, BranchModelMixin):
         CANCELLED = SHOP_ORDER_STATUS_VALUESET.get("cancelled").code
 
     id = CustomShortUUIDField(primary_key=True, prefix="ord_")
+
+    objects = models.Manager.from_queryset(OrderQuerySet)()
 
     user = models.ForeignKey(
         "users.UserModel",

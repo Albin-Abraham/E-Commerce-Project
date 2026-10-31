@@ -1,0 +1,18 @@
+shipping_methods:
+  - code: "GROUND_STANDARD"
+    name: "Standard Ground Delivery"
+    estimated_days: "3-5 Business Days"
+    base_rate: 9.99
+    is_active: true
+
+  - code: "AIR_EXPRESS"
+    name: "Next Day Air Express"
+    estimated_days: "1 Business Day"
+    base_rate: 24.99
+    is_active: true
+
+  - code: "BOPIS_STORE_PICKUP"
+    name: "Buy Online Pickup In Store (BOPIS)"
+    estimated_days: "Same Day (2 Hours)"
+    base_rate: 0.00
+    is_active: true

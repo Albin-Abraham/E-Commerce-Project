@@ -51,8 +51,8 @@ ALLOWED_HOSTS = ["*"]
 
 import tempfile
 
-STATIC_ROOT = Path(tempfile.mkdtemp(prefix="yafei_static_"))
-MEDIA_ROOT = Path(tempfile.mkdtemp(prefix="yafei_media_"))
+STATIC_ROOT = Path(tempfile.mkdtemp(prefix="zenos_static_"))
+MEDIA_ROOT = Path(tempfile.mkdtemp(prefix="zenos_media_"))
 
 AUTHENTICATION_BACKENDS = [
     "core.admin.authentication.MultiFieldAuthBackend",

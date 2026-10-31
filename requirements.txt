@@ -33,3 +33,5 @@ faker>=36.2.1
 factory-boy>=3.3.3
 croniter>=6.0.0
 django-import-export>=4.3.0
+ruff>=0.17.0
+pytest-timeout>=2.4.0

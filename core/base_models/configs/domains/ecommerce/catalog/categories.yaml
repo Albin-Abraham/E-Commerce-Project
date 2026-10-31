@@ -1,0 +1,36 @@
+categories:
+  - code: ELECTRONICS
+    name: "Electronics"
+    slug: "electronics"
+    parent: null
+    is_active: true
+    metadata:
+      tax_category: "standard_tech"
+      icon: "cpu"
+
+  - code: COMPUTERS
+    name: "Computers & Laptops"
+    slug: "computers-laptops"
+    parent: "electronics"
+    is_active: true
+    metadata:
+      tax_category: "standard_tech"
+      icon: "laptop"
+
+  - code: MOBILES
+    name: "Smartphones & Accessories"
+    slug: "smartphones-accessories"
+    parent: "electronics"
+    is_active: true
+    metadata:
+      tax_category: "standard_tech"
+      icon: "smartphone"
+
+  - code: HOME_AUTOMATION
+    name: "Home & Office Automation"
+    slug: "home-office-automation"
+    parent: null
+    is_active: true
+    metadata:
+      tax_category: "standard_tech"
+      icon: "home"

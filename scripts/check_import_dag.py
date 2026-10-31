@@ -35,11 +35,16 @@ REPO = Path(__file__).resolve().parent.parent
 LAYERS: list[tuple[str, int, str]] = [
     ("core.registry", 0, "Registry"),
     ("core.configuration", 0, "Configuration"),
+    ("core.context", 1, "Context Engine"),
     ("core.base_models", 1, "Base Models"),
     ("core.admin.models", 2, "Admin Models"),
     ("core.admin.utils", 2, "Admin Utils"),
+    ("core.authorization", 2, "Authorization Policy Engine"),
+    ("core.tenancy", 2, "Tenancy Scoping Strategies"),
     ("core.admin.helpers", 3, "Admin Helpers"),
     ("core.admin.services", 3, "Admin Services"),
+    ("core.repositories", 3, "Repositories"),
+    ("core.security", 3, "Security"),
     ("core.base_serializers", 4, "Base Serializers"),
     ("core.base_views", 5, "Base Views"),
     ("core.admin.views", 6, "Admin Views"),
@@ -129,15 +134,21 @@ def _check_import(
         return
     if target.startswith(("core.registry", "core.configuration")):
         return
-    # Allow same-package imports within core.base_*
-    if target.startswith(("core.base_models", "core.base_serializers", "core.base_views")):
-        return
-    # Allow same-package imports within core.admin.*
-    if target.startswith("core.admin") and file_module.startswith("core.admin"):
-        return
-    # Allow apps → apps same-layer imports
-    if target.startswith("apps.") and file_module.startswith("apps."):
-        return
+    # Allow same-package internal imports
+    for pkg in (
+        "core.base_models",
+        "core.base_serializers",
+        "core.base_views",
+        "core.admin",
+        "core.context",
+        "core.authorization",
+        "core.tenancy",
+        "core.repositories",
+        "core.security",
+        "apps.",
+    ):
+        if target.startswith(pkg) and file_module.startswith(pkg):
+            return
 
     target_layer = _layer_of(target)
     if target_layer is None:

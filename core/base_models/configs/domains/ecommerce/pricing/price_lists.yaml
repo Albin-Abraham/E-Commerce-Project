@@ -1,0 +1,15 @@
+price_lists:
+  - code: "RETAIL-STD"
+    name: "Standard Retail Price List"
+    currency_code: "USD"
+    is_active: true
+
+  - code: "WHOLESALE-TIER1"
+    name: "Wholesale Tier 1 Dealer"
+    currency_code: "USD"
+    is_active: true
+
+  - code: "VIP-ENTERPRISE"
+    name: "VIP Corporate Enterprise"
+    currency_code: "USD"
+    is_active: true

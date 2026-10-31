@@ -1,0 +1,16 @@
+cancellation_reasons:
+  - code: "CUSTOMER_MIND_CHANGED"
+    reason: "Customer changed mind prior to dispatch"
+    requires_approval: false
+
+  - code: "OUT_OF_STOCK"
+    reason: "Item became unavailable in warehouse"
+    requires_approval: true
+
+  - code: "PAYMENT_FAILED"
+    reason: "Payment gateway authorization timed out or declined"
+    requires_approval: false
+
+  - code: "SUSPECTED_FRAUD"
+    reason: "Risk security rule triggered payment decline"
+    requires_approval: true

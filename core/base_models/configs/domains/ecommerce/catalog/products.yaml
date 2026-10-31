@@ -1,0 +1,38 @@
+products:
+  - sku: "PROD-APX-LAPTOP-15"
+    name: "Apex ProBook 15 Laptop"
+    slug: "apex-probook-15-laptop"
+    brand: "apex-electronics"
+    category: "computers-laptops"
+    price: 1299.99
+    status: "ACTIVE"
+    is_active: true
+    description: "High-performance laptop featuring 15.6-inch UHD display, latest gen processor, and precision keyboard."
+    metadata:
+      weight_kg: 1.85
+      warranty_months: 24
+
+  - sku: "PROD-ZTH-SERVER-R1"
+    name: "Zenith RackServer R1000"
+    slug: "zenith-rackserver-r1000"
+    brand: "zenith-tech"
+    category: "computers-laptops"
+    price: 3499.00
+    status: "ACTIVE"
+    is_active: true
+    description: "Enterprise grade 1U rack-mount server engineered for virtualization and high concurrency databases."
+    metadata:
+      form_factor: "1U"
+      redundant_psu: true
+
+  - sku: "PROD-LUM-SMART-HUB"
+    name: "Lumina Smart Automation Hub"
+    slug: "lumina-smart-automation-hub"
+    brand: "lumina-home"
+    category: "home-office-automation"
+    price: 199.50
+    status: "ACTIVE"
+    is_active: true
+    description: "Next-gen central smart hub connecting Zigbee, Matter, and Thread devices seamlessly."
+    metadata:
+      connectivity: ["Zigbee 3.0", "Matter", "Thread", "Wi-Fi 6"]
