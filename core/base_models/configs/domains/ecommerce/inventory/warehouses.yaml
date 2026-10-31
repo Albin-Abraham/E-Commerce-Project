@@ -1,0 +1,10 @@
+warehouses:
+  - code: "WH-CENTRAL-01"
+    name: "Central Logistics Hub"
+    address: "1000 Distribution Parkway, Logistics City, CA 90210"
+    is_active: true
+
+  - code: "WH-EAST-02"
+    name: "East Coast Regional Warehouse"
+    address: "500 Commerce Blvd, Newark, NJ 07102"
+    is_active: true

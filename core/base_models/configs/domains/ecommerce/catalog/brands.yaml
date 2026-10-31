@@ -1,0 +1,33 @@
+brands:
+  - code: APEX
+    name: "Apex Electronics"
+    slug: "apex-electronics"
+    description: "High-performance consumer electronics, modern computing devices, and premium audio gear."
+    website: "https://apex-electronics.example.com"
+    is_active: true
+    metadata:
+      country_of_origin: "USA"
+      established: 2012
+      tier: "Premium"
+
+  - code: ZENITH
+    name: "Zenith Tech"
+    slug: "zenith-tech"
+    description: "Enterprise software, cloud infrastructure hardware, and scalable IoT components."
+    website: "https://zenithtech.example.com"
+    is_active: true
+    metadata:
+      country_of_origin: "Germany"
+      established: 2008
+      tier: "Enterprise"
+
+  - code: LUMINA
+    name: "Lumina Home"
+    slug: "lumina-home"
+    description: "Smart home automation, energy-efficient ambient lighting, and eco-friendly lifestyle gadgets."
+    website: "https://luminahome.example.com"
+    is_active: true
+    metadata:
+      country_of_origin: "Japan"
+      established: 2018
+      tier: "Consumer"

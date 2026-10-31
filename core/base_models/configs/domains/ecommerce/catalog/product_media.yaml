@@ -1,0 +1,18 @@
+media:
+  - product_sku: "PROD-APX-LAPTOP-15"
+    media_type: "image"
+    url: "https://cdn.example.com/products/apex-laptop-front.jpg"
+    title: "Apex ProBook Front View"
+    is_primary: true
+
+  - product_sku: "PROD-APX-LAPTOP-15"
+    media_type: "image"
+    url: "https://cdn.example.com/products/apex-laptop-side.jpg"
+    title: "Apex ProBook Side Profile"
+    is_primary: false
+
+  - product_sku: "PROD-LUM-SMART-HUB"
+    media_type: "image"
+    url: "https://cdn.example.com/products/lumina-hub-front.jpg"
+    title: "Lumina Smart Hub Main View"
+    is_primary: true

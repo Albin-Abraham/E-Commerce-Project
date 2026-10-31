@@ -1,0 +1,25 @@
+order_statuses:
+  - code: "pending"
+    label: "Payment Pending"
+    is_terminal: false
+    allowed_transitions: ["confirmed", "cancelled"]
+
+  - code: "confirmed"
+    label: "Order Confirmed / In Fulfillment"
+    is_terminal: false
+    allowed_transitions: ["shipped", "cancelled"]
+
+  - code: "shipped"
+    label: "Order Dispatched / In Transit"
+    is_terminal: false
+    allowed_transitions: ["delivered"]
+
+  - code: "delivered"
+    label: "Delivered to Customer"
+    is_terminal: true
+    allowed_transitions: []
+
+  - code: "cancelled"
+    label: "Order Cancelled"
+    is_terminal: true
+    allowed_transitions: []

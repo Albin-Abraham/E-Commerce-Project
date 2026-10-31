@@ -1,0 +1,46 @@
+variants:
+  - sku: "VAR-APX-LAP-15-SLV-512"
+    product_sku: "PROD-APX-LAPTOP-15"
+    price: 1299.99
+    compare_at_price: 1499.99
+    barcode: "8901234567890"
+    status: "ACTIVE"
+    is_active: true
+    attributes:
+      color: "Silver"
+      storage: "512GB"
+      ram: "16GB"
+
+  - sku: "VAR-APX-LAP-15-BLK-1TB"
+    product_sku: "PROD-APX-LAPTOP-15"
+    price: 1699.99
+    compare_at_price: 1899.99
+    barcode: "8901234567891"
+    status: "ACTIVE"
+    is_active: true
+    attributes:
+      color: "Matte Black"
+      storage: "1TB"
+      ram: "32GB"
+
+  - sku: "VAR-ZTH-R1-STD"
+    product_sku: "PROD-ZTH-SERVER-R1"
+    price: 3499.00
+    compare_at_price: 3799.00
+    barcode: "8901234567892"
+    status: "ACTIVE"
+    is_active: true
+    attributes:
+      form_factor: "1U"
+      ram: "64GB"
+      storage: "2TB"
+
+  - sku: "VAR-LUM-HUB-WHT"
+    product_sku: "PROD-LUM-SMART-HUB"
+    price: 199.50
+    compare_at_price: 249.00
+    barcode: "8901234567893"
+    status: "ACTIVE"
+    is_active: true
+    attributes:
+      color: "Glacier White"

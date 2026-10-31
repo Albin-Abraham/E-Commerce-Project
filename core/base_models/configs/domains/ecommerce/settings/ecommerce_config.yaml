@@ -1,0 +1,9 @@
+ecommerce_settings:
+  currency_default: "USD"
+  cart_session_ttl_hours: 72
+  stock_reservation_ttl_minutes: 15
+  allow_guest_checkout: true
+  enable_automatic_tax_calculation: true
+  enable_bopis_fulfillment: true
+  enable_customer_reviews: true
+  review_moderation_required: true

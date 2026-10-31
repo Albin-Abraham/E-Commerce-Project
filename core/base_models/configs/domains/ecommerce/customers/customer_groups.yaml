@@ -1,0 +1,10 @@
+customer_groups:
+  - code: "RETAIL_B2C"
+    name: "Retail Consumers"
+    description: "Standard direct-to-consumer individual retail accounts"
+    default_price_list: "RETAIL-STD"
+
+  - code: "COMMERCIAL_B2B"
+    name: "Commercial Business Accounts"
+    description: "Verified corporate and institutional buyers with credit terms"
+    default_price_list: "WHOLESALE-TIER1"

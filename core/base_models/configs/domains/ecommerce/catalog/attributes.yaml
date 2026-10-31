@@ -1,0 +1,26 @@
+attributes:
+  - code: COLOR
+    name: "Color"
+    input_type: select
+    values:
+      - "Space Gray"
+      - "Matte Black"
+      - "Silver"
+      - "Glacier White"
+
+  - code: STORAGE
+    name: "Storage Capacity"
+    input_type: select
+    values:
+      - "256GB"
+      - "512GB"
+      - "1TB"
+      - "2TB"
+
+  - code: RAM
+    name: "Memory (RAM)"
+    input_type: select
+    values:
+      - "16GB"
+      - "32GB"
+      - "64GB"

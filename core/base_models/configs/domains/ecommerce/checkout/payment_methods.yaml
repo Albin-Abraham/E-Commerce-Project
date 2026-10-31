@@ -1,0 +1,18 @@
+payment_methods:
+  - code: "RAZORPAY"
+    name: "Razorpay Payment Gateway"
+    gateway_type: "online"
+    is_active: true
+    supports_refunds: true
+
+  - code: "PAYPAL"
+    name: "PayPal Express Checkout"
+    gateway_type: "online"
+    is_active: true
+    supports_refunds: true
+
+  - code: "COD"
+    name: "Cash on Delivery"
+    gateway_type: "offline"
+    is_active: true
+    supports_refunds: false

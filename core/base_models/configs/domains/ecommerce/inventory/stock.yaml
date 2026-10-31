@@ -1,0 +1,28 @@
+stock:
+  - variant_sku: "VAR-APX-LAP-15-SLV-512"
+    warehouse_code: "WH-CENTRAL-01"
+    quantity: 150
+    reserved_quantity: 12
+    reorder_point: 25
+    unit_cost: 950.00
+
+  - variant_sku: "VAR-APX-LAP-15-BLK-1TB"
+    warehouse_code: "WH-CENTRAL-01"
+    quantity: 80
+    reserved_quantity: 5
+    reorder_point: 15
+    unit_cost: 1200.00
+
+  - variant_sku: "VAR-ZTH-R1-STD"
+    warehouse_code: "WH-CENTRAL-01"
+    quantity: 45
+    reserved_quantity: 2
+    reorder_point: 10
+    unit_cost: 2600.00
+
+  - variant_sku: "VAR-LUM-HUB-WHT"
+    warehouse_code: "WH-EAST-02"
+    quantity: 300
+    reserved_quantity: 20
+    reorder_point: 50
+    unit_cost: 120.00
