@@ -7,6 +7,8 @@ export default defineConfig({
     ...base.test,
     name: 'component',
     include: [
+      'src/shared/auth/**/*.test.tsx',
+      'src/shared/apps/**/*.test.tsx',
       'src/shared/ui/**/*.test.tsx',
       'src/shared/components/**/*.test.tsx',
       'src/shared/ui/table/ui/**/*.test.tsx',

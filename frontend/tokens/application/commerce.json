@@ -1,0 +1,27 @@
+{
+  "application": {
+    "commerce": {
+      "price": {
+        "current": { "$value": "{semantic.color.foreground}", "$type": "color" },
+        "original": { "$value": "{semantic.color.muted}", "$type": "color" },
+        "discount": { "$value": "{semantic.color.danger}", "$type": "color" },
+        "savings": { "$value": "{semantic.color.success}", "$type": "color" }
+      },
+      "stock": {
+        "inStock": { "$value": "{semantic.color.success}", "$type": "color" },
+        "lowStock": { "$value": "{semantic.color.warning}", "$type": "color" },
+        "outOfStock": { "$value": "{semantic.color.danger}", "$type": "color" }
+      },
+      "badge": {
+        "sale": { "$value": "{semantic.color.danger}", "$type": "color" },
+        "new": { "$value": "{semantic.color.primary}", "$type": "color" },
+        "bestseller": { "$value": "{semantic.color.warning}", "$type": "color" },
+        "bopis": { "$value": "{semantic.color.success}", "$type": "color" }
+      },
+      "rating": {
+        "star": { "$value": "{semantic.color.warning}", "$type": "color" },
+        "empty": { "$value": "{semantic.color.border}", "$type": "color" }
+      }
+    }
+  }
+}

@@ -11,6 +11,8 @@
     "ignoreDeprecations": "5.0",
     "paths": {
       "@/*": ["*"],
+      "@platform": ["platform/index"],
+      "@platform/*": ["platform/*"],
       "@features": ["features/index"],
       "@features/*": ["features/*"],
       "@shared": ["shared/index"],

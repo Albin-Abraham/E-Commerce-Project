@@ -1,0 +1,12 @@
+{
+  "components": {
+    "productCard": {
+      "borderRadius": { "$value": "{primitives.radius.lg}", "$type": "dimension" },
+      "background": { "$value": "{semantic.color.surface}", "$type": "color" },
+      "borderColor": { "$value": "{semantic.color.border}", "$type": "color" },
+      "hoverShadow": { "$value": "{primitives.elevation.level2}", "$type": "shadow" },
+      "imageAspectRatio": { "$value": "1 / 1", "$type": "string" },
+      "padding": { "$value": "{primitives.spacing.4}", "$type": "dimension" }
+    }
+  }
+}

@@ -1,0 +1,91 @@
+/* ==========================================================================
+   Zenith Modern Browser Style Reset Boilerplate
+   Enterprise-grade reset eliminating platform and browser inconsistencies.
+   ========================================================================== */
+
+/* 1. Universal Box Sizing */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* 2. Smooth Scrolling & Scrollbar Gutter Stabilization */
+html {
+  -webkit-text-size-adjust: none;
+  text-size-adjust: none;
+  scroll-behavior: smooth;
+  scrollbar-gutter: stable;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* 3. Document Body Consistency */
+body {
+  min-height: 100vh;
+  line-height: 1.5;
+  text-rendering: optimizeSpeed;
+}
+
+/* 4. Fluid Media Display Defaults */
+img,
+picture,
+video,
+canvas,
+svg {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+/* 5. Form Control Typography & Interaction Inheritance */
+input,
+button,
+textarea,
+select {
+  font: inherit;
+  color: inherit;
+  letter-spacing: inherit;
+  margin: 0;
+}
+
+button {
+  cursor: pointer;
+  background: none;
+  border: none;
+}
+
+/* 6. Focus-Visible Ring Accessibility Standard */
+:focus-visible {
+  outline: 2px solid var(--color-primary, #6366f1);
+  outline-offset: 2px;
+}
+
+:focus:not(:focus-visible) {
+  outline: none;
+}
+
+/* 7. Mobile Tap Highlight Elimination */
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* 8. Table Alignment Resets */
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+/* 9. Accessible Motion Reduction */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

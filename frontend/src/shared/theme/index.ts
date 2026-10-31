@@ -1,4 +1,5 @@
 import { cn } from "@libs/utils";
+import { ZenithCommerce } from "./mappers/zenith.commerce";
 
 import {
   type GridColumns,
@@ -19,6 +20,9 @@ export const Zenith = {
 
   /** Composite class strings */
   patterns,
+
+  /** Commerce tokens and utility helpers */
+  commerce: ZenithCommerce,
 
   /** Layout Helpers */
   layout: patterns.layout,
@@ -144,4 +148,4 @@ export const Zenith = {
 };
 
 export default Zenith;
-export { cn, patterns, tokens };
+export { cn, patterns, tokens, ZenithCommerce };
