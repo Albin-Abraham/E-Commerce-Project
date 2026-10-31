@@ -50,6 +50,15 @@ const TestMultiStepFormModel = React.lazy(
 const TableDemoPage = React.lazy(
   () => import("@pages/static-pages/TableDemoPage")
 );
+const CustomerProfilePage = React.lazy(
+  () => import("@shell/pages/customer/CustomerProfilePage")
+);
+const CustomerOrdersPage = React.lazy(
+  () => import("@shell/pages/customer/CustomerOrdersPage")
+);
+const CustomerWishlistPage = React.lazy(
+  () => import("@shell/pages/customer/CustomerWishlistPage")
+);
 
 import { useTranslation } from "react-i18next";
 
@@ -181,7 +190,17 @@ function buildBaseRoutes(): AppRoute[] {
             {
               id: "account.profile",
               path: AppPaths.Account.Profile.replace("/account/", ""),
-              page: AccountProfilePage,
+              page: CustomerProfilePage,
+            },
+            {
+              id: "account.orders",
+              path: AppPaths.Account.Orders.replace("/account/", ""),
+              page: CustomerOrdersPage,
+            },
+            {
+              id: "account.wishlist",
+              path: AppPaths.Account.Wishlist.replace("/account/", ""),
+              page: CustomerWishlistPage,
             },
             {
               id: "account.settings",

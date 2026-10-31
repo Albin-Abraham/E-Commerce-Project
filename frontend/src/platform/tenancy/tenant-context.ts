@@ -4,7 +4,7 @@
 
 import { RequestContext } from "../networking/request-context";
 import { permissionEvaluator } from "../authorization/permission-evaluator";
-import type { TenantCompany, TenantBranch, TenantFacility, TenantState } from "./tenant.types";
+import type { TenantCompany, TenantBranch, TenantState } from "./tenant.types";
 
 export type TenantChangeListener = (state: TenantState) => void;
 

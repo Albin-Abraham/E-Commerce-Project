@@ -6,7 +6,7 @@ import { PlatformLink } from "@core/router/helpers/prefetch";
 import { Slot } from "@core/slots";
 import { useThemeStore } from "@core/state/theme.store";
 import { NavDropdown } from "@ui/navigation/NavDropdown";
-import { BarChart3, Building2, LogOut, Moon, Package, Sun, Zap } from "lucide-react";
+import { BarChart3, Building2, LogOut, Moon, Package, Sun, Zap, Heart, User, ShoppingBag } from "lucide-react";
 import { Zenith } from "@shared/theme";
 
 import { useAuth } from "@hooks/auth/useAuth";
@@ -74,10 +74,28 @@ const UserProfileMenu: React.FC = () => {
       label={user.username || user.email || "Account"}
       items={[
         {
+          label: "Customer Profile",
+          description: "Manage commercial account and tier",
+          onClick: () => navigate(AppPaths.Account.Profile),
+          icon: <User className="w-4 h-4 text-primary" />,
+        },
+        {
+          label: "My Orders & Tracking",
+          description: "View fulfillment history & live timeline",
+          onClick: () => navigate(AppPaths.Account.Orders),
+          icon: <Package className="w-4 h-4 text-primary" />,
+        },
+        {
+          label: "Saved Wishlist",
+          description: "Review saved hardware items",
+          onClick: () => navigate(AppPaths.Account.Wishlist),
+          icon: <Heart className="w-4 h-4 text-rose-500" />,
+        },
+        {
           label: t("header.workspaceContext"),
           description: t("header.workspaceContextDesc"),
           onClick: () => navigate(AppPaths.Workspace),
-          icon: <Building2 className="w-4 h-4 text-primary" />,
+          icon: <Building2 className="w-4 h-4 text-muted" />,
         },
         {
           label: t("header.signOut"),

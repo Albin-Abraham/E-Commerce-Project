@@ -50,14 +50,18 @@ export class RequestContext {
     }
 
     // Attach correlation ID for traceability
+    const rawHeaders = options.headers;
+    const headerReqId =
+      rawHeaders instanceof Headers
+        ? rawHeaders.get("x-request-id")
+        : (rawHeaders as Record<string, string> | undefined)?.[
+            "x-request-id"
+          ];
+
     const correlationId =
       options.scope?.correlationId ||
-      options.headers instanceof Headers
-        ? options.headers.get("x-request-id")
-        : (options.headers as Record<string, string>)?.[
-            "x-request-id"
-          ] ||
-          `req-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`;
+      headerReqId ||
+      `req-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`;
 
     headers.set("X-Request-ID", correlationId);
 

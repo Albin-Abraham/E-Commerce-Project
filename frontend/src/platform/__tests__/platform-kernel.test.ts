@@ -1,14 +1,11 @@
 import { describe, expect, it } from "vitest";
 import {
-  ApiClient,
   ApiError,
   RetryPolicy,
   RequestContext,
   PermissionVO,
-  AuthorizationPolicy,
   PermissionEvaluator,
   TenantContext,
-  createLogger,
   errorReporter,
 } from "../index";
 

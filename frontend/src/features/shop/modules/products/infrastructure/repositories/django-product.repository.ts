@@ -11,7 +11,6 @@ import type {
   ProductCatalogFilter,
   PaginatedProductsResult,
 } from "../../application/ports/product-repository.port";
-import type { ProductListItemModel } from "../../application/read-models/product-list-item.model";
 import type { ProductDetailModel } from "../../application/read-models/product-detail.model";
 import type { ProductAggregate } from "../../domain/aggregates/product.aggregate";
 import { ProductMapper } from "../mappers/product.mapper";

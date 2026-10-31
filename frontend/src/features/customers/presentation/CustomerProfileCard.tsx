@@ -3,7 +3,7 @@
  */
 
 import React from "react";
-import { Mail, Phone, Hash, CreditCard, ShieldCheck } from "lucide-react";
+import { Mail, Phone, Hash, CreditCard } from "lucide-react";
 import type { CustomerAggregate } from "../domain/aggregates/customer.aggregate";
 import { CustomerTierBadge } from "./CustomerTierBadge";
 

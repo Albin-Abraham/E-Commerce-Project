@@ -3,7 +3,7 @@
  */
 
 import React, { useState, useMemo } from "react";
-import { Search, SlidersHorizontal, PackageOpen } from "lucide-react";
+import { Search, PackageOpen } from "lucide-react";
 import type { ProductListItemModel } from "../../modules/products/application/read-models/product-list-item.model";
 import { ProductCard } from "./ProductCard";
 import { ProductCardSkeleton } from "./ProductCardSkeleton";

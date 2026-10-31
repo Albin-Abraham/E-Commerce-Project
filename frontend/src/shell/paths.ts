@@ -17,6 +17,8 @@ export const AppPaths = {
   Account: {
     Root: "/account",
     Profile: "/account/profile",
+    Orders: "/account/orders",
+    Wishlist: "/account/wishlist",
     Settings: "/account/settings",
   },
   Products: {
