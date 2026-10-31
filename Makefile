@@ -113,6 +113,9 @@ ping:
 	$(COMPOSE) --env-file $(ENV_FILE) run --rm web sh -c "ping -c 4 $(svc)"
 
 # --- Quality & Linting ---
+fitness:
+	./scripts/architecture/run_fitness_functions.sh
+
 lint:
 	./tools/quality/orchestrator/check.sh fast
 
